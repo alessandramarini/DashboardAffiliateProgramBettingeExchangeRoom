@@ -7,12 +7,11 @@
   
   <meta name="theme-color" content="#020617">
 
+  <!-- Hard Fallback CSS -->
   <style>
     body, html {
-      margin: 0;
-      padding: 0;
-      background-color: #020617 !important; /* Slate 950 */
-      color: #f8fafc !important; /* Slate 50 */
+      margin: 0; padding: 0;
+      background-color: #020617 !important; color: #f8fafc !important;
       font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
     #root { min-height: 100vh; display: flex; flex-direction: column; }
@@ -32,6 +31,7 @@
     .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #334155; }
   </style>
 
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -39,6 +39,8 @@
       theme: { extend: { colors: { bank: { 900: '#0a0f1c', 800: '#111827', accent: '#2563eb' } } } }
     }
   </script>
+
+  <!-- React & Libraries -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -57,19 +59,15 @@
 
   <script type="text/babel">
     const { useState, useEffect, useCallback, useRef, useMemo } = React;
-    const { 
-      AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar
-    } = window.Recharts || window.Recharts; 
+    const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } = window.Recharts; 
 
-    // Custom Lucide Icon Component wrapper
     const Icon = ({ name, size = 24, className = '', ...props }) => {
       const iconRef = useRef(null);
       useEffect(() => {
         if (iconRef.current && window.lucide) {
           iconRef.current.innerHTML = '';
           const icon = lucide.createIcons({
-            icons: { [name]: window.lucide.icons[name] },
-            nameAttr: 'data-lucide',
+            icons: { [name]: window.lucide.icons[name] }, nameAttr: 'data-lucide',
             attrs: { width: size, height: size, class: className, ...props }
           });
           lucide.createIcons({ root: iconRef.current });
@@ -80,24 +78,23 @@
 
     const translations = {
       en: {
-        app_title: "BETTING EXCHANGE ROOM", partner_dash: "Partner Dashboard", company_dash: "Treasury",
+        app_title: "BETTING EXCHANGE", partner_dash: "Partner Dashboard", company_dash: "Treasury",
         secure_login: "Secure Login", logout: "Secure Logout", session_ended: "Session Terminated",
         session_ended_desc: "Security protocol engaged: disconnected due to inactivity.",
         locked: "Session Locked", locked_desc: "Enter PIN to resume secure session.",
         disconnected: "Disconnected", disconnected_desc: "Encrypted session successfully closed.",
         connected: "Secure Connection", connected_desc: "E2E Authenticated. IP Logged.",
         show_balances: "Show Balances", hide_balances: "Hide Balances", network: "Network",
-        restricted_access: "Restricted Banking Area",
-        restricted_desc: "Military-grade encrypted environment for BETTING EXCHANGE ROOM fund management. Hardware wallet auth required.",
+        restricted_access: "Restricted Banking Area", restricted_desc: "Military-grade encrypted environment for fund management. Hardware wallet auth required.",
         start_secure_conn: "Authenticate Device", e2e_encryption: "AES-256 E2E Encryption Active",
         treasury_center: "Treasury Operations Center", vault_id: "Vault Contract ID:",
-        usdt_master: "USDT Master:", usdt_wallet: "Vault USDT Jetton:", simulate_deposit: "Simulate Deposit (USDT)",
+        usdt_master: "USDT Master:", usdt_wallet: "Vault USDT Jetton:", simulate_deposit: "Simulate Deposit",
         processed_volume: "Processed Volume", real_usdt: "Real USDT", company_reserve: "Company Reserve (30%)",
         withdrawable_funds: "Secure withdrawable funds", active_nodes: "Active Promoter Nodes",
         registered_pools: "Registered Pool 1 & 2", cash_flow: "Cash Flow (7 Days)", secure_conn_badge: "BANK-GRADE SECURE",
         smart_contract_rules: "Smart Contract Routing", immutable: "IMMUTABLE", quota: "Quota",
         company_share: "Company", leader_pool: "Sponsor", base_pool: "Bonus Pool", destination: "Dest:",
-        verified_partner_area: "Verified Partner Area", copy_link: "Copy Link", copied: "Copied",
+        verified_partner_area: "Verified Partner", copy_link: "Copy Link", copied: "Copied",
         copied_secure: "Copied to Secure Clipboard", copied_secure_desc: "Link protected. Clipboard clears in 30s.",
         copy_error: "Copy Error", vault_available: "Vault Available Funds",
         escrow_desc: "Funds protected in zero-knowledge escrow by Smart Contract. Signature required.",
@@ -111,43 +108,106 @@
         transfer_auth: "Transfer Authorized", funds_sent: "USDT securely sent to verified wallet.",
         deposit_detected: "Deposit Detected", vault_updated: "Vault updated: USDT received on-chain.",
         mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", today: "Today",
-        unlock_session: "Unlock Session", session_locked_warn: "For your security, the session was locked after 1 minute of inactivity.",
-        earnings_chart: "Earnings Overview"
+        unlock_session: "Unlock Session", session_locked_warn: "For your security, the session was locked after 1 minute of inactivity.", earnings_chart: "Earnings Overview"
+      },
+      es: {
+        app_title: "SALA DE INTERCAMBIO", partner_dash: "Panel de Socios", company_dash: "Tesorería",
+        secure_login: "Acceso Seguro", logout: "Cierre Seguro", session_ended: "Sesión Terminada",
+        session_ended_desc: "Protocolo de seguridad: desconexión por inactividad.",
+        locked: "Sesión Bloqueada", locked_desc: "Ingrese el PIN para reanudar.",
+        disconnected: "Desconectado", disconnected_desc: "Sesión encriptada cerrada con éxito.",
+        connected: "Conexión Segura", connected_desc: "E2E Autenticado. IP Registrada.",
+        show_balances: "Mostrar Saldos", hide_balances: "Ocultar Saldos", network: "Red",
+        restricted_access: "Área Bancaria Restringida", restricted_desc: "Entorno encriptado de grado militar. Requiere autenticación de hardware.",
+        start_secure_conn: "Autenticar Dispositivo", e2e_encryption: "Encriptación AES-256 Activa",
+        treasury_center: "Centro de Tesorería", vault_id: "ID del Contrato:",
+        usdt_master: "USDT Maestro:", usdt_wallet: "Bóveda USDT:", simulate_deposit: "Simular Depósito",
+        processed_volume: "Volumen Procesado", real_usdt: "USDT Reales", company_reserve: "Reserva (30%)",
+        withdrawable_funds: "Fondos retirables", active_nodes: "Nodos Activos",
+        registered_pools: "Pools 1 y 2", cash_flow: "Flujo de Caja (7D)", secure_conn_badge: "SEGURIDAD BANCARIA",
+        smart_contract_rules: "Reglas Smart Contract", immutable: "INMUTABLE", quota: "Cuota",
+        company_share: "Empresa", leader_pool: "Patrocinador", base_pool: "Pool Base", destination: "Dest:",
+        verified_partner_area: "Socio Verificado", copy_link: "Copiar Enlace", copied: "Copiado",
+        copied_secure: "Copiado Seguro", copied_secure_desc: "Portapapeles protegido. Se borra en 30s.",
+        copy_error: "Error al copiar", vault_available: "Fondos Disponibles",
+        escrow_desc: "Fondos protegidos en escrow. Requiere firma criptográfica.",
+        no_funds: "Sin fondos", signing: "Verificando firma...",
+        unlock_withdraw: "Firmar y Retirar", network_fee: "Tarifa de red: ~0.05 TON",
+        lifetime_deposit: "Depósito Total", validated_earnings: "Ganancias validadas",
+        audit_trail: "Registro de Auditoría", latest_tx: "Últimas Tx", no_tx: "Sin transferencias.",
+        security_auth: "Autorización de Hardware", crypto_signature_req: "Se requiere firma criptográfica.",
+        requested_amount: "Monto:", dest_wallet: "Billetera:", enter_pin: "Ingrese PIN",
+        cancel: "Cancelar", signing_btn: "Firmando...", sign_withdraw_btn: "Autorizar",
+        transfer_auth: "Transferencia Autorizada", funds_sent: "USDT enviados con seguridad.",
+        deposit_detected: "Depósito Detectado", vault_updated: "USDT recibidos en cadena.",
+        mon: "Lun", tue: "Mar", wed: "Mié", thu: "Jue", fri: "Vie", sat: "Sáb", today: "Hoy",
+        unlock_session: "Desbloquear", session_locked_warn: "Sesión bloqueada por inactividad.", earnings_chart: "Resumen de Ganancias"
+      },
+      pt: {
+        app_title: "SALA DE INTERCÂMBIO", partner_dash: "Painel Parceiro", company_dash: "Tesouraria",
+        secure_login: "Login Seguro", logout: "Saída Segura", session_ended: "Sessão Encerrada",
+        session_ended_desc: "Protocolo de segurança: desconexão por inatividade.",
+        locked: "Sessão Bloqueada", locked_desc: "Insira o PIN para continuar.",
+        disconnected: "Desconectado", disconnected_desc: "Sessão encriptada encerrada.",
+        connected: "Conexão Segura", connected_desc: "E2E Autenticado. IP Registrado.",
+        show_balances: "Mostrar Saldos", hide_balances: "Ocultar Saldos", network: "Rede",
+        restricted_access: "Área Bancária Restrita", restricted_desc: "Ambiente encriptado de nível militar. Autenticação de hardware necessária.",
+        start_secure_conn: "Autenticar Dispositivo", e2e_encryption: "Encriptação AES-256 Ativa",
+        treasury_center: "Centro de Tesouraria", vault_id: "ID do Contrato:",
+        usdt_master: "USDT Mestre:", usdt_wallet: "Cofre USDT:", simulate_deposit: "Simular Depósito",
+        processed_volume: "Volume Processado", real_usdt: "USDT Reais", company_reserve: "Reserva (30%)",
+        withdrawable_funds: "Fundos retiráveis", active_nodes: "Nós Ativos",
+        registered_pools: "Pools 1 e 2", cash_flow: "Fluxo de Caixa (7D)", secure_conn_badge: "SEGURANÇA BANCÁRIA",
+        smart_contract_rules: "Regras Smart Contract", immutable: "IMUTÁVEL", quota: "Cota",
+        company_share: "Empresa", leader_pool: "Patrocinador", base_pool: "Pool Base", destination: "Dest:",
+        verified_partner_area: "Parceiro Verificado", copy_link: "Copiar Link", copied: "Copiado",
+        copied_secure: "Copiado Seguro", copied_secure_desc: "Área de transferência protegida.",
+        copy_error: "Erro ao copiar", vault_available: "Fundos Disponíveis",
+        escrow_desc: "Fundos protegidos em escrow. Requer assinatura.",
+        no_funds: "Sem fundos", signing: "Verificando assinatura...",
+        unlock_withdraw: "Assinar e Retirar", network_fee: "Taxa de rede: ~0.05 TON",
+        lifetime_deposit: "Depósito Total", validated_earnings: "Ganhos validados",
+        audit_trail: "Registro de Auditoria", latest_tx: "Últimas Tx", no_tx: "Sem transferências.",
+        security_auth: "Autorização Hardware", crypto_signature_req: "Assinatura criptográfica necessária.",
+        requested_amount: "Valor:", dest_wallet: "Carteira:", enter_pin: "Insira o PIN",
+        cancel: "Cancelar", signing_btn: "Assinando...", sign_withdraw_btn: "Autorizar",
+        transfer_auth: "Transferência Autorizada", funds_sent: "USDT enviados com segurança.",
+        deposit_detected: "Depósito Detectado", vault_updated: "USDT recebidos na cadeia.",
+        mon: "Seg", tue: "Ter", wed: "Qua", thu: "Qui", fri: "Sex", sat: "Sáb", today: "Hoje",
+        unlock_session: "Desbloquear", session_locked_warn: "Sessão bloqueada por inatividade.", earnings_chart: "Resumo de Ganhos"
       },
       it: {
-        app_title: "BETTING EXCHANGE ROOM", partner_dash: "Dashboard Partner", company_dash: "Tesoreria",
+        app_title: "BETTING EXCHANGE", partner_dash: "Dashboard Partner", company_dash: "Tesoreria",
         secure_login: "Login Bancario", logout: "Disconnessione Sicura", session_ended: "Sessione Terminata",
         session_ended_desc: "Protocollo di sicurezza: disconnessione per inattività.",
         locked: "Sessione Bloccata", locked_desc: "Inserisci il PIN per riprendere la sessione sicura.",
         disconnected: "Disconnesso", disconnected_desc: "Sessione criptata conclusa con successo.",
         connected: "Connessione Protetta", connected_desc: "Autenticato E2E. IP Registrato.",
         show_balances: "Mostra Saldi", hide_balances: "Nascondi Saldi", network: "Rete",
-        restricted_access: "Area Bancaria Riservata",
-        restricted_desc: "Ambiente con crittografia militare per la gestione dei fondi BETTING EXCHANGE ROOM. Autenticazione hardware richiesta.",
+        restricted_access: "Area Bancaria Riservata", restricted_desc: "Ambiente con crittografia militare. Autenticazione hardware richiesta.",
         start_secure_conn: "Autentica Dispositivo", e2e_encryption: "Crittografia AES-256 Attiva",
         treasury_center: "Centro Operativo Tesoreria", vault_id: "Vault Contract ID:",
-        usdt_master: "USDT Master:", usdt_wallet: "Vault USDT Jetton:", simulate_deposit: "Simula Incasso (USDT)",
+        usdt_master: "USDT Master:", usdt_wallet: "Vault USDT Jetton:", simulate_deposit: "Simula Incasso",
         processed_volume: "Volume Processato", real_usdt: "USDT Reali", company_reserve: "Riserva Aziendale (30%)",
         withdrawable_funds: "Fondi sicuri prelevabili", active_nodes: "Nodi Promotori Attivi",
         registered_pools: "Pool 1 & 2 registrati", cash_flow: "Flusso di Cassa (7 Giorni)", secure_conn_badge: "SICUREZZA BANCARIA",
         smart_contract_rules: "Routing Smart Contract", immutable: "IMMUTABILE", quota: "Quota",
         company_share: "Azienda", leader_pool: "Sponsor", base_pool: "Pool Bonus", destination: "Dest:",
-        verified_partner_area: "Area Partner Verificata", copy_link: "Copia Link", copied: "Copiato",
+        verified_partner_area: "Partner Verificato", copy_link: "Copia Link", copied: "Copiato",
         copied_secure: "Copiato in Sicurezza", copied_secure_desc: "Appunti protetti. Si cancelleranno in 30s.",
         copy_error: "Errore di Copia", vault_available: "Vault Fondi Disponibili",
-        escrow_desc: "Fondi protetti in escrow (Zero-Knowledge). Firma necessaria per sblocco.",
+        escrow_desc: "Fondi protetti in escrow. Firma necessaria per sblocco.",
         no_funds: "Nessun fondo sbloccabile", signing: "Verifica firma crittografica...",
         unlock_withdraw: "Firma e Preleva", network_fee: "Commissioni Network stimate: ~0.05 TON",
         lifetime_deposit: "Lifetime Deposit", validated_earnings: "Guadagno totale validato",
         audit_trail: "Registro Audit Immutabile", latest_tx: "Ultime Trx", no_tx: "Nessun trasferimento registrato.",
-        security_auth: "Autorizzazione Hardware", crypto_signature_req: "Firma crittografica richiesta per l'interazione con il Vault Smart Contract.",
-        requested_amount: "Importo richiesto:", dest_wallet: "Wallet Destinazione:", enter_pin: "Inserisci PIN di Sicurezza",
+        security_auth: "Autorizzazione Hardware", crypto_signature_req: "Firma crittografica richiesta.",
+        requested_amount: "Importo:", dest_wallet: "Wallet:", enter_pin: "Inserisci PIN",
         cancel: "Annulla", signing_btn: "Firma in corso...", sign_withdraw_btn: "Autorizza Trasferimento",
-        transfer_auth: "Trasferimento Autorizzato", funds_sent: "USDT inviati in sicurezza al wallet verificato.",
-        deposit_detected: "Deposito Rilevato", vault_updated: "Vault aggiornato: USDT ricevuti on-chain.",
+        transfer_auth: "Trasferimento Autorizzato", funds_sent: "USDT inviati in sicurezza.",
+        deposit_detected: "Deposito Rilevato", vault_updated: "USDT ricevuti on-chain.",
         mon: "Lun", tue: "Mar", wed: "Mer", thu: "Gio", fri: "Ven", sat: "Sab", today: "Oggi",
-        unlock_session: "Sblocca Sessione", session_locked_warn: "Per la tua sicurezza, la sessione è stata bloccata dopo 1 minuto di inattività.",
-        earnings_chart: "Panoramica Guadagni"
+        unlock_session: "Sblocca Sessione", session_locked_warn: "La sessione è stata bloccata per inattività.", earnings_chart: "Panoramica Guadagni"
       }
     };
 
@@ -155,12 +215,10 @@
       { rawKey: 'mon', amount: 120 }, { rawKey: 'tue', amount: 250 }, { rawKey: 'wed', amount: 180 }, 
       { rawKey: 'thu', amount: 300 }, { rawKey: 'fri', amount: 450 }, { rawKey: 'sat', amount: 600 }, { rawKey: 'today', amount: 550 },
     ];
-    
     const PROMOTER_CHART_DATA = [
       { rawKey: 'mon', amount: 45 }, { rawKey: 'tue', amount: 120 }, { rawKey: 'wed', amount: 80 }, 
       { rawKey: 'thu', amount: 210 }, { rawKey: 'fri', amount: 150 }, { rawKey: 'sat', amount: 320 }, { rawKey: 'today', amount: 280 },
     ];
-
     const RAW_SPLIT_DATA = [
       { rawKey: 'company_share', value: 30, color: '#3b82f6', address: 'INSERISCI_INDIRIZZO_COMPANY' },
       { rawKey: 'leader_pool', value: 50, color: '#10b981', address: 'INSERISCI_INDIRIZZO_POOL_1' },
@@ -168,7 +226,7 @@
     ];
 
     const Card = ({ children, className = '' }) => (
-      <div className={`relative bg-slate-900/50 backdrop-blur-xl border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-2xl hover:border-slate-700 transition-all duration-300 overflow-hidden ${className}`}>
+      <div className={`relative bg-slate-900/50 backdrop-blur-xl border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-2xl hover:border-slate-700 transition-all duration-300 overflow-hidden min-w-0 ${className}`}>
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent"></div>
         {children}
       </div>
@@ -177,7 +235,7 @@
     const StatCard = ({ title, value, subtext, icon, colorClass }) => (
       <Card>
         <div className="flex justify-between items-start">
-          <div className="flex-1 overflow-hidden pr-2">
+          <div className="flex-1 overflow-hidden pr-2 min-w-0">
             <p className="text-slate-400 font-bold mb-1 uppercase tracking-widest text-[10px] sm:text-xs truncate">{title}</p>
             <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-2 tracking-tight font-mono truncate">{value}</h3>
             <div className={`inline-flex items-center gap-1 text-[10px] sm:text-xs px-2 py-1 rounded bg-slate-950 border border-slate-800 break-words font-medium ${colorClass}`}>
@@ -194,11 +252,11 @@
     const ToastContainer = ({ toasts }) => (
       <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[200] flex flex-col gap-2 sm:gap-3 pointer-events-none max-w-[calc(100vw-32px)]">
         {toasts.map(toast => (
-          <div key={toast.id} className="pointer-events-auto flex items-center gap-3 bg-slate-900 border border-slate-700 text-white px-3 sm:px-4 py-3 rounded-xl shadow-2xl shadow-black/80 backdrop-blur-md animate-in slide-in-from-right-4 fade-in duration-300">
+          <div key={toast.id} className="pointer-events-auto flex items-center gap-3 bg-slate-900 border border-slate-700 text-white px-3 sm:px-4 py-3 rounded-xl shadow-2xl shadow-black/80 backdrop-blur-md">
             <div className={`p-1.5 rounded-lg flex-shrink-0 ${toast.type === 'success' ? 'bg-emerald-500/20 text-emerald-400' : toast.type === 'error' ? 'bg-red-500/20 text-red-400' : 'bg-blue-500/20 text-blue-400'}`}>
               <Icon name={toast.type === 'success' ? 'check-circle-2' : toast.type === 'error' ? 'alert-circle' : 'shield-check'} size={18} />
             </div>
-            <div className="overflow-hidden min-w-0">
+            <div className="overflow-hidden min-w-0 flex-1">
               <p className="text-sm font-bold truncate">{toast.title}</p>
               {toast.message && <p className="text-xs text-slate-400 mt-0.5 truncate">{toast.message}</p>}
             </div>
@@ -207,24 +265,18 @@
       </div>
     );
 
-    const formatSecureCurrency = (amount, isHidden) => {
-      if (isHidden) return '••••••';
-      return amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    };
+    const formatSecureCurrency = (amount, isHidden) => isHidden ? '••••••' : amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     const SecurityModal = ({ isOpen, onClose, onConfirm, amount, walletAddress, t }) => {
       const [pin, setPin] = useState('');
       const [isSigning, setIsSigning] = useState(false);
       if (!isOpen) return null;
-      const handleConfirm = () => {
-        setIsSigning(true);
-        setTimeout(() => { setIsSigning(false); onConfirm(); setPin(''); }, 2000);
-      };
+      const handleConfirm = () => { setIsSigning(true); setTimeout(() => { setIsSigning(false); onConfirm(); setPin(''); }, 2000); };
       return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 backdrop-blur-xl p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-[0_0_50px_rgba(37,99,235,0.15)] overflow-hidden">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-[0_0_50px_rgba(37,99,235,0.15)] overflow-hidden min-w-0">
             <div className="bg-slate-800/50 p-6 border-b border-slate-700 flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-slate-950 rounded-full border-2 border-blue-500 flex items-center justify-center text-blue-500 mb-4 shadow-[0_0_20px_rgba(37,99,235,0.3)]">
+              <div className="w-16 h-16 bg-slate-950 rounded-full border-2 border-blue-500 flex items-center justify-center text-blue-500 mb-4 shadow-[0_0_20px_rgba(37,99,235,0.3)] shrink-0">
                 <Icon name="fingerprint" size={32} />
               </div>
               <h3 className="text-xl font-bold text-white uppercase tracking-widest">{t('security_auth')}</h3>
@@ -247,7 +299,7 @@
                 </label>
                 <input type="password" value={pin} onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, ''))} placeholder="••••••" maxLength={6} className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white text-center tracking-[1em] focus:outline-none focus:border-blue-500 transition-all font-mono text-xl shadow-inner" />
               </div>
-              <div className="flex gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <button onClick={onClose} disabled={isSigning} className="flex-1 py-3 rounded-xl font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700 transition-colors disabled:opacity-50 text-sm">{t('cancel')}</button>
                 <button onClick={handleConfirm} disabled={isSigning || pin.length < 4} className="flex-1 py-3 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-500 transition-all flex items-center justify-center gap-2 disabled:opacity-50 text-sm shadow-[0_0_15px_rgba(59,130,246,0.3)]">
                   {isSigning ? <Icon name="refresh-cw" size={18} className="animate-spin" /> : <Icon name="shield-check" size={18} />}
@@ -263,22 +315,18 @@
     const LockScreenModal = ({ isLocked, onUnlock, t }) => {
       const [pin, setPin] = useState('');
       if (!isLocked) return null;
-      const handleUnlock = () => {
-        if(pin.length >= 4) { onUnlock(); setPin(''); }
-      };
       return (
         <div className="fixed inset-0 z-[150] flex items-center justify-center bg-slate-950/95 backdrop-blur-2xl p-4">
           <div className="max-w-sm w-full flex flex-col items-center text-center">
-            <div className="w-20 h-20 bg-slate-900 rounded-full border-4 border-slate-800 flex items-center justify-center text-blue-500 mb-6 relative">
+            <div className="w-20 h-20 bg-slate-900 rounded-full border-4 border-slate-800 flex items-center justify-center text-blue-500 mb-6 relative shrink-0">
               <div className="absolute inset-0 bg-blue-500/20 rounded-full animate-ping"></div>
               <Icon name="lock" size={36} />
             </div>
             <h2 className="text-2xl font-bold text-white mb-2 tracking-widest uppercase">{t('locked')}</h2>
             <p className="text-slate-400 text-sm mb-8">{t('session_locked_warn')}</p>
-            
             <div className="w-full space-y-4">
               <input type="password" value={pin} onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, ''))} placeholder="PIN" maxLength={6} className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-4 text-white text-center tracking-[1em] focus:outline-none focus:border-blue-500 transition-all font-mono text-xl shadow-inner" />
-              <button onClick={handleUnlock} disabled={pin.length < 4} className="w-full py-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-500 transition-all flex items-center justify-center gap-2 disabled:opacity-50 text-base shadow-lg shadow-blue-900/20">
+              <button onClick={() => { if(pin.length >= 4) { onUnlock(); setPin(''); } }} disabled={pin.length < 4} className="w-full py-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-500 transition-all flex items-center justify-center gap-2 disabled:opacity-50 text-base shadow-lg shadow-blue-900/20">
                 <Icon name="unlock" size={20} /> {t('unlock_session')}
               </button>
             </div>
@@ -287,17 +335,13 @@
       );
     };
 
-    const CompanyDashboard = ({ contractAddress, contractBalance, totalProcessed, activePromoters, chartData, onSimulateDeposit, isHidden, toggleHidden, isTestnet, toggleNetwork, t }) => {
+    const CompanyDashboard = ({ contractAddress, contractBalance, totalProcessed, activePromoters, chartData, onSimulateDeposit, isHidden, isTestnet, toggleNetwork, t }) => {
       const [isSimulating, setIsSimulating] = useState(false);
       const simulationTimeoutRef = useRef(null);
-
       const usdtMaster = isTestnet ? "EQBfBWT7X2BSIhu9pGpuLWZbD50nEIGI1p2Hn3H3H3H3H3H3" : "EQCvxJy4eG8hyHBFsZ7eePxrRsUQSFE_jpptRAYBmcG_DOGS";
       const contractUsdtWallet = isTestnet ? "EQ_Testnet_Wallet_4kLp..." : "EQ_Mainnet_Wallet_9mXq...";
 
-      const handleDeposit = () => {
-        setIsSimulating(true);
-        simulationTimeoutRef.current = setTimeout(() => { onSimulateDeposit(); setIsSimulating(false); }, 1200);
-      };
+      const handleDeposit = () => { setIsSimulating(true); simulationTimeoutRef.current = setTimeout(() => { onSimulateDeposit(); setIsSimulating(false); }, 1200); };
       useEffect(() => { return () => clearTimeout(simulationTimeoutRef.current); }, []);
 
       const localizedChartData = useMemo(() => chartData.map(d => ({...d, name: t(d.rawKey)})), [chartData, t]);
@@ -305,21 +349,19 @@
 
       return (
         <div className="space-y-6">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center bg-slate-900/70 border border-slate-700 rounded-2xl p-5 shadow-2xl gap-4">
-            <div className="w-full lg:w-auto overflow-hidden">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center bg-slate-900/70 border border-slate-700 rounded-2xl p-4 sm:p-5 shadow-2xl gap-4">
+            <div className="w-full lg:w-auto overflow-hidden min-w-0">
               <div className="flex items-center gap-3 mb-3">
-                <div className="p-2 bg-blue-500/10 rounded-lg text-blue-500 border border-blue-500/30">
-                  <Icon name="server" size={24} />
-                </div>
+                <div className="p-2 bg-blue-500/10 rounded-lg text-blue-500 border border-blue-500/30 shrink-0"><Icon name="server" size={24} /></div>
                 <h2 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-widest truncate">{t('treasury_center')}</h2>
               </div>
-              <div className="flex flex-col gap-1.5 mt-2 border-l-2 border-blue-500/50 pl-3">
-                <p className="text-xs text-slate-400 flex items-center gap-2"><span className="w-24 font-bold">{t('vault_id')}</span><span className="font-mono text-slate-300 bg-slate-950 px-2 py-0.5 rounded truncate">{contractAddress}</span></p>
-                <p className="text-xs text-slate-400 flex items-center gap-2"><span className="w-24 font-bold">{t('usdt_master')}</span><span className="font-mono text-emerald-400 bg-slate-950 px-2 py-0.5 rounded truncate">{usdtMaster}</span></p>
-                <p className="text-xs text-slate-400 flex items-center gap-2"><span className="w-24 font-bold">{t('usdt_wallet')}</span><span className="font-mono text-blue-400 bg-slate-950 px-2 py-0.5 rounded truncate">{contractUsdtWallet}</span></p>
+              <div className="flex flex-col gap-1.5 mt-2 border-l-2 border-blue-500/50 pl-3 min-w-0">
+                <p className="text-xs text-slate-400 flex items-center gap-2"><span className="w-20 sm:w-24 font-bold shrink-0">{t('vault_id')}</span><span className="font-mono text-slate-300 bg-slate-950 px-2 py-0.5 rounded truncate">{contractAddress}</span></p>
+                <p className="text-xs text-slate-400 flex items-center gap-2"><span className="w-20 sm:w-24 font-bold shrink-0">{t('usdt_master')}</span><span className="font-mono text-emerald-400 bg-slate-950 px-2 py-0.5 rounded truncate">{usdtMaster}</span></p>
+                <p className="text-xs text-slate-400 flex items-center gap-2"><span className="w-20 sm:w-24 font-bold shrink-0">{t('usdt_wallet')}</span><span className="font-mono text-blue-400 bg-slate-950 px-2 py-0.5 rounded truncate">{contractUsdtWallet}</span></p>
               </div>
             </div>
-            <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-3">
+            <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-3 shrink-0">
               <button onClick={toggleNetwork} className={`px-4 py-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 ${isTestnet ? 'bg-amber-500/10 border-amber-500/50 text-amber-500' : 'bg-slate-800 border-slate-600 text-slate-300 hover:bg-slate-700'}`}>
                 <Icon name="network" size={16} /> {isTestnet ? 'TESTNET ACTIVE' : 'SWITCH TO TESTNET'}
               </button>
@@ -339,14 +381,14 @@
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             <Card className="xl:col-span-2">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-lg font-bold text-white flex items-center gap-2 uppercase tracking-wide">
-                  <Icon name="activity" size={18} className="text-blue-500"/> {t('cash_flow')}
+                <h3 className="text-lg font-bold text-white flex items-center gap-2 uppercase tracking-wide truncate">
+                  <Icon name="activity" size={18} className="text-blue-500 shrink-0"/> {t('cash_flow')}
                 </h3>
-                <span className="text-xs font-mono px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded border border-emerald-500/30 flex items-center gap-1">
-                  <Icon name="shield-check" size={12}/> {t('secure_conn_badge')}
+                <span className="text-xs font-mono px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded border border-emerald-500/30 flex items-center gap-1 shrink-0">
+                  <Icon name="shield-check" size={12}/> <span className="hidden sm:inline">{t('secure_conn_badge')}</span>
                 </span>
               </div>
-              <div className="h-72 w-full">
+              <div className="h-64 sm:h-72 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -20, bottom: 0}}>
                     <defs>
@@ -366,8 +408,8 @@
             </Card>
 
             <Card>
-              <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2 uppercase tracking-wide">
-                <Icon name="network" size={18} className="text-blue-500"/> {t('smart_contract_rules')}
+              <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2 uppercase tracking-wide truncate">
+                <Icon name="network" size={18} className="text-blue-500 shrink-0"/> {t('smart_contract_rules')}
               </h3>
               <div className="h-40 w-full flex justify-center items-center relative">
                 <ResponsiveContainer width="100%" height="100%">
@@ -383,20 +425,19 @@
                   <span className="text-xs text-slate-400 font-bold tracking-widest">{t('immutable')}</span>
                 </div>
               </div>
-              
               <div className="space-y-2 mt-6">
                 {localizedSplitData.map((item, idx) => (
-                  <div key={idx} className="flex flex-col text-sm p-3 rounded-xl bg-slate-950 border border-slate-800 gap-1.5">
+                  <div key={idx} className="flex flex-col text-sm p-3 rounded-xl bg-slate-950 border border-slate-800 gap-1.5 min-w-0">
                     <div className="flex justify-between items-center w-full">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full shadow-sm" style={{ backgroundColor: item.color, boxShadow: `0 0 8px ${item.color}` }}></div>
-                        <span className="text-white font-bold">{item.name}</span>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className="w-2 h-2 rounded-full shadow-sm shrink-0" style={{ backgroundColor: item.color, boxShadow: `0 0 8px ${item.color}` }}></div>
+                        <span className="text-white font-bold truncate">{item.name}</span>
                       </div>
-                      <span className="text-white font-mono font-bold bg-slate-900 px-2 py-0.5 rounded border border-slate-700 text-xs">{item.value}%</span>
+                      <span className="text-white font-mono font-bold bg-slate-900 px-2 py-0.5 rounded border border-slate-700 text-xs shrink-0">{item.value}%</span>
                     </div>
-                    <div className="flex items-center justify-between text-[10px] text-slate-500 font-mono">
-                      <span>{t('destination')}</span>
-                      <span className="truncate max-w-[150px]">{item.address}</span>
+                    <div className="flex items-center justify-between text-[10px] text-slate-500 font-mono min-w-0 gap-2">
+                      <span className="shrink-0">{t('destination')}</span>
+                      <span className="truncate">{item.address}</span>
                     </div>
                   </div>
                 ))}
@@ -407,89 +448,90 @@
       );
     };
 
-    const PromoterDashboard = ({ walletAddress, available, lifetime, history, onProcessClaim, addToast, isHidden, toggleHidden, t }) => {
+    const PromoterDashboard = ({ walletAddress, available, lifetime, history, onProcessClaim, addToast, isHidden, toggleHidden, lang, t }) => {
       const [isClaiming, setIsClaiming] = useState(false);
       const [copied, setCopied] = useState(false);
       const [showSecureModal, setShowSecureModal] = useState(false);
 
       const localizedChartData = useMemo(() => PROMOTER_CHART_DATA.map(d => ({...d, name: t(d.rawKey)})), [t]);
 
-      const executeSecureClaim = () => {
-        setShowSecureModal(false);
-        setIsClaiming(true);
-        setTimeout(() => { setIsClaiming(false); onProcessClaim(available); }, 2500);
+      // Mocking Telegram User Data dynamically
+      const tgUser = {
+        first_name: "Alex", last_name: "De Souza", username: "@alex_crypto_pro", language_code: lang.toUpperCase()
       };
 
       const copyReferral = () => {
         const textToCopy = `https://tonpull.app/ref/${walletAddress.substring(0,8)}`;
         navigator.clipboard.writeText(textToCopy).then(() => {
-          setCopied(true);
-          addToast(t('copied_secure'), t('copied_secure_desc'), "success");
+          setCopied(true); addToast(t('copied_secure'), t('copied_secure_desc'), "success");
           setTimeout(() => setCopied(false), 2000);
         }).catch(() => addToast(t('copy_error'), "", "error"));
       };
 
       return (
         <div className="space-y-6 max-w-6xl mx-auto">
-          <div className="flex flex-col lg:flex-row items-center justify-between bg-slate-900/70 border border-slate-700 rounded-2xl p-5 shadow-2xl gap-4">
-            <div className="flex items-center gap-4 w-full lg:w-auto">
-              <div className="w-14 h-14 rounded-full bg-slate-950 border-2 border-emerald-500/50 flex items-center justify-center text-emerald-500 shadow-inner">
-                <Icon name="user-circle" size={28} />
+          {/* TG Profile Card */}
+          <div className="flex flex-col lg:flex-row items-center justify-between bg-slate-900/70 border border-slate-700 rounded-2xl p-4 sm:p-5 shadow-2xl gap-4">
+            <div className="flex items-center gap-4 w-full lg:w-auto min-w-0">
+              <div className="relative w-14 h-14 shrink-0 rounded-full">
+                 <div className="absolute inset-0 bg-slate-950 border-2 border-emerald-500/50 rounded-full flex items-center justify-center text-emerald-500 shadow-inner z-0">
+                    <Icon name="user" size={28} />
+                 </div>
+                 <img src="logo-tondo.jpeg" alt="Profile" className="absolute inset-0 w-full h-full object-cover rounded-full border-2 border-emerald-500 z-10 transition-opacity" onError={(e) => { e.currentTarget.style.opacity = '0'; }} />
+                 <div className="absolute -bottom-1 -right-1 bg-emerald-500 rounded-full p-1 border-2 border-slate-900 z-20">
+                   <Icon name="check" size={10} className="text-white" />
+                 </div>
               </div>
-              <div className="overflow-hidden">
-                <h2 className="text-xl font-bold text-white uppercase tracking-widest truncate">{t('verified_partner_area')}</h2>
-                <div className="flex items-center gap-2 mt-1 bg-slate-950 px-2 py-1 rounded w-fit border border-slate-800">
-                  <Icon name="shield-check" size={12} className="text-blue-500" />
-                  <p className="text-blue-400 font-mono text-xs truncate">{walletAddress}</p>
+              <div className="overflow-hidden min-w-0">
+                <h2 className="text-lg sm:text-xl font-bold text-white tracking-wide truncate">{tgUser.first_name} {tgUser.last_name}</h2>
+                <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
+                  <span className="text-emerald-400 font-mono text-xs sm:text-sm truncate">{tgUser.username}</span>
+                  <span className="bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800 text-[10px] text-slate-400 flex items-center gap-1 uppercase">
+                    <Icon name="globe" size={10} /> {tgUser.language_code}
+                  </span>
                 </div>
               </div>
             </div>
-            <div className="bg-slate-950 p-1.5 rounded-xl border border-slate-800 flex items-center shadow-inner w-full lg:w-auto">
-              <div className="px-4 py-2 text-xs font-mono text-slate-500 truncate flex-1 lg:max-w-[200px]">.../ref/{walletAddress.substring(0,8)}</div>
-              <button onClick={copyReferral} className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${copied ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 hover:bg-slate-700 text-white'}`}>
-                <Icon name={copied ? 'check-circle-2' : 'copy'} size={16} />
-                {copied ? t('copied') : t('copy_link')}
+            <div className="bg-slate-950 p-1.5 rounded-xl border border-slate-800 flex items-center shadow-inner w-full lg:w-auto shrink-0 min-w-0">
+              <div className="px-3 py-2 text-xs font-mono text-slate-500 truncate flex-1 lg:max-w-[150px]"><Icon name="wallet" size={14} className="inline mr-1 mb-0.5"/>...{walletAddress.substring(walletAddress.length-6)}</div>
+              <button onClick={copyReferral} className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-bold transition-all ${copied ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 hover:bg-slate-700 text-white'}`}>
+                <Icon name={copied ? 'check-circle-2' : 'copy'} size={14} />
+                <span className="hidden sm:inline">{copied ? t('copied') : t('copy_link')}</span>
               </button>
             </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
-            {/* Left Column: Big Balance and Chart */}
             <div className="lg:col-span-7 flex flex-col gap-6">
-              <Card className="flex flex-col items-center justify-center text-center p-8 sm:p-12 relative overflow-visible">
+              <Card className="flex flex-col items-center justify-center text-center p-6 sm:p-12 relative overflow-visible">
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-950 text-emerald-400 text-xs font-bold mb-6 border border-emerald-500/30 tracking-widest uppercase shadow-inner">
                   <Icon name="lock" size={14} /> {t('vault_available')}
                 </div>
                 
-                <div className="flex flex-col items-center justify-center w-full group">
-                  <div className="text-5xl sm:text-7xl font-extrabold text-white mb-1 tracking-tighter font-mono flex items-baseline justify-center">
+                <div className="flex flex-col items-center justify-center w-full min-w-0">
+                  <div className="text-4xl sm:text-6xl md:text-7xl font-extrabold text-white mb-1 tracking-tighter font-mono flex items-baseline justify-center truncate w-full">
                     {formatSecureCurrency(available, isHidden)} 
-                    {!isHidden && <span className="text-2xl text-emerald-500 ml-3 font-sans">USDT</span>}
+                    {!isHidden && <span className="text-xl sm:text-2xl text-emerald-500 ml-2 sm:ml-3 font-sans shrink-0">USDT</span>}
                   </div>
-                  
-                  {/* Privacy Eye Icon right under the dots/balance */}
-                  <button onClick={toggleHidden} className="mt-3 text-slate-500 hover:text-emerald-400 flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest transition-colors bg-slate-950 px-4 py-1.5 rounded-full border border-slate-800 shadow-inner">
-                    <Icon name={isHidden ? 'eye' : 'eye-off'} size={14} />
-                    {isHidden ? t('show_balances') : t('hide_balances')}
+                  <button onClick={toggleHidden} className="mt-3 text-slate-500 hover:text-emerald-400 flex items-center gap-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-colors bg-slate-950 px-3 py-1.5 rounded-full border border-slate-800 shadow-inner shrink-0">
+                    <Icon name={isHidden ? 'eye' : 'eye-off'} size={14} /> {isHidden ? t('show_balances') : t('hide_balances')}
                   </button>
                 </div>
 
-                <p className="text-slate-400 mt-8 mb-8 max-w-sm text-sm">{t('escrow_desc')}</p>
+                <p className="text-slate-400 mt-8 mb-8 max-w-sm text-xs sm:text-sm">{t('escrow_desc')}</p>
                 
-                <button onClick={() => { if(available > 0) setShowSecureModal(true); }} disabled={isClaiming || available <= 0} className={`w-full max-w-md py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all shadow-xl group ${available <= 0 ? 'bg-slate-950 text-slate-600 border border-slate-800' : isClaiming ? 'bg-emerald-600 text-white cursor-wait' : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.4)]'}`}>
-                  {available <= 0 ? (<><Icon name="lock" size={20} /> {t('no_funds')}</>) : isClaiming ? (<><Icon name="refresh-cw" size={20} className="animate-spin" /> {t('signing')}</>) : (<><Icon name="fingerprint" size={24} /> {t('unlock_withdraw')}</>)}
+                <button onClick={() => { if(available > 0) setShowSecureModal(true); }} disabled={isClaiming || available <= 0} className={`w-full max-w-md py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg flex items-center justify-center gap-2 sm:gap-3 transition-all shadow-xl ${available <= 0 ? 'bg-slate-950 text-slate-600 border border-slate-800' : isClaiming ? 'bg-emerald-600 text-white cursor-wait' : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.4)]'}`}>
+                  {available <= 0 ? (<><Icon name="lock" size={20} /> <span className="truncate">{t('no_funds')}</span></>) : isClaiming ? (<><Icon name="refresh-cw" size={20} className="animate-spin" /> <span className="truncate">{t('signing')}</span></>) : (<><Icon name="fingerprint" size={24} /> <span className="truncate">{t('unlock_withdraw')}</span></>)}
                 </button>
                 
-                <div className="flex flex-col items-center gap-2 mt-8">
-                  <div className="flex items-center gap-2 text-xs text-slate-500 font-bold"><Icon name="shield-check" size={14} className="text-emerald-500"/> AES-256 SECURE TRANSFER</div>
-                  <div className="flex items-center gap-2 text-xs text-slate-500"><Icon name="zap" size={14} className="text-yellow-600"/> {t('network_fee')}</div>
+                <div className="flex flex-col items-center gap-2 mt-6 sm:mt-8">
+                  <div className="flex items-center gap-2 text-[10px] sm:text-xs text-slate-500 font-bold"><Icon name="shield-check" size={14} className="text-emerald-500 shrink-0"/> AES-256 SECURE TRANSFER</div>
+                  <div className="flex items-center gap-2 text-[10px] sm:text-xs text-slate-500"><Icon name="zap" size={14} className="text-yellow-600 shrink-0"/> {t('network_fee')}</div>
                 </div>
               </Card>
 
-              {/* New Earnings Chart for Promoter */}
               <Card className="w-full h-[320px] flex flex-col">
-                 <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2 uppercase tracking-wide shrink-0">
+                 <h3 className="text-base sm:text-lg font-bold text-white mb-4 sm:mb-6 flex items-center gap-2 uppercase tracking-wide shrink-0 truncate">
                   <Icon name="bar-chart-2" size={18} className="text-emerald-500"/> {t('earnings_chart')}
                 </h3>
                 <div className="flex-1 w-full min-h-0">
@@ -512,33 +554,30 @@
               </Card>
             </div>
 
-            {/* Right Column: Lifetime Stats and Audit Trail */}
             <div className="lg:col-span-5 space-y-6">
               <StatCard title={t('lifetime_deposit')} value={`${formatSecureCurrency(lifetime, isHidden)}`} subtext={t('validated_earnings')} icon="trending-up" colorClass="text-emerald-400" />
-              
-              <Card className="h-[500px] flex flex-col p-0">
-                <div className="p-5 border-b border-slate-800 flex justify-between items-center bg-slate-900/80 shrink-0">
-                  <h3 className="text-white font-bold flex items-center gap-2 text-sm tracking-widest uppercase">
-                    <Icon name="database" size={16} className="text-slate-400"/> {t('audit_trail')}
+              <Card className="h-[400px] lg:h-[500px] flex flex-col p-0">
+                <div className="p-4 sm:p-5 border-b border-slate-800 flex justify-between items-center bg-slate-900/80 shrink-0">
+                  <h3 className="text-white font-bold flex items-center gap-2 text-xs sm:text-sm tracking-widest uppercase truncate">
+                    <Icon name="database" size={16} className="text-slate-400 shrink-0"/> {t('audit_trail')}
                   </h3>
-                  <span className="text-xs bg-slate-950 text-emerald-500 px-2 py-1 rounded border border-emerald-900/50 font-mono">VERIFIED</span>
+                  <span className="text-[10px] sm:text-xs bg-slate-950 text-emerald-500 px-2 py-1 rounded border border-emerald-900/50 font-mono shrink-0">VERIFIED</span>
                 </div>
-                
-                <div className="flex-1 p-5 overflow-y-auto custom-scrollbar">
+                <div className="flex-1 p-4 sm:p-5 overflow-y-auto custom-scrollbar">
                   {history.length === 0 ? (
                     <div className="h-full flex flex-col items-center justify-center text-slate-500 text-center">
                       <Icon name="shield-off" size={32} className="mb-2 opacity-30" />
-                      <p className="text-sm font-bold uppercase tracking-widest">{t('no_tx')}</p>
+                      <p className="text-xs sm:text-sm font-bold uppercase tracking-widest">{t('no_tx')}</p>
                     </div>
                   ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                       {history.map((item, idx) => (
-                        <div key={idx} className="flex justify-between items-center border-l-2 border-emerald-500/50 pl-3 bg-slate-950/50 p-3 rounded-r-lg hover:bg-slate-900 transition-colors">
-                          <div>
-                            <p className="text-slate-300 text-sm font-bold">{item.date}</p>
-                            <p className="text-xs text-slate-500 font-mono mt-1 flex items-center gap-1"><Icon name="check-circle-2" size={12} className="text-emerald-500"/> {item.tx}</p>
+                        <div key={idx} className="flex justify-between items-center border-l-2 border-emerald-500/50 pl-3 bg-slate-950/50 p-3 rounded-r-lg hover:bg-slate-900 transition-colors min-w-0 gap-2">
+                          <div className="min-w-0">
+                            <p className="text-slate-300 text-xs sm:text-sm font-bold truncate">{item.date}</p>
+                            <p className="text-[10px] sm:text-xs text-slate-500 font-mono mt-0.5 sm:mt-1 flex items-center gap-1 truncate"><Icon name="check-circle-2" size={12} className="text-emerald-500 shrink-0"/> {item.tx}</p>
                           </div>
-                          <span className="text-emerald-400 font-bold font-mono text-sm">+{formatSecureCurrency(item.amount, isHidden)}</span>
+                          <span className="text-emerald-400 font-bold font-mono text-xs sm:text-sm shrink-0">+{formatSecureCurrency(item.amount, isHidden)}</span>
                         </div>
                       ))}
                     </div>
@@ -547,7 +586,7 @@
               </Card>
             </div>
           </div>
-          <SecurityModal isOpen={showSecureModal} onClose={() => setShowSecureModal(false)} onConfirm={executeSecureClaim} amount={available} walletAddress={walletAddress} t={t} />
+          <SecurityModal isOpen={showSecureModal} onClose={() => setShowSecureModal(false)} onConfirm={() => { setShowSecureModal(false); setIsClaiming(true); setTimeout(() => { setIsClaiming(false); onProcessClaim(available); }, 2500); }} amount={available} walletAddress={walletAddress} t={t} />
         </div>
       );
     };
@@ -557,15 +596,12 @@
       const [view, setView] = useState('promoter');
       const [wallet, setWallet] = useState({ connected: false, address: null });
       const [toasts, setToasts] = useState([]);
-      
-      // SECURITY STATES
-      const [isBalanceHidden, setIsBalanceHidden] = useState(true); // Default hidden (pallini)
+      const [isBalanceHidden, setIsBalanceHidden] = useState(true);
       const [idleTime, setIdleTime] = useState(0);
       const [isLocked, setIsLocked] = useState(false);
       const [isTestnet, setIsTestnet] = useState(false);
 
       const contractAddress = "EQD_TonPullSplitter_v1_0"; 
-      
       const [contractBalance, setContractBalance] = useState(3200.50);
       const [totalProcessed, setTotalProcessed] = useState(12450.00);
       const [activePromoters, setActivePromoters] = useState(142);
@@ -574,24 +610,22 @@
       const [promoterAvailable, setPromoterAvailable] = useState(450.00);
       const [promoterLifetime, setPromoterLifetime] = useState(3250.00);
       const [claimHistory, setClaimHistory] = useState([
-        { date: '12 Mag 2026', amount: 120.00, tx: 'EQA...4f2' },
-        { date: '05 Mag 2026', amount: 300.00, tx: 'EQB...9x1' }
+        { date: '12 Mag 2026', amount: 120.00, tx: 'EQA...4f2' }, { date: '05 Mag 2026', amount: 300.00, tx: 'EQB...9x1' }
       ]);
 
+      // Auto-detect Language
       useEffect(() => {
-        const browserLang = (navigator.language || navigator.userLanguage).split('-')[0];
-        if (['en', 'it'].includes(browserLang)) setLang(browserLang);
+        const browserLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
+        if (['en', 'es', 'pt', 'it'].includes(browserLang)) setLang(browserLang);
       }, []);
 
       const t = useCallback((key) => translations[lang]?.[key] || translations['en'][key] || key, [lang]);
-
       const addToast = useCallback((title, message, type = 'info') => {
-        const id = Date.now() + Math.random();
-        setToasts(prev => [...prev, { id, title, message, type }]);
+        const id = Date.now() + Math.random(); setToasts(prev => [...prev, { id, title, message, type }]);
         setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 5000); 
       }, []);
 
-      // Inactivity Timer
+      // Inactivity Security Timer
       useEffect(() => {
         if (!wallet.connected) return;
         const timer = setInterval(() => {
@@ -599,56 +633,38 @@
             const next = prev + 1;
             if (next === 60 && !isLocked) setIsLocked(true); 
             if (next >= 300) {
-              setWallet({ connected: false, address: null });
-              setIsLocked(false);
-              addToast(t('session_ended'), t('session_ended_desc'), "error");
-              return 0;
+              setWallet({ connected: false, address: null }); setIsLocked(false);
+              addToast(t('session_ended'), t('session_ended_desc'), "error"); return 0;
             }
             return next;
           });
         }, 1000);
-
         const resetTimer = () => { if(!isLocked) setIdleTime(0); };
-        window.addEventListener('mousemove', resetTimer);
-        window.addEventListener('keydown', resetTimer);
-        window.addEventListener('touchstart', resetTimer);
-
-        return () => {
-          clearInterval(timer);
-          window.removeEventListener('mousemove', resetTimer);
-          window.removeEventListener('keydown', resetTimer);
-          window.removeEventListener('touchstart', resetTimer);
-        };
+        ['mousemove', 'keydown', 'touchstart'].forEach(e => window.addEventListener(e, resetTimer));
+        return () => { clearInterval(timer); ['mousemove', 'keydown', 'touchstart'].forEach(e => window.removeEventListener(e, resetTimer)); };
       }, [wallet.connected, isLocked, addToast, t]);
 
       const toggleWallet = () => {
         if (wallet.connected) {
-          setWallet({ connected: false, address: null });
-          setIdleTime(0); setIsLocked(false); setIsBalanceHidden(true);
+          setWallet({ connected: false, address: null }); setIdleTime(0); setIsLocked(false); setIsBalanceHidden(true);
           addToast(t('disconnected'), t('disconnected_desc'), "info");
         } else {
-          const mockAddress = view === 'company' ? "EQ_Company_Admin_77Xz" : "EQ_Promoter_Wallet_99Xz";
-          setWallet({ connected: true, address: mockAddress });
-          setIdleTime(0); setIsBalanceHidden(true); 
-          addToast(t('connected'), t('connected_desc'), "success");
+          setWallet({ connected: true, address: view === 'company' ? "EQ_Company_Admin_77Xz" : "EQ_Promoter_Wallet_99Xz" });
+          setIdleTime(0); setIsBalanceHidden(true); addToast(t('connected'), t('connected_desc'), "success");
         }
       };
 
       const handleProcessClaim = (amount) => {
         setPromoterAvailable(0); setPromoterLifetime(prev => prev + amount); setContractBalance(prev => Math.max(0, prev - amount));
-        const dateStr = new Date().toLocaleDateString(lang === 'en' ? 'en-US' : 'it-IT', { day: '2-digit', month: 'short', year: 'numeric' });
-        setClaimHistory(prev => [{ date: dateStr, amount: amount, tx: 'EQ' + Math.random().toString(36).substring(2,8) }, ...prev]);
+        setClaimHistory(prev => [{ date: new Date().toLocaleDateString(), amount: amount, tx: 'EQ' + Math.random().toString(36).substring(2,8) }, ...prev]);
         addToast(t('transfer_auth'), t('funds_sent'), "success");
       };
 
       const handleSimulateDeposit = () => {
         const deposit = parseFloat((Math.random() * 900 + 100).toFixed(2)); 
         setTotalProcessed(prev => prev + deposit); setContractBalance(prev => prev + (deposit*0.3));
-        setChartData(prev => {
-          const newData = [...prev]; newData[newData.length - 1].amount += deposit; return newData;
-        });
-        setPromoterAvailable(prev => prev + (deposit*0.5));
-        addToast(t('deposit_detected'), t('vault_updated'), "info");
+        setChartData(prev => { const newData = [...prev]; newData[newData.length - 1].amount += deposit; return newData; });
+        setPromoterAvailable(prev => prev + (deposit*0.5)); addToast(t('deposit_detected'), t('vault_updated'), "info");
       };
 
       return (
@@ -656,25 +672,28 @@
           <ToastContainer toasts={toasts} />
           <LockScreenModal isLocked={isLocked} onUnlock={() => {setIsLocked(false); setIdleTime(0);}} t={t} />
 
-          {}
           <nav className="bg-slate-900/90 backdrop-blur-2xl border-b border-slate-800 sticky top-0 z-40">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-[0_0_15px_rgba(37,99,235,0.5)]">
-                  <Icon name="shield-check" size={24} className="text-white" />
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
+              
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                {/* Logo with Fallback */}
+                <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-xl overflow-hidden shadow-[0_0_15px_rgba(37,99,235,0.5)] shrink-0">
+                   <div className="absolute inset-0 bg-blue-600 flex items-center justify-center z-0">
+                      <Icon name="shield-check" size={20} className="text-white sm:w-6 sm:h-6" />
+                   </div>
+                   <img src="logo-tondo.jpeg" alt="Logo" className="absolute inset-0 w-full h-full object-cover z-10 transition-opacity duration-300" onError={(e) => { e.currentTarget.style.opacity = '0'; }} />
                 </div>
-                <div>
-                  <h1 className="text-lg font-extrabold tracking-widest text-white leading-none hidden sm:block">BETTING EXCHANGE</h1>
-                  <h1 className="text-lg font-extrabold tracking-widest text-white leading-none sm:hidden">BX ROOM</h1>
-                  <span className="text-xs text-blue-500 font-bold tracking-widest uppercase">Treasury Room</span>
+                <div className="min-w-0">
+                  <h1 className="text-sm sm:text-lg font-extrabold tracking-widest text-white leading-none truncate">{t('app_title')}</h1>
+                  <span className="text-[10px] sm:text-xs text-blue-500 font-bold tracking-widest uppercase truncate block">Treasury Room</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 sm:gap-3">
+              <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                 <div className="flex items-center bg-slate-950 border border-slate-800 rounded-lg px-2 py-1.5 shadow-inner">
-                  <Icon name="globe" size={14} className="text-slate-500 mr-1 sm:mr-2" />
+                  <Icon name="globe" size={14} className="text-slate-500 mr-1 sm:mr-2 hidden sm:block" />
                   <select value={lang} onChange={e => setLang(e.target.value)} className="bg-transparent text-white text-xs font-bold outline-none cursor-pointer uppercase">
-                    <option value="en">EN</option><option value="it">IT</option>
+                    <option value="en">EN</option><option value="es">ES</option><option value="pt">PT</option><option value="it">IT</option>
                   </select>
                 </div>
 
@@ -684,15 +703,14 @@
                       <button onClick={() => {setView('promoter'); setWallet(w => ({...w, address: "EQ_Promoter_Wallet_99Xz"}));}} className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all ${view === 'promoter' ? 'bg-slate-800 text-white' : 'text-slate-500 hover:text-white'}`}>{t('partner_dash')}</button>
                       <button onClick={() => {setView('company'); setWallet(w => ({...w, address: "EQ_Company_Admin_77Xz"}));}} className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all ${view === 'company' ? 'bg-slate-800 text-white' : 'text-slate-500 hover:text-white'}`}>{t('company_dash')}</button>
                     </div>
-                    {/* Global Eye Icon in Header */}
                     <button onClick={() => setIsBalanceHidden(!isBalanceHidden)} className="p-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-400 hover:text-white transition-colors hidden sm:block" title={isBalanceHidden ? t('show_balances') : t('hide_balances')}>
                       <Icon name={isBalanceHidden ? 'eye-off' : 'eye'} size={18} />
                     </button>
                   </>
                 )}
 
-                <button onClick={toggleWallet} className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all shadow-lg ${wallet.connected ? 'bg-slate-900 border border-slate-700 text-white hover:bg-slate-800' : 'bg-blue-600 text-white shadow-blue-900/30'}`}>
-                  {wallet.connected ? (<><Icon name="log-out" size={16} className="text-red-400"/><span className="hidden sm:inline">{wallet.address.substring(0,4)}...{wallet.address.substring(wallet.address.length-4)}</span></>) : (<><Icon name="fingerprint" size={16} /> <span className="hidden sm:inline">{t('secure_login')}</span><span className="sm:hidden">Login</span></>)}
+                <button onClick={toggleWallet} className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all shadow-lg min-w-0 ${wallet.connected ? 'bg-slate-900 border border-slate-700 text-white hover:bg-slate-800' : 'bg-blue-600 text-white shadow-blue-900/30'}`}>
+                  {wallet.connected ? (<><Icon name="log-out" size={14} className="text-red-400 shrink-0"/><span className="truncate hidden sm:inline">...{wallet.address.substring(wallet.address.length-4)}</span></>) : (<><Icon name="fingerprint" size={14} className="shrink-0"/> <span className="truncate hidden sm:inline">{t('secure_login')}</span><span className="sm:hidden">Login</span></>)}
                 </button>
               </div>
             </div>
@@ -701,41 +719,40 @@
             </div>
           </nav>
 
-          {}
-          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 relative z-10">
             {!wallet.connected ? (
               <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6">
-                <div className="w-28 h-28 bg-slate-900 text-blue-500 rounded-3xl flex items-center justify-center border border-slate-800 shadow-[0_0_50px_rgba(37,99,235,0.15)] relative">
+                <div className="w-24 h-24 sm:w-28 sm:h-28 bg-slate-900 text-blue-500 rounded-3xl flex items-center justify-center border border-slate-800 shadow-[0_0_50px_rgba(37,99,235,0.15)] relative">
                   <div className="absolute inset-0 bg-blue-500/10 rounded-3xl animate-pulse"></div>
                   <Icon name="shield-check" size={48} />
                 </div>
-                <div className="max-w-lg">
-                  <h2 className="text-3xl font-extrabold text-white mb-4 uppercase tracking-widest">{t('restricted_access')}</h2>
-                  <p className="text-slate-400 text-sm leading-relaxed">{t('restricted_desc')}</p>
+                <div className="max-w-lg px-4">
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-4 uppercase tracking-widest leading-tight">{t('restricted_access')}</h2>
+                  <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">{t('restricted_desc')}</p>
                 </div>
-                <button onClick={toggleWallet} className="px-10 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-lg shadow-xl shadow-blue-900/30 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
-                  <Icon name="key-round" size={24} /> {t('start_secure_conn')}
+                <button onClick={toggleWallet} className="px-8 sm:px-10 py-3 sm:py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl shadow-blue-900/30 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
+                  <Icon name="key-round" size={20} className="sm:w-6 sm:h-6" /> {t('start_secure_conn')}
                 </button>
               </div>
             ) : (
               view === 'company' ? 
                 <CompanyDashboard contractAddress={contractAddress} isTestnet={isTestnet} toggleNetwork={()=>setIsTestnet(!isTestnet)} contractBalance={contractBalance} totalProcessed={totalProcessed} activePromoters={activePromoters} chartData={chartData} onSimulateDeposit={handleSimulateDeposit} isHidden={isBalanceHidden} toggleHidden={() => setIsBalanceHidden(!isBalanceHidden)} t={t} /> : 
-                <PromoterDashboard walletAddress={wallet.address} available={promoterAvailable} lifetime={promoterLifetime} history={claimHistory} onProcessClaim={handleProcessClaim} addToast={addToast} isHidden={isBalanceHidden} toggleHidden={() => setIsBalanceHidden(!isBalanceHidden)} t={t} />
+                <PromoterDashboard walletAddress={wallet.address} available={promoterAvailable} lifetime={promoterLifetime} history={claimHistory} onProcessClaim={handleProcessClaim} addToast={addToast} isHidden={isBalanceHidden} toggleHidden={() => setIsBalanceHidden(!isBalanceHidden)} lang={lang} t={t} />
             )}
             
-            {/* Mobile View Switcher */}
             {wallet.connected && (
-              <div className="md:hidden fixed bottom-6 left-4 right-4 bg-slate-900 border border-slate-700 rounded-xl p-1.5 flex shadow-2xl z-40">
-                <button onClick={() => {setView('promoter'); setWallet(w => ({...w, address: "EQ_Promoter_Wallet_99Xz"}));}} className={`flex-1 py-3 rounded-lg text-xs font-bold transition-all ${view === 'promoter' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}>{t('partner_dash')}</button>
-                <button onClick={() => {setView('company'); setWallet(w => ({...w, address: "EQ_Company_Admin_77Xz"}));}} className={`flex-1 py-3 rounded-lg text-xs font-bold transition-all ${view === 'company' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}>{t('company_dash')}</button>
+              <div className="md:hidden fixed bottom-4 left-4 right-4 bg-slate-900 border border-slate-700 rounded-xl p-1.5 flex shadow-2xl z-40 gap-1.5">
+                <button onClick={() => {setView('promoter'); setWallet(w => ({...w, address: "EQ_Promoter_Wallet_99Xz"}));}} className={`flex-1 py-3 rounded-lg text-xs font-bold transition-all truncate px-1 ${view === 'promoter' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}>{t('partner_dash')}</button>
+                <button onClick={() => {setView('company'); setWallet(w => ({...w, address: "EQ_Company_Admin_77Xz"}));}} className={`flex-1 py-3 rounded-lg text-xs font-bold transition-all truncate px-1 ${view === 'company' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}>{t('company_dash')}</button>
               </div>
             )}
+            {/* Spacing for mobile bottom nav */}
+            {wallet.connected && <div className="h-20 md:hidden block w-full"></div>}
           </main>
         </>
       );
     };
 
-    // Remove loading screen and start React
     document.getElementById('root').innerHTML = '';
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
