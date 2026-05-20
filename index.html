@@ -116,7 +116,7 @@
         disconnected: "Logged Out", disconnected_desc: "You have successfully logged out.",
         connected: "Login Successful", connected_desc: "Welcome back to your dashboard.",
         show_balances: "Show Balance", hide_balances: "Hide", network: "Network",
-        welcome_title: "Welcome to Betting Exchange", welcome_desc: "Log in to your dashboard to manage your funds, monitor your affiliate performance, and track your revenue.",
+        welcome_title: "Welcome to Betting Exchange Room", welcome_desc: "Log in to your dashboard to manage your funds, monitor your affiliate performance, and track your revenue.", select_to_start: "Select to start.",
         start_conn: "Access Dashboard",
         treasury_center: "Treasury Operations", vault_id: "Contract",
         usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simulate Deposit",
@@ -160,7 +160,7 @@
         disconnected: "Disconnesso", disconnected_desc: "Disconnessione completata con successo.",
         connected: "Accesso Effettuato", connected_desc: "Bentornato nella tua dashboard.",
         show_balances: "Mostra Saldo", hide_balances: "Nascondi", network: "Rete",
-        welcome_title: "Benvenuto su Betting Exchange", welcome_desc: "Accedi alla tua dashboard per gestire i tuoi fondi, monitorare le performance di affiliazione e le tue entrate.",
+        welcome_title: "Benvenuto su Betting Exchange Room", welcome_desc: "Accedi alla tua dashboard per gestire i tuoi fondi, monitorare le performance di affiliazione e le tue entrate.", select_to_start: "Seleziona per iniziare.",
         start_conn: "Accedi alla Dashboard",
         treasury_center: "Operazioni Tesoreria", vault_id: "Contratto",
         usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simula Deposito",
@@ -204,7 +204,7 @@
         disconnected: "Desconectado", disconnected_desc: "Desconexión completada con éxito.",
         connected: "Inicio Exitoso", connected_desc: "Bienvenido de nuevo a tu panel.",
         show_balances: "Mostrar Saldo", hide_balances: "Ocultar", network: "Red",
-        welcome_title: "Bienvenido a Betting Exchange", welcome_desc: "Inicia sesión para gestionar tus fondos y monitorizar tu rendimiento de afiliación.",
+        welcome_title: "Bienvenido a Betting Exchange Room", welcome_desc: "Inicia sesión para gestionar tus fondos y monitorizar tu rendimiento de afiliación.", select_to_start: "Selecciona para empezar.",
         start_conn: "Acceder al Panel",
         treasury_center: "Tesorería", vault_id: "Contrato",
         usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simular Depósito",
@@ -248,7 +248,7 @@
         disconnected: "Desconectado", disconnected_desc: "Desconexão concluída com sucesso.",
         connected: "Login Bem-sucedido", connected_desc: "Bem-vindo de volta ao seu painel.",
         show_balances: "Mostrar Saldo", hide_balances: "Ocultar", network: "Rede",
-        welcome_title: "Bem-vindo à Betting Exchange", welcome_desc: "Faça login para gerenciar seus fundos e acompanhar seu desempenho como afiliado.",
+        welcome_title: "Bem-vindo à Betting Exchange Room", welcome_desc: "Faça login para gerenciar seus fundos e acompanhar seu desempenho como afiliado.", select_to_start: "Selecione para começar.",
         start_conn: "Acessar Painel",
         treasury_center: "Tesouraria", vault_id: "Contrato",
         usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simular Depósito",
@@ -486,14 +486,11 @@
         <div className="space-y-6 max-w-4xl mx-auto fade-in">
           <Card padding="p-8 sm:p-12" className="flex flex-col items-center text-center bg-gradient-to-b from-surface-800/50 to-surface-900 border-t-4 border-t-brand-500">
             <div className="w-24 h-24 rounded-full bg-surface-950 flex items-center justify-center border-2 border-brand-500 shadow-[0_0_20px_rgba(59,130,246,0.3)] mb-6 overflow-hidden">
-               <img src="logo-tondo.jpeg" alt="Profile" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+               <img src={`https://ui-avatars.com/api/?name=${tgUser.first_name}+${tgUser.last_name}&background=1e293b&color=3b82f6&size=150`} alt="Profile" className="w-full h-full object-cover" />
             </div>
             <h2 className="text-3xl font-black text-white mb-3 tracking-wide">{t('welcome_title')}, {tgUser.first_name}!</h2>
             <p className="text-slate-400 max-w-lg mx-auto mb-10 leading-relaxed text-sm sm:text-base">
-              {lang === 'it' ? "Seleziona uno dei nostri percorsi esclusivi per iniziare a operare e guadagnare nel Betting Exchange." :
-               lang === 'es' ? "Selecciona uno de nuestros caminos exclusivos para empezar a operar y ganar en el Betting Exchange." :
-               lang === 'pt' ? "Selecione um de nossos caminhos exclusivos para começar a operar e ganhar no Betting Exchange." :
-               "Select one of our exclusive paths to start operating and earning in the Betting Exchange."}
+              {t('select_to_start')}
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
@@ -706,9 +703,8 @@
             {/* Profile & Tier Info */}
             <Card className="lg:col-span-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6" padding="p-6">
               <div className="flex items-center gap-4">
-                <div className="relative w-16 h-16 rounded-full bg-surface-950 flex items-center justify-center shrink-0 border-2 border-brand-500/50 shadow-inner">
-                   <Icon name="user" size={32} className="text-slate-500" />
-                   <img src="logo-tondo.jpeg" alt="Profile" className="absolute inset-0 w-full h-full object-cover rounded-full z-10" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                <div className="relative w-16 h-16 rounded-full bg-surface-950 flex items-center justify-center shrink-0 border-2 border-brand-500/50 shadow-inner overflow-hidden">
+                   <img src={`https://ui-avatars.com/api/?name=${tgUser.first_name}+${tgUser.last_name}&background=1e293b&color=3b82f6&size=128`} alt="Profile" className="absolute inset-0 w-full h-full object-cover z-10" />
                 </div>
                 <div>
                   <h2 className="text-xl font-black text-white truncate tracking-wide">{tgUser.first_name} {tgUser.last_name}</h2>
@@ -985,9 +981,8 @@
             <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-4">
               
               <div className="flex items-center gap-3 sm:gap-4">
-                <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden shrink-0 bg-surface-800 border border-slate-700 shadow-inner">
-                   <Icon name="layers" size={24} className="absolute inset-0 m-auto text-brand-400" />
-                   <img src="logo-tondo.jpeg" alt="Logo" className="absolute inset-0 w-full h-full object-cover z-10" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden shrink-0 bg-gradient-to-br from-brand-600 to-brand-800 border border-brand-500/50 shadow-inner flex items-center justify-center">
+                   <Icon name="layers" size={24} className="text-white drop-shadow-md" />
                 </div>
                 <div className="flex flex-col justify-center">
                   <h1 className="text-sm sm:text-lg font-black tracking-widest text-white leading-none uppercase">{t('app_title')}</h1>
