@@ -991,10 +991,19 @@
               </div>
 
               <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                <div className="flex items-center bg-surface-950 border border-slate-800 rounded-lg px-2 py-1.5 shadow-inner">
-                  <Icon name="globe" size={14} className="text-slate-500 mr-1.5 hidden sm:block" />
-                  <select value={lang} onChange={e => setLang(e.target.value)} className="bg-transparent text-slate-300 text-xs font-bold outline-none cursor-pointer uppercase">
-                    <option value="en">EN</option><option value="es">ES</option><option value="pt">PT</option><option value="it">IT</option>
+                <div className="flex items-center bg-surface-900 border border-slate-700 rounded-lg shadow-inner overflow-hidden hover:border-brand-500 transition-colors">
+                  <div className="pl-2.5 hidden sm:block text-slate-400">
+                    <Icon name="globe" size={14} />
+                  </div>
+                  <select 
+                    value={lang} 
+                    onChange={e => setLang(e.target.value)} 
+                    className="bg-transparent text-white text-xs font-bold outline-none cursor-pointer uppercase py-2 pl-2 pr-3 focus:ring-0"
+                  >
+                    <option value="en" className="bg-surface-950 text-white">EN</option>
+                    <option value="es" className="bg-surface-950 text-white">ES</option>
+                    <option value="pt" className="bg-surface-950 text-white">PT</option>
+                    <option value="it" className="bg-surface-950 text-white">IT</option>
                   </select>
                 </div>
 
