@@ -7,7 +7,6 @@
   
   <meta name="theme-color" content="#020617">
 
-  <!-- Hard Fallback CSS to prevent White Screen of Death -->
   <style>
     body, html {
       margin: 0;
@@ -33,7 +32,6 @@
     .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #334155; }
   </style>
 
-  <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -41,18 +39,10 @@
       theme: { extend: { colors: { bank: { 900: '#0a0f1c', 800: '#111827', accent: '#2563eb' } } } }
     }
   </script>
-
-  <!-- React & ReactDOM -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  
-  <!-- Babel -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Recharts & Dependencies (Fixed version 2.1.12 for browser stability) -->
   <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
   <script src="https://unpkg.com/react-is@18.2.0/umd/react-is.production.min.js"></script>
   <script src="https://unpkg.com/recharts@2.1.12/umd/Recharts.js"></script>
@@ -68,10 +58,10 @@
   <script type="text/babel">
     const { useState, useEffect, useCallback, useRef, useMemo } = React;
     const { 
-      AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell 
-    } = window.Recharts || window.Recharts; // Ensure Recharts is loaded
+      AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar
+    } = window.Recharts || window.Recharts; 
 
-    // Custom Lucide Icon Component wrapper for browser usage
+    // Custom Lucide Icon Component wrapper
     const Icon = ({ name, size = 24, className = '', ...props }) => {
       const iconRef = useRef(null);
       useEffect(() => {
@@ -121,7 +111,8 @@
         transfer_auth: "Transfer Authorized", funds_sent: "USDT securely sent to verified wallet.",
         deposit_detected: "Deposit Detected", vault_updated: "Vault updated: USDT received on-chain.",
         mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", today: "Today",
-        unlock_session: "Unlock Session", session_locked_warn: "For your security, the session was locked after 1 minute of inactivity."
+        unlock_session: "Unlock Session", session_locked_warn: "For your security, the session was locked after 1 minute of inactivity.",
+        earnings_chart: "Earnings Overview"
       },
       it: {
         app_title: "BETTING EXCHANGE ROOM", partner_dash: "Dashboard Partner", company_dash: "Tesoreria",
@@ -155,7 +146,8 @@
         transfer_auth: "Trasferimento Autorizzato", funds_sent: "USDT inviati in sicurezza al wallet verificato.",
         deposit_detected: "Deposito Rilevato", vault_updated: "Vault aggiornato: USDT ricevuti on-chain.",
         mon: "Lun", tue: "Mar", wed: "Mer", thu: "Gio", fri: "Ven", sat: "Sab", today: "Oggi",
-        unlock_session: "Sblocca Sessione", session_locked_warn: "Per la tua sicurezza, la sessione è stata bloccata dopo 1 minuto di inattività."
+        unlock_session: "Sblocca Sessione", session_locked_warn: "Per la tua sicurezza, la sessione è stata bloccata dopo 1 minuto di inattività.",
+        earnings_chart: "Panoramica Guadagni"
       }
     };
 
@@ -163,6 +155,12 @@
       { rawKey: 'mon', amount: 120 }, { rawKey: 'tue', amount: 250 }, { rawKey: 'wed', amount: 180 }, 
       { rawKey: 'thu', amount: 300 }, { rawKey: 'fri', amount: 450 }, { rawKey: 'sat', amount: 600 }, { rawKey: 'today', amount: 550 },
     ];
+    
+    const PROMOTER_CHART_DATA = [
+      { rawKey: 'mon', amount: 45 }, { rawKey: 'tue', amount: 120 }, { rawKey: 'wed', amount: 80 }, 
+      { rawKey: 'thu', amount: 210 }, { rawKey: 'fri', amount: 150 }, { rawKey: 'sat', amount: 320 }, { rawKey: 'today', amount: 280 },
+    ];
+
     const RAW_SPLIT_DATA = [
       { rawKey: 'company_share', value: 30, color: '#3b82f6', address: 'INSERISCI_INDIRIZZO_COMPANY' },
       { rawKey: 'leader_pool', value: 50, color: '#10b981', address: 'INSERISCI_INDIRIZZO_POOL_1' },
@@ -196,7 +194,7 @@
     const ToastContainer = ({ toasts }) => (
       <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[200] flex flex-col gap-2 sm:gap-3 pointer-events-none max-w-[calc(100vw-32px)]">
         {toasts.map(toast => (
-          <div key={toast.id} className="pointer-events-auto flex items-center gap-3 bg-slate-900 border border-slate-700 text-white px-3 sm:px-4 py-3 rounded-xl shadow-2xl shadow-black/80 backdrop-blur-md">
+          <div key={toast.id} className="pointer-events-auto flex items-center gap-3 bg-slate-900 border border-slate-700 text-white px-3 sm:px-4 py-3 rounded-xl shadow-2xl shadow-black/80 backdrop-blur-md animate-in slide-in-from-right-4 fade-in duration-300">
             <div className={`p-1.5 rounded-lg flex-shrink-0 ${toast.type === 'success' ? 'bg-emerald-500/20 text-emerald-400' : toast.type === 'error' ? 'bg-red-500/20 text-red-400' : 'bg-blue-500/20 text-blue-400'}`}>
               <Icon name={toast.type === 'success' ? 'check-circle-2' : toast.type === 'error' ? 'alert-circle' : 'shield-check'} size={18} />
             </div>
@@ -289,7 +287,7 @@
       );
     };
 
-    const CompanyDashboard = ({ contractAddress, contractBalance, totalProcessed, activePromoters, chartData, onSimulateDeposit, isHidden, isTestnet, toggleNetwork, t }) => {
+    const CompanyDashboard = ({ contractAddress, contractBalance, totalProcessed, activePromoters, chartData, onSimulateDeposit, isHidden, toggleHidden, isTestnet, toggleNetwork, t }) => {
       const [isSimulating, setIsSimulating] = useState(false);
       const simulationTimeoutRef = useRef(null);
 
@@ -409,10 +407,12 @@
       );
     };
 
-    const PromoterDashboard = ({ walletAddress, available, lifetime, history, onProcessClaim, addToast, isHidden, t }) => {
+    const PromoterDashboard = ({ walletAddress, available, lifetime, history, onProcessClaim, addToast, isHidden, toggleHidden, t }) => {
       const [isClaiming, setIsClaiming] = useState(false);
       const [copied, setCopied] = useState(false);
       const [showSecureModal, setShowSecureModal] = useState(false);
+
+      const localizedChartData = useMemo(() => PROMOTER_CHART_DATA.map(d => ({...d, name: t(d.rawKey)})), [t]);
 
       const executeSecureClaim = () => {
         setShowSecureModal(false);
@@ -433,14 +433,14 @@
         <div className="space-y-6 max-w-6xl mx-auto">
           <div className="flex flex-col lg:flex-row items-center justify-between bg-slate-900/70 border border-slate-700 rounded-2xl p-5 shadow-2xl gap-4">
             <div className="flex items-center gap-4 w-full lg:w-auto">
-              <div className="w-14 h-14 rounded-full bg-slate-950 border-2 border-blue-500/50 flex items-center justify-center text-blue-500 shadow-inner">
+              <div className="w-14 h-14 rounded-full bg-slate-950 border-2 border-emerald-500/50 flex items-center justify-center text-emerald-500 shadow-inner">
                 <Icon name="user-circle" size={28} />
               </div>
               <div className="overflow-hidden">
                 <h2 className="text-xl font-bold text-white uppercase tracking-widest truncate">{t('verified_partner_area')}</h2>
                 <div className="flex items-center gap-2 mt-1 bg-slate-950 px-2 py-1 rounded w-fit border border-slate-800">
-                  <Icon name="shield-check" size={12} className="text-emerald-500" />
-                  <p className="text-emerald-400 font-mono text-xs truncate">{walletAddress}</p>
+                  <Icon name="shield-check" size={12} className="text-blue-500" />
+                  <p className="text-blue-400 font-mono text-xs truncate">{walletAddress}</p>
                 </div>
               </div>
             </div>
@@ -454,32 +454,70 @@
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <Card className="lg:col-span-7 flex flex-col items-center justify-center text-center p-8 sm:p-12">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-950 text-blue-400 text-xs font-bold mb-6 border border-blue-500/30 tracking-widest uppercase shadow-inner">
-                <Icon name="lock" size={14} /> {t('vault_available')}
-              </div>
-              
-              <div className="text-5xl sm:text-6xl font-extrabold text-white mb-2 tracking-tighter font-mono flex items-baseline justify-center w-full">
-                {formatSecureCurrency(available, isHidden)} 
-                {!isHidden && <span className="text-2xl text-blue-500 ml-3 font-sans">USDT</span>}
-              </div>
-              <p className="text-slate-400 mb-10 max-w-sm text-sm">{t('escrow_desc')}</p>
-              
-              <button onClick={() => { if(available > 0) setShowSecureModal(true); }} disabled={isClaiming || available <= 0} className={`w-full max-w-md py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all shadow-xl group ${available <= 0 ? 'bg-slate-950 text-slate-600 border border-slate-800' : isClaiming ? 'bg-blue-600 text-white cursor-wait' : 'bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.4)]'}`}>
-                {available <= 0 ? (<><Icon name="lock" size={20} /> {t('no_funds')}</>) : isClaiming ? (<><Icon name="refresh-cw" size={20} className="animate-spin" /> {t('signing')}</>) : (<><Icon name="fingerprint" size={24} /> {t('unlock_withdraw')}</>)}
-              </button>
-              
-              <div className="flex flex-col items-center gap-2 mt-8">
-                <div className="flex items-center gap-2 text-xs text-slate-500 font-bold"><Icon name="shield-check" size={14} className="text-blue-500"/> AES-256 SECURE TRANSFER</div>
-                <div className="flex items-center gap-2 text-xs text-slate-500"><Icon name="zap" size={14} className="text-yellow-600"/> {t('network_fee')}</div>
-              </div>
-            </Card>
+            
+            {/* Left Column: Big Balance and Chart */}
+            <div className="lg:col-span-7 flex flex-col gap-6">
+              <Card className="flex flex-col items-center justify-center text-center p-8 sm:p-12 relative overflow-visible">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-950 text-emerald-400 text-xs font-bold mb-6 border border-emerald-500/30 tracking-widest uppercase shadow-inner">
+                  <Icon name="lock" size={14} /> {t('vault_available')}
+                </div>
+                
+                <div className="flex flex-col items-center justify-center w-full group">
+                  <div className="text-5xl sm:text-7xl font-extrabold text-white mb-1 tracking-tighter font-mono flex items-baseline justify-center">
+                    {formatSecureCurrency(available, isHidden)} 
+                    {!isHidden && <span className="text-2xl text-emerald-500 ml-3 font-sans">USDT</span>}
+                  </div>
+                  
+                  {/* Privacy Eye Icon right under the dots/balance */}
+                  <button onClick={toggleHidden} className="mt-3 text-slate-500 hover:text-emerald-400 flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest transition-colors bg-slate-950 px-4 py-1.5 rounded-full border border-slate-800 shadow-inner">
+                    <Icon name={isHidden ? 'eye' : 'eye-off'} size={14} />
+                    {isHidden ? t('show_balances') : t('hide_balances')}
+                  </button>
+                </div>
 
+                <p className="text-slate-400 mt-8 mb-8 max-w-sm text-sm">{t('escrow_desc')}</p>
+                
+                <button onClick={() => { if(available > 0) setShowSecureModal(true); }} disabled={isClaiming || available <= 0} className={`w-full max-w-md py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all shadow-xl group ${available <= 0 ? 'bg-slate-950 text-slate-600 border border-slate-800' : isClaiming ? 'bg-emerald-600 text-white cursor-wait' : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.4)]'}`}>
+                  {available <= 0 ? (<><Icon name="lock" size={20} /> {t('no_funds')}</>) : isClaiming ? (<><Icon name="refresh-cw" size={20} className="animate-spin" /> {t('signing')}</>) : (<><Icon name="fingerprint" size={24} /> {t('unlock_withdraw')}</>)}
+                </button>
+                
+                <div className="flex flex-col items-center gap-2 mt-8">
+                  <div className="flex items-center gap-2 text-xs text-slate-500 font-bold"><Icon name="shield-check" size={14} className="text-emerald-500"/> AES-256 SECURE TRANSFER</div>
+                  <div className="flex items-center gap-2 text-xs text-slate-500"><Icon name="zap" size={14} className="text-yellow-600"/> {t('network_fee')}</div>
+                </div>
+              </Card>
+
+              {/* New Earnings Chart for Promoter */}
+              <Card className="w-full h-[320px] flex flex-col">
+                 <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2 uppercase tracking-wide shrink-0">
+                  <Icon name="bar-chart-2" size={18} className="text-emerald-500"/> {t('earnings_chart')}
+                </h3>
+                <div className="flex-1 w-full min-h-0">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -20, bottom: 0}}>
+                      <defs>
+                        <linearGradient id="colorPromoterAmount" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+                      <XAxis dataKey="name" stroke="#64748b" tick={{fill: '#64748b', fontSize: 10}} axisLine={false} tickLine={false} dy={10} />
+                      <YAxis stroke="#64748b" tick={{fill: '#64748b', fontSize: 10}} axisLine={false} tickLine={false} dx={-10} width={60} />
+                      <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '8px', color: '#fff' }} itemStyle={{ color: '#34d399', fontWeight: 'bold' }} />
+                      <Area type="monotone" dataKey="amount" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorPromoterAmount)" activeDot={{r: 6, fill: '#10b981', stroke: '#fff', strokeWidth: 2}} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              </Card>
+            </div>
+
+            {/* Right Column: Lifetime Stats and Audit Trail */}
             <div className="lg:col-span-5 space-y-6">
               <StatCard title={t('lifetime_deposit')} value={`${formatSecureCurrency(lifetime, isHidden)}`} subtext={t('validated_earnings')} icon="trending-up" colorClass="text-emerald-400" />
               
-              <Card className="h-[320px] flex flex-col p-0">
-                <div className="p-5 border-b border-slate-800 flex justify-between items-center bg-slate-900/80">
+              <Card className="h-[500px] flex flex-col p-0">
+                <div className="p-5 border-b border-slate-800 flex justify-between items-center bg-slate-900/80 shrink-0">
                   <h3 className="text-white font-bold flex items-center gap-2 text-sm tracking-widest uppercase">
                     <Icon name="database" size={16} className="text-slate-400"/> {t('audit_trail')}
                   </h3>
@@ -495,10 +533,10 @@
                   ) : (
                     <div className="space-y-4">
                       {history.map((item, idx) => (
-                        <div key={idx} className="flex justify-between items-center border-l-2 border-blue-500/50 pl-3 bg-slate-950/50 p-2 rounded-r-lg">
+                        <div key={idx} className="flex justify-between items-center border-l-2 border-emerald-500/50 pl-3 bg-slate-950/50 p-3 rounded-r-lg hover:bg-slate-900 transition-colors">
                           <div>
                             <p className="text-slate-300 text-sm font-bold">{item.date}</p>
-                            <p className="text-xs text-slate-500 font-mono mt-1 flex items-center gap-1"><Icon name="check-circle-2" size={12} className="text-blue-500"/> {item.tx}</p>
+                            <p className="text-xs text-slate-500 font-mono mt-1 flex items-center gap-1"><Icon name="check-circle-2" size={12} className="text-emerald-500"/> {item.tx}</p>
                           </div>
                           <span className="text-emerald-400 font-bold font-mono text-sm">+{formatSecureCurrency(item.amount, isHidden)}</span>
                         </div>
@@ -521,7 +559,7 @@
       const [toasts, setToasts] = useState([]);
       
       // SECURITY STATES
-      const [isBalanceHidden, setIsBalanceHidden] = useState(true); // Default hidden
+      const [isBalanceHidden, setIsBalanceHidden] = useState(true); // Default hidden (pallini)
       const [idleTime, setIdleTime] = useState(0);
       const [isLocked, setIsLocked] = useState(false);
       const [isTestnet, setIsTestnet] = useState(false);
@@ -540,7 +578,6 @@
         { date: '05 Mag 2026', amount: 300.00, tx: 'EQB...9x1' }
       ]);
 
-      // Initialize Language based on Browser
       useEffect(() => {
         const browserLang = (navigator.language || navigator.userLanguage).split('-')[0];
         if (['en', 'it'].includes(browserLang)) setLang(browserLang);
@@ -554,17 +591,14 @@
         setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 5000); 
       }, []);
 
-      // BANK-LEVEL SECURITY: Inactivity Timer (60s Lock, 300s Logout)
+      // Inactivity Timer
       useEffect(() => {
         if (!wallet.connected) return;
         const timer = setInterval(() => {
           setIdleTime(prev => {
             const next = prev + 1;
-            if (next === 60 && !isLocked) {
-              setIsLocked(true); // Lock screen after 1 minute
-            }
+            if (next === 60 && !isLocked) setIsLocked(true); 
             if (next >= 300) {
-              // Full logout after 5 minutes
               setWallet({ connected: false, address: null });
               setIsLocked(false);
               addToast(t('session_ended'), t('session_ended_desc'), "error");
@@ -595,7 +629,7 @@
         } else {
           const mockAddress = view === 'company' ? "EQ_Company_Admin_77Xz" : "EQ_Promoter_Wallet_99Xz";
           setWallet({ connected: true, address: mockAddress });
-          setIdleTime(0); setIsBalanceHidden(true); // Always hide on login
+          setIdleTime(0); setIsBalanceHidden(true); 
           addToast(t('connected'), t('connected_desc'), "success");
         }
       };
@@ -622,6 +656,7 @@
           <ToastContainer toasts={toasts} />
           <LockScreenModal isLocked={isLocked} onUnlock={() => {setIsLocked(false); setIdleTime(0);}} t={t} />
 
+          {}
           <nav className="bg-slate-900/90 backdrop-blur-2xl border-b border-slate-800 sticky top-0 z-40">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -629,14 +664,15 @@
                   <Icon name="shield-check" size={24} className="text-white" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-extrabold tracking-widest text-white leading-none">BETTING EXCHANGE</h1>
+                  <h1 className="text-lg font-extrabold tracking-widest text-white leading-none hidden sm:block">BETTING EXCHANGE</h1>
+                  <h1 className="text-lg font-extrabold tracking-widest text-white leading-none sm:hidden">BX ROOM</h1>
                   <span className="text-xs text-blue-500 font-bold tracking-widest uppercase">Treasury Room</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <div className="flex items-center bg-slate-950 border border-slate-800 rounded-lg px-2 py-1.5 shadow-inner">
-                  <Icon name="globe" size={14} className="text-slate-500 mr-2" />
+                  <Icon name="globe" size={14} className="text-slate-500 mr-1 sm:mr-2" />
                   <select value={lang} onChange={e => setLang(e.target.value)} className="bg-transparent text-white text-xs font-bold outline-none cursor-pointer uppercase">
                     <option value="en">EN</option><option value="it">IT</option>
                   </select>
@@ -648,23 +684,24 @@
                       <button onClick={() => {setView('promoter'); setWallet(w => ({...w, address: "EQ_Promoter_Wallet_99Xz"}));}} className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all ${view === 'promoter' ? 'bg-slate-800 text-white' : 'text-slate-500 hover:text-white'}`}>{t('partner_dash')}</button>
                       <button onClick={() => {setView('company'); setWallet(w => ({...w, address: "EQ_Company_Admin_77Xz"}));}} className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all ${view === 'company' ? 'bg-slate-800 text-white' : 'text-slate-500 hover:text-white'}`}>{t('company_dash')}</button>
                     </div>
-                    <button onClick={() => setIsBalanceHidden(!isBalanceHidden)} className="p-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-400 hover:text-white transition-colors" title={isBalanceHidden ? t('show_balances') : t('hide_balances')}>
+                    {/* Global Eye Icon in Header */}
+                    <button onClick={() => setIsBalanceHidden(!isBalanceHidden)} className="p-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-400 hover:text-white transition-colors hidden sm:block" title={isBalanceHidden ? t('show_balances') : t('hide_balances')}>
                       <Icon name={isBalanceHidden ? 'eye-off' : 'eye'} size={18} />
                     </button>
                   </>
                 )}
 
-                <button onClick={toggleWallet} className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all shadow-lg ${wallet.connected ? 'bg-slate-900 border border-slate-700 text-white hover:bg-slate-800' : 'bg-blue-600 text-white shadow-blue-900/30'}`}>
-                  {wallet.connected ? (<><Icon name="log-out" size={16} className="text-red-400"/><span className="hidden sm:inline">{wallet.address.substring(0,4)}...{wallet.address.substring(wallet.address.length-4)}</span></>) : (<><Icon name="fingerprint" size={16} /> {t('secure_login')}</>)}
+                <button onClick={toggleWallet} className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all shadow-lg ${wallet.connected ? 'bg-slate-900 border border-slate-700 text-white hover:bg-slate-800' : 'bg-blue-600 text-white shadow-blue-900/30'}`}>
+                  {wallet.connected ? (<><Icon name="log-out" size={16} className="text-red-400"/><span className="hidden sm:inline">{wallet.address.substring(0,4)}...{wallet.address.substring(wallet.address.length-4)}</span></>) : (<><Icon name="fingerprint" size={16} /> <span className="hidden sm:inline">{t('secure_login')}</span><span className="sm:hidden">Login</span></>)}
                 </button>
               </div>
             </div>
-            {/* Security Audit Banner */}
             <div className="w-full bg-emerald-500/10 border-b border-emerald-500/20 py-1 text-center">
               <p className="text-[10px] font-mono text-emerald-400 flex items-center justify-center gap-2 tracking-widest"><Icon name="shield-check" size={12}/> {t('e2e_encryption')} | SERVER: ONLINE</p>
             </div>
           </nav>
 
+          {}
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
             {!wallet.connected ? (
               <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6">
@@ -682,8 +719,8 @@
               </div>
             ) : (
               view === 'company' ? 
-                <CompanyDashboard contractAddress={contractAddress} isTestnet={isTestnet} toggleNetwork={()=>setIsTestnet(!isTestnet)} contractBalance={contractBalance} totalProcessed={totalProcessed} activePromoters={activePromoters} chartData={chartData} onSimulateDeposit={handleSimulateDeposit} isHidden={isBalanceHidden} t={t} /> : 
-                <PromoterDashboard walletAddress={wallet.address} available={promoterAvailable} lifetime={promoterLifetime} history={claimHistory} onProcessClaim={handleProcessClaim} addToast={addToast} isHidden={isBalanceHidden} t={t} />
+                <CompanyDashboard contractAddress={contractAddress} isTestnet={isTestnet} toggleNetwork={()=>setIsTestnet(!isTestnet)} contractBalance={contractBalance} totalProcessed={totalProcessed} activePromoters={activePromoters} chartData={chartData} onSimulateDeposit={handleSimulateDeposit} isHidden={isBalanceHidden} toggleHidden={() => setIsBalanceHidden(!isBalanceHidden)} t={t} /> : 
+                <PromoterDashboard walletAddress={wallet.address} available={promoterAvailable} lifetime={promoterLifetime} history={claimHistory} onProcessClaim={handleProcessClaim} addToast={addToast} isHidden={isBalanceHidden} toggleHidden={() => setIsBalanceHidden(!isBalanceHidden)} t={t} />
             )}
             
             {/* Mobile View Switcher */}
