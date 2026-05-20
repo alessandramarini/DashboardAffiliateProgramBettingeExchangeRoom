@@ -7,7 +7,6 @@
   
   <meta name="theme-color" content="#020617">
 
-  <!-- Hard Fallback CSS -->
   <style>
     body, html {
       margin: 0; padding: 0;
@@ -31,7 +30,6 @@
     .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #334155; }
   </style>
 
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -39,8 +37,6 @@
       theme: { extend: { colors: { bank: { 900: '#0a0f1c', 800: '#111827', accent: '#2563eb' } } } }
     }
   </script>
-
-  <!-- React & Libraries -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -59,14 +55,14 @@
 
   <script type="text/babel">
     const { useState, useEffect, useCallback, useRef, useMemo } = React;
-    const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } = window.Recharts; 
+    const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar } = window.Recharts; 
 
     const Icon = ({ name, size = 24, className = '', ...props }) => {
       const iconRef = useRef(null);
       useEffect(() => {
         if (iconRef.current && window.lucide) {
           iconRef.current.innerHTML = '';
-          const icon = lucide.createIcons({
+          lucide.createIcons({
             icons: { [name]: window.lucide.icons[name] }, nameAttr: 'data-lucide',
             attrs: { width: size, height: size, class: className, ...props }
           });
@@ -78,18 +74,18 @@
 
     const translations = {
       en: {
-        app_title: "BETTING EXCHANGE", partner_dash: "Partner Dashboard", company_dash: "Treasury",
+        app_title: "BETTING EXCHANGE", partner_dash: "Partner Dashboard", company_dash: "Treasury & Analytics",
         secure_login: "Secure Login", logout: "Secure Logout", session_ended: "Session Terminated",
         session_ended_desc: "Security protocol engaged: disconnected due to inactivity.",
         locked: "Session Locked", locked_desc: "Enter PIN to resume secure session.",
         disconnected: "Disconnected", disconnected_desc: "Encrypted session successfully closed.",
         connected: "Secure Connection", connected_desc: "E2E Authenticated. IP Logged.",
         show_balances: "Show Balances", hide_balances: "Hide Balances", network: "Network",
-        restricted_access: "Restricted Banking Area", restricted_desc: "Military-grade encrypted environment for fund management. Hardware wallet auth required.",
+        restricted_access: "Restricted Banking Area", restricted_desc: "Military-grade encrypted environment. Hardware wallet auth required.",
         start_secure_conn: "Authenticate Device", e2e_encryption: "AES-256 E2E Encryption Active",
         treasury_center: "Treasury Operations Center", vault_id: "Vault Contract ID:",
         usdt_master: "USDT Master:", usdt_wallet: "Vault USDT Jetton:", simulate_deposit: "Simulate Deposit",
-        processed_volume: "Processed Volume", real_usdt: "Real USDT", company_reserve: "Company Reserve (30%)",
+        processed_volume: "Processed Volume", real_usdt: "Real USDT", company_reserve: "Company Reserve",
         withdrawable_funds: "Secure withdrawable funds", active_nodes: "Active Promoter Nodes",
         registered_pools: "Registered Pool 1 & 2", cash_flow: "Cash Flow (7 Days)", secure_conn_badge: "BANK-GRADE SECURE",
         smart_contract_rules: "Smart Contract Routing", immutable: "IMMUTABLE", quota: "Quota",
@@ -102,23 +98,29 @@
         unlock_withdraw: "Sign & Withdraw to Wallet", network_fee: "Est. Network Fees: ~0.05 TON",
         lifetime_deposit: "Lifetime Deposit", validated_earnings: "Total validated earnings",
         audit_trail: "Immutable Audit Trail", latest_tx: "Latest Tx", no_tx: "No transfers recorded.",
-        security_auth: "Hardware Authorization", crypto_signature_req: "Cryptographic signature required for Vault Smart Contract interaction.",
+        security_auth: "Hardware Authorization", crypto_signature_req: "Cryptographic signature required.",
         requested_amount: "Requested Amount:", dest_wallet: "Destination Wallet:", enter_pin: "Enter Security PIN",
         cancel: "Abort", signing_btn: "Signing...", sign_withdraw_btn: "Authorize Transfer",
         transfer_auth: "Transfer Authorized", funds_sent: "USDT securely sent to verified wallet.",
         deposit_detected: "Deposit Detected", vault_updated: "Vault updated: USDT received on-chain.",
         mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", today: "Today",
-        unlock_session: "Unlock Session", session_locked_warn: "For your security, the session was locked after 1 minute of inactivity.", earnings_chart: "Earnings Overview"
+        unlock_session: "Unlock Session", session_locked_warn: "For your security, the session was locked after 1 minute of inactivity.", earnings_chart: "Earnings Overview",
+        // New Analytics Translations
+        daily_subs: "Daily Subscribers", subs_desc: "New bot users today",
+        conv_rate: "Conversion Rate", conv_desc: "Access to signup completion",
+        bot_interactions: "Bot Interactions", interact_desc: "Messages & Button Clicks",
+        top_promoters: "Top Promoters Leaderboard", rank: "Rank", promoter: "Promoter", leads: "Total Leads", conversion: "Conv. %",
+        geo_dist: "Geographic Distribution", lang_perf: "Language Performance", users: "Users"
       },
       es: {
-        app_title: "SALA DE INTERCAMBIO", partner_dash: "Panel de Socios", company_dash: "Tesorería",
+        app_title: "SALA DE INTERCAMBIO", partner_dash: "Panel de Socios", company_dash: "Tesorería y Analítica",
         secure_login: "Acceso Seguro", logout: "Cierre Seguro", session_ended: "Sesión Terminada",
         session_ended_desc: "Protocolo de seguridad: desconexión por inactividad.",
         locked: "Sesión Bloqueada", locked_desc: "Ingrese el PIN para reanudar.",
         disconnected: "Desconectado", disconnected_desc: "Sesión encriptada cerrada con éxito.",
         connected: "Conexión Segura", connected_desc: "E2E Autenticado. IP Registrada.",
         show_balances: "Mostrar Saldos", hide_balances: "Ocultar Saldos", network: "Red",
-        restricted_access: "Área Bancaria Restringida", restricted_desc: "Entorno encriptado de grado militar. Requiere autenticación de hardware.",
+        restricted_access: "Área Bancaria Restringida", restricted_desc: "Entorno encriptado de grado militar.",
         start_secure_conn: "Autenticar Dispositivo", e2e_encryption: "Encriptación AES-256 Activa",
         treasury_center: "Centro de Tesorería", vault_id: "ID del Contrato:",
         usdt_master: "USDT Maestro:", usdt_wallet: "Bóveda USDT:", simulate_deposit: "Simular Depósito",
@@ -141,17 +143,22 @@
         transfer_auth: "Transferencia Autorizada", funds_sent: "USDT enviados con seguridad.",
         deposit_detected: "Depósito Detectado", vault_updated: "USDT recibidos en cadena.",
         mon: "Lun", tue: "Mar", wed: "Mié", thu: "Jue", fri: "Vie", sat: "Sáb", today: "Hoy",
-        unlock_session: "Desbloquear", session_locked_warn: "Sesión bloqueada por inactividad.", earnings_chart: "Resumen de Ganancias"
+        unlock_session: "Desbloquear", session_locked_warn: "Sesión bloqueada por inactividad.", earnings_chart: "Resumen de Ganancias",
+        daily_subs: "Suscriptores Diarios", subs_desc: "Nuevos usuarios hoy",
+        conv_rate: "Tasa de Conversión", conv_desc: "De acceso a registro",
+        bot_interactions: "Interacciones Bot", interact_desc: "Mensajes y Clics",
+        top_promoters: "Clasificación de Promotores", rank: "Rango", promoter: "Promotor", leads: "Leads Totales", conversion: "Conv. %",
+        geo_dist: "Distribución Geográfica", lang_perf: "Rendimiento por Idioma", users: "Usuarios"
       },
       pt: {
-        app_title: "SALA DE INTERCÂMBIO", partner_dash: "Painel Parceiro", company_dash: "Tesouraria",
+        app_title: "SALA DE INTERCÂMBIO", partner_dash: "Painel Parceiro", company_dash: "Tesouraria e Analítica",
         secure_login: "Login Seguro", logout: "Saída Segura", session_ended: "Sessão Encerrada",
         session_ended_desc: "Protocolo de segurança: desconexão por inatividade.",
         locked: "Sessão Bloqueada", locked_desc: "Insira o PIN para continuar.",
         disconnected: "Desconectado", disconnected_desc: "Sessão encriptada encerrada.",
         connected: "Conexão Segura", connected_desc: "E2E Autenticado. IP Registrado.",
         show_balances: "Mostrar Saldos", hide_balances: "Ocultar Saldos", network: "Rede",
-        restricted_access: "Área Bancária Restrita", restricted_desc: "Ambiente encriptado de nível militar. Autenticação de hardware necessária.",
+        restricted_access: "Área Bancária Restrita", restricted_desc: "Ambiente encriptado de nível militar.",
         start_secure_conn: "Autenticar Dispositivo", e2e_encryption: "Encriptação AES-256 Ativa",
         treasury_center: "Centro de Tesouraria", vault_id: "ID do Contrato:",
         usdt_master: "USDT Mestre:", usdt_wallet: "Cofre USDT:", simulate_deposit: "Simular Depósito",
@@ -174,40 +181,50 @@
         transfer_auth: "Transferência Autorizada", funds_sent: "USDT enviados com segurança.",
         deposit_detected: "Depósito Detectado", vault_updated: "USDT recebidos na cadeia.",
         mon: "Seg", tue: "Ter", wed: "Qua", thu: "Qui", fri: "Sex", sat: "Sáb", today: "Hoje",
-        unlock_session: "Desbloquear", session_locked_warn: "Sessão bloqueada por inatividade.", earnings_chart: "Resumo de Ganhos"
+        unlock_session: "Desbloquear", session_locked_warn: "Sessão bloqueada por inatividade.", earnings_chart: "Resumo de Ganhos",
+        daily_subs: "Inscritos Diários", subs_desc: "Novos usuários hoje",
+        conv_rate: "Taxa de Conversão", conv_desc: "De acesso a registro",
+        bot_interactions: "Interações Bot", interact_desc: "Mensagens e Cliques",
+        top_promoters: "Classificação de Promotores", rank: "Rank", promoter: "Promotor", leads: "Total Leads", conversion: "Conv. %",
+        geo_dist: "Distribuição Geográfica", lang_perf: "Desempenho por Idioma", users: "Usuários"
       },
       it: {
-        app_title: "BETTING EXCHANGE", partner_dash: "Dashboard Partner", company_dash: "Tesoreria",
-        secure_login: "Login Bancario", logout: "Disconnessione Sicura", session_ended: "Sessione Terminata",
-        session_ended_desc: "Protocollo di sicurezza: disconnessione per inattività.",
-        locked: "Sessione Bloccata", locked_desc: "Inserisci il PIN per riprendere la sessione sicura.",
-        disconnected: "Disconnesso", disconnected_desc: "Sessione criptata conclusa con successo.",
+        app_title: "BETTING EXCHANGE", partner_dash: "Dashboard Partner", company_dash: "Tesoreria e Analitica",
+        secure_login: "Login Bancario", logout: "Disconnessione", session_ended: "Sessione Terminata",
+        session_ended_desc: "Protocolo di sicurezza: disconnessione per inattività.",
+        locked: "Sessione Bloccata", locked_desc: "Inserisci il PIN per riprendere.",
+        disconnected: "Disconnesso", disconnected_desc: "Sessione criptata conclusa.",
         connected: "Connessione Protetta", connected_desc: "Autenticato E2E. IP Registrato.",
         show_balances: "Mostra Saldi", hide_balances: "Nascondi Saldi", network: "Rete",
-        restricted_access: "Area Bancaria Riservata", restricted_desc: "Ambiente con crittografia militare. Autenticazione hardware richiesta.",
-        start_secure_conn: "Autentica Dispositivo", e2e_encryption: "Crittografia AES-256 Attiva",
-        treasury_center: "Centro Operativo Tesoreria", vault_id: "Vault Contract ID:",
-        usdt_master: "USDT Master:", usdt_wallet: "Vault USDT Jetton:", simulate_deposit: "Simula Incasso",
-        processed_volume: "Volume Processato", real_usdt: "USDT Reali", company_reserve: "Riserva Aziendale (30%)",
-        withdrawable_funds: "Fondi sicuri prelevabili", active_nodes: "Nodi Promotori Attivi",
-        registered_pools: "Pool 1 & 2 registrati", cash_flow: "Flusso di Cassa (7 Giorni)", secure_conn_badge: "SICUREZZA BANCARIA",
-        smart_contract_rules: "Routing Smart Contract", immutable: "IMMUTABILE", quota: "Quota",
+        restricted_access: "Area Riservata", restricted_desc: "Ambiente con crittografia militare.",
+        start_secure_conn: "Autentica Dispositivo", e2e_encryption: "Crittografia AES-256",
+        treasury_center: "Centro Tesoreria", vault_id: "Vault ID:",
+        usdt_master: "USDT Master:", usdt_wallet: "Vault USDT:", simulate_deposit: "Simula Incasso",
+        processed_volume: "Volume Processato", real_usdt: "USDT Reali", company_reserve: "Riserva (30%)",
+        withdrawable_funds: "Fondi sicuri", active_nodes: "Nodi Attivi",
+        registered_pools: "Pool Registrati", cash_flow: "Flusso di Cassa", secure_conn_badge: "SICUREZZA BANCARIA",
+        smart_contract_rules: "Regole Smart Contract", immutable: "IMMUTABILE", quota: "Quota",
         company_share: "Azienda", leader_pool: "Sponsor", base_pool: "Pool Bonus", destination: "Dest:",
         verified_partner_area: "Partner Verificato", copy_link: "Copia Link", copied: "Copiato",
-        copied_secure: "Copiato in Sicurezza", copied_secure_desc: "Appunti protetti. Si cancelleranno in 30s.",
-        copy_error: "Errore di Copia", vault_available: "Vault Fondi Disponibili",
-        escrow_desc: "Fondi protetti in escrow. Firma necessaria per sblocco.",
-        no_funds: "Nessun fondo sbloccabile", signing: "Verifica firma crittografica...",
-        unlock_withdraw: "Firma e Preleva", network_fee: "Commissioni Network stimate: ~0.05 TON",
-        lifetime_deposit: "Lifetime Deposit", validated_earnings: "Guadagno totale validato",
-        audit_trail: "Registro Audit Immutabile", latest_tx: "Ultime Trx", no_tx: "Nessun trasferimento registrato.",
-        security_auth: "Autorizzazione Hardware", crypto_signature_req: "Firma crittografica richiesta.",
+        copied_secure: "Copiato", copied_secure_desc: "Appunti protetti. Si cancelleranno in 30s.",
+        copy_error: "Errore di Copia", vault_available: "Fondi Disponibili",
+        escrow_desc: "Fondi in escrow. Firma necessaria.",
+        no_funds: "Nessun fondo", signing: "Firma in corso...",
+        unlock_withdraw: "Firma e Preleva", network_fee: "Commissioni: ~0.05 TON",
+        lifetime_deposit: "Deposito Totale", validated_earnings: "Guadagno validato",
+        audit_trail: "Registro Audit", latest_tx: "Ultime Trx", no_tx: "Nessun trasferimento.",
+        security_auth: "Autorizzazione", crypto_signature_req: "Firma crittografica richiesta.",
         requested_amount: "Importo:", dest_wallet: "Wallet:", enter_pin: "Inserisci PIN",
-        cancel: "Annulla", signing_btn: "Firma in corso...", sign_withdraw_btn: "Autorizza Trasferimento",
-        transfer_auth: "Trasferimento Autorizzato", funds_sent: "USDT inviati in sicurezza.",
+        cancel: "Annulla", signing_btn: "Firma...", sign_withdraw_btn: "Autorizza",
+        transfer_auth: "Autorizzato", funds_sent: "USDT inviati in sicurezza.",
         deposit_detected: "Deposito Rilevato", vault_updated: "USDT ricevuti on-chain.",
         mon: "Lun", tue: "Mar", wed: "Mer", thu: "Gio", fri: "Ven", sat: "Sab", today: "Oggi",
-        unlock_session: "Sblocca Sessione", session_locked_warn: "La sessione è stata bloccata per inattività.", earnings_chart: "Panoramica Guadagni"
+        unlock_session: "Sblocca Sessione", session_locked_warn: "La sessione è stata bloccata per inattività.", earnings_chart: "Panoramica Guadagni",
+        daily_subs: "Iscritti Giornalieri", subs_desc: "Nuovi utenti bot oggi",
+        conv_rate: "Tasso Conversione", conv_desc: "Accesso -> Iscrizione",
+        bot_interactions: "Interazioni Bot", interact_desc: "Messaggi e click",
+        top_promoters: "Classifica Promotori", rank: "Pos", promoter: "Promotore", leads: "Lead Totali", conversion: "Conv. %",
+        geo_dist: "Distribuzione Geografica", lang_perf: "Performance Lingue", users: "Utenti"
       }
     };
 
@@ -224,6 +241,21 @@
       { rawKey: 'leader_pool', value: 50, color: '#10b981', address: 'INSERISCI_INDIRIZZO_POOL_1' },
       { rawKey: 'base_pool', value: 20, color: '#f59e0b', address: 'INSERISCI_INDIRIZZO_POOL_2' },
     ];
+    // New Analytics Data
+    const GEO_DATA = [
+      { name: 'IT', value: 45, color: '#3b82f6' }, { name: 'ES', value: 25, color: '#f59e0b' }, 
+      { name: 'BR', value: 20, color: '#10b981' }, { name: 'UK', value: 10, color: '#8b5cf6' }
+    ];
+    const LANG_DATA = [
+      { name: 'Italian', users: 450, fill: '#3b82f6' }, { name: 'Spanish', users: 250, fill: '#f59e0b' }, 
+      { name: 'Portuguese', users: 200, fill: '#10b981' }, { name: 'English', users: 100, fill: '#8b5cf6' }
+    ];
+    const TOP_PROMOTERS_DATA = [
+      { id: 1, name: 'Alex De Souza', username: '@alex_crypto_pro', leads: 345, conversion: 18.5 },
+      { id: 2, name: 'Marco Rossi', username: '@marcorossi', leads: 280, conversion: 15.2 },
+      { id: 3, name: 'Elena Gomez', username: '@elegomez', leads: 210, conversion: 12.8 },
+      { id: 4, name: 'John Doe', username: '@johndoe_99', leads: 150, conversion: 10.5 },
+    ];
 
     const Card = ({ children, className = '' }) => (
       <div className={`relative bg-slate-900/50 backdrop-blur-xl border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-2xl hover:border-slate-700 transition-all duration-300 overflow-hidden min-w-0 ${className}`}>
@@ -232,8 +264,8 @@
       </div>
     );
 
-    const StatCard = ({ title, value, subtext, icon, colorClass }) => (
-      <Card>
+    const StatCard = ({ title, value, subtext, icon, colorClass, borderGlow = false }) => (
+      <Card className={borderGlow ? `border-${colorClass.split('-')[1]}-500/30` : ''}>
         <div className="flex justify-between items-start">
           <div className="flex-1 overflow-hidden pr-2 min-w-0">
             <p className="text-slate-400 font-bold mb-1 uppercase tracking-widest text-[10px] sm:text-xs truncate">{title}</p>
@@ -349,6 +381,7 @@
 
       return (
         <div className="space-y-6">
+          {/* Header */}
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center bg-slate-900/70 border border-slate-700 rounded-2xl p-4 sm:p-5 shadow-2xl gap-4">
             <div className="w-full lg:w-auto overflow-hidden min-w-0">
               <div className="flex items-center gap-3 mb-3">
@@ -372,21 +405,27 @@
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Financial Stats Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <StatCard title={t('processed_volume')} value={`${formatSecureCurrency(totalProcessed, isHidden)}`} subtext={<><Icon name="trending-up" size={12}/>{t('real_usdt')}</>} icon="activity" colorClass="text-emerald-400" />
             <StatCard title={t('company_reserve')} value={`${formatSecureCurrency(contractBalance, isHidden)}`} subtext={t('withdrawable_funds')} icon="wallet" colorClass="text-blue-500" />
             <StatCard title={t('active_nodes')} value={activePromoters.toString()} subtext={t('registered_pools')} icon="users" colorClass="text-indigo-400" />
           </div>
 
+          {/* Analytics/Bot Stats Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <StatCard title={t('daily_subs')} value="342" subtext={<><Icon name="arrow-up-right" size={12}/>+12% vs {t('yesterday') || 'ieri'}</>} icon="user-plus" colorClass="text-purple-400" borderGlow={true} />
+            <StatCard title={t('conv_rate')} value="14.8%" subtext={t('conv_desc')} icon="percent" colorClass="text-amber-400" borderGlow={true} />
+            <StatCard title={t('bot_interactions')} value="8,904" subtext={t('interact_desc')} icon="message-square" colorClass="text-cyan-400" borderGlow={true} />
+          </div>
+
+          {/* Charts Row */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             <Card className="xl:col-span-2">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-bold text-white flex items-center gap-2 uppercase tracking-wide truncate">
                   <Icon name="activity" size={18} className="text-blue-500 shrink-0"/> {t('cash_flow')}
                 </h3>
-                <span className="text-xs font-mono px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded border border-emerald-500/30 flex items-center gap-1 shrink-0">
-                  <Icon name="shield-check" size={12}/> <span className="hidden sm:inline">{t('secure_conn_badge')}</span>
-                </span>
               </div>
               <div className="h-64 sm:h-72 w-full">
                 <ResponsiveContainer width="100%" height="100%">
@@ -409,38 +448,85 @@
 
             <Card>
               <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2 uppercase tracking-wide truncate">
-                <Icon name="network" size={18} className="text-blue-500 shrink-0"/> {t('smart_contract_rules')}
+                <Icon name="globe" size={18} className="text-purple-500 shrink-0"/> {t('geo_dist')}
               </h3>
               <div className="h-40 w-full flex justify-center items-center relative">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={localizedSplitData} cx="50%" cy="50%" innerRadius="60%" outerRadius="80%" paddingAngle={5} dataKey="value" stroke="none">
-                      {localizedSplitData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+                    <Pie data={GEO_DATA} cx="50%" cy="50%" innerRadius="60%" outerRadius="80%" paddingAngle={5} dataKey="value" stroke="none">
+                      {GEO_DATA.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
                     </Pie>
-                    <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '8px' }} itemStyle={{ fontWeight: 'bold', color:'#fff' }} formatter={(value) => [`${value}%`, t('quota')]}/>
+                    <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '8px' }} itemStyle={{ fontWeight: 'bold', color:'#fff' }} formatter={(value) => [`${value}%`, 'Users']}/>
                   </PieChart>
                 </ResponsiveContainer>
-                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <Icon name="lock" size={20} className="text-slate-400 mb-1 opacity-50"/>
-                  <span className="text-xs text-slate-400 font-bold tracking-widest">{t('immutable')}</span>
-                </div>
               </div>
-              <div className="space-y-2 mt-6">
-                {localizedSplitData.map((item, idx) => (
-                  <div key={idx} className="flex flex-col text-sm p-3 rounded-xl bg-slate-950 border border-slate-800 gap-1.5 min-w-0">
-                    <div className="flex justify-between items-center w-full">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <div className="w-2 h-2 rounded-full shadow-sm shrink-0" style={{ backgroundColor: item.color, boxShadow: `0 0 8px ${item.color}` }}></div>
-                        <span className="text-white font-bold truncate">{item.name}</span>
-                      </div>
-                      <span className="text-white font-mono font-bold bg-slate-900 px-2 py-0.5 rounded border border-slate-700 text-xs shrink-0">{item.value}%</span>
-                    </div>
-                    <div className="flex items-center justify-between text-[10px] text-slate-500 font-mono min-w-0 gap-2">
-                      <span className="shrink-0">{t('destination')}</span>
-                      <span className="truncate">{item.address}</span>
-                    </div>
+              <div className="grid grid-cols-2 gap-2 mt-4">
+                {GEO_DATA.map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-2 text-xs bg-slate-950 p-2 rounded border border-slate-800">
+                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }}></div>
+                    <span className="text-slate-300 font-bold">{item.name}</span>
+                    <span className="text-slate-500 ml-auto">{item.value}%</span>
                   </div>
                 ))}
+              </div>
+            </Card>
+          </div>
+
+          {/* Leaderboard and Language Row */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <Card className="xl:col-span-2 flex flex-col p-0">
+              <div className="p-4 sm:p-5 border-b border-slate-800 flex justify-between items-center bg-slate-900/80 shrink-0">
+                  <h3 className="text-white font-bold flex items-center gap-2 text-sm tracking-widest uppercase truncate">
+                    <Icon name="award" size={18} className="text-amber-400 shrink-0"/> {t('top_promoters')}
+                  </h3>
+              </div>
+              <div className="flex-1 overflow-x-auto custom-scrollbar p-4">
+                 <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="text-xs text-slate-500 uppercase tracking-wider border-b border-slate-800">
+                        <th className="pb-3 px-2 font-semibold">{t('rank')}</th>
+                        <th className="pb-3 px-2 font-semibold">{t('promoter')}</th>
+                        <th className="pb-3 px-2 font-semibold text-right">{t('leads')}</th>
+                        <th className="pb-3 px-2 font-semibold text-right">{t('conversion')}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TOP_PROMOTERS_DATA.map((p, idx) => (
+                        <tr key={p.id} className="border-b border-slate-800/50 hover:bg-slate-900/50 transition-colors">
+                          <td className="py-3 px-2">
+                             <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${idx === 0 ? 'bg-amber-500/20 text-amber-500' : idx === 1 ? 'bg-slate-300/20 text-slate-300' : idx === 2 ? 'bg-orange-500/20 text-orange-400' : 'bg-slate-800 text-slate-500'}`}>
+                                {p.id}
+                             </div>
+                          </td>
+                          <td className="py-3 px-2">
+                            <div className="font-bold text-white text-sm">{p.name}</div>
+                            <div className="text-xs text-slate-500 font-mono">{p.username}</div>
+                          </td>
+                          <td className="py-3 px-2 text-right text-sm text-slate-300 font-mono">{p.leads}</td>
+                          <td className="py-3 px-2 text-right">
+                             <span className="bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded border border-emerald-500/20 text-xs font-mono font-bold">{p.conversion}%</span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                 </table>
+              </div>
+            </Card>
+
+            <Card>
+              <h3 className="text-sm font-bold text-white mb-6 flex items-center gap-2 uppercase tracking-wide truncate">
+                <Icon name="bar-chart" size={18} className="text-cyan-500 shrink-0"/> {t('lang_perf')}
+              </h3>
+              <div className="h-48 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={LANG_DATA} margin={{top: 0, right: 0, left: -20, bottom: 0}}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+                    <XAxis dataKey="name" stroke="#64748b" tick={{fill: '#64748b', fontSize: 10}} axisLine={false} tickLine={false} />
+                    <YAxis stroke="#64748b" tick={{fill: '#64748b', fontSize: 10}} axisLine={false} tickLine={false} />
+                    <Tooltip cursor={{fill: '#1e293b'}} contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '8px', color: '#fff' }} />
+                    <Bar dataKey="users" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
             </Card>
           </div>
@@ -455,10 +541,7 @@
 
       const localizedChartData = useMemo(() => PROMOTER_CHART_DATA.map(d => ({...d, name: t(d.rawKey)})), [t]);
 
-      // Mocking Telegram User Data dynamically
-      const tgUser = {
-        first_name: "Alex", last_name: "De Souza", username: "@alex_crypto_pro", language_code: lang.toUpperCase()
-      };
+      const tgUser = { first_name: "Alex", last_name: "De Souza", username: "@alex_crypto_pro", language_code: lang.toUpperCase() };
 
       const copyReferral = () => {
         const textToCopy = `https://tonpull.app/ref/${walletAddress.substring(0,8)}`;
@@ -499,6 +582,31 @@
                 <span className="hidden sm:inline">{copied ? t('copied') : t('copy_link')}</span>
               </button>
             </div>
+          </div>
+
+          {/* New Promoter Analytics Row */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+             <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 flex items-center gap-4">
+                <div className="p-3 bg-purple-500/10 text-purple-400 rounded-lg shrink-0"><Icon name="user-plus" size={20} /></div>
+                <div>
+                   <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">{t('daily_subs')}</p>
+                   <p className="text-xl font-mono text-white font-bold">24</p>
+                </div>
+             </div>
+             <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 flex items-center gap-4">
+                <div className="p-3 bg-amber-500/10 text-amber-400 rounded-lg shrink-0"><Icon name="percent" size={20} /></div>
+                <div>
+                   <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">{t('conv_rate')}</p>
+                   <p className="text-xl font-mono text-white font-bold">18.5%</p>
+                </div>
+             </div>
+             <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 flex items-center gap-4">
+                <div className="p-3 bg-cyan-500/10 text-cyan-400 rounded-lg shrink-0"><Icon name="message-square" size={20} /></div>
+                <div>
+                   <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">{t('bot_interactions')}</p>
+                   <p className="text-xl font-mono text-white font-bold">842</p>
+                </div>
+             </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -613,7 +721,6 @@
         { date: '12 Mag 2026', amount: 120.00, tx: 'EQA...4f2' }, { date: '05 Mag 2026', amount: 300.00, tx: 'EQB...9x1' }
       ]);
 
-      // Auto-detect Language
       useEffect(() => {
         const browserLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
         if (['en', 'es', 'pt', 'it'].includes(browserLang)) setLang(browserLang);
@@ -625,7 +732,6 @@
         setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 5000); 
       }, []);
 
-      // Inactivity Security Timer
       useEffect(() => {
         if (!wallet.connected) return;
         const timer = setInterval(() => {
@@ -676,7 +782,6 @@
             <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
               
               <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                {/* Logo with Fallback */}
                 <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-xl overflow-hidden shadow-[0_0_15px_rgba(37,99,235,0.5)] shrink-0">
                    <div className="absolute inset-0 bg-blue-600 flex items-center justify-center z-0">
                       <Icon name="shield-check" size={20} className="text-white sm:w-6 sm:h-6" />
@@ -703,9 +808,6 @@
                       <button onClick={() => {setView('promoter'); setWallet(w => ({...w, address: "EQ_Promoter_Wallet_99Xz"}));}} className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all ${view === 'promoter' ? 'bg-slate-800 text-white' : 'text-slate-500 hover:text-white'}`}>{t('partner_dash')}</button>
                       <button onClick={() => {setView('company'); setWallet(w => ({...w, address: "EQ_Company_Admin_77Xz"}));}} className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all ${view === 'company' ? 'bg-slate-800 text-white' : 'text-slate-500 hover:text-white'}`}>{t('company_dash')}</button>
                     </div>
-                    <button onClick={() => setIsBalanceHidden(!isBalanceHidden)} className="p-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-400 hover:text-white transition-colors hidden sm:block" title={isBalanceHidden ? t('show_balances') : t('hide_balances')}>
-                      <Icon name={isBalanceHidden ? 'eye-off' : 'eye'} size={18} />
-                    </button>
                   </>
                 )}
 
@@ -746,7 +848,6 @@
                 <button onClick={() => {setView('company'); setWallet(w => ({...w, address: "EQ_Company_Admin_77Xz"}));}} className={`flex-1 py-3 rounded-lg text-xs font-bold transition-all truncate px-1 ${view === 'company' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}>{t('company_dash')}</button>
               </div>
             )}
-            {/* Spacing for mobile bottom nav */}
             {wallet.connected && <div className="h-20 md:hidden block w-full"></div>}
           </main>
         </>
