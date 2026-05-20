@@ -3,52 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Betting Exchange Room - Secure Treasury</title>
+  <title>Betting Exchange - Dashboard</title>
   
-  <meta name="theme-color" content="#020617">
+  <meta name="theme-color" content="#0f172a">
 
   <style>
     /* Base Reset & Typography */
     body, html {
       margin: 0; padding: 0;
-      background-color: #020617 !important; color: #f8fafc !important;
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #0f172a !important; color: #f8fafc !important;
+      font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
     #root { min-height: 100vh; display: flex; flex-direction: column; position: relative; }
     
-    /* Technical Grid Background */
+    /* Subtle Pattern Background (Modern Fintech) */
     .bg-grid-pattern {
-      background-image: 
-        linear-gradient(to right, rgba(30, 41, 59, 0.15) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(30, 41, 59, 0.15) 1px, transparent 1px);
-      background-size: 24px 24px;
+      background-image: radial-gradient(rgba(51, 65, 85, 0.2) 1px, transparent 1px);
+      background-size: 32px 32px;
     }
 
-    /* Professional Initial Loader */
+    /* Clean Initial Loader */
     .initial-loader {
       display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;
-      background: #020617; color: #3b82f6; font-weight: bold; letter-spacing: 3px; font-family: monospace;
+      background: #0f172a; color: #3b82f6; font-weight: 500;
     }
-    .hex-spinner {
-      width: 48px; height: 48px; border: 2px solid rgba(59, 130, 246, 0.2);
-      border-radius: 8px; position: relative; animation: pulse-border 2s infinite; margin-bottom: 24px;
-      display: flex; align-items: center; justify-content: center;
+    .spinner-ring {
+      width: 48px; height: 48px; border: 3px solid rgba(59, 130, 246, 0.2);
+      border-radius: 50%; border-top-color: #3b82f6; animation: spin 1s linear infinite;
+      margin-bottom: 24px;
     }
-    .hex-inner {
-      width: 24px; height: 24px; background: #3b82f6; border-radius: 4px; animation: spin-hexa 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-    }
-    @keyframes spin-hexa { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(0.5); } 100% { transform: rotate(360deg) scale(1); } }
-    @keyframes pulse-border { 0% { border-color: rgba(59, 130, 246, 0.2); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { border-color: rgba(59, 130, 246, 0.6); box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 100% { border-color: rgba(59, 130, 246, 0.2); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Custom Scrollbar for Financial Data */
+    /* Custom Scrollbar */
     .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); border-radius: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; border: 1px solid #1e293b; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
     .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-    /* Keyframe Animations */
+    /* Animations */
     @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .toast-enter { animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
@@ -62,12 +56,13 @@
       theme: { 
         extend: { 
           colors: { 
-            brand: { 500: '#2563eb', 400: '#3b82f6', 600: '#1d4ed8' },
-            secure: { 500: '#10b981', 400: '#34d399', 900: '#064e3b' },
-            surface: { 900: '#0a0f1c', 800: '#111827', 950: '#020617' }
+            brand: { 500: '#3b82f6', 400: '#60a5fa', 600: '#2563eb' },
+            success: { 500: '#10b981', 400: '#34d399', 600: '#059669' },
+            surface: { 900: '#1e293b', 800: '#334155', 950: '#0f172a' }
           },
           fontFamily: {
-            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", 'monospace'],
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
           }
         } 
       }
@@ -84,8 +79,8 @@
 <body class="bg-surface-950 text-slate-200 selection:bg-brand-500/30">
   <div id="root">
     <div class="initial-loader">
-      <div class="hex-spinner"><div class="hex-inner"></div></div>
-      <div class="text-xs text-slate-400 mt-2">INITIALIZING ENCRYPTED ENVIRONMENT...</div>
+      <div class="spinner-ring"></div>
+      <div class="text-sm text-slate-400 mt-2 font-medium">Loading Dashboard...</div>
     </div>
   </div>
 
@@ -110,156 +105,164 @@
 
     const translations = {
       en: {
-        app_title: "BETTING EXCHANGE", partner_dash: "Partner Area", company_dash: "Treasury Ops",
-        secure_login: "Secure Auth", logout: "Disconnect", session_ended: "Session Terminated",
-        session_ended_desc: "Security protocol engaged: disconnected due to timeout.",
-        locked: "Terminal Locked", locked_desc: "Enter 6-digit PIN to resume secure session.",
-        disconnected: "Offline", disconnected_desc: "Encrypted connection securely closed.",
-        connected: "E2E Connected", connected_desc: "Hardware token authenticated.",
-        show_balances: "Reveal", hide_balances: "Mask", network: "Network",
-        restricted_access: "Classified Financial Area", restricted_desc: "Military-grade encrypted environment. Unauthorized access is strictly prohibited and logged.",
-        start_secure_conn: "Initialize Secure Connection", e2e_encryption: "AES-256 E2E",
-        treasury_center: "Treasury Operations", vault_id: "Contract ID",
-        usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Inject Liquidity",
+        app_title: "BETTING EXCHANGE", partner_dash: "Partner Area", company_dash: "Treasury",
+        login: "Log In", logout: "Log Out", session_ended: "Session Ended",
+        session_ended_desc: "You have been logged out due to inactivity.",
+        locked: "Session Locked", locked_desc: "Enter your PIN to resume.",
+        disconnected: "Logged Out", disconnected_desc: "You have successfully logged out.",
+        connected: "Login Successful", connected_desc: "Welcome back to your dashboard.",
+        show_balances: "Show Balance", hide_balances: "Hide", network: "Network",
+        welcome_title: "Welcome to Betting Exchange", welcome_desc: "Log in to your dashboard to manage your funds, monitor your affiliate performance, and track your revenue.",
+        start_conn: "Access Dashboard",
+        treasury_center: "Treasury Operations", vault_id: "Contract",
+        usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simulate Deposit",
         processed_volume: "Gross Volume", real_usdt: "On-Chain USDT", company_reserve: "Company Reserve",
-        withdrawable_funds: "Liquid Funds", active_nodes: "Active Nodes",
-        registered_pools: "Pool Allocation", cash_flow: "Cash Flow (7D)", secure_conn_badge: "BANK-GRADE",
-        smart_contract_rules: "Smart Contract Routing", immutable: "VERIFIED", quota: "Allocation",
-        company_share: "Corporate", leader_pool: "Sponsors", base_pool: "Bonus Pool", destination: "Tx Dest",
-        verified_partner_area: "Verified Partner", copy_link: "Copy Ref", copied: "Copied",
-        copied_secure: "Copied Securely", copied_secure_desc: "Link in clipboard. Clears in 30s.",
-        copy_error: "Clipboard Error", vault_available: "Available Liquidity",
-        escrow_desc: "Funds protected in zero-knowledge escrow via Smart Contract. Cryptographic signature required for release.",
-        no_funds: "Insufficient Liquidity", signing: "Verifying Signature...",
-        unlock_withdraw: "Authorize Withdrawal", network_fee: "Est. Gas: ~0.05 TON",
-        lifetime_deposit: "Lifetime Generation", validated_earnings: "Audited Earnings",
-        audit_trail: "Immutable Ledger", latest_tx: "Recent Tx", no_tx: "No ledger entries.",
-        security_auth: "Hardware Authorization", crypto_signature_req: "Cryptographic signature required.",
+        withdrawable_funds: "Liquid Funds", active_nodes: "Active Promoters",
+        registered_pools: "Pool Allocation", cash_flow: "Revenue (7D)", 
+        smart_contract_rules: "Revenue Split", immutable: "SMART CONTRACT", quota: "Allocation",
+        company_share: "Company", leader_pool: "Sponsors", base_pool: "Bonus Pool", destination: "Wallet",
+        copy_link: "Copy Link", copied: "Copied!",
+        copied_desc: "Referral link copied to clipboard.", copy_error: "Clipboard Error", 
+        vault_available: "Available for Withdrawal",
+        escrow_desc: "Your earnings are available. Withdrawals are processed instantly.",
+        no_funds: "No Funds Available", signing: "Processing...",
+        unlock_withdraw: "Withdraw Funds", network_fee: "Est. Gas: ~0.05 TON",
+        lifetime_deposit: "Total Earned", validated_earnings: "Lifetime revenue",
+        audit_trail: "Withdrawal History", latest_tx: "Recent Tx", no_tx: "No transactions yet.",
+        security_auth: "Confirm Withdrawal", crypto_signature_req: "Please enter your PIN to confirm this transaction.",
         requested_amount: "Amount", dest_wallet: "Destination", enter_pin: "Enter PIN",
-        cancel: "Abort", signing_btn: "Signing...", sign_withdraw_btn: "Confirm Transfer",
-        transfer_auth: "Transfer Executed", funds_sent: "Assets securely routed to destination.",
-        deposit_detected: "Inbound Transfer", vault_updated: "Liquidity updated on-chain.",
+        cancel: "Cancel", signing_btn: "Confirming...", sign_withdraw_btn: "Confirm Transfer",
+        transfer_auth: "Withdrawal Successful", funds_sent: "Funds have been sent to your wallet.",
+        deposit_detected: "Deposit Received", vault_updated: "Liquidity updated on-chain.",
         mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", today: "Today",
-        unlock_session: "Unlock Terminal", session_locked_warn: "Terminal locked to protect sensitive financial data.", earnings_chart: "Revenue Velocity",
-        daily_subs: "Daily Subs", subs_desc: "New acquisitions",
+        unlock_session: "Unlock", earnings_chart: "Earnings Overview",
+        daily_subs: "Active Leads", subs_desc: "Registered users",
         conv_rate: "Conv. Rate", conv_desc: "Lead to Active",
-        bot_interactions: "Bot Traffic", interact_desc: "Total interactions",
-        top_promoters: "Global Leaderboard", rank: "Rnk", promoter: "Entity", leads: "Leads", conversion: "Conv%",
-        geo_dist: "Global Distribution", lang_perf: "Linguistic Metrics", users: "Nodes"
+        bot_interactions: "Link Clicks", interact_desc: "Total traffic",
+        top_promoters: "Global Leaderboard", rank: "Rank", promoter: "Promoter", leads: "Leads", conversion: "Conv%",
+        geo_dist: "Global Distribution", lang_perf: "User Languages", users: "Users",
+        tier_status: "Current Tier", rev_share: "RevShare", next_tier: "to Platinum",
+        recent_activity: "Recent Referrals", joined: "joined via your link", deposited: "made a first deposit"
       },
       it: {
         app_title: "BETTING EXCHANGE", partner_dash: "Area Partner", company_dash: "Tesoreria",
-        secure_login: "Login Sicuro", logout: "Disconnetti", session_ended: "Sessione Terminata",
-        session_ended_desc: "Protocollo di sicurezza: timeout per inattività.",
-        locked: "Terminale Bloccato", locked_desc: "Inserisci il PIN a 6 cifre per riprendere.",
-        disconnected: "Offline", disconnected_desc: "Connessione crittografata chiusa in sicurezza.",
-        connected: "Connessione E2E", connected_desc: "Token hardware autenticato.",
-        show_balances: "Rivela", hide_balances: "Nascondi", network: "Rete",
-        restricted_access: "Area Finanziaria Riservata", restricted_desc: "Ambiente con crittografia militare. L'accesso non autorizzato è severamente proibito e tracciato.",
-        start_secure_conn: "Inizializza Connessione", e2e_encryption: "AES-256 E2E",
-        treasury_center: "Operazioni Tesoreria", vault_id: "Contract ID",
-        usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Inietta Liquidità",
+        login: "Accedi", logout: "Esci", session_ended: "Sessione Scaduta",
+        session_ended_desc: "Sei stato disconnesso per inattività.",
+        locked: "Sessione Bloccata", locked_desc: "Inserisci il PIN per riprendere.",
+        disconnected: "Disconnesso", disconnected_desc: "Disconnessione completata con successo.",
+        connected: "Accesso Effettuato", connected_desc: "Bentornato nella tua dashboard.",
+        show_balances: "Mostra Saldo", hide_balances: "Nascondi", network: "Rete",
+        welcome_title: "Benvenuto su Betting Exchange", welcome_desc: "Accedi alla tua dashboard per gestire i tuoi fondi, monitorare le performance di affiliazione e le tue entrate.",
+        start_conn: "Accedi alla Dashboard",
+        treasury_center: "Operazioni Tesoreria", vault_id: "Contratto",
+        usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simula Deposito",
         processed_volume: "Volume Lordo", real_usdt: "USDT On-Chain", company_reserve: "Riserva Aziendale",
-        withdrawable_funds: "Fondi Liquidi", active_nodes: "Nodi Attivi",
-        registered_pools: "Allocazione Pool", cash_flow: "Flusso Cassa (7G)", secure_conn_badge: "BANK-GRADE",
-        smart_contract_rules: "Routing Smart Contract", immutable: "VERIFICATO", quota: "Allocazione",
-        company_share: "Corporate", leader_pool: "Sponsor", base_pool: "Pool Bonus", destination: "Tx Dest",
-        verified_partner_area: "Partner Verificato", copy_link: "Copia Ref", copied: "Copiato",
-        copied_secure: "Copiato in Sicurezza", copied_secure_desc: "Link negli appunti. Scade in 30s.",
-        copy_error: "Errore Appunti", vault_available: "Liquidità Disponibile",
-        escrow_desc: "Fondi protetti in escrow zero-knowledge. Firma crittografica necessaria per il rilascio.",
-        no_funds: "Liquidità Insufficiente", signing: "Verifica Firma...",
-        unlock_withdraw: "Autorizza Prelievo", network_fee: "Gas Stimato: ~0.05 TON",
-        lifetime_deposit: "Generazione Totale", validated_earnings: "Guadagni Certificati",
-        audit_trail: "Registro Immutabile", latest_tx: "Recenti Tx", no_tx: "Nessuna transazione.",
-        security_auth: "Autorizzazione Hardware", crypto_signature_req: "Firma crittografica richiesta.",
+        withdrawable_funds: "Fondi Liquidi", active_nodes: "Promoter Attivi",
+        registered_pools: "Allocazione Pool", cash_flow: "Ricavi (7G)", 
+        smart_contract_rules: "Ripartizione Ricavi", immutable: "SMART CONTRACT", quota: "Quota",
+        company_share: "Azienda", leader_pool: "Sponsor", base_pool: "Pool Bonus", destination: "Wallet",
+        copy_link: "Copia Link", copied: "Copiato!",
+        copied_desc: "Link di affiliazione copiato negli appunti.", copy_error: "Errore Appunti", 
+        vault_available: "Disponibile per il Prelievo",
+        escrow_desc: "I tuoi guadagni sono disponibili. I prelievi vengono elaborati istantaneamente.",
+        no_funds: "Nessun Fondo", signing: "Elaborazione...",
+        unlock_withdraw: "Preleva Fondi", network_fee: "Gas Stimato: ~0.05 TON",
+        lifetime_deposit: "Guadagni Totali", validated_earnings: "Entrate storiche",
+        audit_trail: "Storico Prelievi", latest_tx: "Recenti Tx", no_tx: "Nessun prelievo.",
+        security_auth: "Conferma Prelievo", crypto_signature_req: "Inserisci il tuo PIN per confermare la transazione.",
         requested_amount: "Importo", dest_wallet: "Destinazione", enter_pin: "Inserisci PIN",
-        cancel: "Annulla", signing_btn: "Firma in corso...", sign_withdraw_btn: "Conferma Trasferimento",
-        transfer_auth: "Trasferimento Eseguito", funds_sent: "Asset instradati in sicurezza.",
-        deposit_detected: "Bonifico in Ingresso", vault_updated: "Liquidità aggiornata on-chain.",
+        cancel: "Annulla", signing_btn: "Conferma in corso...", sign_withdraw_btn: "Conferma Trasferimento",
+        transfer_auth: "Prelievo Completato", funds_sent: "I fondi sono stati inviati al tuo wallet.",
+        deposit_detected: "Deposito Ricevuto", vault_updated: "Liquidità aggiornata on-chain.",
         mon: "Lun", tue: "Mar", wed: "Mer", thu: "Gio", fri: "Ven", sat: "Sab", today: "Oggi",
-        unlock_session: "Sblocca Terminale", session_locked_warn: "Terminale bloccato per proteggere i dati finanziari.", earnings_chart: "Velocità Ricavi",
-        daily_subs: "Iscritti Oggi", subs_desc: "Nuove acquisizioni",
+        unlock_session: "Sblocca", earnings_chart: "Panoramica Guadagni",
+        daily_subs: "Lead Attivi", subs_desc: "Utenti registrati",
         conv_rate: "Tasso Conv.", conv_desc: "Lead in Attivi",
-        bot_interactions: "Traffico Bot", interact_desc: "Interazioni totali",
-        top_promoters: "Classifica Globale", rank: "Pos", promoter: "Entità", leads: "Lead", conversion: "Conv%",
-        geo_dist: "Distribuzione Globale", lang_perf: "Metriche Linguistiche", users: "Nodi"
+        bot_interactions: "Clic sul Link", interact_desc: "Traffico totale",
+        top_promoters: "Classifica Globale", rank: "Pos", promoter: "Promoter", leads: "Lead", conversion: "Conv%",
+        geo_dist: "Distribuzione Globale", lang_perf: "Lingue Utenti", users: "Utenti",
+        tier_status: "Tuo Livello", rev_share: "RevShare", next_tier: "per Platinum",
+        recent_activity: "Ultimi Referral", joined: "si è iscritto tramite il tuo link", deposited: "ha effettuato il primo deposito"
       },
       es: {
         app_title: "BETTING EXCHANGE", partner_dash: "Área de Socios", company_dash: "Tesorería",
-        secure_login: "Login Seguro", logout: "Desconectar", session_ended: "Sesión Terminada",
-        session_ended_desc: "Protocolo de seguridad: desconexión por inactividad.",
-        locked: "Terminal Bloqueado", locked_desc: "Ingrese el PIN de 6 dígitos para reanudar.",
-        disconnected: "Desconectado", disconnected_desc: "Conexión encriptada cerrada.",
-        connected: "Conexión E2E", connected_desc: "Token de hardware autenticado.",
-        show_balances: "Revelar", hide_balances: "Ocultar", network: "Red",
-        restricted_access: "Área Financiera Restringida", restricted_desc: "Entorno encriptado. El acceso no autorizado está estrictamente prohibido.",
-        start_secure_conn: "Inicializar Conexión", e2e_encryption: "AES-256 E2E",
-        treasury_center: "Operaciones de Tesorería", vault_id: "Contract ID",
-        usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Inyectar Liquidez",
-        processed_volume: "Volumen Bruto", real_usdt: "USDT On-Chain", company_reserve: "Reserva Corporativa",
-        withdrawable_funds: "Fondos Líquidos", active_nodes: "Nodos Activos",
-        registered_pools: "Asignación Pool", cash_flow: "Flujo de Caja (7D)", secure_conn_badge: "BANK-GRADE",
-        smart_contract_rules: "Enrutamiento Contrato", immutable: "VERIFICADO", quota: "Asignación",
-        company_share: "Corporativo", leader_pool: "Patrocinador", base_pool: "Pool Bono", destination: "Dest",
-        verified_partner_area: "Socio Verificado", copy_link: "Copiar Ref", copied: "Copiado",
-        copied_secure: "Copiado Seguro", copied_secure_desc: "Enlace en portapapeles. Se borra en 30s.",
-        copy_error: "Error Portapapeles", vault_available: "Liquidez Disponible",
-        escrow_desc: "Fondos protegidos en escrow zero-knowledge. Requiere firma criptográfica.",
-        no_funds: "Liquidez Insuficiente", signing: "Verificando Firma...",
-        unlock_withdraw: "Autorizar Retiro", network_fee: "Gas Estimado: ~0.05 TON",
-        lifetime_deposit: "Generación Total", validated_earnings: "Ganancias Auditadas",
-        audit_trail: "Registro Inmutable", latest_tx: "Recientes Tx", no_tx: "Sin transacciones.",
-        security_auth: "Autorización de Hardware", crypto_signature_req: "Se requiere firma criptográfica.",
-        requested_amount: "Monto", dest_wallet: "Destino", enter_pin: "Ingresar PIN",
-        cancel: "Cancelar", signing_btn: "Firmando...", sign_withdraw_btn: "Confirmar Transferencia",
-        transfer_auth: "Transferencia Ejecutada", funds_sent: "Activos enrutados de forma segura.",
-        deposit_detected: "Transferencia Entrante", vault_updated: "Liquidez actualizada on-chain.",
+        login: "Iniciar Sesión", logout: "Cerrar Sesión", session_ended: "Sesión Finalizada",
+        session_ended_desc: "Has sido desconectado por inactividad.",
+        locked: "Sesión Bloqueada", locked_desc: "Introduce tu PIN para reanudar.",
+        disconnected: "Desconectado", disconnected_desc: "Desconexión completada con éxito.",
+        connected: "Inicio Exitoso", connected_desc: "Bienvenido de nuevo a tu panel.",
+        show_balances: "Mostrar Saldo", hide_balances: "Ocultar", network: "Red",
+        welcome_title: "Bienvenido a Betting Exchange", welcome_desc: "Inicia sesión para gestionar tus fondos y monitorizar tu rendimiento de afiliación.",
+        start_conn: "Acceder al Panel",
+        treasury_center: "Tesorería", vault_id: "Contrato",
+        usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simular Depósito",
+        processed_volume: "Volumen Bruto", real_usdt: "USDT On-Chain", company_reserve: "Reserva Empresa",
+        withdrawable_funds: "Fondos Líquidos", active_nodes: "Promotores Activos",
+        registered_pools: "Asignación Pool", cash_flow: "Ingresos (7D)", 
+        smart_contract_rules: "Reparto de Ingresos", immutable: "SMART CONTRACT", quota: "Cuota",
+        company_share: "Empresa", leader_pool: "Patrocinador", base_pool: "Bono", destination: "Billetera",
+        copy_link: "Copiar Enlace", copied: "¡Copiado!",
+        copied_desc: "Enlace de referido copiado al portapapeles.", copy_error: "Error", 
+        vault_available: "Disponible para Retiro",
+        escrow_desc: "Tus ganancias están disponibles. Los retiros se procesan al instante.",
+        no_funds: "Sin Fondos", signing: "Procesando...",
+        unlock_withdraw: "Retirar Fondos", network_fee: "Gas Est.: ~0.05 TON",
+        lifetime_deposit: "Ganancias Tot.", validated_earnings: "Ingresos históricos",
+        audit_trail: "Historial Retiros", latest_tx: "Recientes", no_tx: "Sin retiros.",
+        security_auth: "Confirmar Retiro", crypto_signature_req: "Introduce tu PIN para confirmar la transacción.",
+        requested_amount: "Monto", dest_wallet: "Destino", enter_pin: "Introduce PIN",
+        cancel: "Cancelar", signing_btn: "Confirmando...", sign_withdraw_btn: "Confirmar Transferencia",
+        transfer_auth: "Retiro Exitoso", funds_sent: "Fondos enviados a tu billetera.",
+        deposit_detected: "Depósito Recibido", vault_updated: "Liquidez actualizada.",
         mon: "Lun", tue: "Mar", wed: "Mié", thu: "Jue", fri: "Vie", sat: "Sáb", today: "Hoy",
-        unlock_session: "Desbloquear Terminal", session_locked_warn: "Terminal bloqueado para proteger datos.", earnings_chart: "Velocidad de Ingresos",
-        daily_subs: "Suscriptores Hoy", subs_desc: "Nuevas adquisiciones",
+        unlock_session: "Desbloquear", earnings_chart: "Resumen de Ganancias",
+        daily_subs: "Leads Activos", subs_desc: "Usuarios registrados",
         conv_rate: "Tasa Conv.", conv_desc: "Lead a Activo",
-        bot_interactions: "Tráfico Bot", interact_desc: "Interacciones totales",
-        top_promoters: "Clasificación Global", rank: "Pos", promoter: "Entidad", leads: "Leads", conversion: "Conv%",
-        geo_dist: "Distribución Global", lang_perf: "Métricas Lingüísticas", users: "Nodos"
+        bot_interactions: "Clics en Enlace", interact_desc: "Tráfico total",
+        top_promoters: "Clasificación", rank: "Pos", promoter: "Promotor", leads: "Leads", conversion: "Conv%",
+        geo_dist: "Distribución Global", lang_perf: "Idiomas Usuarios", users: "Usuarios",
+        tier_status: "Tu Nivel", rev_share: "RevShare", next_tier: "para Platinum",
+        recent_activity: "Últimos Referidos", joined: "se unió con tu enlace", deposited: "hizo su primer depósito"
       },
       pt: {
         app_title: "BETTING EXCHANGE", partner_dash: "Área Parceiro", company_dash: "Tesouraria",
-        secure_login: "Login Seguro", logout: "Desconectar", session_ended: "Sessão Encerrada",
-        session_ended_desc: "Protocolo de segurança: tempo esgotado.",
-        locked: "Terminal Bloqueado", locked_desc: "Insira o PIN de 6 dígitos para retomar.",
-        disconnected: "Desconectado", disconnected_desc: "Conexão criptografada encerrada.",
-        connected: "Conexão E2E", connected_desc: "Token de hardware autenticado.",
-        show_balances: "Revelar", hide_balances: "Ocultar", network: "Rede",
-        restricted_access: "Área Financeira Restrita", restricted_desc: "Ambiente criptografado. Acesso não autorizado é proibido.",
-        start_secure_conn: "Inicializar Conexão", e2e_encryption: "AES-256 E2E",
-        treasury_center: "Operações Tesouraria", vault_id: "Contract ID",
-        usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Injetar Liquidez",
-        processed_volume: "Volume Bruto", real_usdt: "USDT On-Chain", company_reserve: "Reserva Corporativa",
-        withdrawable_funds: "Fundos Líquidos", active_nodes: "Nós Ativos",
-        registered_pools: "Alocação Pool", cash_flow: "Fluxo Caixa (7D)", secure_conn_badge: "BANK-GRADE",
-        smart_contract_rules: "Roteamento Contrato", immutable: "VERIFICADO", quota: "Alocação",
-        company_share: "Corporativo", leader_pool: "Patrocinador", base_pool: "Pool Bônus", destination: "Dest",
-        verified_partner_area: "Parceiro Verificado", copy_link: "Copiar Ref", copied: "Copiado",
-        copied_secure: "Copiado Seguro", copied_secure_desc: "Link na área de transferência. Limpa em 30s.",
-        copy_error: "Erro Copiar", vault_available: "Liquidez Disponível",
-        escrow_desc: "Fundos protegidos em escrow zero-knowledge. Requer assinatura criptográfica.",
-        no_funds: "Liquidez Insuficiente", signing: "Verificando Assinatura...",
-        unlock_withdraw: "Autorizar Saque", network_fee: "Gas Estimado: ~0.05 TON",
-        lifetime_deposit: "Geração Total", validated_earnings: "Ganhos Auditados",
-        audit_trail: "Registro Imutável", latest_tx: "Recentes Tx", no_tx: "Sem transações.",
-        security_auth: "Autorização de Hardware", crypto_signature_req: "Assinatura criptográfica necessária.",
+        login: "Entrar", logout: "Sair", session_ended: "Sessão Encerrada",
+        session_ended_desc: "Você foi desconectado por inatividade.",
+        locked: "Sessão Bloqueada", locked_desc: "Insira seu PIN para continuar.",
+        disconnected: "Desconectado", disconnected_desc: "Desconexão concluída com sucesso.",
+        connected: "Login Bem-sucedido", connected_desc: "Bem-vindo de volta ao seu painel.",
+        show_balances: "Mostrar Saldo", hide_balances: "Ocultar", network: "Rede",
+        welcome_title: "Bem-vindo à Betting Exchange", welcome_desc: "Faça login para gerenciar seus fundos e acompanhar seu desempenho como afiliado.",
+        start_conn: "Acessar Painel",
+        treasury_center: "Tesouraria", vault_id: "Contrato",
+        usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simular Depósito",
+        processed_volume: "Volume Bruto", real_usdt: "USDT On-Chain", company_reserve: "Reserva Empresa",
+        withdrawable_funds: "Fundos Líquidos", active_nodes: "Promotores Ativos",
+        registered_pools: "Alocação Pool", cash_flow: "Receita (7D)", 
+        smart_contract_rules: "Divisão de Receita", immutable: "SMART CONTRACT", quota: "Cota",
+        company_share: "Empresa", leader_pool: "Patrocinador", base_pool: "Bônus", destination: "Carteira",
+        copy_link: "Copiar Link", copied: "Copiado!",
+        copied_desc: "Link de indicação copiado.", copy_error: "Erro", 
+        vault_available: "Disponível para Saque",
+        escrow_desc: "Seus ganhos estão disponíveis. Os saques são processados instantaneamente.",
+        no_funds: "Sem Fundos", signing: "Processando...",
+        unlock_withdraw: "Sacar Fundos", network_fee: "Gás Est.: ~0.05 TON",
+        lifetime_deposit: "Ganhos Totais", validated_earnings: "Receita histórica",
+        audit_trail: "Histórico Saques", latest_tx: "Recentes", no_tx: "Nenhum saque.",
+        security_auth: "Confirmar Saque", crypto_signature_req: "Insira seu PIN para confirmar a transação.",
         requested_amount: "Valor", dest_wallet: "Destino", enter_pin: "Inserir PIN",
-        cancel: "Cancelar", signing_btn: "Assinando...", sign_withdraw_btn: "Confirmar Transferência",
-        transfer_auth: "Transferência Executada", funds_sent: "Ativos roteados com segurança.",
-        deposit_detected: "Transferência Recebida", vault_updated: "Liquidez atualizada on-chain.",
+        cancel: "Cancelar", signing_btn: "Confirmando...", sign_withdraw_btn: "Confirmar Transferência",
+        transfer_auth: "Saque Concluído", funds_sent: "Fundos enviados para sua carteira.",
+        deposit_detected: "Depósito Recebido", vault_updated: "Liquidez atualizada.",
         mon: "Seg", tue: "Ter", wed: "Qua", thu: "Qui", fri: "Sex", sat: "Sáb", today: "Hoje",
-        unlock_session: "Desbloquear Terminal", session_locked_warn: "Terminal bloqueado para proteção de dados.", earnings_chart: "Velocidade de Receita",
-        daily_subs: "Inscritos Hoje", subs_desc: "Novas aquisições",
+        unlock_session: "Desbloquear", earnings_chart: "Resumo de Ganhos",
+        daily_subs: "Leads Ativos", subs_desc: "Usuários registrados",
         conv_rate: "Taxa Conv.", conv_desc: "Lead para Ativo",
-        bot_interactions: "Tráfego Bot", interact_desc: "Interações totais",
-        top_promoters: "Classificação Global", rank: "Pos", promoter: "Entidade", leads: "Leads", conversion: "Conv%",
-        geo_dist: "Distribuição Global", lang_perf: "Métricas Linguísticas", users: "Nós"
+        bot_interactions: "Cliques no Link", interact_desc: "Tráfego total",
+        top_promoters: "Classificação", rank: "Pos", promoter: "Promotor", leads: "Leads", conversion: "Conv%",
+        geo_dist: "Distribuição Global", lang_perf: "Idiomas Usuários", users: "Usuários",
+        tier_status: "Seu Nível", rev_share: "RevShare", next_tier: "para Platinum",
+        recent_activity: "Últimos Indicados", joined: "entrou pelo seu link", deposited: "fez o primeiro depósito"
       }
     };
 
@@ -268,8 +271,8 @@
       { rawKey: 'thu', amount: 3000 }, { rawKey: 'fri', amount: 4500 }, { rawKey: 'sat', amount: 6000 }, { rawKey: 'today', amount: 5500 },
     ];
     const PROMOTER_CHART_DATA = [
-      { rawKey: 'mon', amount: 450 }, { rawKey: 'tue', amount: 1200 }, { rawKey: 'wed', amount: 800 }, 
-      { rawKey: 'thu', amount: 2100 }, { rawKey: 'fri', amount: 1500 }, { rawKey: 'sat', amount: 3200 }, { rawKey: 'today', amount: 2800 },
+      { rawKey: 'mon', amount: 45 }, { rawKey: 'tue', amount: 120 }, { rawKey: 'wed', amount: 80 }, 
+      { rawKey: 'thu', amount: 210 }, { rawKey: 'fri', amount: 150 }, { rawKey: 'sat', amount: 320 }, { rawKey: 'today', amount: 280 },
     ];
     const RAW_SPLIT_DATA = [
       { rawKey: 'company_share', value: 30, color: '#3b82f6', address: '0xCOMPANY...9F2A' },
@@ -290,26 +293,31 @@
       { id: 3, name: 'Elena Gomez', username: '@elegomez', leads: 210, conversion: 12.8 },
       { id: 4, name: 'John Doe', username: '@johndoe_99', leads: 150, conversion: 10.5 },
     ];
+    const RECENT_LEADS_DATA = [
+      { username: '@lucam_88', type: 'deposit', amount: 50, time: '10 min ago' },
+      { username: '@sarah_j', type: 'join', time: '1 hour ago' },
+      { username: '@mario_rossi', type: 'join', time: '3 hours ago' },
+      { username: '@crypto_dan', type: 'deposit', amount: 200, time: '5 hours ago' },
+    ];
 
-    const Card = ({ children, className = '' }) => (
-      <div className={`relative bg-surface-900/60 backdrop-blur-md border border-slate-800/80 rounded-xl p-4 sm:p-6 shadow-2xl hover:border-slate-700/80 transition-colors duration-300 overflow-hidden min-w-0 ${className}`}>
-        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-brand-500/30 to-transparent opacity-50"></div>
+    const Card = ({ children, className = '', padding = 'p-4 sm:p-6' }) => (
+      <div className={`bg-surface-900 border border-slate-800 rounded-2xl ${padding} shadow-lg hover:border-slate-700 transition-colors duration-300 overflow-hidden min-w-0 ${className}`}>
         {children}
       </div>
     );
 
-    const StatCard = ({ title, value, subtext, icon, colorClass, borderGlow = false }) => (
-      <Card className={borderGlow ? `border-${colorClass.split('-')[1]}-500/20` : ''}>
+    const StatCard = ({ title, value, subtext, icon, colorClass, highlight = false }) => (
+      <Card padding="p-4 sm:p-5" className={highlight ? 'ring-1 ring-inset ring-slate-700/50 bg-gradient-to-br from-surface-900 to-surface-800/50' : ''}>
         <div className="flex justify-between items-start">
           <div className="flex-1 overflow-hidden pr-3 min-w-0">
-            <p className="text-slate-400 font-semibold mb-1.5 uppercase tracking-widest text-[10px] truncate">{title}</p>
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-2.5 tracking-tight font-mono truncate">{value}</h3>
-            <div className={`inline-flex items-center gap-1.5 text-[10px] px-2 py-1 rounded bg-surface-950 border border-slate-800/60 font-medium ${colorClass} shadow-inner truncate max-w-full`}>
+            <p className="text-slate-400 font-medium mb-1.5 text-xs truncate">{title}</p>
+            <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2 tracking-tight truncate">{value}</h3>
+            <div className={`inline-flex items-center gap-1.5 text-[11px] font-medium ${colorClass} truncate max-w-full`}>
               {subtext}
             </div>
           </div>
-          <div className={`p-3 rounded-xl bg-surface-950 border border-slate-800/80 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)] flex-shrink-0 ${colorClass}`}>
-            <Icon name={icon} size={22} />
+          <div className={`p-2.5 rounded-xl bg-surface-950/50 flex-shrink-0 ${colorClass}`}>
+            <Icon name={icon} size={20} />
           </div>
         </div>
       </Card>
@@ -318,20 +326,20 @@
     const ToastContainer = ({ toasts }) => (
       <div className="fixed top-4 right-4 sm:top-6 sm:right-6 z-[200] flex flex-col gap-2 pointer-events-none max-w-[calc(100vw-32px)] w-80">
         {toasts.map(toast => (
-          <div key={toast.id} className="toast-enter pointer-events-auto flex items-start gap-3 bg-surface-900/95 border border-slate-700/80 text-white px-4 py-3 rounded-lg shadow-2xl backdrop-blur-xl">
-            <div className={`mt-0.5 p-1 rounded-md flex-shrink-0 ${toast.type === 'success' ? 'bg-secure-500/20 text-secure-400' : toast.type === 'error' ? 'bg-red-500/20 text-red-400' : 'bg-brand-500/20 text-brand-400'}`}>
-              <Icon name={toast.type === 'success' ? 'check-circle-2' : toast.type === 'error' ? 'alert-triangle' : 'shield-check'} size={16} />
+          <div key={toast.id} className="toast-enter pointer-events-auto flex items-start gap-3 bg-surface-800 border border-slate-700 text-white px-4 py-3 rounded-xl shadow-2xl">
+            <div className={`mt-0.5 flex-shrink-0 ${toast.type === 'success' ? 'text-success-400' : toast.type === 'error' ? 'text-red-400' : 'text-brand-400'}`}>
+              <Icon name={toast.type === 'success' ? 'check-circle' : toast.type === 'error' ? 'alert-circle' : 'info'} size={18} />
             </div>
             <div className="overflow-hidden min-w-0 flex-1">
-              <p className="text-sm font-bold text-slate-100 truncate">{toast.title}</p>
-              {toast.message && <p className="text-[11px] text-slate-400 mt-1 leading-snug">{toast.message}</p>}
+              <p className="text-sm font-semibold text-slate-100 truncate">{toast.title}</p>
+              {toast.message && <p className="text-xs text-slate-400 mt-0.5 leading-snug">{toast.message}</p>}
             </div>
           </div>
         ))}
       </div>
     );
 
-    const formatSecureCurrency = (amount, isHidden) => {
+    const formatCurrency = (amount, isHidden) => {
       if (isHidden) return '••,•••.••';
       return amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     };
@@ -344,44 +352,37 @@
       useEffect(() => { if (isOpen && inputRef.current) inputRef.current.focus(); }, [isOpen]);
 
       if (!isOpen) return null;
-      const handleConfirm = () => { setIsSigning(true); setTimeout(() => { setIsSigning(false); onConfirm(); setPin(''); }, 2000); };
+      const handleConfirm = () => { setIsSigning(true); setTimeout(() => { setIsSigning(false); onConfirm(); setPin(''); }, 1500); };
       
       return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-surface-950/80 backdrop-blur-md p-4 fade-in">
-          <div className="bg-surface-900 border border-slate-700/80 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden min-w-0 relative">
-            {isSigning && <div className="absolute inset-0 z-10 bg-surface-900/50 backdrop-blur-sm flex flex-col items-center justify-center">
-              <div className="hex-spinner scale-75 mb-2"><div className="hex-inner"></div></div>
-              <p className="text-brand-400 font-mono text-xs font-bold tracking-widest uppercase">{t('signing_btn')}</p>
-            </div>}
-            
-            <div className="bg-surface-800/40 p-5 border-b border-slate-700/80 flex flex-col items-center text-center">
-              <div className="w-12 h-12 bg-surface-950 rounded-full border border-brand-500/50 flex items-center justify-center text-brand-400 mb-3 shadow-[0_0_15px_rgba(37,99,235,0.2)] shrink-0">
-                <Icon name="fingerprint" size={24} />
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-surface-950/80 backdrop-blur-sm p-4 fade-in">
+          <div className="bg-surface-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden min-w-0">
+            <div className="p-6 text-center border-b border-slate-800">
+              <div className="w-12 h-12 bg-surface-800 rounded-full flex items-center justify-center text-brand-400 mx-auto mb-4">
+                <Icon name="shield" size={24} />
               </div>
-              <h3 className="text-base font-bold text-white uppercase tracking-widest">{t('security_auth')}</h3>
-              <p className="text-[10px] text-slate-400 mt-1">{t('crypto_signature_req')}</p>
+              <h3 className="text-lg font-bold text-white">{t('security_auth')}</h3>
+              <p className="text-sm text-slate-400 mt-1">{t('crypto_signature_req')}</p>
             </div>
-            <div className="p-5 space-y-5">
-              <div className="bg-surface-950 p-3.5 rounded-lg border border-slate-800/80 shadow-inner font-mono text-sm">
-                <div className="flex justify-between items-center mb-2.5 pb-2.5 border-b border-slate-800/50">
-                  <span className="text-slate-500 text-[11px] uppercase tracking-wider">{t('requested_amount')}</span>
-                  <span className="text-secure-400 font-bold">{amount.toLocaleString('en-US', {minimumFractionDigits:2})} USDT</span>
+            <div className="p-6 space-y-6">
+              <div className="bg-surface-950 p-4 rounded-xl border border-slate-800 text-sm">
+                <div className="flex justify-between items-center mb-3 pb-3 border-b border-slate-800">
+                  <span className="text-slate-400">{t('requested_amount')}</span>
+                  <span className="text-success-400 font-bold text-lg">{amount.toLocaleString('en-US', {minimumFractionDigits:2})} USDT</span>
                 </div>
                 <div className="flex justify-between items-center overflow-hidden">
-                  <span className="text-slate-500 text-[11px] uppercase tracking-wider flex-shrink-0">{t('dest_wallet')}</span>
-                  <span className="text-slate-300 text-[11px] truncate ml-3">{walletAddress}</span>
+                  <span className="text-slate-400 flex-shrink-0">{t('dest_wallet')}</span>
+                  <span className="text-slate-300 font-mono text-xs truncate ml-3">{walletAddress}</span>
                 </div>
               </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                  <Icon name="key" size={12} /> {t('enter_pin')}
-                </label>
-                <input ref={inputRef} type="password" value={pin} onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, ''))} placeholder="••••••" maxLength={6} disabled={isSigning} className="w-full bg-surface-950 border border-slate-700/80 rounded-lg px-4 py-3 text-white text-center tracking-[1em] focus:outline-none focus:border-brand-500/80 transition-colors font-mono text-xl shadow-inner disabled:opacity-50" />
+              <div>
+                <input ref={inputRef} type="password" value={pin} onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, ''))} placeholder="••••••" maxLength={6} disabled={isSigning} className="w-full bg-surface-950 border border-slate-700 rounded-xl px-4 py-4 text-white text-center tracking-[1em] focus:outline-none focus:border-brand-500 transition-colors font-mono text-xl disabled:opacity-50" />
               </div>
-              <div className="flex gap-3 pt-1">
-                <button onClick={onClose} disabled={isSigning} className="flex-1 py-2.5 rounded-lg font-semibold text-slate-400 bg-surface-800 hover:bg-slate-700/80 hover:text-white transition-colors disabled:opacity-50 text-xs border border-slate-700/50">{t('cancel')}</button>
-                <button onClick={handleConfirm} disabled={isSigning || pin.length < 6} className="flex-[2] py-2.5 rounded-lg font-bold text-white bg-brand-600 hover:bg-brand-500 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 text-xs shadow-lg shadow-brand-900/20">
-                  <Icon name="shield-check" size={16} /> <span className="truncate">{t('sign_withdraw_btn')}</span>
+              <div className="flex gap-3">
+                <button onClick={onClose} disabled={isSigning} className="flex-1 py-3 rounded-xl font-medium text-slate-400 hover:text-white bg-surface-800 hover:bg-slate-700 transition-colors disabled:opacity-50">{t('cancel')}</button>
+                <button onClick={handleConfirm} disabled={isSigning || pin.length < 4} className="flex-[2] py-3 rounded-xl font-bold text-white bg-brand-600 hover:bg-brand-500 transition-colors flex items-center justify-center gap-2 disabled:opacity-50">
+                  {isSigning ? <Icon name="loader-2" size={18} className="animate-spin" /> : <Icon name="check" size={18} />}
+                  <span>{isSigning ? t('signing_btn') : t('sign_withdraw_btn')}</span>
                 </button>
               </div>
             </div>
@@ -397,18 +398,17 @@
 
       if (!isLocked) return null;
       return (
-        <div className="fixed inset-0 z-[150] flex items-center justify-center bg-surface-950/95 backdrop-blur-xl p-4 fade-in bg-grid-pattern">
+        <div className="fixed inset-0 z-[150] flex items-center justify-center bg-surface-950/95 backdrop-blur-md p-4 fade-in">
           <div className="max-w-xs w-full flex flex-col items-center text-center">
-            <div className="w-16 h-16 bg-surface-900 rounded-2xl border border-slate-700/80 flex items-center justify-center text-brand-500 mb-5 relative shrink-0 shadow-2xl">
-              <div className="absolute inset-0 bg-brand-500/10 rounded-2xl animate-pulse"></div>
+            <div className="w-16 h-16 bg-surface-900 rounded-full flex items-center justify-center text-brand-500 mb-6 border border-slate-800">
               <Icon name="lock" size={28} />
             </div>
-            <h2 className="text-xl font-bold text-white mb-1.5 tracking-widest uppercase">{t('locked')}</h2>
-            <p className="text-slate-400 text-xs mb-6 px-4">{t('session_locked_warn')}</p>
-            <div className="w-full space-y-3">
-              <input ref={inputRef} type="password" value={pin} onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, ''))} placeholder="PIN" maxLength={6} className="w-full bg-surface-900/80 border border-slate-700/80 rounded-lg px-4 py-3.5 text-white text-center tracking-[1em] focus:outline-none focus:border-brand-500/80 transition-colors font-mono text-lg shadow-inner" />
-              <button onClick={() => { if(pin.length === 6) { onUnlock(); setPin(''); } }} disabled={pin.length < 6} className="w-full py-3.5 rounded-lg font-bold text-white bg-brand-600 hover:bg-brand-500 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 text-sm shadow-lg shadow-brand-900/20">
-                <Icon name="unlock" size={16} /> {t('unlock_session')}
+            <h2 className="text-xl font-bold text-white mb-2">{t('locked')}</h2>
+            <p className="text-slate-400 text-sm mb-8">{t('locked_desc')}</p>
+            <div className="w-full space-y-4">
+              <input ref={inputRef} type="password" value={pin} onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, ''))} placeholder="PIN" maxLength={6} className="w-full bg-surface-900 border border-slate-700 rounded-xl px-4 py-4 text-white text-center tracking-[1em] focus:outline-none focus:border-brand-500 transition-colors font-mono text-xl" />
+              <button onClick={() => { if(pin.length >= 4) { onUnlock(); setPin(''); } }} disabled={pin.length < 4} className="w-full py-4 rounded-xl font-bold text-white bg-brand-600 hover:bg-brand-500 transition-colors flex items-center justify-center gap-2 disabled:opacity-50">
+                {t('unlock_session')}
               </button>
             </div>
           </div>
@@ -422,137 +422,135 @@
       const usdtMaster = isTestnet ? "0xTEST...3H3H" : "0xMAIN...DOGS";
       const contractUsdtWallet = isTestnet ? "0xTEST...4kLp" : "0xMAIN...9mXq";
 
-      const handleDeposit = () => { setIsSimulating(true); simulationTimeoutRef.current = setTimeout(() => { onSimulateDeposit(); setIsSimulating(false); }, 1200); };
+      const handleDeposit = () => { setIsSimulating(true); simulationTimeoutRef.current = setTimeout(() => { onSimulateDeposit(); setIsSimulating(false); }, 1000); };
       useEffect(() => { return () => clearTimeout(simulationTimeoutRef.current); }, []);
 
       const localizedChartData = useMemo(() => chartData.map(d => ({...d, name: t(d.rawKey)})), [chartData, t]);
       const localizedSplitData = useMemo(() => RAW_SPLIT_DATA.map(d => ({...d, name: t(d.rawKey)})), [t]);
 
       return (
-        <div className="space-y-4 sm:space-y-6 fade-in">
+        <div className="space-y-6 fade-in">
           {/* Header Panel */}
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center bg-surface-900/60 backdrop-blur-md border border-slate-800/80 rounded-xl p-4 sm:p-5 shadow-xl gap-4">
+          <Card padding="p-5" className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <div className="w-full lg:w-auto overflow-hidden min-w-0 flex-1">
-              <div className="flex items-center gap-2.5 mb-2.5">
-                <div className="p-1.5 bg-brand-500/10 rounded-md text-brand-400 border border-brand-500/20 shrink-0"><Icon name="server" size={18} /></div>
-                <h2 className="text-lg sm:text-xl font-bold text-white uppercase tracking-widest truncate">{t('treasury_center')}</h2>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 bg-brand-500/10 rounded-lg flex items-center justify-center text-brand-400 shrink-0"><Icon name="building" size={20} /></div>
+                <h2 className="text-xl font-bold text-white truncate">{t('treasury_center')}</h2>
               </div>
-              <div className="flex flex-col gap-1.5 border-l-2 border-brand-500/30 pl-3 min-w-0">
-                <p className="text-[11px] text-slate-400 flex items-center gap-2"><span className="w-20 font-semibold shrink-0 uppercase tracking-wide">{t('vault_id')}</span><span className="font-mono text-slate-300 bg-surface-950 px-1.5 py-0.5 rounded border border-slate-800/80 truncate">{contractAddress}</span></p>
-                <p className="text-[11px] text-slate-400 flex items-center gap-2"><span className="w-20 font-semibold shrink-0 uppercase tracking-wide">{t('usdt_master')}</span><span className="font-mono text-secure-400 bg-surface-950 px-1.5 py-0.5 rounded border border-secure-900/50 truncate">{usdtMaster}</span></p>
+              <div className="flex flex-col gap-1 pl-1 min-w-0">
+                <p className="text-xs text-slate-400 flex items-center gap-2"><span className="w-20 font-medium shrink-0">{t('vault_id')}</span><span className="font-mono text-slate-300 truncate">{contractAddress}</span></p>
+                <p className="text-xs text-slate-400 flex items-center gap-2"><span className="w-20 font-medium shrink-0">{t('usdt_master')}</span><span className="font-mono text-slate-300 truncate">{usdtMaster}</span></p>
               </div>
             </div>
-            <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-2 sm:gap-3 shrink-0">
-              <button onClick={toggleNetwork} className={`px-4 py-2.5 rounded-lg text-[11px] font-bold border transition-colors flex items-center justify-center gap-1.5 uppercase tracking-wide ${isTestnet ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' : 'bg-surface-800 border-slate-700/80 text-slate-300 hover:bg-slate-700 hover:text-white'}`}>
-                <Icon name="network" size={14} /> {isTestnet ? 'Testnet' : 'Mainnet'}
+            <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-3 shrink-0 mt-2 lg:mt-0">
+              <button onClick={toggleNetwork} className={`px-4 py-2.5 rounded-xl text-sm font-medium border transition-colors flex items-center justify-center gap-2 ${isTestnet ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' : 'bg-surface-800 border-slate-700 text-slate-300 hover:bg-slate-700'}`}>
+                <Icon name="network" size={16} /> {isTestnet ? 'Testnet' : 'Mainnet'}
               </button>
-              <button onClick={handleDeposit} disabled={isSimulating} className="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-2 disabled:opacity-50 transition-colors shadow-lg shadow-brand-900/20 uppercase tracking-wide">
-                {isSimulating ? <Icon name="refresh-cw" size={14} className="animate-spin" /> : <Icon name="plus" size={14} />}
+              <button onClick={handleDeposit} disabled={isSimulating} className="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-50 transition-colors">
+                {isSimulating ? <Icon name="loader-2" size={16} className="animate-spin" /> : <Icon name="plus" size={16} />}
                 {t('simulate_deposit')}
               </button>
             </div>
-          </div>
+          </Card>
 
           {/* Financial Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            <StatCard title={t('processed_volume')} value={`${formatSecureCurrency(totalProcessed, isHidden)}`} subtext={<><Icon name="trending-up" size={10}/>{t('real_usdt')}</>} icon="activity" colorClass="text-secure-400" />
-            <StatCard title={t('company_reserve')} value={`${formatSecureCurrency(contractBalance, isHidden)}`} subtext={t('withdrawable_funds')} icon="wallet" colorClass="text-brand-400" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <StatCard title={t('processed_volume')} value={`${formatCurrency(totalProcessed, isHidden)}`} subtext={<><Icon name="trending-up" size={12}/>{t('real_usdt')}</>} icon="bar-chart-2" colorClass="text-brand-400" />
+            <StatCard title={t('company_reserve')} value={`${formatCurrency(contractBalance, isHidden)}`} subtext={t('withdrawable_funds')} icon="wallet" colorClass="text-success-400" highlight={true} />
             <StatCard title={t('active_nodes')} value={activePromoters.toString()} subtext={t('registered_pools')} icon="users" colorClass="text-indigo-400" />
           </div>
 
           {/* Analytics Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-            <StatCard title={t('daily_subs')} value="342" subtext={<><Icon name="arrow-up-right" size={10}/>+12% vs {t('yesterday') || 'prev'}</>} icon="user-plus" colorClass="text-purple-400" borderGlow={true} />
-            <StatCard title={t('conv_rate')} value="14.8%" subtext={t('conv_desc')} icon="percent" colorClass="text-amber-400" borderGlow={true} />
-            <StatCard title={t('bot_interactions')} value="8,904" subtext={t('interact_desc')} icon="message-square" colorClass="text-cyan-400" borderGlow={true} />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <StatCard title={t('daily_subs')} value="342" subtext={<><Icon name="arrow-up-right" size={12}/>+12% vs {t('yesterday') || 'prev'}</>} icon="user-plus" colorClass="text-purple-400" />
+            <StatCard title={t('conv_rate')} value="14.8%" subtext={t('conv_desc')} icon="percent" colorClass="text-amber-400" />
+            <StatCard title={t('bot_interactions')} value="8,904" subtext={t('interact_desc')} icon="mouse-pointer-click" colorClass="text-cyan-400" />
           </div>
 
           {/* Charts Row */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             <Card className="xl:col-span-2">
-              <div className="flex justify-between items-center mb-4 sm:mb-6">
-                <h3 className="text-sm font-bold text-white flex items-center gap-2 uppercase tracking-widest truncate">
-                  <Icon name="bar-chart-2" size={16} className="text-brand-400 shrink-0"/> {t('cash_flow')}
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                  {t('cash_flow')}
                 </h3>
               </div>
-              <div className="h-56 sm:h-72 w-full">
+              <div className="h-64 sm:h-72 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -20, bottom: 0}}>
                     <defs>
                       <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4}/>
+                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
                         <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
-                    <XAxis dataKey="name" stroke="#64748b" tick={{fill: '#64748b', fontSize: 10, fontFamily: 'monospace'}} axisLine={false} tickLine={false} dy={10} />
-                    <YAxis stroke="#64748b" tick={{fill: '#64748b', fontSize: 10, fontFamily: 'monospace'}} axisLine={false} tickLine={false} dx={-10} width={60} />
-                    <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '6px', color: '#fff', fontSize: '12px', fontFamily: 'monospace' }} itemStyle={{ color: '#60a5fa', fontWeight: 'bold' }} />
-                    <Area type="monotone" dataKey="amount" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorAmount)" activeDot={{r: 4, fill: '#3b82f6', stroke: '#fff', strokeWidth: 2}} />
+                    <XAxis dataKey="name" stroke="#64748b" tick={{fill: '#64748b', fontSize: 12}} axisLine={false} tickLine={false} dy={10} />
+                    <YAxis stroke="#64748b" tick={{fill: '#64748b', fontSize: 12}} axisLine={false} tickLine={false} dx={-10} width={60} />
+                    <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px', color: '#fff' }} itemStyle={{ color: '#60a5fa', fontWeight: 'bold' }} />
+                    <Area type="monotone" dataKey="amount" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorAmount)" activeDot={{r: 5, fill: '#3b82f6', stroke: '#fff', strokeWidth: 2}} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
             </Card>
 
             <Card>
-              <h3 className="text-sm font-bold text-white mb-4 sm:mb-6 flex items-center gap-2 uppercase tracking-widest truncate">
-                <Icon name="globe" size={16} className="text-purple-400 shrink-0"/> {t('geo_dist')}
+              <h3 className="text-base font-bold text-white mb-6">
+                {t('geo_dist')}
               </h3>
-              <div className="h-32 sm:h-40 w-full flex justify-center items-center relative">
+              <div className="h-40 w-full flex justify-center items-center relative">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie data={GEO_DATA} cx="50%" cy="50%" innerRadius="65%" outerRadius="85%" paddingAngle={4} dataKey="value" stroke="none">
                       {GEO_DATA.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
                     </Pie>
-                    <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '6px', fontSize:'12px', fontFamily:'monospace' }} itemStyle={{ fontWeight: 'bold', color:'#fff' }} formatter={(value) => [`${value}%`, 'Users']}/>
+                    <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px' }} itemStyle={{ fontWeight: 'bold', color:'#fff' }} formatter={(value) => [`${value}%`, 'Users']}/>
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-              <div className="grid grid-cols-2 gap-2 mt-4">
+              <div className="grid grid-cols-2 gap-3 mt-6">
                 {GEO_DATA.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-1.5 text-[10px] sm:text-xs bg-surface-950 px-2 py-1.5 rounded-md border border-slate-800/80">
-                    <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: item.color }}></div>
-                    <span className="text-slate-300 font-bold truncate">{item.name}</span>
-                    <span className="text-slate-500 ml-auto font-mono">{item.value}%</span>
+                  <div key={idx} className="flex items-center gap-2 text-xs">
+                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }}></div>
+                    <span className="text-slate-300 font-medium">{item.name}</span>
+                    <span className="text-slate-500 ml-auto">{item.value}%</span>
                   </div>
                 ))}
               </div>
             </Card>
           </div>
 
-          {/* Leaderboard and Language Row */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6 pb-20 md:pb-0">
-            <Card className="xl:col-span-2 flex flex-col p-0">
-              <div className="p-4 border-b border-slate-800/80 flex justify-between items-center bg-surface-900/40 shrink-0">
-                  <h3 className="text-white font-bold flex items-center gap-2 text-[11px] sm:text-xs tracking-widest uppercase truncate">
-                    <Icon name="award" size={16} className="text-amber-400 shrink-0"/> {t('top_promoters')}
-                  </h3>
+          {/* Leaderboard Row */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 pb-20 md:pb-0">
+            <Card className="xl:col-span-2 p-0 overflow-hidden" padding="p-0">
+              <div className="p-5 border-b border-slate-800 bg-surface-900/50">
+                  <h3 className="text-white font-bold">{t('top_promoters')}</h3>
               </div>
-              <div className="flex-1 overflow-x-auto custom-scrollbar p-2 sm:p-4">
+              <div className="overflow-x-auto custom-scrollbar p-1">
                  <table className="w-full text-left border-collapse min-w-[400px]">
                     <thead>
-                      <tr className="text-[10px] sm:text-xs text-slate-500 uppercase tracking-wider border-b border-slate-800/50">
-                        <th className="pb-2 px-2 font-semibold w-10">{t('rank')}</th>
-                        <th className="pb-2 px-2 font-semibold">{t('promoter')}</th>
-                        <th className="pb-2 px-2 font-semibold text-right">{t('leads')}</th>
-                        <th className="pb-2 px-2 font-semibold text-right">{t('conversion')}</th>
+                      <tr className="text-xs text-slate-500 uppercase font-medium">
+                        <th className="py-3 px-4 w-12">{t('rank')}</th>
+                        <th className="py-3 px-4">{t('promoter')}</th>
+                        <th className="py-3 px-4 text-right">{t('leads')}</th>
+                        <th className="py-3 px-4 text-right">{t('conversion')}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {TOP_PROMOTERS_DATA.map((p, idx) => (
-                        <tr key={p.id} className="border-b border-slate-800/30 hover:bg-surface-800/50 transition-colors group">
-                          <td className="py-2.5 px-2">
-                             <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-md flex items-center justify-center text-[10px] sm:text-xs font-bold font-mono ${idx === 0 ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : idx === 1 ? 'bg-slate-300/20 text-slate-300 border border-slate-400/30' : idx === 2 ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' : 'bg-surface-950 text-slate-500 border border-slate-800'}`}>
+                        <tr key={p.id} className="border-t border-slate-800 hover:bg-surface-800/30 transition-colors">
+                          <td className="py-3 px-4">
+                             <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${idx === 0 ? 'bg-amber-500/20 text-amber-400' : idx === 1 ? 'bg-slate-300/20 text-slate-300' : idx === 2 ? 'bg-orange-500/20 text-orange-400' : 'bg-surface-800 text-slate-400'}`}>
                                 {p.id}
                              </div>
                           </td>
-                          <td className="py-2.5 px-2 min-w-[120px]">
-                            <div className="font-bold text-slate-200 text-xs sm:text-sm truncate">{p.name}</div>
-                            <div className="text-[10px] text-slate-500 font-mono truncate">{p.username}</div>
+                          <td className="py-3 px-4">
+                            <div className="font-semibold text-slate-200 text-sm truncate">{p.name}</div>
+                            <div className="text-xs text-slate-500 truncate">{p.username}</div>
                           </td>
-                          <td className="py-2.5 px-2 text-right text-xs sm:text-sm text-slate-300 font-mono">{p.leads}</td>
-                          <td className="py-2.5 px-2 text-right">
-                             <span className="bg-secure-500/10 text-secure-400 px-1.5 py-0.5 rounded border border-secure-500/20 text-[10px] sm:text-xs font-mono font-bold">{p.conversion}%</span>
+                          <td className="py-3 px-4 text-right font-medium text-slate-300">{p.leads}</td>
+                          <td className="py-3 px-4 text-right">
+                             <span className="text-success-400 font-medium text-sm">{p.conversion}%</span>
                           </td>
                         </tr>
                       ))}
@@ -562,17 +560,17 @@
             </Card>
 
             <Card>
-              <h3 className="text-[11px] sm:text-xs font-bold text-white mb-4 sm:mb-6 flex items-center gap-2 uppercase tracking-widest truncate">
-                <Icon name="message-circle" size={16} className="text-cyan-400 shrink-0"/> {t('lang_perf')}
+              <h3 className="text-base font-bold text-white mb-6">
+                {t('lang_perf')}
               </h3>
-              <div className="h-40 sm:h-48 w-full">
+              <div className="h-48 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={LANG_DATA} margin={{top: 0, right: 0, left: -25, bottom: 0}}>
-                    <CartesianGrid strokeDasharray="2 2" stroke="#1e293b" vertical={false} />
-                    <XAxis dataKey="name" stroke="#64748b" tick={{fill: '#64748b', fontSize: 10, fontFamily:'monospace'}} axisLine={false} tickLine={false} dy={5} />
-                    <YAxis stroke="#64748b" tick={{fill: '#64748b', fontSize: 10, fontFamily:'monospace'}} axisLine={false} tickLine={false} />
-                    <Tooltip cursor={{fill: '#1e293b', opacity: 0.4}} contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '6px', color: '#fff', fontSize:'12px', fontFamily:'monospace' }} />
-                    <Bar dataKey="users" radius={[2, 2, 0, 0]} maxBarSize={40} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+                    <XAxis dataKey="name" stroke="#64748b" tick={{fill: '#64748b', fontSize: 12}} axisLine={false} tickLine={false} dy={5} />
+                    <YAxis stroke="#64748b" tick={{fill: '#64748b', fontSize: 12}} axisLine={false} tickLine={false} />
+                    <Tooltip cursor={{fill: '#1e293b', opacity: 0.5}} contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px', color: '#fff' }} />
+                    <Bar dataKey="users" radius={[4, 4, 0, 0]} maxBarSize={40} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -593,158 +591,179 @@
       const copyReferral = () => {
         const textToCopy = `https://tonpull.app/ref/${walletAddress.substring(0,8)}`;
         navigator.clipboard.writeText(textToCopy).then(() => {
-          setCopied(true); addToast(t('copied_secure'), t('copied_secure_desc'), "success");
+          setCopied(true); addToast(t('copied'), t('copied_desc'), "success");
           setTimeout(() => setCopied(false), 2000);
         }).catch(() => addToast(t('copy_error'), "", "error"));
       };
 
       return (
-        <div className="space-y-4 sm:space-y-6 max-w-6xl mx-auto fade-in">
-          {/* TG Profile / Identity Card */}
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between bg-surface-900/60 backdrop-blur-md border border-slate-800/80 rounded-xl p-4 sm:p-5 shadow-xl gap-4">
-            <div className="flex items-center gap-3 w-full lg:w-auto min-w-0 flex-1">
-              <div className="relative w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-full bg-surface-950 border border-secure-500/30 flex items-center justify-center shadow-inner">
-                 <Icon name="user" size={24} className="text-secure-500/50" />
-                 {/* Fake Avatar Image with Fallback */}
-                 <img src="logo-tondo.jpeg" alt="Profile" className="absolute inset-0 w-full h-full object-cover rounded-full border border-secure-500/50 z-10 transition-opacity" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                 <div className="absolute -bottom-1 -right-1 bg-secure-500 rounded-full p-0.5 border-2 border-surface-900 z-20">
-                   <Icon name="check" size={10} className="text-white" />
-                 </div>
-              </div>
-              <div className="overflow-hidden min-w-0">
-                <h2 className="text-base sm:text-lg font-bold text-white tracking-wide truncate">{tgUser.first_name} {tgUser.last_name}</h2>
-                <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
-                  <span className="text-secure-400 font-mono text-[11px] sm:text-xs truncate">{tgUser.username}</span>
-                  <span className="bg-surface-950 px-1.5 py-0.5 rounded border border-slate-800/80 text-[9px] text-slate-400 flex items-center gap-1 uppercase font-semibold">
-                    <Icon name="globe" size={10} /> {tgUser.language_code}
-                  </span>
+        <div className="space-y-6 max-w-6xl mx-auto fade-in">
+          
+          {/* Top Row: Profile, Tier & Action */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            {/* Profile & Tier Info */}
+            <Card className="lg:col-span-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6" padding="p-6">
+              <div className="flex items-center gap-4">
+                <div className="relative w-16 h-16 rounded-full bg-surface-800 flex items-center justify-center shrink-0 border-2 border-surface-700">
+                   <Icon name="user" size={32} className="text-slate-400" />
+                   <img src="logo-tondo.jpeg" alt="Profile" className="absolute inset-0 w-full h-full object-cover rounded-full z-10" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                 </div>
-              </div>
-            </div>
-            <div className="bg-surface-950 p-1.5 rounded-lg border border-slate-800/80 flex items-center shadow-inner w-full lg:w-auto shrink-0 min-w-0">
-              <div className="px-2.5 py-1.5 text-[11px] font-mono text-slate-500 truncate flex-1 lg:max-w-[140px]"><Icon name="wallet" size={12} className="inline mr-1 mb-0.5 text-slate-600"/>...{walletAddress.substring(walletAddress.length-6)}</div>
-              <button onClick={copyReferral} className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] sm:text-xs font-bold transition-colors border ${copied ? 'bg-secure-500/10 text-secure-400 border-secure-500/30' : 'bg-surface-800 border-slate-700/80 hover:bg-slate-700 hover:text-white text-slate-300'}`}>
-                <Icon name={copied ? 'check-circle-2' : 'copy'} size={12} />
-                <span className="hidden sm:inline">{copied ? t('copied') : t('copy_link')}</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Mini Analytics Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-             <div className="bg-surface-900/40 backdrop-blur-sm border border-slate-800/60 rounded-xl p-3 flex items-center gap-3">
-                <div className="p-2 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-md shrink-0"><Icon name="user-plus" size={16} /></div>
-                <div className="min-w-0">
-                   <p className="text-[9px] uppercase tracking-widest text-slate-500 font-bold truncate">{t('daily_subs')}</p>
-                   <p className="text-lg font-mono text-slate-200 font-bold leading-tight">24</p>
-                </div>
-             </div>
-             <div className="bg-surface-900/40 backdrop-blur-sm border border-slate-800/60 rounded-xl p-3 flex items-center gap-3">
-                <div className="p-2 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-md shrink-0"><Icon name="percent" size={16} /></div>
-                <div className="min-w-0">
-                   <p className="text-[9px] uppercase tracking-widest text-slate-500 font-bold truncate">{t('conv_rate')}</p>
-                   <p className="text-lg font-mono text-slate-200 font-bold leading-tight">18.5%</p>
-                </div>
-             </div>
-             <div className="bg-surface-900/40 backdrop-blur-sm border border-slate-800/60 rounded-xl p-3 flex items-center gap-3">
-                <div className="p-2 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded-md shrink-0"><Icon name="message-square" size={16} /></div>
-                <div className="min-w-0">
-                   <p className="text-[9px] uppercase tracking-widest text-slate-500 font-bold truncate">{t('bot_interactions')}</p>
-                   <p className="text-lg font-mono text-slate-200 font-bold leading-tight">842</p>
-                </div>
-             </div>
-          </div>
-
-          {/* Main Vault Area */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 pb-20 md:pb-0">
-            <div className="lg:col-span-7 flex flex-col gap-4 sm:gap-6">
-              <Card className="flex flex-col items-center justify-center text-center p-6 sm:p-10 relative overflow-hidden bg-gradient-to-b from-surface-900/80 to-surface-950/90">
-                {/* Background glow */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-secure-500/5 rounded-full blur-3xl pointer-events-none"></div>
-
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-surface-950 text-secure-400 text-[10px] font-bold mb-6 border border-secure-500/20 tracking-widest uppercase shadow-inner z-10">
-                  <Icon name="lock" size={12} /> {t('vault_available')}
-                </div>
-                
-                <div className="flex flex-col items-center justify-center w-full min-w-0 z-10">
-                  <div className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white mb-2 tracking-tighter font-mono flex items-baseline justify-center truncate w-full drop-shadow-md">
-                    {formatSecureCurrency(available, isHidden)} 
-                    {!isHidden && <span className="text-lg sm:text-xl text-secure-500 ml-2 font-sans shrink-0 font-semibold">USDT</span>}
+                <div>
+                  <h2 className="text-xl font-bold text-white truncate">{tgUser.first_name} {tgUser.last_name}</h2>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-slate-400 text-sm truncate">{tgUser.username}</span>
+                    <span className="bg-surface-800 px-2 py-0.5 rounded text-xs text-slate-300 uppercase font-medium">{tgUser.language_code}</span>
                   </div>
-                  <button onClick={toggleHidden} className="text-slate-500 hover:text-secure-400 flex items-center gap-1.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest transition-colors bg-surface-950 px-2.5 py-1 rounded-md border border-slate-800/80 shadow-inner shrink-0">
-                    <Icon name={isHidden ? 'eye' : 'eye-off'} size={12} /> {isHidden ? t('show_balances') : t('hide_balances')}
-                  </button>
                 </div>
+              </div>
 
-                <p className="text-slate-400/80 mt-6 mb-8 max-w-sm text-[11px] sm:text-xs leading-relaxed z-10">{t('escrow_desc')}</p>
-                
-                <button onClick={() => { if(available > 0) setShowSecureModal(true); }} disabled={isClaiming || available <= 0} className={`w-full max-w-sm py-3.5 rounded-lg font-bold text-sm flex items-center justify-center gap-2.5 transition-all shadow-xl z-10 uppercase tracking-wide ${available <= 0 ? 'bg-surface-950 text-slate-600 border border-slate-800' : isClaiming ? 'bg-secure-600 text-white cursor-wait' : 'bg-secure-600 hover:bg-secure-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.3)] border border-secure-500/50'}`}>
-                  {available <= 0 ? (<><Icon name="lock" size={16} /> <span className="truncate">{t('no_funds')}</span></>) : isClaiming ? (<><Icon name="refresh-cw" size={16} className="animate-spin" /> <span className="truncate">{t('signing')}</span></>) : (<><Icon name="fingerprint" size={20} /> <span className="truncate">{t('unlock_withdraw')}</span></>)}
+              <div className="w-full sm:w-auto bg-surface-950/50 rounded-xl p-4 border border-slate-800/50 flex-1 sm:max-w-xs">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-xs text-slate-400 font-medium">{t('tier_status')}</span>
+                  <span className="text-xs font-bold text-amber-400 flex items-center gap-1"><Icon name="star" size={12}/> Gold Partner</span>
+                </div>
+                <div className="w-full bg-surface-800 rounded-full h-1.5 mb-2">
+                  <div className="bg-amber-400 h-1.5 rounded-full" style={{ width: '75%' }}></div>
+                </div>
+                <div className="flex justify-between text-[10px] text-slate-500">
+                  <span>25% {t('rev_share')}</span>
+                  <span>15 Leads {t('next_tier')}</span>
+                </div>
+              </div>
+            </Card>
+
+            {/* Referral Link Area */}
+            <Card className="flex flex-col justify-center bg-gradient-to-br from-brand-600/10 to-surface-900 border-brand-500/20" padding="p-6">
+              <p className="text-sm text-slate-300 font-medium mb-3">Your Referral Link</p>
+              <div className="flex items-center bg-surface-950 rounded-lg border border-slate-700 p-1.5">
+                <div className="px-3 text-xs text-slate-400 truncate flex-1 font-mono">
+                  tonpull.app/ref/{walletAddress.substring(0,8)}
+                </div>
+                <button onClick={copyReferral} className={`shrink-0 flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-colors ${copied ? 'bg-success-500 text-white' : 'bg-brand-600 hover:bg-brand-500 text-white'}`}>
+                  <Icon name={copied ? 'check' : 'copy'} size={16} />
+                  <span className="hidden sm:inline">{copied ? t('copied') : t('copy_link')}</span>
                 </button>
-                
-                <div className="flex flex-col items-center gap-1.5 mt-6 z-10">
-                  <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] text-slate-500 font-bold uppercase tracking-widest"><Icon name="shield-check" size={12} className="text-secure-500 shrink-0"/> AES-256 SECURE</div>
-                  <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-widest"><Icon name="zap" size={12} className="text-amber-500 shrink-0"/> {t('network_fee')}</div>
-                </div>
-              </Card>
-
-              <Card className="w-full h-[280px] sm:h-[320px] flex flex-col">
-                 <h3 className="text-xs sm:text-sm font-bold text-white mb-4 flex items-center gap-2 uppercase tracking-widest shrink-0 truncate">
-                  <Icon name="trending-up" size={16} className="text-secure-400"/> {t('earnings_chart')}
-                </h3>
-                <div className="flex-1 w-full min-h-0">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -25, bottom: 0}}>
-                      <defs>
-                        <linearGradient id="colorPromoterAmount" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/>
-                          <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="2 2" stroke="#1e293b" vertical={false} />
-                      <XAxis dataKey="name" stroke="#64748b" tick={{fill: '#64748b', fontSize: 10, fontFamily:'monospace'}} axisLine={false} tickLine={false} dy={5} />
-                      <YAxis stroke="#64748b" tick={{fill: '#64748b', fontSize: 10, fontFamily:'monospace'}} axisLine={false} tickLine={false} />
-                      <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '6px', color: '#fff', fontSize:'12px', fontFamily:'monospace' }} itemStyle={{ color: '#34d399', fontWeight: 'bold' }} />
-                      <Area type="monotone" dataKey="amount" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorPromoterAmount)" activeDot={{r: 4, fill: '#10b981', stroke: '#fff', strokeWidth: 2}} />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
-              </Card>
-            </div>
-
-            <div className="lg:col-span-5 space-y-4 sm:space-y-6">
-              <StatCard title={t('lifetime_deposit')} value={`${formatSecureCurrency(lifetime, isHidden)}`} subtext={t('validated_earnings')} icon="database" colorClass="text-secure-400" />
-              <Card className="h-[350px] lg:h-[420px] flex flex-col p-0">
-                <div className="p-4 border-b border-slate-800/80 flex justify-between items-center bg-surface-900/40 shrink-0">
-                  <h3 className="text-white font-bold flex items-center gap-2 text-[11px] sm:text-xs tracking-widest uppercase truncate">
-                    <Icon name="list" size={14} className="text-slate-400 shrink-0"/> {t('audit_trail')}
-                  </h3>
-                  <span className="text-[9px] sm:text-[10px] bg-secure-500/10 text-secure-400 px-1.5 py-0.5 rounded border border-secure-500/20 font-mono shrink-0 uppercase">Verified</span>
-                </div>
-                <div className="flex-1 p-3 sm:p-4 overflow-y-auto custom-scrollbar">
-                  {history.length === 0 ? (
-                    <div className="h-full flex flex-col items-center justify-center text-slate-500 text-center">
-                      <Icon name="shield-off" size={28} className="mb-2 opacity-20" />
-                      <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest">{t('no_tx')}</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-2.5">
-                      {history.map((item, idx) => (
-                        <div key={idx} className="flex justify-between items-center border-l-2 border-secure-500/50 pl-2.5 bg-surface-950/50 p-2.5 rounded-r-md hover:bg-surface-800/50 transition-colors min-w-0 gap-2 border-y border-r border-slate-800/30">
-                          <div className="min-w-0">
-                            <p className="text-slate-300 text-[11px] sm:text-xs font-bold truncate">{item.date}</p>
-                            <p className="text-[9px] sm:text-[10px] text-slate-500 font-mono mt-0.5 flex items-center gap-1 truncate"><Icon name="check-circle-2" size={10} className="text-secure-500 shrink-0"/> {item.tx}</p>
-                          </div>
-                          <span className="text-secure-400 font-bold font-mono text-[11px] sm:text-xs shrink-0">+{formatSecureCurrency(item.amount, isHidden)}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </Card>
-            </div>
+              </div>
+            </Card>
           </div>
-          <SecurityModal isOpen={showSecureModal} onClose={() => setShowSecureModal(false)} onConfirm={() => { setShowSecureModal(false); setIsClaiming(true); setTimeout(() => { setIsClaiming(false); onProcessClaim(available); }, 2500); }} amount={available} walletAddress={walletAddress} t={t} />
+
+          {/* 4 KPIs Row */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+             <StatCard title={t('lifetime_deposit')} value={`${formatCurrency(lifetime, isHidden)}`} subtext="USDT" icon="coins" colorClass="text-brand-400" />
+             <StatCard title={t('daily_subs')} value="345" subtext="+12 this week" icon="users" colorClass="text-purple-400" />
+             <StatCard title={t('conv_rate')} value="18.5%" subtext="Lead to Active" icon="pie-chart" colorClass="text-amber-400" />
+             <StatCard title={t('bot_interactions')} value="1,240" subtext="Total Clicks" icon="mouse-pointer-click" colorClass="text-cyan-400" />
+          </div>
+
+          {/* Vault & Earnings Chart */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            {/* Vault Area */}
+            <Card className="flex flex-col items-center justify-center text-center relative overflow-hidden" padding="p-8">
+              <div className="absolute top-0 right-0 p-4">
+                <button onClick={toggleHidden} className="text-slate-400 hover:text-white transition-colors p-2 bg-surface-800 rounded-lg">
+                  <Icon name={isHidden ? 'eye' : 'eye-off'} size={18} />
+                </button>
+              </div>
+              
+              <div className="w-12 h-12 bg-success-500/10 text-success-400 rounded-full flex items-center justify-center mb-4">
+                <Icon name="wallet" size={24} />
+              </div>
+              <p className="text-sm text-slate-400 font-medium mb-1">{t('vault_available')}</p>
+              
+              <div className="text-4xl sm:text-5xl font-bold text-white mb-6 tracking-tight truncate w-full">
+                {formatCurrency(available, isHidden)} 
+                {!isHidden && <span className="text-xl text-success-400 ml-2">USDT</span>}
+              </div>
+              
+              <button onClick={() => { if(available > 0) setShowSecureModal(true); }} disabled={isClaiming || available <= 0} className={`w-full max-w-xs py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all ${available <= 0 ? 'bg-surface-800 text-slate-500' : isClaiming ? 'bg-success-600 text-white' : 'bg-success-600 hover:bg-success-500 text-white shadow-lg shadow-success-900/20'}`}>
+                {available <= 0 ? t('no_funds') : isClaiming ? (<><Icon name="loader-2" size={18} className="animate-spin" /> {t('signing')}</>) : t('unlock_withdraw')}
+              </button>
+            </Card>
+
+            {/* Earnings Chart */}
+            <Card className="lg:col-span-2 flex flex-col">
+              <h3 className="text-base font-bold text-white mb-6">
+                {t('earnings_chart')}
+              </h3>
+              <div className="flex-1 w-full min-h-[200px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -20, bottom: 0}}>
+                    <defs>
+                      <linearGradient id="colorPromoterAmount" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+                    <XAxis dataKey="name" stroke="#64748b" tick={{fill: '#64748b', fontSize: 12}} axisLine={false} tickLine={false} dy={10} />
+                    <YAxis stroke="#64748b" tick={{fill: '#64748b', fontSize: 12}} axisLine={false} tickLine={false} dx={-10} width={60} />
+                    <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px', color: '#fff' }} itemStyle={{ color: '#34d399', fontWeight: 'bold' }} />
+                    <Area type="monotone" dataKey="amount" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorPromoterAmount)" activeDot={{r: 5, fill: '#10b981', stroke: '#fff', strokeWidth: 2}} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </Card>
+          </div>
+
+          {/* Activity & History Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-20 md:pb-0">
+            
+            {/* Recent Leads Activity */}
+            <Card padding="p-0" className="flex flex-col">
+              <div className="p-5 border-b border-slate-800 bg-surface-900/50">
+                <h3 className="text-white font-bold">{t('recent_activity')}</h3>
+              </div>
+              <div className="flex-1 p-5 overflow-y-auto custom-scrollbar h-[300px]">
+                <div className="space-y-4">
+                  {RECENT_LEADS_DATA.map((lead, idx) => (
+                    <div key={idx} className="flex items-start gap-4">
+                      <div className={`p-2 rounded-lg shrink-0 mt-1 ${lead.type === 'deposit' ? 'bg-success-500/10 text-success-400' : 'bg-brand-500/10 text-brand-400'}`}>
+                        <Icon name={lead.type === 'deposit' ? 'coins' : 'user-plus'} size={16} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-slate-200">
+                          <span className="font-semibold text-white">{lead.username}</span> {lead.type === 'deposit' ? t('deposited') : t('joined')}
+                        </p>
+                        {lead.type === 'deposit' && <p className="text-xs font-bold text-success-400 mt-0.5">{lead.amount} USDT</p>}
+                        <p className="text-xs text-slate-500 mt-1">{lead.time}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Card>
+
+            {/* Withdrawal History */}
+            <Card padding="p-0" className="flex flex-col">
+              <div className="p-5 border-b border-slate-800 bg-surface-900/50">
+                <h3 className="text-white font-bold">{t('audit_trail')}</h3>
+              </div>
+              <div className="flex-1 p-5 overflow-y-auto custom-scrollbar h-[300px]">
+                {history.length === 0 ? (
+                  <div className="h-full flex flex-col items-center justify-center text-slate-500">
+                    <Icon name="history" size={32} className="mb-3 opacity-50" />
+                    <p className="text-sm font-medium">{t('no_tx')}</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {history.map((item, idx) => (
+                      <div key={idx} className="flex justify-between items-center bg-surface-950 p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition-colors">
+                        <div>
+                          <p className="text-slate-200 text-sm font-medium">{item.date}</p>
+                          <p className="text-xs text-slate-500 mt-1 font-mono">{item.tx}</p>
+                        </div>
+                        <span className="text-success-400 font-bold text-sm">+{formatCurrency(item.amount, isHidden)}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </Card>
+
+          </div>
+          <SecurityModal isOpen={showSecureModal} onClose={() => setShowSecureModal(false)} onConfirm={() => { setShowSecureModal(false); setIsClaiming(true); setTimeout(() => { setIsClaiming(false); onProcessClaim(available); }, 1500); }} amount={available} walletAddress={walletAddress} t={t} />
         </div>
       );
     };
@@ -754,13 +773,13 @@
       const [view, setView] = useState('promoter');
       const [wallet, setWallet] = useState({ connected: false, address: null });
       const [toasts, setToasts] = useState([]);
-      const [isBalanceHidden, setIsBalanceHidden] = useState(true);
+      const [isBalanceHidden, setIsBalanceHidden] = useState(false);
       const [idleTime, setIdleTime] = useState(0);
       const [isLocked, setIsLocked] = useState(false);
       const [isTestnet, setIsTestnet] = useState(false);
       const [isInitLoad, setIsInitLoad] = useState(true);
 
-      const contractAddress = "0xTON_SPLIT_v1...8A2B"; 
+      const contractAddress = "0xTON_SPLIT...8A2B"; 
       const [contractBalance, setContractBalance] = useState(3200.50);
       const [totalProcessed, setTotalProcessed] = useState(12450.00);
       const [activePromoters, setActivePromoters] = useState(142);
@@ -769,14 +788,13 @@
       const [promoterAvailable, setPromoterAvailable] = useState(450.00);
       const [promoterLifetime, setPromoterLifetime] = useState(3250.00);
       const [claimHistory, setClaimHistory] = useState([
-        { date: '12 Mag 2026', amount: 120.00, tx: '0xTX...4f2' }, { date: '05 Mag 2026', amount: 300.00, tx: '0xTX...9x1' }
+        { date: '12 May 2026', amount: 120.00, tx: '0xTX...4f2' }, { date: '05 May 2026', amount: 300.00, tx: '0xTX...9x1' }
       ]);
 
-      // Detect language on load
       useEffect(() => {
         const browserLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
         if (['en', 'es', 'pt', 'it'].includes(browserLang)) setLang(browserLang);
-        setTimeout(() => setIsInitLoad(false), 800); // Simulate secure boot
+        setTimeout(() => setIsInitLoad(false), 600);
       }, []);
 
       const t = useCallback((key) => translations[lang]?.[key] || translations['en'][key] || key, [lang]);
@@ -785,16 +803,15 @@
         setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000); 
       }, []);
 
-      // Inactivity Timer
       useEffect(() => {
         if (!wallet.connected) return;
         const timer = setInterval(() => {
           setIdleTime(prev => {
             const next = prev + 1;
-            if (next === 60 && !isLocked) setIsLocked(true); 
-            if (next >= 300) {
+            if (next === 300 && !isLocked) setIsLocked(true); // 5 mins to lock
+            if (next >= 1800) { // 30 mins full logout
               setWallet({ connected: false, address: null }); setIsLocked(false);
-              addToast(t('session_ended'), t('session_ended_desc'), "error"); return 0;
+              addToast(t('session_ended'), t('session_ended_desc'), "info"); return 0;
             }
             return next;
           });
@@ -806,11 +823,11 @@
 
       const toggleWallet = () => {
         if (wallet.connected) {
-          setWallet({ connected: false, address: null }); setIdleTime(0); setIsLocked(false); setIsBalanceHidden(true);
+          setWallet({ connected: false, address: null }); setIdleTime(0); setIsLocked(false); setIsBalanceHidden(false);
           addToast(t('disconnected'), t('disconnected_desc'), "info");
         } else {
-          setWallet({ connected: true, address: view === 'company' ? "0xCORP_ADMIN...77Xz" : "0xPARTNER_NODE...99Xz" });
-          setIdleTime(0); setIsBalanceHidden(true); addToast(t('connected'), t('connected_desc'), "success");
+          setWallet({ connected: true, address: view === 'company' ? "0xCORP_ADMIN...77Xz" : "0xPARTNER...99Xz" });
+          setIdleTime(0); setIsBalanceHidden(false); addToast(t('connected'), t('connected_desc'), "success");
         }
       };
 
@@ -828,86 +845,72 @@
         setPromoterAvailable(prev => prev + (deposit*0.5)); addToast(t('deposit_detected'), t('vault_updated'), "info");
       };
 
-      if (isInitLoad) return <div className="initial-loader fade-in"><div className="hex-spinner"><div className="hex-inner"></div></div><div className="text-[10px] text-slate-500 mt-2 font-mono">ESTABLISHING SECURE CONNECTION...</div></div>;
+      if (isInitLoad) return <div className="initial-loader"><div className="spinner-ring"></div><div className="text-sm text-slate-400 mt-2 font-medium">Loading Dashboard...</div></div>;
 
       return (
-        <div className="bg-grid-pattern min-h-screen flex flex-col fade-in">
+        <div className="bg-grid-pattern min-h-screen flex flex-col">
           <ToastContainer toasts={toasts} />
           <LockScreenModal isLocked={isLocked} onUnlock={() => {setIsLocked(false); setIdleTime(0);}} t={t} />
 
-          {/* Secure Header */}
-          <nav className="bg-surface-900/80 backdrop-blur-xl border-b border-slate-800/80 sticky top-0 z-40 shadow-sm">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2">
+          {/* Header */}
+          <nav className="bg-surface-950/80 backdrop-blur-lg border-b border-slate-800 sticky top-0 z-40">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
               
-              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                <div className="relative w-7 h-7 sm:w-9 sm:h-9 rounded-md overflow-hidden shrink-0 border border-brand-500/30">
-                   <div className="absolute inset-0 bg-brand-600 flex items-center justify-center z-0">
-                      <Icon name="shield" size={16} className="text-white" />
-                   </div>
-                   {/* Logo image with fallback to icon */}
-                   <img src="logo-tondo.jpeg" alt="Logo" className="absolute inset-0 w-full h-full object-cover z-10 transition-opacity" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+              <div className="flex items-center gap-3">
+                <div className="relative w-8 h-8 rounded-full overflow-hidden shrink-0 bg-surface-800 border border-slate-700">
+                   <Icon name="layers" size={18} className="absolute inset-0 m-auto text-brand-400" />
+                   <img src="logo-tondo.jpeg" alt="Logo" className="absolute inset-0 w-full h-full object-cover z-10" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                 </div>
-                <div className="min-w-0 flex flex-col justify-center">
-                  <h1 className="text-[11px] sm:text-sm font-extrabold tracking-widest text-slate-100 leading-tight truncate uppercase">{t('app_title')}</h1>
-                  <span className="text-[8px] sm:text-[9px] text-brand-400 font-bold tracking-widest uppercase truncate block font-mono">Secure Terminal</span>
-                </div>
+                <h1 className="text-sm sm:text-base font-bold text-white tracking-tight truncate hidden sm:block">{t('app_title')}</h1>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
-                <div className="flex items-center bg-surface-950 border border-slate-700/80 rounded-md px-1.5 py-1 shadow-inner h-7 sm:h-8">
-                  <Icon name="globe" size={12} className="text-slate-500 mx-1 hidden sm:block" />
-                  <select value={lang} onChange={e => setLang(e.target.value)} className="bg-transparent text-slate-300 text-[10px] sm:text-xs font-bold outline-none cursor-pointer uppercase">
+              <div className="flex items-center gap-3 shrink-0">
+                <div className="flex items-center bg-surface-900 border border-slate-800 rounded-lg px-2 py-1">
+                  <Icon name="globe" size={14} className="text-slate-400 mr-1 hidden sm:block" />
+                  <select value={lang} onChange={e => setLang(e.target.value)} className="bg-transparent text-slate-300 text-xs font-semibold outline-none cursor-pointer uppercase">
                     <option value="en">EN</option><option value="es">ES</option><option value="pt">PT</option><option value="it">IT</option>
                   </select>
                 </div>
 
                 {wallet.connected && (
-                  <div className="hidden md:flex items-center bg-surface-950 border border-slate-700/80 rounded-md p-0.5 h-8">
-                    <button onClick={() => {setView('promoter'); setWallet(w => ({...w, address: "0xPARTNER_NODE...99Xz"}));}} className={`px-3 h-full text-[10px] font-bold rounded-sm transition-colors uppercase tracking-wider ${view === 'promoter' ? 'bg-surface-800 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}>{t('partner_dash')}</button>
-                    <button onClick={() => {setView('company'); setWallet(w => ({...w, address: "0xCORP_ADMIN...77Xz"}));}} className={`px-3 h-full text-[10px] font-bold rounded-sm transition-colors uppercase tracking-wider ${view === 'company' ? 'bg-surface-800 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}>{t('company_dash')}</button>
+                  <div className="hidden md:flex items-center bg-surface-900 border border-slate-800 rounded-lg p-1">
+                    <button onClick={() => {setView('promoter'); setWallet(w => ({...w, address: "0xPARTNER...99Xz"}));}} className={`px-4 py-1.5 text-xs font-medium rounded-md transition-colors ${view === 'promoter' ? 'bg-surface-800 text-white' : 'text-slate-400 hover:text-white'}`}>{t('partner_dash')}</button>
+                    <button onClick={() => {setView('company'); setWallet(w => ({...w, address: "0xCORP_ADMIN...77Xz"}));}} className={`px-4 py-1.5 text-xs font-medium rounded-md transition-colors ${view === 'company' ? 'bg-surface-800 text-white' : 'text-slate-400 hover:text-white'}`}>{t('company_dash')}</button>
                   </div>
                 )}
 
-                <button onClick={toggleWallet} className={`flex items-center gap-1.5 px-3 sm:px-4 h-7 sm:h-8 rounded-md font-bold text-[10px] sm:text-xs transition-colors border shadow-sm min-w-0 uppercase tracking-wider ${wallet.connected ? 'bg-surface-950 border-slate-700/80 text-slate-300 hover:bg-slate-800 hover:text-white' : 'bg-brand-600 border-brand-500 text-white hover:bg-brand-500 shadow-brand-900/20'}`}>
-                  {wallet.connected ? (<><Icon name="power" size={12} className="text-red-400 shrink-0"/><span className="truncate hidden sm:inline">{wallet.address.substring(0,6)}</span></>) : (<><Icon name="key" size={12} className="shrink-0"/> <span className="truncate">{t('secure_login')}</span></>)}
+                <button onClick={toggleWallet} className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-colors ${wallet.connected ? 'bg-surface-900 border border-slate-800 text-slate-300 hover:bg-surface-800 hover:text-white' : 'bg-brand-600 text-white hover:bg-brand-500'}`}>
+                  {wallet.connected ? (<><Icon name="log-out" size={16} className="text-slate-400 shrink-0"/><span className="hidden sm:inline">{t('logout')}</span></>) : (<><Icon name="log-in" size={16} className="shrink-0"/> <span>{t('login')}</span></>)}
                 </button>
               </div>
             </div>
-            {/* Status Bar */}
-            <div className="w-full bg-surface-950 border-b border-slate-800/50 py-0.5 flex justify-center items-center">
-              <p className="text-[8px] sm:text-[9px] font-mono text-slate-500 flex items-center gap-2 tracking-widest uppercase">
-                <span className="w-1.5 h-1.5 rounded-full bg-secure-500 animate-pulse"></span>
-                System Online | {t('e2e_encryption')} | Latency: 12ms | IP: 192.168.*.*
-              </p>
-            </div>
           </nav>
 
-          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full relative z-10">
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full relative z-10">
             {!wallet.connected ? (
-              <div className="flex flex-col items-center justify-center h-[70vh] text-center space-y-6 fade-in">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-surface-900 text-brand-500 rounded-2xl flex items-center justify-center border border-slate-700/80 shadow-2xl relative">
-                  <div className="absolute inset-0 bg-brand-500/5 rounded-2xl animate-pulse"></div>
-                  <Icon name="shield" size={40} className="sm:w-[48px] sm:h-[48px]"/>
+              <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6 fade-in">
+                <div className="w-20 h-20 bg-surface-900 text-brand-500 rounded-2xl flex items-center justify-center border border-slate-800 mb-2">
+                  <Icon name="layout-dashboard" size={32} />
                 </div>
-                <div className="max-w-md px-4">
-                  <h2 className="text-xl sm:text-2xl font-extrabold text-white mb-3 uppercase tracking-widest leading-tight">{t('restricted_access')}</h2>
-                  <p className="text-slate-400 text-[11px] sm:text-xs leading-relaxed font-mono">{t('restricted_desc')}</p>
+                <div className="max-w-md">
+                  <h2 className="text-2xl font-bold text-white mb-3">{t('welcome_title')}</h2>
+                  <p className="text-slate-400 text-sm leading-relaxed">{t('welcome_desc')}</p>
                 </div>
-                <button onClick={toggleWallet} className="px-6 sm:px-8 py-3.5 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-bold text-xs sm:text-sm shadow-lg shadow-brand-900/30 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 uppercase tracking-wide border border-brand-500/50">
-                  <Icon name="fingerprint" size={18} /> {t('start_secure_conn')}
+                <button onClick={toggleWallet} className="px-8 py-3 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-bold text-sm shadow-lg shadow-brand-500/20 transition-all hover:-translate-y-0.5 flex items-center gap-2">
+                  <Icon name="arrow-right" size={18} /> {t('start_conn')}
                 </button>
               </div>
             ) : (
               view === 'company' ? 
-                <CompanyDashboard contractAddress={contractAddress} isTestnet={isTestnet} toggleNetwork={()=>setIsTestnet(!isTestnet)} contractBalance={contractBalance} totalProcessed={totalProcessed} activePromoters={activePromoters} chartData={chartData} onSimulateDeposit={handleSimulateDeposit} isHidden={isBalanceHidden} toggleHidden={() => setIsBalanceHidden(!isBalanceHidden)} t={t} /> : 
+                <CompanyDashboard contractAddress={contractAddress} isTestnet={isTestnet} toggleNetwork={()=>setIsTestnet(!isTestnet)} contractBalance={contractBalance} totalProcessed={totalProcessed} activePromoters={activePromoters} chartData={chartData} onSimulateDeposit={handleSimulateDeposit} isHidden={isBalanceHidden} t={t} /> : 
                 <PromoterDashboard walletAddress={wallet.address} available={promoterAvailable} lifetime={promoterLifetime} history={claimHistory} onProcessClaim={handleProcessClaim} addToast={addToast} isHidden={isBalanceHidden} toggleHidden={() => setIsBalanceHidden(!isBalanceHidden)} lang={lang} t={t} />
             )}
             
-            {/* Mobile Bottom Nav */}
+            {/* Mobile View Switcher */}
             {wallet.connected && (
-              <div className="md:hidden fixed bottom-4 left-4 right-4 bg-surface-900/90 backdrop-blur-xl border border-slate-700/80 rounded-xl p-1.5 flex shadow-2xl z-40 gap-1.5">
-                <button onClick={() => {setView('promoter'); setWallet(w => ({...w, address: "0xPARTNER_NODE...99Xz"}));}} className={`flex-1 py-2.5 rounded-lg text-[10px] font-bold transition-colors uppercase tracking-wider truncate px-1 border ${view === 'promoter' ? 'bg-brand-600 text-white border-brand-500/50' : 'text-slate-400 border-transparent hover:bg-surface-800'}`}>{t('partner_dash')}</button>
-                <button onClick={() => {setView('company'); setWallet(w => ({...w, address: "0xCORP_ADMIN...77Xz"}));}} className={`flex-1 py-2.5 rounded-lg text-[10px] font-bold transition-colors uppercase tracking-wider truncate px-1 border ${view === 'company' ? 'bg-brand-600 text-white border-brand-500/50' : 'text-slate-400 border-transparent hover:bg-surface-800'}`}>{t('company_dash')}</button>
+              <div className="md:hidden fixed bottom-6 left-4 right-4 bg-surface-900/95 backdrop-blur-xl border border-slate-800 rounded-xl p-1.5 flex shadow-2xl z-40 gap-1.5">
+                <button onClick={() => {setView('promoter'); setWallet(w => ({...w, address: "0xPARTNER...99Xz"}));}} className={`flex-1 py-3 rounded-lg text-xs font-semibold transition-colors ${view === 'promoter' ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-surface-800'}`}>{t('partner_dash')}</button>
+                <button onClick={() => {setView('company'); setWallet(w => ({...w, address: "0xCORP_ADMIN...77Xz"}));}} className={`flex-1 py-3 rounded-lg text-xs font-semibold transition-colors ${view === 'company' ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-surface-800'}`}>{t('company_dash')}</button>
               </div>
             )}
           </main>
