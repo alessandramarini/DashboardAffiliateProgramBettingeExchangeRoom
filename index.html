@@ -14,7 +14,7 @@ import {
 // --- DIZIONARIO TRADUZIONI (EN, ES, PT, IT) ---
 const translations = {
   en: {
-    app_title: "TonPullVault",
+    app_title: "BETTING EXCHANGE ROOM",
     partner_dash: "Partner Dashboard",
     company_dash: "Treasury",
     secure_login: "Secure Login",
@@ -31,7 +31,7 @@ const translations = {
     
     // Login Screen
     restricted_access: "Restricted Access",
-    restricted_desc: "Environment protected with banking standards for managing TonPullVault funds. Cryptographic Wallet authentication is required.",
+    restricted_desc: "Environment protected with banking standards for managing BETTING EXCHANGE ROOM funds. Cryptographic Wallet authentication is required.",
     start_secure_conn: "Start Secure Connection",
     e2e_encryption: "End-to-End encrypted protocol",
     
@@ -98,7 +98,7 @@ const translations = {
     mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", today: "Today"
   },
   es: {
-    app_title: "TonPullVault",
+    app_title: "BETTING EXCHANGE ROOM",
     partner_dash: "Panel de Socios",
     company_dash: "Tesorería",
     secure_login: "Acceso Seguro",
@@ -114,7 +114,7 @@ const translations = {
     network: "Red: TON Mainnet",
     
     restricted_access: "Acceso Restringido",
-    restricted_desc: "Entorno protegido con estándares bancarios para gestionar fondos. Se requiere autenticación criptográfica de Wallet.",
+    restricted_desc: "Entorno protegido con estándares bancarios para gestionar fondos de BETTING EXCHANGE ROOM. Se requiere autenticación criptográfica de Wallet.",
     start_secure_conn: "Iniciar Conexión Segura",
     e2e_encryption: "Protocolo cifrado de extremo a extremo",
     
@@ -176,7 +176,7 @@ const translations = {
     mon: "Lun", tue: "Mar", wed: "Mié", thu: "Jue", fri: "Vie", sat: "Sáb", today: "Hoy"
   },
   pt: {
-    app_title: "TonPullVault",
+    app_title: "BETTING EXCHANGE ROOM",
     partner_dash: "Painel de Parceiros",
     company_dash: "Tesouraria",
     secure_login: "Acesso Seguro",
@@ -192,7 +192,7 @@ const translations = {
     network: "Rede: TON Mainnet",
     
     restricted_access: "Acesso Restrito",
-    restricted_desc: "Ambiente protegido com padrões bancários. É necessária autenticação criptográfica da Carteira.",
+    restricted_desc: "Ambiente protegido com padrões bancários para gerenciar fundos da BETTING EXCHANGE ROOM. É necessária autenticação criptográfica da Carteira.",
     start_secure_conn: "Iniciar Conexão Segura",
     e2e_encryption: "Protocolo criptografado de ponta a ponta",
     
@@ -254,7 +254,7 @@ const translations = {
     mon: "Seg", tue: "Ter", wed: "Qua", thu: "Qui", fri: "Sex", sat: "Sáb", today: "Hoje"
   },
   it: {
-    app_title: "TonPullVault",
+    app_title: "BETTING EXCHANGE ROOM",
     partner_dash: "Dashboard Partner",
     company_dash: "Tesoreria Aziendale",
     secure_login: "Login Sicuro",
@@ -270,7 +270,7 @@ const translations = {
     network: "Rete: Mainnet TON",
     
     restricted_access: "Accesso Riservato",
-    restricted_desc: "Ambiente protetto con standard bancari per la gestione dei fondi. È richiesta l'autenticazione tramite Wallet crittografico.",
+    restricted_desc: "Ambiente protetto con standard bancari per la gestione dei fondi BETTING EXCHANGE ROOM. È richiesta l'autenticazione tramite Wallet crittografico.",
     start_secure_conn: "Avvia Connessione Sicura",
     e2e_encryption: "Protocolo crittografato End-to-End",
     
@@ -996,12 +996,20 @@ export default function App() {
           <div className="flex flex-col sm:flex-row justify-between items-center py-3 sm:py-0 sm:h-20 gap-3 sm:gap-0">
             
             <div className="flex w-full sm:w-auto items-center justify-between sm:justify-start gap-4 sm:gap-8">
-              <div className="flex items-center gap-2 sm:gap-3 font-extrabold text-xl sm:text-2xl text-white tracking-tighter">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-slate-900 flex items-center justify-center text-blue-500 border border-slate-800 shadow-inner relative overflow-hidden flex-shrink-0">
-                  <div className="absolute inset-0 bg-blue-500/10"></div>
-                  <ShieldCheck size={20} className="sm:w-6 sm:h-6" />
+              <div className="flex items-center gap-2 sm:gap-3 font-extrabold text-sm sm:text-xl text-white tracking-tighter">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-900 flex items-center justify-center border border-slate-800 shadow-inner relative overflow-hidden flex-shrink-0">
+                  <img 
+                    src="logo-tondo.jpeg" 
+                    alt="Logo" 
+                    className="w-full h-full object-cover" 
+                    onError={(e) => { 
+                      e.target.style.display = 'none'; 
+                      e.target.nextSibling.style.display = 'block'; 
+                    }} 
+                  />
+                  <ShieldCheck size={20} className="sm:w-6 sm:h-6 text-blue-500 hidden" />
                 </div>
-                <span>TonPull<span className="text-blue-500">Vault</span></span>
+                <span className="leading-none">BETTING EXCHANGE<br className="sm:hidden" /><span className="text-blue-500 sm:ml-1">ROOM</span></span>
               </div>
               
               <div className="flex items-center gap-2 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1">
@@ -1019,7 +1027,7 @@ export default function App() {
               </div>
             </div>
 
-            <div className="flex w-full sm:w-auto items-center justify-between sm:justify-end gap-3 sm:gap-4 overflow-x-auto pb-1 sm:pb-0">
+            <div className="flex w-full sm:w-auto items-center justify-between sm:justify-end gap-3 sm:gap-4 overflow-x-auto pb-1 sm:pb-0 mt-2 sm:mt-0">
               {wallet.connected && (
                 <div className="hidden lg:flex items-center gap-3">
                   <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs font-mono text-slate-400" title={t('session_ended')}>
