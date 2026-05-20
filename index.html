@@ -43,7 +43,7 @@ const translations = {
     simulate_deposit: "Simulate Deposit (USDT)",
     processed_volume: "Processed Volume",
     real_usdt: "Real USDT",
-    company_reserve: "Company Reserve (50%)",
+    company_reserve: "Company Reserve (30%)",
     withdrawable_funds: "Secure withdrawable funds",
     active_nodes: "Active Promoter Nodes",
     registered_pools: "Registered Pool 1 & 2",
@@ -53,8 +53,8 @@ const translations = {
     immutable: "IMMUTABLE",
     quota: "Quota",
     company_share: "Company",
-    leader_pool: "Pool 1 (Leader)",
-    base_pool: "Pool 2 (Base)",
+    leader_pool: "Sponsor",
+    base_pool: "Bonus Pool",
     destination: "Dest:",
     
     // Promoter Dashboard
@@ -125,7 +125,7 @@ const translations = {
     simulate_deposit: "Simular Depósito (USDT)",
     processed_volume: "Volumen Procesado",
     real_usdt: "USDT Reales",
-    company_reserve: "Reserva Empresa (50%)",
+    company_reserve: "Reserva Empresa (30%)",
     withdrawable_funds: "Fondos seguros retirables",
     active_nodes: "Nodos Promotores Activos",
     registered_pools: "Pool 1 & 2 registrados",
@@ -135,8 +135,8 @@ const translations = {
     immutable: "INMUTABLE",
     quota: "Cuota",
     company_share: "Empresa",
-    leader_pool: "Pool 1 (Líder)",
-    base_pool: "Pool 2 (Base)",
+    leader_pool: "Patrocinador",
+    base_pool: "Pool Bonus",
     destination: "Dest:",
     
     verified_partner_area: "Área de Socio Verificada",
@@ -203,7 +203,7 @@ const translations = {
     simulate_deposit: "Simular Depósito (USDT)",
     processed_volume: "Volume Processado",
     real_usdt: "USDT Reais",
-    company_reserve: "Reserva Empresa (50%)",
+    company_reserve: "Reserva Empresa (30%)",
     withdrawable_funds: "Fundos seguros para saque",
     active_nodes: "Nós Promotores Ativos",
     registered_pools: "Pool 1 & 2 registrados",
@@ -213,8 +213,8 @@ const translations = {
     immutable: "IMUTÁVEL",
     quota: "Cota",
     company_share: "Empresa",
-    leader_pool: "Pool 1 (Líder)",
-    base_pool: "Pool 2 (Base)",
+    leader_pool: "Patrocinador",
+    base_pool: "Pool Bônus",
     destination: "Dest:",
     
     verified_partner_area: "Área de Parceiro Verificada",
@@ -281,7 +281,7 @@ const translations = {
     simulate_deposit: "Simula Incasso (USDT)",
     processed_volume: "Volume Processato",
     real_usdt: "USDT Reali",
-    company_reserve: "Riserva Aziendale (50%)",
+    company_reserve: "Riserva Aziendale (30%)",
     withdrawable_funds: "Fondi sicuri prelevabili",
     active_nodes: "Nodi Promotori Attivi",
     registered_pools: "Pool 1 & 2 registrati",
@@ -290,9 +290,9 @@ const translations = {
     smart_contract_rules: "Routing Smart Contract",
     immutable: "IMMUTABILE",
     quota: "Quota",
-    company_share: "Azienda (Company)",
-    leader_pool: "Pool 1 (Leader)",
-    base_pool: "Pool 2 (Base)",
+    company_share: "Azienda",
+    leader_pool: "Sponsor",
+    base_pool: "Pool Bonus",
     destination: "Dest:",
     
     verified_partner_area: "Area Partner Verificata",
@@ -341,10 +341,10 @@ const RAW_REVENUE_DATA = [
   { rawKey: 'today', amount: 550 },
 ];
 
-// Aggiornato in conformità con gli indirizzi del deploy script
+// Aggiornato in conformità con gli indirizzi del deploy script e le nuove percentuali
 const RAW_SPLIT_DATA = [
-  { rawKey: 'company_share', value: 50, color: '#3b82f6', address: 'INSERISCI_INDIRIZZO_COMPANY' },
-  { rawKey: 'leader_pool', value: 30, color: '#10b981', address: 'INSERISCI_INDIRIZZO_POOL_1' },
+  { rawKey: 'company_share', value: 30, color: '#3b82f6', address: 'INSERISCI_INDIRIZZO_COMPANY' },
+  { rawKey: 'leader_pool', value: 50, color: '#10b981', address: 'INSERISCI_INDIRIZZO_POOL_1' },
   { rawKey: 'base_pool', value: 20, color: '#f59e0b', address: 'INSERISCI_INDIRIZZO_POOL_2' },
 ];
 
@@ -959,8 +959,8 @@ export default function App() {
 
   const handleSimulateDeposit = () => {
     const randomDeposit = parseFloat((Math.random() * 900 + 100).toFixed(2)); 
-    const companyShare = randomDeposit * 0.50;
-    const promoterShare = randomDeposit * 0.15; 
+    const companyShare = randomDeposit * 0.30;
+    const promoterShare = randomDeposit * 0.50; 
 
     setTotalProcessed(prev => prev + randomDeposit);
     setContractBalance(prev => prev + companyShare);
