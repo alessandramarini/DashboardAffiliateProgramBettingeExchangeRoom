@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- STREAMING_CHUNK:Configuring HTML and Head... -->
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
@@ -15,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
-    <!-- Preload Immagini Critiche -->
+    <!-- Preload Immagini Critiche per First Contentful Paint -->
     <link rel="preload" href="logo-tondo.jpeg" as="image">
     <link rel="preload" href="demo-odds.jpeg" as="image">
     
@@ -25,7 +24,6 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
-<!-- STREAMING_CHUNK:Styling the layout... -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -101,7 +99,6 @@
             overflow: hidden; 
         }
         
-<!-- STREAMING_CHUNK:Theme Configurations... -->
         /* Tema Oro (Quiz) */
         .frame-gold {
             border: 2px solid #c5a059;
@@ -152,6 +149,7 @@
             position: relative;
             overflow: hidden;
             min-height: 3.5rem;
+            height: auto; /* Permette al testo tradotto di andare a capo */
             word-wrap: break-word;
         }
         .wwtbam-btn:hover:not(:disabled) {
@@ -208,7 +206,6 @@
 </head>
 <body class="text-gray-200 pb-12 selection:bg-[#99E814] selection:text-black antialiased relative w-full overflow-x-hidden">
 
-<!-- STREAMING_CHUNK:Header & User Stats... -->
     <header class="sticky top-0 z-40 glass-panel border-b-0 border-t-0 border-x-0 border-b border-[#99E814]/20 px-3 sm:px-6 py-2 sm:py-3 flex justify-between items-center transform-gpu w-full">
         <div class="flex items-center gap-2 md:gap-4 flex-shrink min-w-0">
             <img src="logo-tondo.jpeg" alt="Logo" decoding="async" fetchpriority="high" onerror="this.src='https://ui-avatars.com/api/?name=BE+R&background=050a05&color=99E814'" class="w-8 h-8 md:w-10 md:h-10 rounded-full shadow-[0_0_15px_rgba(153,232,20,0.3)] object-cover shrink-0 border border-[#99E814]/30">
@@ -225,7 +222,7 @@
 
     <main class="w-full max-w-5xl mx-auto px-3 sm:px-6 mt-4 md:mt-8 space-y-6 md:space-y-10">
 
-        <!-- Selettore Lingue Premium - Ordine Aggiornato: EN, ES, PT, IT -->
+        <!-- Selettore Lingue Premium - Ordine RICHIESTO: EN, ES, PT, IT -->
         <div class="flex justify-center w-full px-4 mb-4 animate-fade-in-up">
             <div class="flex items-center justify-center gap-3 sm:gap-5 bg-gradient-to-r from-gray-900/40 via-gray-900/80 to-gray-900/40 border border-[#99E814]/20 py-2.5 px-6 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md">
                 <button onclick="window.changeLang('en')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="en" aria-label="English">
@@ -252,11 +249,10 @@
             </a>
         </div>
 
-<!-- STREAMING_CHUNK:Main Titles & Lesson Info... -->
         <div class="text-center space-y-2 md:space-y-3 px-2 animate-fade-in-up flex flex-col items-center">
             <p class="text-[#99E814] font-black text-[10px] sm:text-xs md:text-sm tracking-[0.3em] uppercase drop-shadow-lg break-words text-center" data-i18n="moduleTitle">GIORNO 2/30</p>
             <h2 class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tighter leading-tight break-words text-center w-full" data-i18n="lessonTitle">ZERO TO HERO academy</h2>
-            <p class="text-gray-400 max-w-2xl mx-auto text-xs sm:text-sm md:text-base font-bold leading-relaxed mt-2" data-i18n="lessonDesc">Impara a leggere il mercato. Anatomia del prezzo, Bid/Ask spread e lettura del Ladder.</p>
+            <p class="text-gray-400 max-w-2xl mx-auto text-xs sm:text-sm md:text-base font-bold leading-relaxed mt-2 px-2" data-i18n="lessonDesc">Impara a leggere il mercato. Anatomia del prezzo, Bid/Ask spread e lettura del Ladder.</p>
         </div>
 
         <section class="premium-card frame-cyan w-full p-3 sm:p-6 md:p-8" style="content-visibility: auto; contain-intrinsic-size: 500px;">
@@ -266,11 +262,11 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 mt-4 sm:mt-6 w-full max-w-4xl mx-auto">
-                <a id="btn-podcast" href="#" target="_blank" rel="noopener noreferrer" onclick="SoundEngine.click()" class="flex items-center justify-center p-3 sm:p-5 md:p-6 bg-gray-900/80 hover:bg-[#00e5ff]/10 hover:border-[#00e5ff]/50 border border-gray-700/50 rounded-xl md:rounded-2xl transition-all active:scale-95 group shadow-md text-center flex-row touch-manipulation transform-gpu min-h-[70px]">
+                <a id="btn-podcast" href="#" target="_blank" rel="noopener noreferrer" onclick="SoundEngine.click()" class="flex items-center justify-center p-3 sm:p-5 md:p-6 bg-gray-900/80 hover:bg-[#00e5ff]/10 hover:border-[#00e5ff]/50 border border-gray-700/50 rounded-xl md:rounded-2xl transition-all active:scale-95 group shadow-md text-center flex-row touch-manipulation transform-gpu min-h-[70px] h-auto">
                     <svg class="w-6 h-6 sm:w-8 sm:h-8 mr-3 text-[#00e5ff] group-hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.8)] group-hover:scale-110 transition-all duration-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
                     <span class="font-black text-[11px] sm:text-xs md:text-sm tracking-widest uppercase text-[#00e5ff] break-words leading-tight" data-i18n="btnPodcast">ASCOLTA IL PODCAST</span>
                 </a>
-                <button onclick="openEbookModal()" class="flex items-center justify-center p-3 sm:p-5 md:p-6 bg-gray-900/80 hover:bg-[#ffb703]/10 hover:border-[#ffb703]/50 border border-gray-700/50 rounded-xl md:rounded-2xl transition-all active:scale-95 group shadow-md text-center flex-row touch-manipulation transform-gpu min-h-[70px]">
+                <button onclick="openEbookModal()" class="flex items-center justify-center p-3 sm:p-5 md:p-6 bg-gray-900/80 hover:bg-[#ffb703]/10 hover:border-[#ffb703]/50 border border-gray-700/50 rounded-xl md:rounded-2xl transition-all active:scale-95 group shadow-md text-center flex-row touch-manipulation transform-gpu min-h-[70px] h-auto">
                     <svg class="w-6 h-6 sm:w-8 sm:h-8 mr-3 text-[#ffb703] group-hover:drop-shadow-[0_0_8px_rgba(255,183,3,0.8)] group-hover:scale-110 transition-all duration-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                     <span class="font-black text-[11px] sm:text-xs md:text-sm tracking-widest uppercase text-[#ffb703] transition-colors break-words leading-tight" data-i18n="btnEbook">VISUALIZZA IL MANUALE</span>
                 </button>
@@ -278,7 +274,6 @@
 
         </section>
 
-<!-- STREAMING_CHUNK:Quiz Setup & Layout... -->
         <section class="premium-card frame-gold w-full p-4 sm:p-6 md:p-10 h-fit" id="quiz-section">
             
             <div id="quiz-container" class="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center">
@@ -314,7 +309,6 @@
             </div>
         </section>
 
-<!-- STREAMING_CHUNK:Interactive Simulators... -->
         <section class="premium-card frame-neon w-full p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center relative overflow-hidden" style="content-visibility: auto;">
             <div class="absolute inset-0 bg-gray-600 opacity-[0.02] blur-3xl pointer-events-none"></div>
 
@@ -354,14 +348,13 @@
             </a>
         </section>
 
-<!-- STREAMING_CHUNK:Footer & Modals... -->
         <div class="flex flex-col justify-center items-center pt-8 pb-4 border-t border-gray-800/50 relative gap-4 w-full">
             <div id="sub-warning-msg" class="hidden absolute inset-0 md:static sub-warning px-4 sm:px-8 py-3.5 sm:py-4 rounded-xl text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-center w-full items-center justify-center gap-2 z-20 break-words">
                 <span data-i18n="subNotActive">ABBONAMENTO NON ATTIVO! CONTATTA IL TUO REFERENTE</span>
             </div>
             
-            <a id="btn-next-lesson" href="http://www.bettingexchangeroom.com" onclick="SoundEngine.click()" class="bg-[#0a140f] text-[#99E814] border-2 border-[#99E814] font-black w-full max-w-md mx-auto justify-center px-6 sm:px-10 py-5 rounded-2xl hover:bg-[#99E814] hover:border-[#99E814] transition-all duration-300 text-xs sm:text-sm md:text-base uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(153,232,20,0.2)] hover:shadow-[0_0_40px_rgba(153,232,20,0.6)] touch-manipulation active:scale-95 flex items-center gap-3 z-10 transform-gpu group btn-hover-fix">
-                <span data-i18n="navNextLesson" class="truncate transition-colors duration-300">SBLOCCA IL TUO PERCORSO</span> 
+            <a id="btn-next-lesson" href="summaryzerotoheroacademy.html" onclick="SoundEngine.click()" class="bg-[#0a140f] text-[#99E814] border-2 border-[#99E814] font-black w-full max-w-md mx-auto justify-center px-6 sm:px-10 py-5 rounded-2xl hover:bg-[#99E814] hover:border-[#99E814] transition-all duration-300 text-xs sm:text-sm md:text-base uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(153,232,20,0.2)] hover:shadow-[0_0_40px_rgba(153,232,20,0.6)] touch-manipulation active:scale-95 flex items-center gap-3 z-10 transform-gpu group btn-hover-fix h-auto min-h-[4rem]">
+                <span data-i18n="navNextLesson" class="truncate transition-colors duration-300">PROSSIMA LEZIONE</span> 
                 <span class="text-xl sm:text-2xl group-hover:translate-x-2 group-hover:text-black transition-all duration-300 shrink-0">→</span>
             </a>
         </div>
@@ -383,7 +376,6 @@
         </div>
     </div>
 
-<!-- STREAMING_CHUNK:JavaScript Logic and Dictionary... -->
     <script>
         const SoundEngine = {
             ctx: null, unlocked: false,
@@ -431,7 +423,6 @@
         }
 
         window.RoomApp = (function() {
-            // Modificata la chiave per non caricare il progresso del Giorno 1
             const CONFIG = { STORAGE_KEY: 'bx_academy_demo_hd_v2_day2' }; 
             const footerLogoHTML = `<div class="mt-12 md:mt-16 text-center pt-8 w-full"><img src="logo-tondo.jpeg" class="w-12 h-12 md:w-16 md:h-16 mx-auto rounded-full opacity-30 grayscale mix-blend-screen" alt="Global Exchange Academy" loading="lazy" decoding="async"></div>`;
 
@@ -452,7 +443,7 @@
                     penaltiesTitle: "GIOCO EDUCATIVO", penaltiesDesc: "Clicca il joystick per scommettere sui rigori.",
                     quizProgress: "Domanda {step} di 5",
                     btnPodcast: "ASCOLTA IL PODCAST", btnEbook: "VISUALIZZA IL MANUALE", btnEbookTitle: "MANUALE", btnRetryQuiz: "Ripeti il test",
-                    btnTelegram: "SALA SEGNALI GRATUITI", navNextLesson: "SBLOCCA IL TUO PERCORSO",
+                    btnTelegram: "SALA SEGNALI GRATUITI", navNextLesson: "PROSSIMA LEZIONE",
                     subNotActive: "ABBONAMENTO NON ATTIVO! CONTATTA IL TUO REFERENTE",
                     quizCompletedTitle: "Check-Point Superato!", quizCompletedDesc: "Hai sbloccato 500 XP. Ora domini i fondamentali del Ladder.",
                     videoUrl: "https://www.youtube.com/embed/8kjONb-eUt0?rel=0&modestbranding=1", videoThumb: "https://img.youtube.com/vi/8kjONb-eUt0/maxresdefault.jpg",
@@ -498,7 +489,10 @@
                                         <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#99E814]/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-[#99E814]/20 text-lg md:text-xl">📏</div>
                                         <div class="text-left md:text-center w-full">
                                             <strong class="text-[#99E814] block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Tick</strong>
-                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">L'incremento minimo del prezzo. Esempio: da 2.00 a 2.02 ci sono due tick (2.02-2.00 = 0.02).</p>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed mb-2">L'incremento minimo del prezzo. Esempio: da 2.00 a 2.02 ci sono due tick (2.02-2.00 = 0.02).</p>
+                                            <div class="mt-2 bg-gray-800/50 border border-[#99E814]/30 p-2 rounded text-[10px] sm:text-xs text-gray-300 leading-snug">
+                                                <span class="text-[#99E814] font-bold">💡 Tip:</span> Il tick cambia in base alla quota: 0.01 (sotto 2.00), 0.05 (tra 3.0 e 4.0), 0.50 (sopra 10.0).
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="flex flex-row md:flex-col items-center md:items-center p-4 sm:p-5 md:p-6 bg-[#0a110a] border border-[#112211] rounded-xl hover:border-red-500/30 transition-colors duration-300">
@@ -512,14 +506,17 @@
                                         <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#24A1DE]/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-[#24A1DE]/20 text-lg md:text-xl">📊</div>
                                         <div class="text-left md:text-center w-full">
                                             <strong class="text-[#24A1DE] block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Market Depth</strong>
-                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">Il volume di denaro visibile in attesa (Unmatched). Rivela le intenzioni istituzionali.</p>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed mb-2">Il volume di denaro visibile in attesa (Unmatched). Rivela le intenzioni istituzionali.</p>
+                                            <div class="mt-2 bg-gray-800/50 border border-[#ffb703]/40 p-2 rounded text-[10px] sm:text-xs text-gray-300 leading-snug">
+                                                <span class="text-[#ffb703] font-bold">⚠️ Spoofing:</span> Occhio ai <i>Fake Money</i>! Ordini giganti inseriti solo per spaventare il mercato e poi cancellati.
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <h3 class="text-lg sm:text-xl md:text-2xl font-black mt-12 md:mt-20 mb-6 text-center uppercase tracking-widest text-white w-full break-words">Passive vs Aggressive Entry</h3>
-                            <p class="text-justify md:text-center leading-relaxed mb-8 md:mb-12 text-sm sm:text-base md:text-lg text-gray-300 max-w-3xl mx-auto">Se vuoi entrare a mercato e chiedi il tuo prezzo (es. Back a 2.00 con Spread 2.00/2.02), diventi un creatore di liquidità (<span class="text-[#24A1DE] font-bold">Maker</span>) e devi attendere. Se clicchi a 2.02 vieni eseguito subito, ma paghi lo spread (<span class="text-red-400 font-bold">Taker</span>).</p>
+                            <p class="text-justify md:text-center leading-relaxed mb-8 md:mb-12 text-sm sm:text-base md:text-lg text-gray-300 max-w-3xl mx-auto">Se vuoi entrare a mercato e chiedi un prezzo migliore (es. Back a 2.02 con Spread 2.00/2.02), diventi un creatore di liquidità (<span class="text-[#24A1DE] font-bold">Maker</span>) e devi attendere. Se invece accetti il prezzo offerto (es. Back a 2.00), vieni eseguito subito ma paghi lo spread (<span class="text-red-400 font-bold">Taker</span>).</p>
 
                             <blockquote class="relative p-6 sm:p-8 md:p-12 rounded-2xl md:rounded-[2rem] bg-gradient-to-br from-[#0a140f] to-[#050a05] border border-[#99E814]/20 my-8 md:my-12 shadow-2xl overflow-hidden w-full">
                                 <div class="absolute -top-4 -right-4 md:-top-8 md:-right-8 text-7xl md:text-9xl text-[#99E814]/10 font-serif leading-none">"</div>
@@ -541,7 +538,7 @@
                     penaltiesTitle: "EDUCATIONAL GAME", penaltiesDesc: "Click the joystick to bet on penalties.",
                     quizProgress: "Question {step} of 5",
                     btnPodcast: "LISTEN TO THE PODCAST", btnEbook: "VIEW THE MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Retry Test",
-                    btnTelegram: "FREE SIGNALS ROOM", navNextLesson: "UNLOCK YOUR PATH",
+                    btnTelegram: "FREE SIGNALS ROOM", navNextLesson: "NEXT LESSON",
                     subNotActive: "SUBSCRIPTION NOT ACTIVE! CONTACT YOUR REFERENT",
                     quizCompletedTitle: "Check-Point Passed!", quizCompletedDesc: "You unlocked 500 XP. You now master the Ladder fundamentals.",
                     videoUrl: "https://www.youtube.com/embed/DPnyy3L_TFg?rel=0&modestbranding=1", videoThumb: "https://img.youtube.com/vi/DPnyy3L_TFg/maxresdefault.jpg",
@@ -587,7 +584,10 @@
                                         <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#99E814]/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-[#99E814]/20 text-lg md:text-xl">📏</div>
                                         <div class="text-left md:text-center w-full">
                                             <strong class="text-[#99E814] block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Tick</strong>
-                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">The minimum price increment. E.g., from 2.00 to 2.02 is two ticks (2.02-2.00 = 0.02).</p>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed mb-2">The minimum price increment. E.g., from 2.00 to 2.02 is two ticks (2.02-2.00 = 0.02).</p>
+                                            <div class="mt-2 bg-gray-800/50 border border-[#99E814]/30 p-2 rounded text-[10px] sm:text-xs text-gray-300 leading-snug">
+                                                <span class="text-[#99E814] font-bold">💡 Tip:</span> Tick size varies: 0.01 (under 2.00), 0.05 (between 3.0 & 4.0), 0.50 (above 10.0).
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="flex flex-row md:flex-col items-center md:items-center p-4 sm:p-5 md:p-6 bg-[#0a110a] border border-[#112211] rounded-xl hover:border-red-500/30 transition-colors duration-300">
@@ -601,14 +601,17 @@
                                         <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#24A1DE]/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-[#24A1DE]/20 text-lg md:text-xl">📊</div>
                                         <div class="text-left md:text-center w-full">
                                             <strong class="text-[#24A1DE] block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Market Depth</strong>
-                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">Visible waiting money (Unmatched volume). Reveals institutional intentions.</p>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed mb-2">Visible waiting money (Unmatched volume). Reveals institutional intentions.</p>
+                                            <div class="mt-2 bg-gray-800/50 border border-[#ffb703]/40 p-2 rounded text-[10px] sm:text-xs text-gray-300 leading-snug">
+                                                <span class="text-[#ffb703] font-bold">⚠️ Spoofing:</span> Watch out for <i>Fake Money</i>! Giant orders placed just to scare the market and then cancelled.
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <h3 class="text-lg sm:text-xl md:text-2xl font-black mt-12 md:mt-20 mb-6 text-center uppercase tracking-widest text-white w-full break-words">Passive vs Aggressive Entry</h3>
-                            <p class="text-justify md:text-center leading-relaxed mb-8 md:mb-12 text-sm sm:text-base md:text-lg text-gray-300 max-w-3xl mx-auto">If you enter the market asking for your own price (e.g., Back at 2.00 when Spread is 2.00/2.02), you act as a liquidity provider (<span class="text-[#24A1DE] font-bold">Maker</span>) and wait. If you click 2.02 you are filled instantly, but pay the spread (<span class="text-red-400 font-bold">Taker</span>).</p>
+                            <p class="text-justify md:text-center leading-relaxed mb-8 md:mb-12 text-sm sm:text-base md:text-lg text-gray-300 max-w-3xl mx-auto">If you enter the market asking for your own price (e.g., Back at 2.02 when Spread is 2.00/2.02), you act as a liquidity provider (<span class="text-[#24A1DE] font-bold">Maker</span>) and wait. If instead you accept the offered price (e.g., Back at 2.00), you are filled instantly but pay the spread (<span class="text-red-400 font-bold">Taker</span>).</p>
 
                             <blockquote class="relative p-6 sm:p-8 md:p-12 rounded-2xl md:rounded-[2rem] bg-gradient-to-br from-[#0a140f] to-[#050a05] border border-[#99E814]/20 my-8 md:my-12 shadow-2xl overflow-hidden w-full">
                                 <div class="absolute -top-4 -right-4 md:-top-8 md:-right-8 text-7xl md:text-9xl text-[#99E814]/10 font-serif leading-none">"</div>
@@ -630,7 +633,7 @@
                     penaltiesTitle: "JUEGO EDUCATIVO", penaltiesDesc: "Haz clic en el joystick para apostar en los penaltis.",
                     quizProgress: "Pregunta {step} de 5",
                     btnPodcast: "ESCUCHA EL PODCAST", btnEbook: "VER EL MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Repetir Test",
-                    btnTelegram: "SALA DE SEÑALES GRATIS", navNextLesson: "DESBLOQUEA TU CAMINO",
+                    btnTelegram: "SALA DE SEÑALES GRATIS", navNextLesson: "PRÓXIMA LECCIÓN",
                     subNotActive: "¡SUSCRIPCIÓN NO ACTIVA! CONTACTA A TU REFERENTE",
                     quizCompletedTitle: "¡Check-Point Superado!", quizCompletedDesc: "Has desbloqueado 500 XP. Ahora dominas los fundamentos del Ladder.",
                     videoUrl: "https://www.youtube.com/embed/BsA4QmFVyZo?rel=0&modestbranding=1", videoThumb: "https://img.youtube.com/vi/BsA4QmFVyZo/maxresdefault.jpg",
@@ -676,7 +679,10 @@
                                         <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#99E814]/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-[#99E814]/20 text-lg md:text-xl">📏</div>
                                         <div class="text-left md:text-center w-full">
                                             <strong class="text-[#99E814] block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Tick</strong>
-                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">El movimiento mínimo del precio. Ej: de 2.00 a 2.02 hay dos ticks.</p>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed mb-2">El movimiento mínimo del precio. Ej: de 2.00 a 2.02 hay dos ticks.</p>
+                                            <div class="mt-2 bg-gray-800/50 border border-[#99E814]/30 p-2 rounded text-[10px] sm:text-xs text-gray-300 leading-snug">
+                                                <span class="text-[#99E814] font-bold">💡 Tip:</span> El tick varía: 0.01 (bajo 2.00), 0.05 (entre 3.0 y 4.0), 0.50 (sobre 10.0).
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="flex flex-row md:flex-col items-center md:items-center p-4 sm:p-5 md:p-6 bg-[#0a110a] border border-[#112211] rounded-xl hover:border-red-500/30 transition-colors duration-300">
@@ -690,14 +696,17 @@
                                         <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#24A1DE]/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-[#24A1DE]/20 text-lg md:text-xl">📊</div>
                                         <div class="text-left md:text-center w-full">
                                             <strong class="text-[#24A1DE] block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Market Depth</strong>
-                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">Volumen visible a la espera (Unmatched). Revela la liquidez real.</p>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed mb-2">Volumen visible a la espera (Unmatched). Revela la liquidez real.</p>
+                                            <div class="mt-2 bg-gray-800/50 border border-[#ffb703]/40 p-2 rounded text-[10px] sm:text-xs text-gray-300 leading-snug">
+                                                <span class="text-[#ffb703] font-bold">⚠️ Spoofing:</span> ¡Ojo al <i>Fake Money</i>! Órdenes gigantes puestas para asustar al mercado y luego canceladas.
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <h3 class="text-lg sm:text-xl md:text-2xl font-black mt-12 md:mt-20 mb-6 text-center uppercase tracking-widest text-white w-full break-words">Entrada Pasiva vs Agresiva</h3>
-                            <p class="text-justify md:text-center leading-relaxed mb-8 md:mb-12 text-sm sm:text-base md:text-lg text-gray-300 max-w-3xl mx-auto">Si pides tu precio (ej. Back a 2.00 con Spread 2.00/2.02), eres creador de liquidez (<span class="text-[#24A1DE] font-bold">Maker</span>) y esperas. Si clicas en 2.02 entras de inmediato, pero pagas el spread (<span class="text-red-400 font-bold">Taker</span>).</p>
+                            <p class="text-justify md:text-center leading-relaxed mb-8 md:mb-12 text-sm sm:text-base md:text-lg text-gray-300 max-w-3xl mx-auto">Si pides tu precio (ej. Back a 2.02 con Spread 2.00/2.02), eres creador de liquidez (<span class="text-[#24A1DE] font-bold">Maker</span>) y esperas. Si en cambio aceptas el precio ofrecido (ej. Back a 2.00), entras de inmediato pero pagas el spread (<span class="text-red-400 font-bold">Taker</span>).</p>
 
                             <blockquote class="relative p-6 sm:p-8 md:p-12 rounded-2xl md:rounded-[2rem] bg-gradient-to-br from-[#0a140f] to-[#050a05] border border-[#99E814]/20 my-8 md:my-12 shadow-2xl overflow-hidden w-full">
                                 <div class="absolute -top-4 -right-4 md:-top-8 md:-right-8 text-7xl md:text-9xl text-[#99E814]/10 font-serif leading-none">"</div>
@@ -719,7 +728,7 @@
                     penaltiesTitle: "JOGO EDUCATIVO", penaltiesDesc: "Clique no joystick para apostar nos pênaltis.",
                     quizProgress: "Pergunta {step} de 5",
                     btnPodcast: "OUÇA O PODCAST", btnEbook: "VER O MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Repetir Teste",
-                    btnTelegram: "SALA DE SINAIS GRÁTIS", navNextLesson: "DESBLOQUEIE SEU CAMINHO",
+                    btnTelegram: "SALA DE SINAIS GRÁTIS", navNextLesson: "PRÓXIMA LIÇÃO",
                     subNotActive: "ASSINATURA NÃO ATIVA! CONTACTE O SEU REFERENTE",
                     quizCompletedTitle: "Check-Point Aprovado!", quizCompletedDesc: "Você desbloqueou 500 XP. Agora domina os fundamentos do Ladder.",
                     videoUrl: "https://www.youtube.com/embed/1cUveYReQgI?rel=0&modestbranding=1", videoThumb: "https://img.youtube.com/vi/1cUveYReQgI/maxresdefault.jpg",
@@ -765,7 +774,10 @@
                                         <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#99E814]/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-[#99E814]/20 text-lg md:text-xl">📏</div>
                                         <div class="text-left md:text-center w-full">
                                             <strong class="text-[#99E814] block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Tick</strong>
-                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">Incremento mínimo da odd. Ex: de 2.00 para 2.02 há dois ticks.</p>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed mb-2">Incremento mínimo da odd. Ex: de 2.00 para 2.02 há dois ticks.</p>
+                                            <div class="mt-2 bg-gray-800/50 border border-[#99E814]/30 p-2 rounded text-[10px] sm:text-xs text-gray-300 leading-snug">
+                                                <span class="text-[#99E814] font-bold">💡 Tip:</span> O tick varia: 0.01 (abaixo 2.00), 0.05 (entre 3.0 e 4.0), 0.50 (acima 10.0).
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="flex flex-row md:flex-col items-center md:items-center p-4 sm:p-5 md:p-6 bg-[#0a110a] border border-[#112211] rounded-xl hover:border-red-500/30 transition-colors duration-300">
@@ -779,14 +791,17 @@
                                         <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#24A1DE]/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-[#24A1DE]/20 text-lg md:text-xl">📊</div>
                                         <div class="text-left md:text-center w-full">
                                             <strong class="text-[#24A1DE] block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Market Depth</strong>
-                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">Volume invisível ao apostador comum. Revela as intenções reais do mercado.</p>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed mb-2">Volume invisível ao apostador comum. Revela as intenções reais do mercado.</p>
+                                            <div class="mt-2 bg-gray-800/50 border border-[#ffb703]/40 p-2 rounded text-[10px] sm:text-xs text-gray-300 leading-snug">
+                                                <span class="text-[#ffb703] font-bold">⚠️ Spoofing:</span> Cuidado com o <i>Fake Money</i>! Ordens gigantes colocadas só para assustar o mercado e depois canceladas.
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <h3 class="text-lg sm:text-xl md:text-2xl font-black mt-12 md:mt-20 mb-6 text-center uppercase tracking-widest text-white w-full break-words">Entrada Passiva vs Agressiva</h3>
-                            <p class="text-justify md:text-center leading-relaxed mb-8 md:mb-12 text-sm sm:text-base md:text-lg text-gray-300 max-w-3xl mx-auto">Ao pedir o seu preço (ex. Back a 2.00 com Spread 2.00/2.02), é criador de liquidez (<span class="text-[#24A1DE] font-bold">Maker</span>) e aguarda. Se clica a 2.02, executa logo, pagando o spread (<span class="text-red-400 font-bold">Taker</span>).</p>
+                            <p class="text-justify md:text-center leading-relaxed mb-8 md:mb-12 text-sm sm:text-base md:text-lg text-gray-300 max-w-3xl mx-auto">Ao pedir o seu preço (ex. Back a 2.02 com Spread 2.00/2.02), é criador de liquidez (<span class="text-[#24A1DE] font-bold">Maker</span>) e aguarda. Se em vez disso aceitar o preço oferecido (ex. Back a 2.00), é executado de imediato, mas paga o spread (<span class="text-red-400 font-bold">Taker</span>).</p>
 
                             <blockquote class="relative p-6 sm:p-8 md:p-12 rounded-2xl md:rounded-[2rem] bg-gradient-to-br from-[#0a140f] to-[#050a05] border border-[#99E814]/20 my-8 md:my-12 shadow-2xl overflow-hidden w-full">
                                 <div class="absolute -top-4 -right-4 md:-top-8 md:-right-8 text-7xl md:text-9xl text-[#99E814]/10 font-serif leading-none">"</div>
@@ -885,7 +900,7 @@
                     const letters = ['A', 'B', 'C'];
                     qData.opts.forEach((opt, index) => {
                         optsHtml += `
-                        <button id="quiz-opt-${index}" onclick="checkAnswer(${index})" class="wwtbam-btn w-full p-4 sm:p-5 text-left flex items-center text-[13px] sm:text-sm md:text-base font-bold text-gray-200 touch-manipulation group min-h-[60px]">
+                        <button id="quiz-opt-${index}" onclick="checkAnswer(${index})" class="wwtbam-btn w-full p-4 sm:p-5 text-left flex items-center text-[13px] sm:text-sm md:text-base font-bold text-gray-200 touch-manipulation group min-h-[60px] h-auto">
                             <span class="text-[#d4af37] text-lg sm:text-xl mr-3 sm:mr-4 font-black w-6 text-center drop-shadow-[0_0_5px_rgba(212,175,55,0.5)] shrink-0">${letters[index]}:</span> 
                             <span class="flex-1 drop-shadow-md group-hover:text-white transition-colors leading-snug break-words">${opt}</span>
                         </button>`;
@@ -971,6 +986,7 @@
                 init: () => {
                     let initialLang = 'en'; 
                     
+                    // Rilevamento lingua di base del dispositivo
                     const browserLang = navigator.language || navigator.userLanguage;
                     if (browserLang) {
                         const shortLang = browserLang.substring(0, 2).toLowerCase();
@@ -979,6 +995,7 @@
                         }
                     }
 
+                    // Se c'è un salvataggio manuale di sessione, questo fa l'override
                     try { 
                         const savedData = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY));
                         if (savedData) {
@@ -1017,4 +1034,3 @@
     </script>
 </body>
 </html>
-```eof
