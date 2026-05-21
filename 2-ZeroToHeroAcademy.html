@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<!-- STREAMING_CHUNK:Configuring HTML and Head... -->
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#050a05">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title id="page-title">Room AI | Global Exchange Academy - Day 2</title>
+    <meta name="description" content="Interactive Academy for Betting Exchange. Day 2: Anatomy of the Price & Ladder.">
+
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Preload Immagini Critiche -->
+    <link rel="preload" href="logo-tondo.jpeg" as="image">
+    <link rel="preload" href="demo-odds.jpeg" as="image">
+    
+    <!-- Caricamento asincrono font -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&display=swap"></noscript>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+<!-- STREAMING_CHUNK:Styling the layout... -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050a05;
+            background-image: 
+                linear-gradient(to bottom, rgba(5, 10, 5, 0.96), rgba(10, 20, 10, 0.90)),
+                url('https://images.unsplash.com/photo-1518605368461-1e125222058c?auto=format,compress&fit=crop&w=1920&q=70&fm=webp');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-text-size-adjust: 100%;
+            text-rendering: optimizeLegibility;
+            overflow-x: hidden;
+            width: 100vw;
+        }
+
+        .glass-panel {
+            background: rgba(10, 15, 10, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(153, 232, 20, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transform: translateZ(0); 
+            will-change: transform, opacity;
+        }
+
+        .text-neon-green { color: #99E814; text-shadow: 0 0 12px rgba(153, 232, 20, 0.4); }
+        .bg-neon-green { background-color: #99E814; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.5); }
+        ::-webkit-scrollbar-thumb { background: #99E814; border-radius: 10px; }
+        .tg-scrollbar::-webkit-scrollbar { width: 4px; }
+        .tg-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .tg-scrollbar::-webkit-scrollbar-thumb { background: rgba(153,232,20,0.4); border-radius: 4px; }
+        .tg-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(153,232,20,0.8); }
+
+        @keyframes pulse-sub {
+            0% { color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); border-color: rgba(239, 68, 68, 0.6); background-color: rgba(20,5,5,0.9); }
+            50% { color: #99E814; box-shadow: 0 0 20px rgba(153, 232, 20, 0.3); border-color: rgba(153, 232, 20, 0.6); background-color: rgba(5,20,5,0.9); }
+            100% { color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); border-color: rgba(239, 68, 68, 0.6); background-color: rgba(20,5,5,0.9); }
+        }
+        .sub-warning { animation: pulse-sub 3s infinite ease-in-out; border: 1px solid; transition: all 0.3s ease; transform: translateZ(0); }
+
+        @keyframes joystickNeon {
+            0% { filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.5)); transform: scale(1) translateZ(0); }
+            50% { filter: drop-shadow(0 0 35px rgba(59, 130, 246, 1)); transform: scale(1.15) translateZ(0); }
+            100% { filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.5)); transform: scale(1) translateZ(0); }
+        }
+        .joystick-pulse { animation: joystickNeon 2.5s ease-in-out infinite; display: inline-block; cursor: pointer; will-change: transform, filter; }
+
+        @keyframes play-shadow-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(153, 232, 20, 0.6), 0 8px 32px rgba(0,0,0,0.5); }
+            70% { box-shadow: 0 0 0 20px rgba(153, 232, 20, 0), 0 8px 32px rgba(0,0,0,0.5); }
+            100% { box-shadow: 0 0 0 0 rgba(153, 232, 20, 0), 0 8px 32px rgba(0,0,0,0.5); }
+        }
+        .play-pulse { animation: play-shadow-pulse 2.5s infinite cubic-bezier(0.66, 0, 0, 1); transform: translateZ(0); }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translate3d(0, 15px, 0); }
+            to { opacity: 1; transform: translate3d(0, 0, 0); }
+        }
+        .animate-fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; will-change: transform, opacity; }
+
+        .premium-card {
+            background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+            border-radius: 24px;
+            position: relative;
+            transform: translateZ(0);
+            width: 100%;
+            box-sizing: border-box;
+            overflow: hidden; 
+        }
+        
+<!-- STREAMING_CHUNK:Theme Configurations... -->
+        /* Tema Oro (Quiz) */
+        .frame-gold {
+            border: 2px solid #c5a059;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(197, 160, 89, 0.15);
+        }
+        .wwtbam-question-box {
+            background: radial-gradient(ellipse at center, rgba(30, 41, 59, 0.95) 0%, rgba(2, 6, 23, 0.95) 100%);
+            border: 1px solid #d4af37;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7), inset 0 0 15px rgba(212,175,55,0.15);
+            position: relative;
+            width: 100%;
+        }
+
+        /* Tema Argento/Ciano (Video e Risorse) */
+        .frame-cyan {
+            border: 2px solid #00e5ff;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(0, 229, 255, 0.15);
+            background: linear-gradient(135deg, #041419 0%, #08222a 100%);
+        }
+
+        /* Tema Verde Neon (Simulatore Demo Aziendale) */
+        .frame-neon {
+            border: 2px solid #99E814;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(153, 232, 20, 0.15);
+            background: linear-gradient(135deg, #0a140f 0%, #112211 100%);
+        }
+
+        /* Tema Viola/Ametista (Pillola Finanziaria) */
+        .frame-purple {
+            border: 2px solid #a855f7;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(168, 85, 247, 0.15);
+            background: linear-gradient(135deg, #13051a 0%, #260a33 100%);
+        }
+
+        /* Tema Zaffiro/Blu (Gioco Educativo) */
+        .frame-blue {
+            border: 2px solid #3b82f6;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(59, 130, 246, 0.15);
+            background: linear-gradient(135deg, #05101a 0%, #0a2133 100%);
+        }
+
+        .wwtbam-btn {
+            background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+            border: 1px solid rgba(197, 160, 89, 0.5);
+            border-radius: 9999px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            min-height: 3.5rem;
+            word-wrap: break-word;
+        }
+        .wwtbam-btn:hover:not(:disabled) {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4), inset 0 0 10px rgba(212, 175, 55, 0.2);
+            transform: translateY(-1px);
+        }
+        .wwtbam-btn.correct {
+            background: linear-gradient(180deg, #064e3b 0%, #022c22 100%) !important;
+            border-color: #10b981 !important;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.3) !important;
+            color: #ffffff !important;
+        }
+        .wwtbam-btn.wrong {
+            background: linear-gradient(180deg, #7f1d1d 0%, #450a0a 100%) !important;
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.3) !important;
+            color: #ffffff !important;
+        }
+
+        /* Bandierine Lingua */
+        .lang-flag {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border-radius: 6px;
+        }
+        .lang-flag.active {
+            opacity: 1;
+            transform: scale(1.15) translateY(-2px);
+            border-color: #99E814;
+            box-shadow: 0 6px 12px rgba(153, 232, 20, 0.3), 0 0 0 2px rgba(153, 232, 20, 0.5);
+            filter: grayscale(0%);
+            z-index: 10;
+        }
+        .lang-flag.inactive {
+            opacity: 0.6;
+            filter: grayscale(60%) contrast(1.2);
+            border-color: transparent;
+            transform: scale(1);
+        }
+        .lang-flag.inactive:hover {
+            opacity: 0.9;
+            filter: grayscale(20%);
+            transform: scale(1.05);
+        }
+        
+        /* Fix per bottoni hover per assicurare leggibilità del testo */
+        .btn-hover-fix:hover span {
+            color: #050a05 !important;
+        }
+    </style>
+</head>
+<body class="text-gray-200 pb-12 selection:bg-[#99E814] selection:text-black antialiased relative w-full overflow-x-hidden">
+
+<!-- STREAMING_CHUNK:Header & User Stats... -->
+    <header class="sticky top-0 z-40 glass-panel border-b-0 border-t-0 border-x-0 border-b border-[#99E814]/20 px-3 sm:px-6 py-2 sm:py-3 flex justify-between items-center transform-gpu w-full">
+        <div class="flex items-center gap-2 md:gap-4 flex-shrink min-w-0">
+            <img src="logo-tondo.jpeg" alt="Logo" decoding="async" fetchpriority="high" onerror="this.src='https://ui-avatars.com/api/?name=BE+R&background=050a05&color=99E814'" class="w-8 h-8 md:w-10 md:h-10 rounded-full shadow-[0_0_15px_rgba(153,232,20,0.3)] object-cover shrink-0 border border-[#99E814]/30">
+            <h1 class="font-black text-[10px] sm:text-xs md:text-sm lg:text-base tracking-wider uppercase whitespace-nowrap overflow-hidden text-ellipsis" data-i18n-html="headerTitle">BETTING EXCHANGE <span class="text-neon-green">ROOM</span></h1>
+        </div>
+        
+        <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+            <div class="flex items-center bg-black/60 border border-gray-700 px-2.5 py-1.5 sm:px-3 rounded-full shadow-inner" id="xp-badge">
+                <span class="text-yellow-400 text-[10px] sm:text-xs mr-1.5">⚡</span>
+                <span id="xp-counter" class="font-mono font-bold text-[11px] sm:text-sm text-white tabular-nums">0 XP</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="w-full max-w-5xl mx-auto px-3 sm:px-6 mt-4 md:mt-8 space-y-6 md:space-y-10">
+
+        <!-- Selettore Lingue Premium - Ordine Aggiornato: EN, ES, PT, IT -->
+        <div class="flex justify-center w-full px-4 mb-4 animate-fade-in-up">
+            <div class="flex items-center justify-center gap-3 sm:gap-5 bg-gradient-to-r from-gray-900/40 via-gray-900/80 to-gray-900/40 border border-[#99E814]/20 py-2.5 px-6 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md">
+                <button onclick="window.changeLang('en')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="en" aria-label="English">
+                    <img src="https://flagcdn.com/w40/gb.png" alt="EN" class="w-full h-full object-cover">
+                </button>
+                <button onclick="window.changeLang('es')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="es" aria-label="Español">
+                    <img src="https://flagcdn.com/w40/es.png" alt="ES" class="w-full h-full object-cover">
+                </button>
+                <button onclick="window.changeLang('pt')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="pt" aria-label="Português">
+                    <img src="https://flagcdn.com/w40/br.png" alt="PT" class="w-full h-full object-cover">
+                </button>
+                <button onclick="window.changeLang('it')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="it" aria-label="Italiano">
+                    <img src="https://flagcdn.com/w40/it.png" alt="IT" class="w-full h-full object-cover">
+                </button>
+            </div>
+        </div>
+
+        <div class="flex justify-center w-full px-4 mb-2 animate-fade-in-up">
+            <a href="https://t.me/BettingExchangeRoomFree" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-3 sm:gap-4 bg-[#24A1DE] hover:bg-[#1d82b3] text-white font-black text-[13px] sm:text-base md:text-lg px-6 sm:px-10 py-4 sm:py-5 rounded-2xl shadow-[0_0_20px_rgba(36,161,222,0.4)] hover:shadow-[0_0_30px_rgba(36,161,222,0.7)] transition-all duration-300 transform-gpu hover:-translate-y-1 active:scale-95 w-full max-w-3xl mx-auto border border-[#24A1DE]/40 group touch-manipulation">
+                <svg class="w-6 h-6 sm:w-8 sm:h-8 fill-current group-hover:rotate-12 transition-transform duration-300 shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                </svg>
+                <span class="tracking-[0.05em] sm:tracking-[0.15em] uppercase truncate" data-i18n="btnTelegram">SALA SEGNALI GRATUITI</span>
+            </a>
+        </div>
+
+<!-- STREAMING_CHUNK:Main Titles & Lesson Info... -->
+        <div class="text-center space-y-2 md:space-y-3 px-2 animate-fade-in-up flex flex-col items-center">
+            <p class="text-[#99E814] font-black text-[10px] sm:text-xs md:text-sm tracking-[0.3em] uppercase drop-shadow-lg break-words text-center" data-i18n="moduleTitle">GIORNO 2/30</p>
+            <h2 class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tighter leading-tight break-words text-center w-full" data-i18n="lessonTitle">ZERO TO HERO academy</h2>
+            <p class="text-gray-400 max-w-2xl mx-auto text-xs sm:text-sm md:text-base font-bold leading-relaxed mt-2" data-i18n="lessonDesc">Impara a leggere il mercato. Anatomia del prezzo, Bid/Ask spread e lettura del Ladder.</p>
+        </div>
+
+        <section class="premium-card frame-cyan w-full p-3 sm:p-6 md:p-8" style="content-visibility: auto; contain-intrinsic-size: 500px;">
+            
+            <div id="video-wrapper" class="relative w-full aspect-video bg-[#0a140f] rounded-xl md:rounded-2xl overflow-hidden border border-[#00e5ff]/30 shadow-xl ring-1 ring-white/5 transform-gpu">
+                <iframe id="main-video" class="absolute inset-0 w-full h-full z-20" src="https://www.youtube.com/embed/8kjONb-eUt0?rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 mt-4 sm:mt-6 w-full max-w-4xl mx-auto">
+                <a id="btn-podcast" href="#" target="_blank" rel="noopener noreferrer" onclick="SoundEngine.click()" class="flex items-center justify-center p-3 sm:p-5 md:p-6 bg-gray-900/80 hover:bg-[#00e5ff]/10 hover:border-[#00e5ff]/50 border border-gray-700/50 rounded-xl md:rounded-2xl transition-all active:scale-95 group shadow-md text-center flex-row touch-manipulation transform-gpu min-h-[70px]">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 mr-3 text-[#00e5ff] group-hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.8)] group-hover:scale-110 transition-all duration-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                    <span class="font-black text-[11px] sm:text-xs md:text-sm tracking-widest uppercase text-[#00e5ff] break-words leading-tight" data-i18n="btnPodcast">ASCOLTA IL PODCAST</span>
+                </a>
+                <button onclick="openEbookModal()" class="flex items-center justify-center p-3 sm:p-5 md:p-6 bg-gray-900/80 hover:bg-[#ffb703]/10 hover:border-[#ffb703]/50 border border-gray-700/50 rounded-xl md:rounded-2xl transition-all active:scale-95 group shadow-md text-center flex-row touch-manipulation transform-gpu min-h-[70px]">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 mr-3 text-[#ffb703] group-hover:drop-shadow-[0_0_8px_rgba(255,183,3,0.8)] group-hover:scale-110 transition-all duration-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    <span class="font-black text-[11px] sm:text-xs md:text-sm tracking-widest uppercase text-[#ffb703] transition-colors break-words leading-tight" data-i18n="btnEbook">VISUALIZZA IL MANUALE</span>
+                </button>
+            </div>
+
+        </section>
+
+<!-- STREAMING_CHUNK:Quiz Setup & Layout... -->
+        <section class="premium-card frame-gold w-full p-4 sm:p-6 md:p-10 h-fit" id="quiz-section">
+            
+            <div id="quiz-container" class="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center">
+                
+                <div class="w-full flex flex-wrap justify-between items-center mb-6 sm:mb-8 px-2 gap-2">
+                    <div class="text-[#d4af37] text-[10px] sm:text-xs font-black uppercase tracking-widest bg-[#d4af37]/10 px-3 py-1 rounded-full border border-[#d4af37]/40 whitespace-nowrap shadow-inner" id="quiz-progress-text">Domanda 1 di 5</div>
+                    <div class="flex gap-1.5 shrink-0" id="quiz-dots"></div>
+                </div>
+                
+                <div class="wwtbam-question-box px-4 sm:px-6 py-8 sm:py-10 rounded-xl text-center mb-8 sm:mb-10 w-full">
+                    <p id="quiz-question-text" class="text-[15px] sm:text-lg md:text-xl text-white font-black leading-relaxed drop-shadow-md break-words"></p>
+                </div>
+
+                <div id="quiz-options-container" class="space-y-3 sm:space-y-4 w-full"></div>
+            </div>
+            
+            <div id="quiz-feedback" class="hidden w-full max-w-2xl mx-auto p-4 sm:p-6 md:p-8 rounded-xl md:rounded-2xl text-center shadow-2xl mt-8 transition-all duration-500 transform-gpu relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
+                <div id="quiz-feedback-icon" class="text-3xl sm:text-5xl mb-3 relative z-10 drop-shadow-lg">🏆</div>
+                <p id="quiz-feedback-text" class="font-black text-[11px] sm:text-sm md:text-base uppercase tracking-[0.15em] leading-relaxed relative z-10 break-words"></p>
+            </div>
+
+            <div id="quiz-completed-screen" class="hidden flex-col items-center justify-center py-10 md:py-16 text-center transition-all duration-500 w-full">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-[#d4af37]/10 rounded-full flex items-center justify-center mb-6 border-2 border-[#d4af37] shadow-[0_0_30px_rgba(212,175,55,0.4)] shrink-0">
+                    <span class="text-4xl sm:text-5xl drop-shadow-lg">🏆</span>
+                </div>
+                <h4 class="text-[#d4af37] font-black text-xl sm:text-2xl md:text-3xl uppercase tracking-widest mb-3 drop-shadow-md break-words w-full" data-i18n="quizCompletedTitle">Check-Point Superato!</h4>
+                <p class="text-gray-200 text-sm md:text-base font-medium mb-10 max-w-md mx-auto px-4 break-words" data-i18n="quizCompletedDesc">Hai sbloccato 500 XP. Sei pronto per proseguire con la pratica.</p>
+                <button onclick="resetQuiz()" class="wwtbam-btn px-6 sm:px-10 py-3 sm:py-4 text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-[0.2em] text-[#d4af37] hover:text-white flex items-center justify-center gap-2 sm:gap-3 group max-w-full">
+                    <span class="group-hover:-rotate-180 transition-transform duration-500 text-base sm:text-lg shrink-0">🔄</span> 
+                    <span data-i18n="btnRetryQuiz" class="truncate">Ripeti il test</span>
+                </button>
+            </div>
+        </section>
+
+<!-- STREAMING_CHUNK:Interactive Simulators... -->
+        <section class="premium-card frame-neon w-full p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center relative overflow-hidden" style="content-visibility: auto;">
+            <div class="absolute inset-0 bg-gray-600 opacity-[0.02] blur-3xl pointer-events-none"></div>
+
+            <div class="w-full max-w-4xl mx-auto flex justify-start items-center mb-3 md:mb-5 relative z-10">
+                <div class="bg-gray-900 text-[#99E814] border border-[#99E814]/30 text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest break-words" data-i18n="demoBadge">DEMO INTERATTIVA</div>
+            </div>
+
+            <a href="https://demo-betting-exchange.vercel.app/" target="_blank" class="demo-link block group relative w-full max-w-4xl mx-auto rounded-xl sm:rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl border border-[#99E814]/30 hover:border-[#99E814] transition-all duration-700 cursor-pointer bg-[#050a05] transform-gpu hover:-translate-y-1" onclick="SoundEngine.click()">
+                
+                <div class="relative w-full overflow-hidden" style="aspect-ratio: 16/9;">
+                    <img src="demo-odds.jpeg" alt="Demo Odds" decoding="async" loading="lazy" class="absolute inset-0 w-full h-full object-cover object-top z-0 transition-transform duration-1000 group-hover:scale-105 opacity-100">
+                    <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-[#0a140f]/80 z-10 transition-opacity duration-700 opacity-80 group-hover:opacity-90 pointer-events-none"></div>
+                    
+                    <div class="absolute inset-0 flex items-center justify-center z-20 pointer-events-none px-2">
+                        <div class="play-pulse px-4 py-3 sm:px-8 sm:py-4 bg-[#99E814] border border-[#99E814] rounded-lg sm:rounded-xl flex items-center justify-center shadow-[0_0_30px_rgba(153,232,20,0.5)] transform group-hover:scale-105 transition-all duration-500 ease-out group-hover:bg-[#b3ff33] group-hover:shadow-[0_0_40px_rgba(153,232,20,0.7)] pointer-events-auto gap-2 sm:gap-3 backdrop-blur-sm max-w-[90%]">
+                            <svg class="w-4 h-4 sm:w-6 sm:h-6 text-[#050a05] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                            <span class="text-[#050a05] font-black text-[10px] sm:text-sm md:text-base tracking-[0.1em] sm:tracking-[0.2em] uppercase truncate" data-i18n="startSimulator">Avvia Simulatore</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </section>
+        
+        <section class="premium-card frame-purple w-full p-5 sm:p-8 relative overflow-hidden transform-gpu" style="content-visibility: auto;">
+            <p class="text-[9px] sm:text-[11px] md:text-xs text-[#a855f7] font-black mb-2 sm:mb-4 tracking-[0.2em] uppercase text-center md:text-left break-words" data-i18n="finLabel">PILLOLA FINANZIARIA</p>
+            <p class="text-xs sm:text-base md:text-lg text-gray-300 font-medium italic leading-relaxed text-center md:text-left break-words w-full">"<span data-i18n="finQuote">Non comprare mai a mercato se lo spread è troppo ampio. Nel trading sportivo, pagare un tick di troppo ogni volta distrugge il tuo margine a lungo termine.</span>"</p>
+        </section>
+
+        <section class="premium-card frame-blue w-full p-6 sm:p-10 flex flex-col items-center justify-center relative transform-gpu">
+            <div class="text-center space-y-3 mb-6 px-4 animate-fade-in-up relative z-10 w-full">
+                <h4 class="text-[#3b82f6] font-black text-lg sm:text-xl md:text-2xl tracking-[0.2em] uppercase drop-shadow-[0_0_15px_rgba(59,130,246,0.5)] w-full break-words" data-i18n="penaltiesTitle">GIOCO EDUCATIVO</h4>
+                <p class="text-gray-300 text-xs sm:text-sm md:text-base font-medium max-w-lg mx-auto leading-relaxed w-full break-words" data-i18n="penaltiesDesc">Clicca il joystick per scommettere sui rigori.</p>
+            </div>
+            <a href="https://penalties-zero-to-hero-academy.vercel.app/" target="_blank" rel="noopener noreferrer" class="text-6xl sm:text-7xl md:text-8xl hover:scale-125 transition-transform duration-500 touch-manipulation joystick-pulse transform-gpu shrink-0 relative z-10 mt-4" title="Play Penalties Live" onclick="SoundEngine.click()">
+                🎮
+                <div class="absolute inset-0 bg-[#3b82f6] rounded-full blur-[50px] opacity-20 -z-10"></div>
+            </a>
+        </section>
+
+<!-- STREAMING_CHUNK:Footer & Modals... -->
+        <div class="flex flex-col justify-center items-center pt-8 pb-4 border-t border-gray-800/50 relative gap-4 w-full">
+            <div id="sub-warning-msg" class="hidden absolute inset-0 md:static sub-warning px-4 sm:px-8 py-3.5 sm:py-4 rounded-xl text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-center w-full items-center justify-center gap-2 z-20 break-words">
+                <span data-i18n="subNotActive">ABBONAMENTO NON ATTIVO! CONTATTA IL TUO REFERENTE</span>
+            </div>
+            
+            <a id="btn-next-lesson" href="http://www.bettingexchangeroom.com" onclick="SoundEngine.click()" class="bg-[#0a140f] text-[#99E814] border-2 border-[#99E814] font-black w-full max-w-md mx-auto justify-center px-6 sm:px-10 py-5 rounded-2xl hover:bg-[#99E814] hover:border-[#99E814] transition-all duration-300 text-xs sm:text-sm md:text-base uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(153,232,20,0.2)] hover:shadow-[0_0_40px_rgba(153,232,20,0.6)] touch-manipulation active:scale-95 flex items-center gap-3 z-10 transform-gpu group btn-hover-fix">
+                <span data-i18n="navNextLesson" class="truncate transition-colors duration-300">SBLOCCA IL TUO PERCORSO</span> 
+                <span class="text-xl sm:text-2xl group-hover:translate-x-2 group-hover:text-black transition-all duration-300 shrink-0">→</span>
+            </a>
+        </div>
+
+    </main>
+
+    <div id="ebook-modal" class="fixed inset-0 z-[100] hidden flex-col items-center justify-center bg-[#050a05]/95 backdrop-blur-md p-0 sm:p-4 md:p-6 opacity-0 transition-opacity duration-300">
+        <div class="bg-[#050a05] w-full max-w-4xl h-full sm:h-auto sm:max-h-[95vh] rounded-none sm:rounded-3xl border-0 sm:border border-gray-700 flex flex-col overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 relative modern-ebook" id="ebook-modal-content">
+            <div class="flex justify-between items-center p-4 md:p-6 border-b border-gray-800 bg-[#050a05] shrink-0 z-10 w-full">
+                <h3 class="text-[#99E814] font-black uppercase tracking-widest text-[11px] sm:text-sm md:text-base flex items-center gap-2 truncate">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#ffb703] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg> 
+                    <span class="text-[#ffb703] truncate" data-i18n="btnEbookTitle">MANUALE</span>
+                </h3>
+                <button onclick="closeEbookModal()" class="text-gray-400 hover:text-white text-3xl md:text-4xl leading-none px-3 py-1 rounded-lg active:scale-95 touch-manipulation transition-colors shrink-0">&times;</button>
+            </div>
+            <div class="flex-1 overflow-y-auto relative flex flex-col items-center tg-scrollbar bg-[#050a05] w-full">
+                <div class="w-full max-w-3xl p-5 sm:p-8 md:p-10 text-justify md:text-left break-words" id="ebook-content-container" data-i18n-html="ebookContent"></div>
+            </div>
+        </div>
+    </div>
+
+<!-- STREAMING_CHUNK:JavaScript Logic and Dictionary... -->
+    <script>
+        const SoundEngine = {
+            ctx: null, unlocked: false,
+            init: function() { 
+                if(!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if(AudioContext) this.ctx = new AudioContext(); 
+                }
+                if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+                this.unlocked = true;
+            },
+            playTone: function(freq, type, duration, vol) {
+                if(!this.unlocked) this.init();
+                if(!this.ctx || this.ctx.state === 'suspended') return;
+                try {
+                    const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+                    osc.type = type; osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+                    osc.connect(gain); gain.connect(this.ctx.destination);
+                    osc.start(); osc.stop(this.ctx.currentTime + duration);
+                } catch(e) {}
+            },
+            click: function() { this.playTone(600, 'sine', 0.1, 0.1); },
+            cashout: function() { this.playTone(880, 'sine', 0.1, 0.1); setTimeout(() => this.playTone(1760, 'sine', 0.3, 0.15), 100); },
+            error: function() { this.playTone(150, 'sawtooth', 0.3, 0.1); }
+        };
+
+        function openEbookModal() {
+            SoundEngine.click();
+            const modal = document.getElementById('ebook-modal');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+            void modal.offsetWidth; 
+            modal.classList.remove('opacity-0'); modal.classList.add('opacity-100');
+            document.getElementById('ebook-modal-content').classList.remove('scale-95'); document.getElementById('ebook-modal-content').classList.add('scale-100');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeEbookModal() {
+            SoundEngine.click();
+            const modal = document.getElementById('ebook-modal');
+            modal.classList.remove('opacity-100'); modal.classList.add('opacity-0');
+            document.getElementById('ebook-modal-content').classList.remove('scale-100'); document.getElementById('ebook-modal-content').classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); document.body.style.overflow = ''; }, 300);
+        }
+
+        window.RoomApp = (function() {
+            // Modificata la chiave per non caricare il progresso del Giorno 1
+            const CONFIG = { STORAGE_KEY: 'bx_academy_demo_hd_v2_day2' }; 
+            const footerLogoHTML = `<div class="mt-12 md:mt-16 text-center pt-8 w-full"><img src="logo-tondo.jpeg" class="w-12 h-12 md:w-16 md:h-16 mx-auto rounded-full opacity-30 grayscale mix-blend-screen" alt="Global Exchange Academy" loading="lazy" decoding="async"></div>`;
+
+            const podcastUrls = {
+                it: "https://open.spotify.com/episode/2QDRZoYRQk8Gg1JqvXAuVU?si=c2uBoC8TSW-fFqQ5--EJJA",
+                en: "https://open.spotify.com/episode/6O2YicZuJbitsqlJ2VyhoM?si=jnDKia2EQI-5gXE8LkLewg",
+                es: "https://open.spotify.com/episode/3cPHNB0pKR0yW4ZqyRacID?si=TVGBO9EKQ-OrhxN8u4TIwg",
+                pt: "https://open.spotify.com/episode/7mEi7eq8P1IPzjrgPeWo90?si=X7fWHgriSWGP3N9a90N3CQ"
+            };
+
+            const dict = {
+                it: {
+                    pageTitle: "Room AI | Global Exchange Academy - Giorno 2",
+                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
+                    moduleTitle: "GIORNO 2/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Impara a leggere il mercato. Anatomia del prezzo, Bid/Ask spread e lettura del Ladder.",
+                    finLabel: "PILLOLA FINANCIARIA", finQuote: "Non comprare mai a mercato se lo spread è troppo ampio. Nel trading sportivo, pagare un tick di troppo ogni volta distrugge il tuo margine a lungo termine.",
+                    demoBadge: "DEMO INTERATTIVA", startSimulator: "AVVIA SIMULATORE",
+                    penaltiesTitle: "GIOCO EDUCATIVO", penaltiesDesc: "Clicca il joystick per scommettere sui rigori.",
+                    quizProgress: "Domanda {step} di 5",
+                    btnPodcast: "ASCOLTA IL PODCAST", btnEbook: "VISUALIZZA IL MANUALE", btnEbookTitle: "MANUALE", btnRetryQuiz: "Ripeti il test",
+                    btnTelegram: "SALA SEGNALI GRATUITI", navNextLesson: "SBLOCCA IL TUO PERCORSO",
+                    subNotActive: "ABBONAMENTO NON ATTIVO! CONTATTA IL TUO REFERENTE",
+                    quizCompletedTitle: "Check-Point Superato!", quizCompletedDesc: "Hai sbloccato 500 XP. Ora domini i fondamentali del Ladder.",
+                    videoUrl: "https://www.youtube.com/embed/8kjONb-eUt0?rel=0&modestbranding=1", videoThumb: "https://img.youtube.com/vi/8kjONb-eUt0/maxresdefault.jpg",
+                    quizData: [
+                        { q: "Cosa rappresenta un 'Tick' nel Betting Exchange?", opts: ["La commissione trattenuta dal bookmaker", "L'incremento minimo di variazione di un prezzo/quota", "Il tempo di ritardo dell'invio di una scommessa"], correct: 1, successMsg: "Esatto! Il Tick è l'unità base di movimento della quota.", failMsg: "Errore. Non è una tassa né un tempo. Riprova." },
+                        { q: "Cos'è lo 'Spread' (o Forbice) nel Ladder?", opts: ["La differenza tra la miglior quota disponibile in Punta e la miglior quota in Banca", "L'ammontare di denaro totale scommesso sulla partita", "Il profitto netto che ti aspetti dal trade"], correct: 0, successMsg: "Corretto! Uno spread stretto (es. 1 tick) indica alta liquidità.", failMsg: "Sbagliato. Lo spread riguarda esclusivamente il prezzo. Riprova." },
+                        { q: "Cosa indica la 'Liquidità visibile' sotto una quota nel Ladder?", opts: ["Il denaro già abbinato che non può essere mosso", "I soldi degli scommettitori che hanno perso", "L'ammontare di denaro in attesa di essere abbinato a quel preciso livello di prezzo"], correct: 2, successMsg: "Esatto! È il volume reale in attesa di mercato (Unmatched).", failMsg: "No. Sono ordini in attesa (unmatched), non già abbinati. Riprova." },
+                        { q: "Perché i trader professionisti utilizzano la vista 'Ladder' invece di quella tradizionale?", opts: ["Perché ha colori più accesi e grafica migliore", "Perché permette di vedere la profondità del mercato e inviare/cancellare ordini con un solo clic", "Perché rimuove automaticamente il ritardo (delay) di invio ordine"], correct: 1, successMsg: "Perfetto! La velocità e la visualizzazione della 'Market Depth' sono cruciali.", failMsg: "Sbagliato. Il Ladder non annulla il delay imposto dalla piattaforma. Riprova." },
+                        { q: "Se la miglior quota Punta è 2.00 e la miglior quota Banca è 2.02, a che quota verrai abbinato se clicchi 'Punta' (Back) sulla quota 2.00?", opts: ["2.00 (Entri nella coda e attendi che qualcuno ti banchi)", "2.02 (Vieni abbinato immediatamente prendendo i soldi in Lay)", "2.01 (Il sistema calcola la media automatica)"], correct: 0, successMsg: "Esatto! Cliccando il tuo prezzo ti metti in 'attesa' (passivo). Se volessi l'abbinamento immediato (attivo) dovresti comprare a 2.02.", failMsg: "Attenzione alle meccaniche di matching. Riprova." }
+                    ],
+                    ebookContent: `
+                        <div class="animate-fade-in-up w-full">
+                            <div class="relative overflow-hidden rounded-2xl md:rounded-[2rem] bg-gradient-to-br from-[#0a140f] to-[#050a05] border border-[#99E814]/20 p-6 sm:p-10 md:p-12 mb-8 md:mb-14 shadow-[0_0_30px_rgba(153,232,20,0.1)] text-center break-words">
+                                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#99E814] to-transparent opacity-50"></div>
+                                <span class="inline-block py-1 px-4 md:px-5 rounded-full bg-[#99E814]/10 text-[#99E814] border border-[#99E814]/20 font-mono text-[9px] sm:text-xs md:text-sm tracking-widest uppercase mb-4 md:mb-6">Giorno 2</span>
+                                <h1 class="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter text-white mb-2 md:mb-4 drop-shadow-md leading-tight">Anatomia <br class="block sm:hidden"><span class="text-transparent bg-clip-text bg-gradient-to-r from-[#99E814] to-[#7bbd10]">del Prezzo</span></h1>
+                                <p class="text-[#24A1DE] font-bold text-xs sm:text-sm md:text-base tracking-widest uppercase mt-4">Lettura del Ladder & Spread</p>
+                            </div>
+
+                            <div class="space-y-4 sm:space-y-6 md:space-y-8 text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed sm:leading-loose">
+                                <p>Nel trading sportivo, il prezzo non è un numero statico, ma un'entità viva mossa dalla domanda e dall'offerta. Comprendere come si muove è la differenza tra scommettere alla cieca ed operare come un Market Maker.</p>
+                                <p>L'interfaccia utilizzata dai professionisti si chiama <span class="text-[#99E814] font-bold bg-[#99E814]/10 px-1.5 py-0.5 rounded break-keep">Ladder</span> (Scala). A differenza della vista tradizionale, il Ladder ti mostra il prezzo su un asse verticale e, soprattutto, rivela la <span class="text-[#24A1DE] font-bold bg-[#24A1DE]/10 px-1.5 py-0.5 rounded break-keep">Profondità del Mercato</span> (i soldi in attesa di essere abbinati su ogni tick).</p>
+                            </div>
+
+                            <div class="my-10 md:my-16 relative p-[1px] rounded-2xl md:rounded-[2rem] bg-gradient-to-b from-[#99E814]/40 via-[#99E814]/5 to-transparent w-full">
+                                <div class="bg-[#050a05] rounded-[15px] md:rounded-[31px] p-6 sm:p-8 md:p-12 flex flex-col items-center justify-center w-full">
+                                    <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-[#99E814]/10 flex items-center justify-center mb-4 md:mb-6 border border-[#99E814]/30 shadow-[0_0_15px_rgba(153,232,20,0.2)] shrink-0">
+                                        <span class="text-xl md:text-2xl">📈</span>
+                                    </div>
+                                    <h3 class="font-black text-white text-sm sm:text-lg md:text-xl tracking-widest uppercase mb-4 md:mb-6 text-center w-full break-words">La Logica del Matching</h3>
+                                    <div class="bg-[#0a140f] border border-[#99E814]/20 px-3 sm:px-5 md:px-8 py-4 md:py-6 rounded-xl shadow-inner w-full text-center overflow-x-auto">
+                                        <code class="text-[#99E814] font-mono font-bold text-xs sm:text-[15px] md:text-lg whitespace-nowrap block w-full text-center">Se punti (Back) = Prendi liquidità da chi Banca (Lay)</code>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-10 md:mb-16 w-full">
+                                <h4 class="flex items-center justify-center md:justify-start text-white font-black text-sm sm:text-lg md:text-xl uppercase tracking-widest mb-6 md:mb-8 w-full break-words">
+                                    <span class="w-1.5 h-6 md:h-8 bg-[#24A1DE] mr-3 rounded-sm shadow-[0_0_10px_rgba(36,161,222,0.5)] shrink-0"></span> Dizionario del Ladder
+                                </h4>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6 w-full">
+                                    <div class="flex flex-row md:flex-col items-center md:items-center p-4 sm:p-5 md:p-6 bg-[#0a110a] border border-[#112211] rounded-xl hover:border-[#99E814]/30 transition-colors duration-300">
+                                        <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#99E814]/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-[#99E814]/20 text-lg md:text-xl">📏</div>
+                                        <div class="text-left md:text-center w-full">
+                                            <strong class="text-[#99E814] block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Tick</strong>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">L'incremento minimo del prezzo. Esempio: da 2.00 a 2.02 ci sono due tick (2.02-2.00 = 0.02).</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-row md:flex-col items-center md:items-center p-4 sm:p-5 md:p-6 bg-[#0a110a] border border-[#112211] rounded-xl hover:border-red-500/30 transition-colors duration-300">
+                                        <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-red-500/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-red-500/20 text-lg md:text-xl">↔️</div>
+                                        <div class="text-left md:text-center w-full">
+                                            <strong class="text-red-400 block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Spread</strong>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">Distanza in Ticks tra la miglior quota Punta e Banca. Se è ampio, entrarci è costoso (Slippage).</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-row md:flex-col items-center md:items-center p-4 sm:p-5 md:p-6 bg-[#0a110a] border border-[#112211] rounded-xl hover:border-[#24A1DE]/30 transition-colors duration-300">
+                                        <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#24A1DE]/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-[#24A1DE]/20 text-lg md:text-xl">📊</div>
+                                        <div class="text-left md:text-center w-full">
+                                            <strong class="text-[#24A1DE] block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Market Depth</strong>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">Il volume di denaro visibile in attesa (Unmatched). Rivela le intenzioni istituzionali.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h3 class="text-lg sm:text-xl md:text-2xl font-black mt-12 md:mt-20 mb-6 text-center uppercase tracking-widest text-white w-full break-words">Passive vs Aggressive Entry</h3>
+                            <p class="text-justify md:text-center leading-relaxed mb-8 md:mb-12 text-sm sm:text-base md:text-lg text-gray-300 max-w-3xl mx-auto">Se vuoi entrare a mercato e chiedi il tuo prezzo (es. Back a 2.00 con Spread 2.00/2.02), diventi un creatore di liquidità (<span class="text-[#24A1DE] font-bold">Maker</span>) e devi attendere. Se clicchi a 2.02 vieni eseguito subito, ma paghi lo spread (<span class="text-red-400 font-bold">Taker</span>).</p>
+
+                            <blockquote class="relative p-6 sm:p-8 md:p-12 rounded-2xl md:rounded-[2rem] bg-gradient-to-br from-[#0a140f] to-[#050a05] border border-[#99E814]/20 my-8 md:my-12 shadow-2xl overflow-hidden w-full">
+                                <div class="absolute -top-4 -right-4 md:-top-8 md:-right-8 text-7xl md:text-9xl text-[#99E814]/10 font-serif leading-none">"</div>
+                                <p class="text-gray-300 italic text-sm sm:text-base md:text-xl leading-relaxed font-medium relative z-10 text-center break-words">
+                                    Il bookmaker nasconde lo spread nella sua lavagna (Vigorish). Nell'Exchange lo spread è visibile e governabile.<br><br>
+                                    <span class="text-[#99E814] font-bold">Il trader non combatte il prezzo, aspetta che venga da lui.</span>
+                                </p>
+                            </blockquote>
+                            ${footerLogoHTML}
+                        </div>
+                    `
+                },
+                en: {
+                    pageTitle: "Room AI | Global Exchange Academy - Day 2",
+                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
+                    moduleTitle: "DAY 2/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Learn to read the market. Price anatomy, Bid/Ask spread, and mastering the Ladder.",
+                    finLabel: "FINANCIAL PILL", finQuote: "Never buy at market price if the spread is too wide. In sports trading, paying one extra tick every time destroys your long-term edge.",
+                    demoBadge: "INTERACTIVE DEMO", startSimulator: "START SIMULATOR",
+                    penaltiesTitle: "EDUCATIONAL GAME", penaltiesDesc: "Click the joystick to bet on penalties.",
+                    quizProgress: "Question {step} of 5",
+                    btnPodcast: "LISTEN TO THE PODCAST", btnEbook: "VIEW THE MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Retry Test",
+                    btnTelegram: "FREE SIGNALS ROOM", navNextLesson: "UNLOCK YOUR PATH",
+                    subNotActive: "SUBSCRIPTION NOT ACTIVE! CONTACT YOUR REFERENT",
+                    quizCompletedTitle: "Check-Point Passed!", quizCompletedDesc: "You unlocked 500 XP. You now master the Ladder fundamentals.",
+                    videoUrl: "https://www.youtube.com/embed/DPnyy3L_TFg?rel=0&modestbranding=1", videoThumb: "https://img.youtube.com/vi/DPnyy3L_TFg/maxresdefault.jpg",
+                    quizData: [
+                        { q: "What does a 'Tick' represent in the Betting Exchange?", opts: ["The commission retained by the exchange", "The minimum increment of price movement", "The delay time when placing a bet"], correct: 1, successMsg: "Exactly! The Tick is the base unit of odds movement.", failMsg: "Error. It is not a tax or a time unit. Try again." },
+                        { q: "What is the 'Spread' in the Ladder?", opts: ["The difference between the best Back odds and best Lay odds", "The total amount of money wagered on the match", "Your expected net profit from a trade"], correct: 0, successMsg: "Correct! A tight spread (e.g. 1 tick) indicates high liquidity.", failMsg: "Wrong. Spread is purely about price difference. Try again." },
+                        { q: "What does 'Market Depth' (visible money under odds) show?", opts: ["Money already matched that cannot be moved", "Money from punters who lost", "The amount of money waiting to be matched at that exact price level"], correct: 2, successMsg: "Exactly! It's the real Unmatched volume waiting in the market.", failMsg: "No. These are unmatched orders, not matched ones. Try again." },
+                        { q: "Why do professional traders use the 'Ladder' view instead of the traditional grid?", opts: ["Because it looks cooler", "Because it shows market depth and allows 1-click execution/cancellation", "Because it automatically removes the in-play delay"], correct: 1, successMsg: "Perfect! Speed and Market Depth visualization are crucial.", failMsg: "Wrong. The Ladder does not bypass the platform's delay. Try again." },
+                        { q: "If the best Back odds are 2.00 and best Lay odds are 2.02, what happens if you click 'Back' on 2.00?", opts: ["You enter the queue at 2.00 and wait for a matcher", "You get matched immediately at 2.02", "The system calculates an automatic average of 2.01"], correct: 0, successMsg: "Correct! By clicking your price, you wait (passive entry). For an instant match (aggressive), you must take the 2.02 price.", failMsg: "Watch out for matching mechanics. Try again." }
+                    ],
+                    ebookContent: `
+                        <div class="animate-fade-in-up w-full">
+                            <div class="relative overflow-hidden rounded-2xl md:rounded-[2rem] bg-gradient-to-br from-[#0a140f] to-[#050a05] border border-[#99E814]/20 p-6 sm:p-10 md:p-12 mb-8 md:mb-14 shadow-[0_0_30px_rgba(153,232,20,0.1)] text-center break-words">
+                                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#99E814] to-transparent opacity-50"></div>
+                                <span class="inline-block py-1 px-4 md:px-5 rounded-full bg-[#99E814]/10 text-[#99E814] border border-[#99E814]/20 font-mono text-[9px] sm:text-xs md:text-sm tracking-widest uppercase mb-4 md:mb-6">Day 2</span>
+                                <h1 class="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter text-white mb-2 md:mb-4 drop-shadow-md leading-tight">Anatomy <br class="block sm:hidden"><span class="text-transparent bg-clip-text bg-gradient-to-r from-[#99E814] to-[#7bbd10]">of Price</span></h1>
+                                <p class="text-[#24A1DE] font-bold text-xs sm:text-sm md:text-base tracking-widest uppercase mt-4">Ladder Reading & Spread</p>
+                            </div>
+
+                            <div class="space-y-4 sm:space-y-6 md:space-y-8 text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed sm:leading-loose">
+                                <p>In sports trading, price is not a static number, but a living entity driven by supply and demand. Understanding how it moves is the difference between blind gambling and acting as a Market Maker.</p>
+                                <p>The interface used by professionals is called the <span class="text-[#99E814] font-bold bg-[#99E814]/10 px-1.5 py-0.5 rounded break-keep">Ladder</span>. Unlike the traditional view, the Ladder displays price vertically and reveals the <span class="text-[#24A1DE] font-bold bg-[#24A1DE]/10 px-1.5 py-0.5 rounded break-keep">Market Depth</span> (money waiting to be matched at every tick).</p>
+                            </div>
+
+                            <div class="my-10 md:my-16 relative p-[1px] rounded-2xl md:rounded-[2rem] bg-gradient-to-b from-[#99E814]/40 via-[#99E814]/5 to-transparent w-full">
+                                <div class="bg-[#050a05] rounded-[15px] md:rounded-[31px] p-6 sm:p-8 md:p-12 flex flex-col items-center justify-center w-full">
+                                    <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-[#99E814]/10 flex items-center justify-center mb-4 md:mb-6 border border-[#99E814]/30 shadow-[0_0_15px_rgba(153,232,20,0.2)] shrink-0">
+                                        <span class="text-xl md:text-2xl">📈</span>
+                                    </div>
+                                    <h3 class="font-black text-white text-sm sm:text-lg md:text-xl tracking-widest uppercase mb-4 md:mb-6 text-center w-full break-words">Matching Logic</h3>
+                                    <div class="bg-[#0a140f] border border-[#99E814]/20 px-3 sm:px-5 md:px-8 py-4 md:py-6 rounded-xl shadow-inner w-full text-center overflow-x-auto">
+                                        <code class="text-[#99E814] font-mono font-bold text-xs sm:text-[15px] md:text-lg whitespace-nowrap block w-full text-center">If you Back = You take liquidity from those Laying</code>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-10 md:mb-16 w-full">
+                                <h4 class="flex items-center justify-center md:justify-start text-white font-black text-sm sm:text-lg md:text-xl uppercase tracking-widest mb-6 md:mb-8 w-full break-words">
+                                    <span class="w-1.5 h-6 md:h-8 bg-[#24A1DE] mr-3 rounded-sm shadow-[0_0_10px_rgba(36,161,222,0.5)] shrink-0"></span> Ladder Glossary
+                                </h4>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6 w-full">
+                                    <div class="flex flex-row md:flex-col items-center md:items-center p-4 sm:p-5 md:p-6 bg-[#0a110a] border border-[#112211] rounded-xl hover:border-[#99E814]/30 transition-colors duration-300">
+                                        <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#99E814]/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-[#99E814]/20 text-lg md:text-xl">📏</div>
+                                        <div class="text-left md:text-center w-full">
+                                            <strong class="text-[#99E814] block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Tick</strong>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">The minimum price increment. E.g., from 2.00 to 2.02 is two ticks (2.02-2.00 = 0.02).</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-row md:flex-col items-center md:items-center p-4 sm:p-5 md:p-6 bg-[#0a110a] border border-[#112211] rounded-xl hover:border-red-500/30 transition-colors duration-300">
+                                        <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-red-500/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-red-500/20 text-lg md:text-xl">↔️</div>
+                                        <div class="text-left md:text-center w-full">
+                                            <strong class="text-red-400 block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Spread</strong>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">Distance in ticks between the best Back and Lay odds. If wide, entry is costly (Slippage).</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-row md:flex-col items-center md:items-center p-4 sm:p-5 md:p-6 bg-[#0a110a] border border-[#112211] rounded-xl hover:border-[#24A1DE]/30 transition-colors duration-300">
+                                        <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#24A1DE]/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-[#24A1DE]/20 text-lg md:text-xl">📊</div>
+                                        <div class="text-left md:text-center w-full">
+                                            <strong class="text-[#24A1DE] block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Market Depth</strong>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">Visible waiting money (Unmatched volume). Reveals institutional intentions.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h3 class="text-lg sm:text-xl md:text-2xl font-black mt-12 md:mt-20 mb-6 text-center uppercase tracking-widest text-white w-full break-words">Passive vs Aggressive Entry</h3>
+                            <p class="text-justify md:text-center leading-relaxed mb-8 md:mb-12 text-sm sm:text-base md:text-lg text-gray-300 max-w-3xl mx-auto">If you enter the market asking for your own price (e.g., Back at 2.00 when Spread is 2.00/2.02), you act as a liquidity provider (<span class="text-[#24A1DE] font-bold">Maker</span>) and wait. If you click 2.02 you are filled instantly, but pay the spread (<span class="text-red-400 font-bold">Taker</span>).</p>
+
+                            <blockquote class="relative p-6 sm:p-8 md:p-12 rounded-2xl md:rounded-[2rem] bg-gradient-to-br from-[#0a140f] to-[#050a05] border border-[#99E814]/20 my-8 md:my-12 shadow-2xl overflow-hidden w-full">
+                                <div class="absolute -top-4 -right-4 md:-top-8 md:-right-8 text-7xl md:text-9xl text-[#99E814]/10 font-serif leading-none">"</div>
+                                <p class="text-gray-300 italic text-sm sm:text-base md:text-xl leading-relaxed font-medium relative z-10 text-center break-words">
+                                    Bookmakers hide the spread in their odds (Vigorish). In the Exchange, the spread is transparent and exploitable.<br><br>
+                                    <span class="text-[#99E814] font-bold">A trader does not chase the price; they let it come to them.</span>
+                                </p>
+                            </blockquote>
+                            ${footerLogoHTML}
+                        </div>
+                    `
+                },
+                es: {
+                    pageTitle: "Room AI | Global Exchange Academy - Día 2",
+                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
+                    moduleTitle: "DÍA 2/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Aprende a leer el mercado. Anatomía del precio, Bid/Ask spread y lectura del Ladder.",
+                    finLabel: "PÍLDORA FINANCIERA", finQuote: "Nunca compres a mercado si el spread es demasiado amplio. En el trading deportivo, pagar un tick de más cada vez destruye tu margen a largo plazo.",
+                    demoBadge: "DEMO INTERACTIVA", startSimulator: "INICIAR SIMULADOR",
+                    penaltiesTitle: "JUEGO EDUCATIVO", penaltiesDesc: "Haz clic en el joystick para apostar en los penaltis.",
+                    quizProgress: "Pregunta {step} de 5",
+                    btnPodcast: "ESCUCHA EL PODCAST", btnEbook: "VER EL MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Repetir Test",
+                    btnTelegram: "SALA DE SEÑALES GRATIS", navNextLesson: "DESBLOQUEA TU CAMINO",
+                    subNotActive: "¡SUSCRIPCIÓN NO ACTIVA! CONTACTA A TU REFERENTE",
+                    quizCompletedTitle: "¡Check-Point Superado!", quizCompletedDesc: "Has desbloqueado 500 XP. Ahora dominas los fundamentos del Ladder.",
+                    videoUrl: "https://www.youtube.com/embed/BsA4QmFVyZo?rel=0&modestbranding=1", videoThumb: "https://img.youtube.com/vi/BsA4QmFVyZo/maxresdefault.jpg",
+                    quizData: [
+                        { q: "¿Qué representa un 'Tick' en el Betting Exchange?", opts: ["La comisión que cobra la plataforma", "El incremento mínimo de movimiento de una cuota", "El tiempo de retraso (delay) al apostar"], correct: 1, successMsg: "¡Exacto! El Tick es la unidad mínima de movimiento del precio.", failMsg: "Error. No es un impuesto ni tiempo. Inténtalo de nuevo." },
+                        { q: "¿Qué es el 'Spread' en el Ladder?", opts: ["La diferencia entre la mejor cuota Back y la mejor cuota Lay", "La cantidad total invertida en el partido", "El beneficio esperado de una operación"], correct: 0, successMsg: "¡Correcto! Un spread estrecho indica alta liquidez.", failMsg: "Equivocado. El spread se refiere al precio. Inténtalo de nuevo." },
+                        { q: "¿Qué indica la 'Market Depth' (dinero visible) en el Ladder?", opts: ["Dinero ya emparejado (Matched)", "El dinero que la plataforma ha ganado", "El dinero a la espera de ser emparejado (Unmatched) en ese nivel de precio"], correct: 2, successMsg: "¡Exacto! Es el volumen esperando cruce.", failMsg: "No. Son órdenes esperando, no ejecutadas. Inténtalo de nuevo." },
+                        { q: "¿Por qué los traders profesionales usan la vista 'Ladder'?", opts: ["Porque es visualmente más atractiva", "Porque permite ver la profundidad del mercado y enviar órdenes con un solo clic", "Porque elimina el retraso (delay) automático"], correct: 1, successMsg: "¡Perfecto! Velocidad y visualización del Order Book son clave.", failMsg: "Equivocado. El Ladder no elimina el delay del sistema. Inténtalo de nuevo." },
+                        { q: "Si el mejor Back es 2.00 y el mejor Lay es 2.02, ¿qué pasa si haces clic en 'Back' a cuota 2.00?", opts: ["Entras en la cola a 2.00 esperando ser emparejado", "Te emparejas de inmediato tomando la cuota de 2.02", "El sistema calcula el promedio de 2.01"], correct: 0, successMsg: "¡Exacto! Pides tu precio (entrada pasiva). Para entrar ya (agresiva), deberías aceptar 2.02.", failMsg: "Cuidado con la mecánica de emparejamiento. Inténtalo de nuevo." }
+                    ],
+                    ebookContent: `
+                        <div class="animate-fade-in-up w-full">
+                            <div class="relative overflow-hidden rounded-2xl md:rounded-[2rem] bg-gradient-to-br from-[#0a140f] to-[#050a05] border border-[#99E814]/20 p-6 sm:p-10 md:p-12 mb-8 md:mb-14 shadow-[0_0_30px_rgba(153,232,20,0.1)] text-center break-words">
+                                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#99E814] to-transparent opacity-50"></div>
+                                <span class="inline-block py-1 px-4 md:px-5 rounded-full bg-[#99E814]/10 text-[#99E814] border border-[#99E814]/20 font-mono text-[9px] sm:text-xs md:text-sm tracking-widest uppercase mb-4 md:mb-6">Día 2</span>
+                                <h1 class="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter text-white mb-2 md:mb-4 drop-shadow-md leading-tight">Anatomía <br class="block sm:hidden"><span class="text-transparent bg-clip-text bg-gradient-to-r from-[#99E814] to-[#7bbd10]">del Precio</span></h1>
+                                <p class="text-[#24A1DE] font-bold text-xs sm:text-sm md:text-base tracking-widest uppercase mt-4">Lectura del Ladder & Spread</p>
+                            </div>
+
+                            <div class="space-y-4 sm:space-y-6 md:space-y-8 text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed sm:leading-loose">
+                                <p>En el trading deportivo, el precio no es estático, es una entidad viva movida por la oferta y demanda. Comprenderlo es la diferencia entre apostar a ciegas y actuar como un Market Maker.</p>
+                                <p>La interfaz de los profesionales es el <span class="text-[#99E814] font-bold bg-[#99E814]/10 px-1.5 py-0.5 rounded break-keep">Ladder</span>. A diferencia de la vista normal, muestra el precio en eje vertical y revela la <span class="text-[#24A1DE] font-bold bg-[#24A1DE]/10 px-1.5 py-0.5 rounded break-keep">Profundidad de Mercado</span> (dinero esperando en cada tick).</p>
+                            </div>
+
+                            <div class="my-10 md:my-16 relative p-[1px] rounded-2xl md:rounded-[2rem] bg-gradient-to-b from-[#99E814]/40 via-[#99E814]/5 to-transparent w-full">
+                                <div class="bg-[#050a05] rounded-[15px] md:rounded-[31px] p-6 sm:p-8 md:p-12 flex flex-col items-center justify-center w-full">
+                                    <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-[#99E814]/10 flex items-center justify-center mb-4 md:mb-6 border border-[#99E814]/30 shadow-[0_0_15px_rgba(153,232,20,0.2)] shrink-0">
+                                        <span class="text-xl md:text-2xl">📈</span>
+                                    </div>
+                                    <h3 class="font-black text-white text-sm sm:text-lg md:text-xl tracking-widest uppercase mb-4 md:mb-6 text-center w-full break-words">Lógica de Emparejamiento</h3>
+                                    <div class="bg-[#0a140f] border border-[#99E814]/20 px-3 sm:px-5 md:px-8 py-4 md:py-6 rounded-xl shadow-inner w-full text-center overflow-x-auto">
+                                        <code class="text-[#99E814] font-mono font-bold text-xs sm:text-[15px] md:text-lg whitespace-nowrap block w-full text-center">Si haces Back = Tomas liquidez de quienes hacen Lay</code>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-10 md:mb-16 w-full">
+                                <h4 class="flex items-center justify-center md:justify-start text-white font-black text-sm sm:text-lg md:text-xl uppercase tracking-widest mb-6 md:mb-8 w-full break-words">
+                                    <span class="w-1.5 h-6 md:h-8 bg-[#24A1DE] mr-3 rounded-sm shadow-[0_0_10px_rgba(36,161,222,0.5)] shrink-0"></span> Glosario del Ladder
+                                </h4>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6 w-full">
+                                    <div class="flex flex-row md:flex-col items-center md:items-center p-4 sm:p-5 md:p-6 bg-[#0a110a] border border-[#112211] rounded-xl hover:border-[#99E814]/30 transition-colors duration-300">
+                                        <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#99E814]/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-[#99E814]/20 text-lg md:text-xl">📏</div>
+                                        <div class="text-left md:text-center w-full">
+                                            <strong class="text-[#99E814] block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Tick</strong>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">El movimiento mínimo del precio. Ej: de 2.00 a 2.02 hay dos ticks.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-row md:flex-col items-center md:items-center p-4 sm:p-5 md:p-6 bg-[#0a110a] border border-[#112211] rounded-xl hover:border-red-500/30 transition-colors duration-300">
+                                        <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-red-500/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-red-500/20 text-lg md:text-xl">↔️</div>
+                                        <div class="text-left md:text-center w-full">
+                                            <strong class="text-red-400 block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Spread</strong>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">Distancia en Ticks entre el mejor Back y Lay. Si es amplio, entrar es costoso.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-row md:flex-col items-center md:items-center p-4 sm:p-5 md:p-6 bg-[#0a110a] border border-[#112211] rounded-xl hover:border-[#24A1DE]/30 transition-colors duration-300">
+                                        <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#24A1DE]/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-[#24A1DE]/20 text-lg md:text-xl">📊</div>
+                                        <div class="text-left md:text-center w-full">
+                                            <strong class="text-[#24A1DE] block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Market Depth</strong>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">Volumen visible a la espera (Unmatched). Revela la liquidez real.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h3 class="text-lg sm:text-xl md:text-2xl font-black mt-12 md:mt-20 mb-6 text-center uppercase tracking-widest text-white w-full break-words">Entrada Pasiva vs Agresiva</h3>
+                            <p class="text-justify md:text-center leading-relaxed mb-8 md:mb-12 text-sm sm:text-base md:text-lg text-gray-300 max-w-3xl mx-auto">Si pides tu precio (ej. Back a 2.00 con Spread 2.00/2.02), eres creador de liquidez (<span class="text-[#24A1DE] font-bold">Maker</span>) y esperas. Si clicas en 2.02 entras de inmediato, pero pagas el spread (<span class="text-red-400 font-bold">Taker</span>).</p>
+
+                            <blockquote class="relative p-6 sm:p-8 md:p-12 rounded-2xl md:rounded-[2rem] bg-gradient-to-br from-[#0a140f] to-[#050a05] border border-[#99E814]/20 my-8 md:my-12 shadow-2xl overflow-hidden w-full">
+                                <div class="absolute -top-4 -right-4 md:-top-8 md:-right-8 text-7xl md:text-9xl text-[#99E814]/10 font-serif leading-none">"</div>
+                                <p class="text-gray-300 italic text-sm sm:text-base md:text-xl leading-relaxed font-medium relative z-10 text-center break-words">
+                                    El bookmaker esconde el spread en sus cuotas. En el Exchange, es visible y operable.<br><br>
+                                    <span class="text-[#99E814] font-bold">El trader no persigue el precio, deja que el precio venga a él.</span>
+                                </p>
+                            </blockquote>
+                            ${footerLogoHTML}
+                        </div>
+                    `
+                },
+                pt: {
+                    pageTitle: "Room AI | Global Exchange Academy - Dia 2",
+                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
+                    moduleTitle: "DIA 2/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Aprenda a ler o mercado. Anatomia do preço, Bid/Ask spread e leitura do Ladder.",
+                    finLabel: "PÍLULA FINANCEIRA", finQuote: "Nunca compre a mercado se o spread for muito amplo. No trading esportivo, pagar um tick a mais todas as vezes destrói sua margem a longo prazo.",
+                    demoBadge: "DEMO INTERATIVA", startSimulator: "INICIAR SIMULADOR",
+                    penaltiesTitle: "JOGO EDUCATIVO", penaltiesDesc: "Clique no joystick para apostar nos pênaltis.",
+                    quizProgress: "Pergunta {step} de 5",
+                    btnPodcast: "OUÇA O PODCAST", btnEbook: "VER O MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Repetir Teste",
+                    btnTelegram: "SALA DE SINAIS GRÁTIS", navNextLesson: "DESBLOQUEIE SEU CAMINHO",
+                    subNotActive: "ASSINATURA NÃO ATIVA! CONTACTE O SEU REFERENTE",
+                    quizCompletedTitle: "Check-Point Aprovado!", quizCompletedDesc: "Você desbloqueou 500 XP. Agora domina os fundamentos do Ladder.",
+                    videoUrl: "https://www.youtube.com/embed/1cUveYReQgI?rel=0&modestbranding=1", videoThumb: "https://img.youtube.com/vi/1cUveYReQgI/maxresdefault.jpg",
+                    quizData: [
+                        { q: "O que representa um 'Tick' na Betting Exchange?", opts: ["A comissão retida pela plataforma", "O incremento mínimo de movimento de uma odd", "O atraso (delay) ao enviar a aposta"], correct: 1, successMsg: "Exato! O Tick é a unidade básica de movimento do preço.", failMsg: "Erro. Não é uma taxa nem tempo. Tente novamente." },
+                        { q: "O que é o 'Spread' no Ladder?", opts: ["A diferença entre a melhor odd em Back e a melhor em Lay", "A quantidade de dinheiro apostado no jogo", "O seu lucro líquido projetado"], correct: 0, successMsg: "Correto! Um spread curto indica alta liquidez.", failMsg: "Errado. O spread refere-se ao preço. Tente novamente." },
+                        { q: "O que indica a 'Profundidade de Mercado' (dinheiro visível) no Ladder?", opts: ["Dinheiro já correspondido (Matched)", "A taxa de sucesso das apostas", "O dinheiro esperando para ser correspondido (Unmatched) naquele nível de preço"], correct: 2, successMsg: "Exato! É o volume à espera na fila.", failMsg: "Não. São ordens na fila, não executadas. Tente novamente." },
+                        { q: "Por que os traders profissionais usam a vista 'Ladder'?", opts: ["Porque é mais bonita", "Porque permite ver a profundidade do mercado e enviar ordens com um clique", "Porque remove o delay (atraso) imposto pela bolsa"], correct: 1, successMsg: "Perfeito! A visão e velocidade do Order Book são essenciais.", failMsg: "Errado. O Ladder não remove o delay da plataforma. Tente novamente." },
+                        { q: "Se a melhor odd Back é 2.00 e Lay é 2.02, o que acontece ao clicar 'Back' em 2.00?", opts: ["Entra na fila de espera no 2.00 e aguarda", "É correspondido de imediato pegando a liquidez em 2.02", "O sistema cria uma odd média em 2.01"], correct: 0, successMsg: "Exato! Pede o seu preço e aguarda (passivo). Se quiser execução imediata, tem de pegar o 2.02.", failMsg: "Atenção à mecânica de matching. Tente novamente." }
+                    ],
+                    ebookContent: `
+                        <div class="animate-fade-in-up w-full">
+                            <div class="relative overflow-hidden rounded-2xl md:rounded-[2rem] bg-gradient-to-br from-[#0a140f] to-[#050a05] border border-[#99E814]/20 p-6 sm:p-10 md:p-12 mb-8 md:mb-14 shadow-[0_0_30px_rgba(153,232,20,0.1)] text-center break-words">
+                                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#99E814] to-transparent opacity-50"></div>
+                                <span class="inline-block py-1 px-4 md:px-5 rounded-full bg-[#99E814]/10 text-[#99E814] border border-[#99E814]/20 font-mono text-[9px] sm:text-xs md:text-sm tracking-widest uppercase mb-4 md:mb-6">Dia 2</span>
+                                <h1 class="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter text-white mb-2 md:mb-4 drop-shadow-md leading-tight">Anatomia <br class="block sm:hidden"><span class="text-transparent bg-clip-text bg-gradient-to-r from-[#99E814] to-[#7bbd10]">do Preço</span></h1>
+                                <p class="text-[#24A1DE] font-bold text-xs sm:text-sm md:text-base tracking-widest uppercase mt-4">Leitura do Ladder & Spread</p>
+                            </div>
+
+                            <div class="space-y-4 sm:space-y-6 md:space-y-8 text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed sm:leading-loose">
+                                <p>No trading esportivo, o preço não é estático. É uma entidade viva impulsionada pela oferta e demanda. Entender isso é a diferença entre apostar às cegas e atuar como um Market Maker.</p>
+                                <p>A interface dos profissionais chama-se <span class="text-[#99E814] font-bold bg-[#99E814]/10 px-1.5 py-0.5 rounded break-keep">Ladder</span> (Escada). Ao contrário da vista comum, revela o preço verticalmente e exibe a <span class="text-[#24A1DE] font-bold bg-[#24A1DE]/10 px-1.5 py-0.5 rounded break-keep">Profundidade do Mercado</span> (dinheiro na fila).</p>
+                            </div>
+
+                            <div class="my-10 md:my-16 relative p-[1px] rounded-2xl md:rounded-[2rem] bg-gradient-to-b from-[#99E814]/40 via-[#99E814]/5 to-transparent w-full">
+                                <div class="bg-[#050a05] rounded-[15px] md:rounded-[31px] p-6 sm:p-8 md:p-12 flex flex-col items-center justify-center w-full">
+                                    <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-[#99E814]/10 flex items-center justify-center mb-4 md:mb-6 border border-[#99E814]/30 shadow-[0_0_15px_rgba(153,232,20,0.2)] shrink-0">
+                                        <span class="text-xl md:text-2xl">📈</span>
+                                    </div>
+                                    <h3 class="font-black text-white text-sm sm:text-lg md:text-xl tracking-widest uppercase mb-4 md:mb-6 text-center w-full break-words">Lógica de Correspondência</h3>
+                                    <div class="bg-[#0a140f] border border-[#99E814]/20 px-3 sm:px-5 md:px-8 py-4 md:py-6 rounded-xl shadow-inner w-full text-center overflow-x-auto">
+                                        <code class="text-[#99E814] font-mono font-bold text-xs sm:text-[15px] md:text-lg whitespace-nowrap block w-full text-center">Fazer Back = Retirar liquidez de quem faz Lay</code>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-10 md:mb-16 w-full">
+                                <h4 class="flex items-center justify-center md:justify-start text-white font-black text-sm sm:text-lg md:text-xl uppercase tracking-widest mb-6 md:mb-8 w-full break-words">
+                                    <span class="w-1.5 h-6 md:h-8 bg-[#24A1DE] mr-3 rounded-sm shadow-[0_0_10px_rgba(36,161,222,0.5)] shrink-0"></span> Glossário do Ladder
+                                </h4>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6 w-full">
+                                    <div class="flex flex-row md:flex-col items-center md:items-center p-4 sm:p-5 md:p-6 bg-[#0a110a] border border-[#112211] rounded-xl hover:border-[#99E814]/30 transition-colors duration-300">
+                                        <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#99E814]/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-[#99E814]/20 text-lg md:text-xl">📏</div>
+                                        <div class="text-left md:text-center w-full">
+                                            <strong class="text-[#99E814] block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Tick</strong>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">Incremento mínimo da odd. Ex: de 2.00 para 2.02 há dois ticks.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-row md:flex-col items-center md:items-center p-4 sm:p-5 md:p-6 bg-[#0a110a] border border-[#112211] rounded-xl hover:border-red-500/30 transition-colors duration-300">
+                                        <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-red-500/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-red-500/20 text-lg md:text-xl">↔️</div>
+                                        <div class="text-left md:text-center w-full">
+                                            <strong class="text-red-400 block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Spread</strong>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">Distância em Ticks entre melhor Back e Lay. Spread largo gera custos ocultos.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-row md:flex-col items-center md:items-center p-4 sm:p-5 md:p-6 bg-[#0a110a] border border-[#112211] rounded-xl hover:border-[#24A1DE]/30 transition-colors duration-300">
+                                        <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#24A1DE]/10 flex items-center justify-center shrink-0 mr-4 md:mr-0 md:mb-4 border border-[#24A1DE]/20 text-lg md:text-xl">📊</div>
+                                        <div class="text-left md:text-center w-full">
+                                            <strong class="text-[#24A1DE] block text-[10px] sm:text-xs md:text-sm uppercase tracking-widest mb-1.5">Market Depth</strong>
+                                            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed">Volume invisível ao apostador comum. Revela as intenções reais do mercado.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h3 class="text-lg sm:text-xl md:text-2xl font-black mt-12 md:mt-20 mb-6 text-center uppercase tracking-widest text-white w-full break-words">Entrada Passiva vs Agressiva</h3>
+                            <p class="text-justify md:text-center leading-relaxed mb-8 md:mb-12 text-sm sm:text-base md:text-lg text-gray-300 max-w-3xl mx-auto">Ao pedir o seu preço (ex. Back a 2.00 com Spread 2.00/2.02), é criador de liquidez (<span class="text-[#24A1DE] font-bold">Maker</span>) e aguarda. Se clica a 2.02, executa logo, pagando o spread (<span class="text-red-400 font-bold">Taker</span>).</p>
+
+                            <blockquote class="relative p-6 sm:p-8 md:p-12 rounded-2xl md:rounded-[2rem] bg-gradient-to-br from-[#0a140f] to-[#050a05] border border-[#99E814]/20 my-8 md:my-12 shadow-2xl overflow-hidden w-full">
+                                <div class="absolute -top-4 -right-4 md:-top-8 md:-right-8 text-7xl md:text-9xl text-[#99E814]/10 font-serif leading-none">"</div>
+                                <p class="text-gray-300 italic text-sm sm:text-base md:text-xl leading-relaxed font-medium relative z-10 text-center break-words">
+                                    A casa de apostas esconde o spread nas margens. Na Exchange, ele é transparente e seu aliado.<br><br>
+                                    <span class="text-[#99E814] font-bold">O trader não persegue o preço, ele deixa que venha até si.</span>
+                                </p>
+                            </blockquote>
+                            ${footerLogoHTML}
+                        </div>
+                    `
+                }
+            };
+
+            let State = { lang: 'en', xp: 0, currentQuizStep: 0, quizCompleted: false };
+
+            const UIManager = {
+                setLanguage: (lang) => {
+                    const targetLang = dict[lang] ? lang : 'en';
+                    State.lang = targetLang;
+                    document.documentElement.lang = targetLang;
+                    
+                    if(dict[targetLang].pageTitle) document.title = dict[targetLang].pageTitle;
+                    
+                    document.querySelectorAll('.lang-flag').forEach(btn => {
+                        if(btn.getAttribute('data-lang') === targetLang) {
+                            btn.classList.add('active');
+                            btn.classList.remove('inactive');
+                        } else {
+                            btn.classList.add('inactive');
+                            btn.classList.remove('active');
+                        }
+                    });
+                    
+                    document.querySelectorAll('[data-i18n]').forEach(el => {
+                        const key = el.getAttribute('data-i18n');
+                        if (dict[targetLang][key] || dict['en'][key]) el.innerText = dict[targetLang][key] || dict['en'][key];
+                    });
+                    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+                        const key = el.getAttribute('data-i18n-html');
+                        if (dict[targetLang][key] || dict['en'][key]) el.innerHTML = dict[targetLang][key] || dict['en'][key];
+                    });
+                    
+                    const videoIframe = document.getElementById('main-video');
+                    if (videoIframe) {
+                        videoIframe.src = dict[targetLang].videoUrl || dict['en'].videoUrl;
+                    }
+                    
+                    const ebookContainer = document.getElementById('ebook-content-container');
+                    if(ebookContainer) ebookContainer.innerHTML = dict[targetLang].ebookContent || dict['en'].ebookContent;
+
+                    const podcastLink = document.getElementById('btn-podcast');
+                    if (podcastLink) podcastLink.href = podcastUrls[targetLang] || podcastUrls['en'];
+
+                    Gamification.renderQuiz();
+                    
+                    document.querySelectorAll('.demo-link').forEach(link => {
+                        link.href = `https://demo-betting-exchange.vercel.app/?lang=${targetLang}`;
+                    });
+
+                    try { localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify({ lang: State.lang, xp: State.xp, currentQuizStep: State.currentQuizStep, quizCompleted: State.quizCompleted })); } catch(e){}
+                },
+                updateDashboards: () => {
+                    document.getElementById('xp-counter').innerText = `${State.xp} XP`;
+                }
+            };
+
+            const Gamification = {
+                renderQuiz: () => {
+                    if (State.quizCompleted) {
+                        document.getElementById('quiz-container').classList.add('hidden');
+                        document.getElementById('quiz-feedback').classList.add('hidden');
+                        document.getElementById('quiz-completed-screen').classList.remove('hidden');
+                        document.getElementById('quiz-completed-screen').classList.add('flex');
+                        return;
+                    } else {
+                        document.getElementById('quiz-completed-screen').classList.add('hidden');
+                        document.getElementById('quiz-completed-screen').classList.remove('flex');
+                        document.getElementById('quiz-container').classList.remove('hidden');
+                    }
+
+                    const qData = dict[State.lang].quizData[State.currentQuizStep];
+                    
+                    const progressTemplate = dict[State.lang].quizProgress || dict['en'].quizProgress;
+                    document.getElementById('quiz-progress-text').innerText = progressTemplate.replace('{step}', State.currentQuizStep + 1);
+                    
+                    let dotsHtml = '';
+                    for(let i=0; i<5; i++) {
+                        dotsHtml += `<div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${i < State.currentQuizStep ? 'bg-[#d4af37]' : (i === State.currentQuizStep ? 'bg-white border border-[#d4af37]' : 'bg-gray-800 border border-gray-600')} shrink-0"></div>`;
+                    }
+                    document.getElementById('quiz-dots').innerHTML = dotsHtml;
+                    
+                    document.getElementById('quiz-question-text').innerText = qData.q;
+                    
+                    let optsHtml = '';
+                    const letters = ['A', 'B', 'C'];
+                    qData.opts.forEach((opt, index) => {
+                        optsHtml += `
+                        <button id="quiz-opt-${index}" onclick="checkAnswer(${index})" class="wwtbam-btn w-full p-4 sm:p-5 text-left flex items-center text-[13px] sm:text-sm md:text-base font-bold text-gray-200 touch-manipulation group min-h-[60px]">
+                            <span class="text-[#d4af37] text-lg sm:text-xl mr-3 sm:mr-4 font-black w-6 text-center drop-shadow-[0_0_5px_rgba(212,175,55,0.5)] shrink-0">${letters[index]}:</span> 
+                            <span class="flex-1 drop-shadow-md group-hover:text-white transition-colors leading-snug break-words">${opt}</span>
+                        </button>`;
+                    });
+                    document.getElementById('quiz-options-container').innerHTML = optsHtml;
+                    document.getElementById('quiz-feedback').classList.add('hidden');
+                },
+                checkQuiz: (selectedIndex) => {
+                    const qData = dict[State.lang].quizData[State.currentQuizStep];
+                    const feedbackDiv = document.getElementById('quiz-feedback');
+                    const icon = document.getElementById('quiz-feedback-icon');
+                    const text = document.getElementById('quiz-feedback-text');
+                    
+                    const clickedBtn = document.getElementById(`quiz-opt-${selectedIndex}`);
+                    const correctBtn = document.getElementById(`quiz-opt-${qData.correct}`);
+
+                    const btns = document.getElementById('quiz-options-container').querySelectorAll('button');
+                    btns.forEach(b => {
+                        b.onclick = null;
+                        b.classList.add('cursor-not-allowed', 'opacity-90');
+                        b.disabled = true;
+                    });
+
+                    if (selectedIndex === qData.correct) {
+                        SoundEngine.cashout();
+                        clickedBtn.classList.add('correct');
+                        clickedBtn.classList.remove('opacity-90');
+                        
+                        icon.innerText = '🏆'; 
+                        text.innerText = qData.successMsg;
+                        text.className = 'font-black text-[11px] sm:text-sm md:text-base uppercase tracking-widest text-[#00ff00] leading-relaxed drop-shadow-md break-words w-full';
+                        feedbackDiv.className = 'w-full max-w-2xl mx-auto p-4 sm:p-6 md:p-8 text-center shadow-2xl mt-8 transition-all duration-500 transform-gpu relative overflow-hidden rounded-xl border border-[#00ff00]/50 bg-gradient-to-b from-[#003300]/80 to-[#001100]/90 flex flex-col items-center';
+                        
+                        State.xp += 100;
+                        UIManager.updateDashboards();
+                        
+                    } else {
+                        SoundEngine.error();
+                        clickedBtn.classList.add('wrong');
+                        clickedBtn.classList.remove('opacity-90');
+                        correctBtn.classList.add('correct');
+                        correctBtn.classList.remove('opacity-90');
+                        
+                        icon.innerText = '❌'; 
+                        text.innerText = qData.failMsg;
+                        text.className = 'font-bold text-[10px] sm:text-sm md:text-base uppercase tracking-widest text-[#ff3333] leading-relaxed drop-shadow-md break-words w-full';
+                        feedbackDiv.className = 'w-full max-w-2xl mx-auto p-4 sm:p-6 md:p-8 text-center shadow-2xl mt-8 transition-all duration-500 transform-gpu relative overflow-hidden rounded-xl border border-[#ff0000]/50 bg-gradient-to-b from-[#330000]/80 to-[#110000]/90 flex flex-col items-center';
+                    }
+
+                    setTimeout(() => { feedbackDiv.classList.remove('hidden'); }, 400);
+
+                    setTimeout(() => {
+                        if (State.currentQuizStep < 4) {
+                            State.currentQuizStep++;
+                            Gamification.renderQuiz();
+                        } else {
+                            State.quizCompleted = true;
+                            Gamification.renderQuiz();
+                        }
+                        try { localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify({ lang: State.lang, xp: State.xp, currentQuizStep: State.currentQuizStep, quizCompleted: State.quizCompleted })); } catch(e){}
+                    }, 2800);
+                }
+            };
+
+            window.resetQuiz = function() {
+                SoundEngine.click();
+                State.currentQuizStep = 0;
+                State.quizCompleted = false;
+                
+                if (State.xp >= 500) { State.xp -= 500; } else { State.xp = 0; }
+                
+                UIManager.updateDashboards();
+                Gamification.renderQuiz();
+                try { localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify({ lang: State.lang, xp: State.xp, currentQuizStep: State.currentQuizStep, quizCompleted: State.quizCompleted })); } catch(e){}
+            };
+            
+            window.changeLang = function(l) { 
+                SoundEngine.click(); 
+                UIManager.setLanguage(l); 
+            };
+
+            return {
+                init: () => {
+                    let initialLang = 'en'; 
+                    
+                    const browserLang = navigator.language || navigator.userLanguage;
+                    if (browserLang) {
+                        const shortLang = browserLang.substring(0, 2).toLowerCase();
+                        if (['it', 'en', 'es', 'pt'].includes(shortLang)) {
+                            initialLang = shortLang;
+                        }
+                    }
+
+                    try { 
+                        const savedData = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY));
+                        if (savedData) {
+                            if (savedData.lang) initialLang = savedData.lang;
+                            if (savedData.xp) State.xp = savedData.xp;
+                            if (savedData.currentQuizStep) State.currentQuizStep = savedData.currentQuizStep;
+                            if (savedData.quizCompleted) State.quizCompleted = savedData.quizCompleted;
+                        }
+                    } catch(e) {}
+                    
+                    UIManager.setLanguage(initialLang);
+                    UIManager.updateDashboards();
+                    
+                    const unlockAudio = () => {
+                        SoundEngine.init(); 
+                        document.body.removeEventListener('click', unlockAudio);
+                        document.body.removeEventListener('touchstart', unlockAudio);
+                    };
+                    document.body.addEventListener('click', unlockAudio, { once: true });
+                    document.body.addEventListener('touchstart', unlockAudio, { once: true });
+                },
+                triggerQuiz: Gamification.checkQuiz
+            };
+        })();
+
+        if (document.readyState === 'loading') { 
+            document.addEventListener('DOMContentLoaded', () => {
+                RoomApp.init();
+            }); 
+        } 
+        else { 
+            RoomApp.init(); 
+        }
+
+        window.checkAnswer = RoomApp.triggerQuiz;
+    </script>
+</body>
+</html>
+```eof
