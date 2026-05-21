@@ -14,6 +14,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
         :root {
             /* Palette Aziendale (Basata su reference Masterclass e Piattaforma) */
@@ -48,7 +49,6 @@
             background-image: radial-gradient(circle at top center, rgba(204, 255, 0, 0.03) 0%, transparent 60%);
         }
 
-        /* Top Bar & Language Switcher */
         .top-bar {
             max-width: 1400px;
             margin: 0 auto;
@@ -91,7 +91,6 @@
             box-shadow: 0 0 10px rgba(204, 255, 0, 0.1);
         }
 
-        /* Header Section */
         header {
             max-width: 1200px;
             margin: 0 auto 60px auto;
@@ -163,7 +162,6 @@
             font-weight: 400;
         }
 
-        /* Grid Layout */
         .dashboard-container {
             max-width: 1400px;
             margin: 0 auto 60px auto;
@@ -172,7 +170,6 @@
             gap: 24px;
         }
 
-        /* Cards */
         .module-card {
             background: var(--bg-card);
             border: 1px solid rgba(255,255,255,0.05);
@@ -186,7 +183,6 @@
             overflow: hidden;
         }
 
-        /* Effetto bagliore superiore della card */
         .module-card::before {
             content: '';
             position: absolute;
@@ -330,10 +326,12 @@
                 <a href="lezione-01.html" class="lesson-btn">
                     <span class="lesson-num">L1</span> <span data-i18n="l1_text">Il Paradigma dell'Exchange</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <!-- L2 AGGIORNATA CON IL NUOVO LINK -->
-                <a href="2-ZeroToHeroAcademy.html" class="lesson-btn">
+                
+                <!-- ATTENZIONE: Pulsante L2 corretto con target="_blank" per aprire in una nuova scheda -->
+                <a href="2-ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L2</span> <span data-i18n="l2_text">Anatomia del Prezzo & Ladder</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
+
                 <a href="lezione-03.html" class="lesson-btn">
                     <span class="lesson-num">L3</span> <span data-i18n="l3_text">Liquidità e Profondità</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
