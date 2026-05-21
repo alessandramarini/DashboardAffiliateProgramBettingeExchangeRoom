@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SECURITY HEADERS -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:;">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+    <title>BETTING EXCHANGE ROOM | Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            /* Palette Aziendale (Basata su reference Masterclass e Piattaforma) */
+            --bg-main: #0d0d0f;
+            --bg-card: #15161a;
+            --bg-hover: #1e2026;
+            --text-main: #ffffff;
+            --text-dim: #94a3b8;
+            --accent-neon: #ccff00; /* Verde/Giallo Neon del brand */
+            --accent-neon-hover: #aadd00;
+            --border-color: rgba(204, 255, 0, 0.15);
+            --border-hover: rgba(204, 255, 0, 0.6);
+            --cyan-accent: #00e5ff; /* Colore secondario usato nei bordi UI */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            /* Leggero gradiente di fondo */
+            background-image: radial-gradient(circle at top center, rgba(204, 255, 0, 0.03) 0%, transparent 60%);
+        }
+
+        /* Top Bar & Language Switcher */
+        .top-bar {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px 0;
+        }
+
+        .lang-switcher {
+            display: flex;
+            gap: 8px;
+            background: var(--bg-card);
+            padding: 6px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn:hover {
+            color: var(--text-main);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .lang-btn.active {
+            background: rgba(204, 255, 0, 0.1);
+            color: var(--accent-neon);
+            box-shadow: 0 0 10px rgba(204, 255, 0, 0.1);
+        }
+
+        /* Header Section */
+        header {
+            max-width: 1200px;
+            margin: 0 auto 60px auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo-img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-neon);
+            box-shadow: 0 0 25px rgba(204, 255, 0, 0.2);
+            margin-bottom: 24px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(204, 255, 0, 0.08);
+            color: var(--accent-neon);
+            font-family: 'JetBrains Mono', monospace;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-badge .indicator {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-neon);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-neon);
+        }
+
+        h1 {
+            font-size: clamp(32px, 5vw, 52px);
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 16px;
+            line-height: 1.1;
+            text-transform: uppercase;
+        }
+
+        h1 span {
+            color: var(--accent-neon);
+            font-weight: 800;
+            display: block;
+            font-size: clamp(24px, 4vw, 36px);
+            margin-top: 5px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(204, 255, 0, 0.3);
+        }
+
+        p.subtitle {
+            color: var(--text-dim);
+            font-size: clamp(16px, 2vw, 18px);
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        /* Grid Layout */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto 60px auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 24px;
+        }
+
+        /* Cards */
+        .module-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Effetto bagliore superiore della card */
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-neon), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .module-card:hover {
+            border-color: var(--border-hover);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(204, 255, 0, 0.05);
+            transform: translateY(-5px);
+        }
+
+        .module-card:hover::before {
+            opacity: 1;
+        }
+
+        .module-header {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .module-number {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-dim);
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+            letter-spacing: 1.5px;
+        }
+
+        .module-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .lessons-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+        }
+
+        .lesson-btn {
+            display: flex;
+            align-items: center;
+            background: transparent;
+            color: var(--text-dim);
+            text-decoration: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .lesson-btn:hover {
+            background: var(--bg-hover);
+            color: var(--text-main);
+            border-color: rgba(255,255,255,0.05);
+        }
+
+        .lesson-btn .lesson-num {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-neon);
+            margin-right: 16px;
+            font-size: 13px;
+            min-width: 25px;
+            font-weight: 700;
+        }
+
+        .lesson-btn i {
+            margin-left: auto;
+            color: var(--accent-neon);
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .lesson-btn:hover i {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 36px; }
+            h1 span { font-size: 22px; }
+            .dashboard-container { grid-template-columns: 1fr; padding: 0 10px; }
+            .module-card { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Language Switcher -->
+    <div class="top-bar">
+        <div class="lang-switcher">
+            <button class="lang-btn" onclick="setLanguage('en')" data-lang="en">EN</button>
+            <button class="lang-btn" onclick="setLanguage('es')" data-lang="es">ES</button>
+            <button class="lang-btn" onclick="setLanguage('pt')" data-lang="pt">PT</button>
+            <button class="lang-btn" onclick="setLanguage('it')" data-lang="it">IT</button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <img src="logo-tondo.jpeg" alt="Betting Exchange Room Logo" class="logo-img">
+        <div class="status-badge">
+            <div class="indicator"></div> 
+            <span data-i18n="badge_elite">Accesso Elite Autorizzato</span>
+        </div>
+        <h1>
+            BETTING EXCHANGE ROOM
+            <span data-i18n="title_academy">ZERO TO HERO ACADEMY</span>
+        </h1>
+        <p class="subtitle" data-i18n="subtitle_desc">
+            Il tuo percorso completo da zero a trader professionista.
+        </p>
+    </header>
+
+    <div class="dashboard-container">
+        
+        <!-- MODULO 1 -->
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-number" data-i18n="mod_1">MODULO 01</span>
+                <h2 class="module-title" data-i18n="m1_title">Fondamenta Operative</h2>
+            </div>
+            <div class="lessons-list">
+                <a href="lezione-01.html" class="lesson-btn">
+                    <span class="lesson-num">L1</span> <span data-i18n="l1_text">Il Paradigma dell'Exchange</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-02.html" class="lesson-btn">
+                    <span class="lesson-num">L2</span> <span data-i18n="l2_text">Anatomia del Prezzo & Ladder</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-03.html" class="lesson-btn">
+                    <span class="lesson-num">L3</span> <span data-i18n="l3_text">Liquidità e Profondità</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-04.html" class="lesson-btn">
+                    <span class="lesson-num">L4</span> <span data-i18n="l4_text">Slippage e Commissioni</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-05.html" class="lesson-btn">
+                    <span class="lesson-num">L5</span> <span data-i18n="l5_text">Cash Out & Green Up</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- MODULO 2 -->
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-number" data-i18n="mod_2">MODULO 02</span>
+                <h2 class="module-title" data-i18n="m2_title">Strumenti e Ingegneria</h2>
+            </div>
+            <div class="lessons-list">
+                <a href="lezione-06.html" class="lesson-btn">
+                    <span class="lesson-num">L6</span> <span data-i18n="l6_text">Software di Trading e API</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-07.html" class="lesson-btn">
+                    <span class="lesson-num">L7</span> <span data-i18n="l7_text">Analisi Quantitativa (xG)</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-08.html" class="lesson-btn">
+                    <span class="lesson-num">L8</span> <span data-i18n="l8_text">Leggere i Market Movers</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-09.html" class="lesson-btn">
+                    <span class="lesson-num">L9</span> <span data-i18n="l9_text">Psicologia e Disciplina</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-10.html" class="lesson-btn">
+                    <span class="lesson-num">L10</span> <span data-i18n="l10_text">Bankroll Management (Kelly)</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- MODULO 3 -->
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-number" data-i18n="mod_3">MODULO 03</span>
+                <h2 class="module-title" data-i18n="m3_title">Gestione del Capitale</h2>
+            </div>
+            <div class="lessons-list">
+                <a href="lezione-11.html" class="lesson-btn">
+                    <span class="lesson-num">L11</span> <span data-i18n="l11_text">Staking Plan per Exchange</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-12.html" class="lesson-btn">
+                    <span class="lesson-num">L12</span> <span data-i18n="l12_text">Expected Value (EV+)</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-13.html" class="lesson-btn">
+                    <span class="lesson-num">L13</span> <span data-i18n="l13_text">Risk/Reward Ratio Dinamico</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-14.html" class="lesson-btn">
+                    <span class="lesson-num">L14</span> <span data-i18n="l14_text">Stop Loss Mentali & Meccanici</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-15.html" class="lesson-btn">
+                    <span class="lesson-num">L15</span> <span data-i18n="l15_text">Gestione del Drawdown</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- MODULO 4 -->
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-number" data-i18n="mod_4">MODULO 04</span>
+                <h2 class="module-title" data-i18n="m4_title">Strategie Pre-Match</h2>
+            </div>
+            <div class="lessons-list">
+                <a href="lezione-16.html" class="lesson-btn">
+                    <span class="lesson-num">L16</span> <span data-i18n="l16_text">Data Modeling Avanzato</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-17.html" class="lesson-btn">
+                    <span class="lesson-num">L17</span> <span data-i18n="l17_text">Weight of Money (WoM)</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-18.html" class="lesson-btn">
+                    <span class="lesson-num">L18</span> <span data-i18n="l18_text">Scalping Pre-Match</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-19.html" class="lesson-btn">
+                    <span class="lesson-num">L19</span> <span data-i18n="l19_text">Swing Trading (News & Info)</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-20.html" class="lesson-btn">
+                    <span class="lesson-num">L20</span> <span data-i18n="l20_text">Dutching Matematico</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- MODULO 5 -->
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-number" data-i18n="mod_5">MODULO 05</span>
+                <h2 class="module-title" data-i18n="m5_title">Operatività In-Play</h2>
+            </div>
+            <div class="lessons-list">
+                <a href="lezione-21.html" class="lesson-btn">
+                    <span class="lesson-num">L21</span> <span data-i18n="l21_text">Time Decay (Decadimento)</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-22.html" class="lesson-btn">
+                    <span class="lesson-num">L22</span> <span data-i18n="l22_text">Lay The Draw (LTD) Evoluto</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-23.html" class="lesson-btn">
+                    <span class="lesson-num">L23</span> <span data-i18n="l23_text">Scalping In-Play Over/Under</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-24.html" class="lesson-btn">
+                    <span class="lesson-num">L24</span> <span data-i18n="l24_text">Trading sul Correct Score</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-25.html" class="lesson-btn">
+                    <span class="lesson-num">L25</span> <span data-i18n="l25_text">Eventi Estremi & Cigni Neri</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- MODULO 6 -->
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-number" data-i18n="mod_6">MODULO 06</span>
+                <h2 class="module-title" data-i18n="m6_title">Automazione & VIP</h2>
+            </div>
+            <div class="lessons-list">
+                <a href="lezione-26.html" class="lesson-btn">
+                    <span class="lesson-num">L26</span> <span data-i18n="l26_text">Record Keeping (Diario)</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-27.html" class="lesson-btn">
+                    <span class="lesson-num">L27</span> <span data-i18n="l27_text">Introduzione ai Bot (If/Then)</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-28.html" class="lesson-btn">
+                    <span class="lesson-num">L28</span> <span data-i18n="l28_text">Filtrare le Partite "Gold"</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-29.html" class="lesson-btn">
+                    <span class="lesson-num">L29</span> <span data-i18n="l29_text">Segnali Alfa & Beta: Regole</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="lezione-30.html" class="lesson-btn">
+                    <span class="lesson-num">L30</span> <span data-i18n="l30_text">Il Piano Operativo Definitivo</span> <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SCRIPT DI TRADUZIONE I18N -->
+    <script>
+        const i18n = {
+            "badge_elite": {
+                en: "Elite Access Authorized",
+                es: "Acceso Élite Autorizado",
+                pt: "Acesso Elite Autorizado",
+                it: "Accesso Elite Autorizzato"
+            },
+            "title_academy": {
+                en: "ZERO TO HERO ACADEMY",
+                es: "ACADEMIA ZERO TO HERO",
+                pt: "ACADEMIA ZERO TO HERO",
+                it: "ZERO TO HERO ACADEMY"
+            },
+            "subtitle_desc": {
+                en: "Your complete path from zero to professional trader.",
+                es: "Tu camino completo de cero a trader profesional.",
+                pt: "Seu caminho completo de zero a trader profissional.",
+                it: "Il tuo percorso completo da zero a trader professionista."
+            },
+            "mod_1": { en: "MODULE 01", es: "MÓDULO 01", pt: "MÓDULO 01", it: "MODULO 01" },
+            "mod_2": { en: "MODULE 02", es: "MÓDULO 02", pt: "MÓDULO 02", it: "MODULO 02" },
+            "mod_3": { en: "MODULE 03", es: "MÓDULO 03", pt: "MÓDULO 03", it: "MODULO 03" },
+            "mod_4": { en: "MODULE 04", es: "MÓDULO 04", pt: "MÓDULO 04", it: "MODULO 04" },
+            "mod_5": { en: "MODULE 05", es: "MÓDULO 05", pt: "MÓDULO 05", it: "MODULO 05" },
+            "mod_6": { en: "MODULE 06", es: "MÓDULO 06", pt: "MÓDULO 06", it: "MODULO 06" },
+            
+            "m1_title": { en: "Operational Foundations", es: "Fundamentos Operativos", pt: "Fundamentos Operacionais", it: "Fondamenta Operative" },
+            "m2_title": { en: "Tools & Engineering", es: "Herramientas e Ingeniería", pt: "Ferramentas e Engenharia", it: "Strumenti e Ingegneria" },
+            "m3_title": { en: "Capital Management", es: "Gestión de Capital", pt: "Gestão de Capital", it: "Gestione del Capitale" },
+            "m4_title": { en: "Pre-Match Strategies", es: "Estrategias Pre-Match", pt: "Estratégias Pré-Match", it: "Strategie Pre-Match" },
+            "m5_title": { en: "In-Play Trading", es: "Trading In-Play", pt: "Trading In-Play", it: "Operatività In-Play" },
+            "m6_title": { en: "Automation & VIP", es: "Automatización y VIP", pt: "Automação e VIP", it: "Automazione & VIP" },
+
+            "l1_text": { en: "The Exchange Paradigm", es: "El Paradigma del Exchange", pt: "O Paradigma do Exchange", it: "Il Paradigma dell'Exchange" },
+            "l2_text": { en: "Price Anatomy & Ladder", es: "Anatomía del Precio y Ladder", pt: "Anatomia do Preço e Ladder", it: "Anatomia del Prezzo & Ladder" },
+            "l3_text": { en: "Liquidity & Market Depth", es: "Liquidez y Profundidad", pt: "Liquidez e Profundidade", it: "Liquidità e Profondità" },
+            "l4_text": { en: "Slippage & Commissions", es: "Slippage y Comisiones", pt: "Slippage e Comissões", it: "Slippage e Commissioni" },
+            "l5_text": { en: "Cash Out & Green Up", es: "Cash Out y Green Up", pt: "Cash Out e Green Up", it: "Cash Out & Green Up" },
+
+            "l6_text": { en: "Trading Software & APIs", es: "Software de Trading y API", pt: "Software de Trading e API", it: "Software di Trading e API" },
+            "l7_text": { en: "Quantitative Analysis (xG)", es: "Análisis Cuantitativo (xG)", pt: "Análise Quantitativa (xG)", it: "Analisi Quantitativa (xG)" },
+            "l8_text": { en: "Reading Market Movers", es: "Leyendo Market Movers", pt: "Lendo os Market Movers", it: "Leggere i Market Movers" },
+            "l9_text": { en: "Psychology & Discipline", es: "Psicología y Disciplina", pt: "Psicologia e Disciplina", it: "Psicologia e Disciplina" },
+            "l10_text": { en: "Bankroll Management", es: "Gestión de Bankroll", pt: "Gestão de Banca", it: "Bankroll Management (Kelly)" },
+
+            "l11_text": { en: "Staking Plan for Exchange", es: "Plan de Staking (Exchange)", pt: "Plano de Staking (Exchange)", it: "Staking Plan per Exchange" },
+            "l12_text": { en: "Expected Value (EV+)", es: "Valor Esperado (EV+)", pt: "Valor Esperado (EV+)", it: "Expected Value (EV+)" },
+            "l13_text": { en: "Dynamic Risk/Reward", es: "Riesgo/Beneficio Dinámico", pt: "Risco/Recompensa Dinâmico", it: "Risk/Reward Ratio Dinamico" },
+            "l14_text": { en: "Mental & Hard Stop Loss", es: "Stop Loss Mental y Mecánico", pt: "Stop Loss Mental e Mecânico", it: "Stop Loss Mentali & Meccanici" },
+            "l15_text": { en: "Drawdown Management", es: "Gestión del Drawdown", pt: "Gestão do Drawdown", it: "Gestione del Drawdown" },
+
+            "l16_text": { en: "Advanced Data Modeling", es: "Modelado de Datos", pt: "Modelagem de Dados", it: "Data Modeling Avanzato" },
+            "l17_text": { en: "Weight of Money (WoM)", es: "Peso del Dinero (WoM)", pt: "Peso do Dinheiro (WoM)", it: "Weight of Money (WoM)" },
+            "l18_text": { en: "Pre-Match Scalping", es: "Scalping Pre-Match", pt: "Scalping Pré-Match", it: "Scalping Pre-Match" },
+            "l19_text": { en: "Swing Trading (News)", es: "Swing Trading (Noticias)", pt: "Swing Trading (Notícias)", it: "Swing Trading (News & Info)" },
+            "l20_text": { en: "Mathematical Dutching", es: "Dutching Matemático", pt: "Dutching Matemático", it: "Dutching Matematico" },
+
+            "l21_text": { en: "Time Decay Dynamics", es: "Decaimiento del Tiempo", pt: "Decadência do Tempo", it: "Time Decay (Decadimento)" },
+            "l22_text": { en: "Advanced Lay The Draw", es: "Lay The Draw Evolucionado", pt: "Lay The Draw Evoluído", it: "Lay The Draw (LTD) Evoluto" },
+            "l23_text": { en: "In-Play O/U Scalping", es: "Scalping In-Play Over/Under", pt: "Scalping In-Play Over/Under", it: "Scalping In-Play Over/Under" },
+            "l24_text": { en: "Correct Score Trading", es: "Trading Resultado Exacto", pt: "Trading Resultado Exato", it: "Trading sul Correct Score" },
+            "l25_text": { en: "Black Swans & Extremes", es: "Cisnes Negros y Extremos", pt: "Cisnes Negros e Extremos", it: "Eventi Estremi & Cigni Neri" },
+
+            "l26_text": { en: "Record Keeping (Journal)", es: "Diario de Trading", pt: "Diário de Trading", it: "Record Keeping (Diario)" },
+            "l27_text": { en: "Intro to Bots (If/Then)", es: "Intro a Bots (If/Then)", pt: "Intro a Bots (If/Then)", it: "Introduzione ai Bot (If/Then)" },
+            "l28_text": { en: "Filtering Gold Matches", es: "Filtrando Partidos Gold", pt: "Filtrando Partidas Gold", it: "Filtrare le Partite Gold" },
+            "l29_text": { en: "Alpha & Beta Signals Rules", es: "Reglas de Señales Alfa/Beta", pt: "Regras de Sinais Alfa/Beta", it: "Segnali Alfa & Beta: Regole" },
+            "l30_text": { en: "Ultimate Operative Plan", es: "El Plan Operativo Final", pt: "O Plano Operacional Final", it: "Il Piano Operativo Definitivo" }
+        };
+
+        function setLanguage(lang) {
+            // Update Text Elements safely preventing DOM XSS
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[key] && i18n[key][lang]) {
+                    el.textContent = i18n[key][lang];
+                }
+            });
+
+            // Update HTML lang attribute
+            document.documentElement.lang = lang;
+
+            // Update active buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+
+            // Save preference
+            localStorage.setItem('elite_lang', lang);
+        }
+
+        // Initialize language on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const supportedLangs = ['en', 'es', 'pt', 'it'];
+            let currentLang = localStorage.getItem('elite_lang');
+            
+            // Detect browser language if no preference is saved
+            if (!currentLang) {
+                const browserLang = navigator.language.slice(0, 2).toLowerCase();
+                currentLang = supportedLangs.includes(browserLang) ? browserLang : 'en'; // Default to EN
+            }
+
+            setLanguage(currentLang);
+        });
+    </script>
+
+</body>
+</html>
