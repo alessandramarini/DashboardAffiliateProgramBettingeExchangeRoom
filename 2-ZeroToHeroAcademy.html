@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
+    <!-- STREAMING_CHUNK:Configuring meta tags and resources... -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,14 +15,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
-    <link rel="preload" href="logo-tondo.jpeg" as="image">
-    <link rel="preload" href="demo-odds.jpeg" as="image">
-    
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&display=swap"></noscript>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <!-- STREAMING_CHUNK:Styling the application... -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -87,6 +86,7 @@
         }
         .animate-fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; will-change: transform, opacity; }
 
+        /* STREAMING_CHUNK:Setting up premium card frames... */
         .premium-card {
             background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
             border-radius: 24px;
@@ -196,9 +196,10 @@
 </head>
 <body class="text-gray-200 pb-12 selection:bg-[#99E814] selection:text-black antialiased relative w-full overflow-x-hidden">
 
+    <!-- STREAMING_CHUNK:Rendering header... -->
     <header class="sticky top-0 z-40 glass-panel border-b-0 border-t-0 border-x-0 border-b border-[#99E814]/20 px-3 sm:px-6 py-2 sm:py-3 flex justify-between items-center transform-gpu w-full">
         <div class="flex items-center gap-2 md:gap-4 flex-shrink min-w-0">
-            <img src="logo-tondo.jpeg" alt="Logo" decoding="async" fetchpriority="high" onerror="this.src='https://ui-avatars.com/api/?name=BE+R&background=050a05&color=99E814'" class="w-8 h-8 md:w-10 md:h-10 rounded-full shadow-[0_0_15px_rgba(153,232,20,0.3)] object-cover shrink-0 border border-[#99E814]/30">
+            <img src="https://ui-avatars.com/api/?name=BE+R&background=050a05&color=99E814" alt="Logo" class="w-8 h-8 md:w-10 md:h-10 rounded-full shadow-[0_0_15px_rgba(153,232,20,0.3)] object-cover shrink-0 border border-[#99E814]/30">
             <h1 class="font-black text-[10px] sm:text-xs md:text-sm lg:text-base tracking-wider uppercase whitespace-nowrap overflow-hidden text-ellipsis" data-i18n-html="headerTitle">BETTING EXCHANGE <span class="text-neon-green">ROOM</span></h1>
         </div>
         
@@ -212,6 +213,7 @@
 
     <main class="w-full max-w-5xl mx-auto px-3 sm:px-6 mt-4 md:mt-8 space-y-6 md:space-y-10">
 
+        <!-- STREAMING_CHUNK:Rendering language selector... -->
         <div class="flex justify-center w-full px-4 mb-4 animate-fade-in-up">
             <div class="flex items-center justify-center gap-3 sm:gap-5 bg-gradient-to-r from-gray-900/40 via-gray-900/80 to-gray-900/40 border border-[#99E814]/20 py-2.5 px-6 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md">
                 <button onclick="window.changeLang('en')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="en" aria-label="English">
@@ -235,9 +237,10 @@
             <p class="text-gray-400 max-w-2xl mx-auto text-xs sm:text-sm md:text-base font-bold leading-relaxed mt-2" data-i18n="lessonDesc">Impara a leggere il mercato. Anatomia del prezzo, Bid/Ask spread e lettura del Ladder.</p>
         </div>
 
+        <!-- STREAMING_CHUNK:Rendering video section... -->
         <section class="premium-card frame-cyan w-full p-3 sm:p-6 md:p-8" style="content-visibility: auto; contain-intrinsic-size: 500px;">
             <div id="video-wrapper" class="relative w-full aspect-video bg-[#0a140f] rounded-xl md:rounded-2xl overflow-hidden border border-[#00e5ff]/30 shadow-xl ring-1 ring-white/5 transform-gpu">
-                <iframe id="main-video" class="absolute inset-0 w-full h-full z-20" src="https://www.youtube.com/embed/8kjONb-eUt0?rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <iframe id="main-video" class="absolute inset-0 w-full h-full z-20" src="https://www.youtube.com/embed/rR3bFDSiZmk?rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 mt-4 sm:mt-6 w-full max-w-4xl mx-auto">
@@ -252,6 +255,7 @@
             </div>
         </section>
 
+        <!-- STREAMING_CHUNK:Rendering quiz section... -->
         <section class="premium-card frame-gold w-full p-4 sm:p-6 md:p-10 h-fit" id="quiz-section">
             <div id="quiz-container" class="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center">
                 <div class="w-full flex flex-wrap justify-between items-center mb-6 sm:mb-8 px-2 gap-2">
@@ -283,6 +287,7 @@
             </div>
         </section>
 
+        <!-- STREAMING_CHUNK:Rendering simulator and game sections... -->
         <section class="premium-card frame-neon w-full p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center relative overflow-hidden" style="content-visibility: auto;">
             <div class="absolute inset-0 bg-gray-600 opacity-[0.02] blur-3xl pointer-events-none"></div>
             <div class="w-full max-w-4xl mx-auto flex justify-start items-center mb-3 md:mb-5 relative z-10">
@@ -290,8 +295,8 @@
             </div>
             <a href="https://demo-betting-exchange.vercel.app/" target="_blank" class="demo-link block group relative w-full max-w-4xl mx-auto rounded-xl sm:rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl border border-[#99E814]/30 hover:border-[#99E814] transition-all duration-700 cursor-pointer bg-[#050a05] transform-gpu hover:-translate-y-1" onclick="SoundEngine.click()">
                 <div class="relative w-full overflow-hidden" style="aspect-ratio: 16/9;">
-                    <img src="demo-odds.jpeg" alt="Demo Odds" decoding="async" loading="lazy" class="absolute inset-0 w-full h-full object-cover object-top z-0 transition-transform duration-1000 group-hover:scale-105 opacity-100">
-                    <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-[#0a140f]/80 z-10 transition-opacity duration-700 opacity-80 group-hover:opacity-90 pointer-events-none"></div>
+                    <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format,compress&fit=crop&w=1600&q=80" alt="Demo Odds" class="absolute inset-0 w-full h-full object-cover object-top z-0 transition-transform duration-1000 group-hover:scale-105 opacity-100 grayscale-[0.8] mix-blend-lighten">
+                    <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-[#0a140f]/90 z-10 transition-opacity duration-700 opacity-80 group-hover:opacity-90 pointer-events-none"></div>
                     <div class="absolute inset-0 flex items-center justify-center z-20 pointer-events-none px-2">
                         <div class="play-pulse px-4 py-3 sm:px-8 sm:py-4 bg-[#99E814] border border-[#99E814] rounded-lg sm:rounded-xl flex items-center justify-center shadow-[0_0_30px_rgba(153,232,20,0.5)] transform group-hover:scale-105 transition-all duration-500 ease-out group-hover:bg-[#b3ff33] group-hover:shadow-[0_0_40px_rgba(153,232,20,0.7)] pointer-events-auto gap-2 sm:gap-3 backdrop-blur-sm max-w-[90%]">
                             <svg class="w-4 h-4 sm:w-6 sm:h-6 text-[#050a05] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
@@ -310,9 +315,9 @@
         <section class="premium-card frame-blue w-full p-6 sm:p-10 flex flex-col items-center justify-center relative transform-gpu">
             <div class="text-center space-y-3 mb-6 px-4 animate-fade-in-up relative z-10 w-full">
                 <h4 class="text-[#3b82f6] font-black text-lg sm:text-xl md:text-2xl tracking-[0.2em] uppercase drop-shadow-[0_0_15px_rgba(59,130,246,0.5)] w-full break-words" data-i18n="penaltiesTitle">GIOCO EDUCATIVO</h4>
-                <p class="text-gray-300 text-xs sm:text-sm md:text-base font-medium max-w-lg mx-auto leading-relaxed w-full break-words" data-i18n="penaltiesDesc">Clicca il joystick per scommettere sui rigori.</p>
+                <p class="text-gray-300 text-xs sm:text-sm md:text-base font-medium max-w-lg mx-auto leading-relaxed w-full break-words" data-i18n="penaltiesDesc">Clicca il joystick per giocare alla ruota della fortuna.</p>
             </div>
-            <a href="https://penalties-zero-to-hero-academy.vercel.app/" target="_blank" rel="noopener noreferrer" class="text-6xl sm:text-7xl md:text-8xl hover:scale-125 transition-transform duration-500 touch-manipulation joystick-pulse transform-gpu shrink-0 relative z-10 mt-4" title="Play Penalties Live" onclick="SoundEngine.click()">
+            <a href="https://wheel-of-fortune-bice.vercel.app/" target="_blank" rel="noopener noreferrer" class="text-6xl sm:text-7xl md:text-8xl hover:scale-125 transition-transform duration-500 touch-manipulation joystick-pulse transform-gpu shrink-0 relative z-10 mt-4" title="Play Wheel of Fortune" onclick="SoundEngine.click()">
                 🎮
                 <div class="absolute inset-0 bg-[#3b82f6] rounded-full blur-[50px] opacity-20 -z-10"></div>
             </a>
@@ -323,13 +328,14 @@
                 <span data-i18n="subNotActive">ABBONAMENTO NON ATTIVO! CONTATTA IL TUO REFERENTE</span>
             </div>
             
-            <a id="btn-next-lesson" href="SummaryZeroToHeroAcademy.html" target="_blank" onclick="SoundEngine.click()" class="bg-[#0a140f] text-[#99E814] border-2 border-[#99E814] font-black w-full max-w-md mx-auto justify-center px-6 sm:px-10 py-5 rounded-2xl hover:bg-[#99E814] hover:border-[#99E814] transition-all duration-300 text-xs sm:text-sm md:text-base uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(153,232,20,0.2)] hover:shadow-[0_0_40px_rgba(153,232,20,0.6)] touch-manipulation active:scale-95 flex items-center gap-3 z-10 transform-gpu group btn-hover-fix h-auto min-h-[4rem]">
+            <a id="btn-next-lesson" href="#" target="_blank" onclick="SoundEngine.click()" class="bg-[#0a140f] text-[#99E814] border-2 border-[#99E814] font-black w-full max-w-md mx-auto justify-center px-6 sm:px-10 py-5 rounded-2xl hover:bg-[#99E814] hover:border-[#99E814] transition-all duration-300 text-xs sm:text-sm md:text-base uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(153,232,20,0.2)] hover:shadow-[0_0_40px_rgba(153,232,20,0.6)] touch-manipulation active:scale-95 flex items-center gap-3 z-10 transform-gpu group btn-hover-fix h-auto min-h-[4rem]">
                 <span data-i18n="navNextLesson" class="truncate transition-colors duration-300">PROSSIMA LEZIONE</span> 
                 <span class="text-xl sm:text-2xl group-hover:translate-x-2 group-hover:text-black transition-all duration-300 shrink-0">→</span>
             </a>
         </div>
     </main>
 
+    <!-- STREAMING_CHUNK:Rendering Ebook Modal... -->
     <div id="ebook-modal" class="fixed inset-0 z-[100] hidden flex-col items-center justify-center bg-[#050a05]/95 backdrop-blur-md p-0 sm:p-4 md:p-6 opacity-0 transition-opacity duration-300">
         <div class="bg-[#050a05] w-full max-w-4xl h-full sm:h-auto sm:max-h-[95vh] rounded-none sm:rounded-3xl border-0 sm:border border-gray-700 flex flex-col overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 relative modern-ebook" id="ebook-modal-content">
             <div class="flex justify-between items-center p-4 md:p-6 border-b border-gray-800 bg-[#050a05] shrink-0 z-10 w-full">
@@ -345,6 +351,7 @@
         </div>
     </div>
 
+    <!-- STREAMING_CHUNK:Initializing Application Logic... -->
     <script>
         const SoundEngine = {
             ctx: null, unlocked: false,
@@ -391,9 +398,9 @@
             setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); document.body.style.overflow = ''; }, 300);
         }
 
+        // STREAMING_CHUNK:Defining Dictionary and Content Data...
         window.RoomApp = (function() {
             const CONFIG = { STORAGE_KEY: 'bx_academy_demo_hd_v2_day2' }; 
-            const footerLogoHTML = `<div class="mt-12 md:mt-16 text-center pt-8 w-full"><img src="logo-tondo.jpeg" class="w-12 h-12 md:w-16 md:h-16 mx-auto rounded-full opacity-30 grayscale mix-blend-screen" alt="Global Exchange Academy" loading="lazy" decoding="async"></div>`;
 
             const podcastUrls = {
                 it: "https://open.spotify.com/episode/2QDRZoYRQk8Gg1JqvXAuVU?si=c2uBoC8TSW-fFqQ5--EJJA",
@@ -402,6 +409,67 @@
                 pt: "https://open.spotify.com/episode/7mEi7eq8P1IPzjrgPeWo90?si=X7fWHgriSWGP3N9a90N3CQ"
             };
 
+            const ebookTemplate = (langDict) => `
+                <div class="space-y-6 text-gray-300">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl md:text-3xl font-black text-[#99E814] tracking-widest uppercase drop-shadow-md">${langDict.ebTitle1}</h2>
+                        <h3 class="text-xl md:text-2xl font-bold text-white mt-2">${langDict.ebTitle2}</h3>
+                        <p class="text-[#ffb703] font-semibold mt-1 uppercase tracking-wider">${langDict.ebTitle3}</p>
+                    </div>
+                    
+                    <div class="bg-gray-900/50 p-5 rounded-xl border border-gray-700/50 shadow-inner">
+                        <p class="leading-relaxed">${langDict.ebP1}</p>
+                    </div>
+
+                    <div class="bg-[#3b82f6]/10 p-5 rounded-xl border border-[#3b82f6]/30">
+                        <p class="leading-relaxed"><strong class="text-[#3b82f6]">${langDict.ebP2_strong}</strong> ${langDict.ebP2}</p>
+                    </div>
+
+                    <div class="flex items-center gap-4 bg-[#99E814]/10 p-4 rounded-xl border border-[#99E814]/30">
+                        <div class="text-3xl">📈</div>
+                        <div>
+                            <h4 class="font-bold text-[#99E814] uppercase">${langDict.ebMatchTitle}</h4>
+                            <p class="font-medium mt-1">${langDict.ebMatchDesc}</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-white border-b border-gray-700 pb-2 mt-8 mb-4">${langDict.ebDictTitle}</h3>
+
+                    <div class="space-y-4">
+                        <div class="bg-gray-800/80 p-4 rounded-lg border-l-4 border-[#ffb703]">
+                            <h4 class="font-bold text-[#ffb703] flex items-center gap-2"><span class="text-xl">📏</span> Tick</h4>
+                            <p class="mt-1">${langDict.ebTick1}</p>
+                            <p class="text-sm text-gray-400 mt-2 bg-gray-900 p-2 rounded italic">💡 Tip: ${langDict.ebTick2}</p>
+                        </div>
+
+                        <div class="bg-gray-800/80 p-4 rounded-lg border-l-4 border-[#ef4444]">
+                            <h4 class="font-bold text-[#ef4444] flex items-center gap-2"><span class="text-xl">↔️</span> Spread</h4>
+                            <p class="mt-1">${langDict.ebSpread}</p>
+                        </div>
+
+                        <div class="bg-gray-800/80 p-4 rounded-lg border-l-4 border-[#a855f7]">
+                            <h4 class="font-bold text-[#a855f7] flex items-center gap-2"><span class="text-xl">📊</span> Market Depth</h4>
+                            <p class="mt-1">${langDict.ebDepth}</p>
+                            <p class="text-sm text-red-400 mt-2 bg-red-900/20 border border-red-900/50 p-2 rounded font-medium">⚠️ Spoofing: ${langDict.ebSpoof}</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-gray-900 to-gray-800 p-6 rounded-xl border border-gray-700 mt-6 shadow-lg relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 text-5xl">⚖️</div>
+                        <h4 class="text-lg font-bold text-white uppercase tracking-wider mb-3 relative z-10">Passive vs Aggressive Entry</h4>
+                        <p class="relative z-10 leading-relaxed text-gray-300">
+                            ${langDict.ebPassive1} <br><br>
+                            ${langDict.ebPassive2}
+                        </p>
+                    </div>
+
+                    <div class="bg-black/40 p-6 rounded-xl border-l-2 border-[#00e5ff] italic text-center mt-6">
+                        <p class="text-lg text-gray-200">"${langDict.ebQuote1}"</p>
+                        <p class="text-xl font-black text-white mt-4 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">"${langDict.ebQuote2}"</p>
+                    </div>
+                </div>
+            `;
+
             const dict = {
                 it: {
                     pageTitle: "Room AI | Global Exchange Academy - Giorno 2",
@@ -409,29 +477,343 @@
                     moduleTitle: "GIORNO 2/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Impara a leggere il mercato. Anatomia del prezzo, Bid/Ask spread e lettura del Ladder.",
                     finLabel: "PILLOLA FINANCIARIA", finQuote: "Non comprare mai a mercato se lo spread è troppo ampio. Nel trading sportivo, pagare un tick di troppo ogni volta distrugge il tuo margine a lungo termine.",
                     demoBadge: "DEMO INTERATTIVA", startSimulator: "AVVIA SIMULATORE",
-                    penaltiesTitle: "GIOCO EDUCATIVO", penaltiesDesc: "Clicca il joystick per scommettere sui rigori.",
+                    penaltiesTitle: "GIOCO EDUCATIVO", penaltiesDesc: "Clicca il joystick per giocare alla ruota della fortuna.",
                     quizProgress: "Domanda {step} di 5",
                     btnPodcast: "ASCOLTA IL PODCAST", btnEbook: "VISUALIZZA IL MANUALE", btnEbookTitle: "MANUALE", btnRetryQuiz: "Ripeti il test",
                     navNextLesson: "PROSSIMA LEZIONE",
                     subNotActive: "ABBONAMENTO NON ATTIVO! CONTATTA IL TUO REFERENTE",
                     quizCompletedTitle: "Check-Point Superato!", quizCompletedDesc: "Hai sbloccato 500 XP. Ora domini i fondamentali del Ladder.",
-                    videoUrl: "https://www.youtube.com/embed/8kjONb-eUt0?rel=0&modestbranding=1",
+                    videoUrl: "https://www.youtube.com/embed/rR3bFDSiZmk?rel=0&modestbranding=1",
+                    
+                    // Ebook Text
+                    ebTitle1: "Giorno 2", ebTitle2: "Anatomia del Prezzo", ebTitle3: "Lettura del Ladder & Spread",
+                    ebP1: "Nel trading sportivo, il prezzo non è un numero statico, ma un'entità viva mossa dalla domanda e dall'offerta. Comprendere come si muove è la differenza tra scommettere alla cieca ed operare come un Market Maker.",
+                    ebP2_strong: "L'interfaccia utilizzata dai professionisti si chiama Ladder (Scala).",
+                    ebP2: "A differenza della vista tradizionale, il Ladder ti mostra il prezzo su un asse verticale e, soprattutto, rivela la <strong>Profondità del Mercato</strong> (i soldi in attesa di essere abbinati su ogni tick).",
+                    ebMatchTitle: "La Logica del Matching", ebMatchDesc: "Se punti (Back) = Prendi liquidità da chi Banca (Lay)",
+                    ebDictTitle: "Dizionario del Ladder",
+                    ebTick1: "L'incremento minimo del prezzo. Esempio: da 2.00 a 2.02 ci sono due tick (2.02-2.00 = 0.02).", ebTick2: "Il tick cambia in base alla quota: 0.01 (sotto 2.00), 0.05 (tra 3.0 e 4.0), 0.50 (sopra 10.0).",
+                    ebSpread: "Distanza in Ticks tra la miglior quota Punta e Banca. Se è ampio, entrarci è costoso (Slippage).",
+                    ebDepth: "Il volume di denaro visibile in attesa (Unmatched). Rivela le intenzioni istituzionali.", ebSpoof: "Occhio ai Fake Money! Ordini giganti inseriti solo per spaventare il mercato e poi cancellati.",
+                    ebPassive1: "Se vuoi entrare a mercato e chiedi un prezzo migliore (es. Back a 2.02 con Spread 2.00/2.02), diventi un creatore di liquidità <strong>(Maker)</strong> e devi attendere.",
+                    ebPassive2: "Se invece accetti il prezzo offerto (es. Back a 2.00), vieni eseguito subito ma paghi lo spread <strong>(Taker)</strong>.",
+                    ebQuote1: "Il bookmaker nasconde lo spread nella sua lavagna (Vigorish). Nell'Exchange lo spread è visibile e governabile.",
+                    ebQuote2: "Il trader non combatte il prezzo, aspetta che venga da lui.",
+
                     quizData: [
-                        { q: "Cosa rappresenta un 'Tick' nel Betting Exchange?", opts: ["La commissione trattenuta dal bookmaker", "L'incremento minimo di variazione di un prezzo/quota", "Il tempo di ritardo dell'invio di una scommessa"], correct: 1, successMsg: "Esatto! Il Tick è l'unità base di movimento della quota.", failMsg: "Errore. Non è una tassa né un tempo. Riprova." },
-                        { q: "Cos'è lo 'Spread' (o Forbice) nel Ladder?", opts: ["La differenza tra la miglior quota disponibile in Punta e la miglior quota in Banca", "L'ammontare di denaro totale scommesso sulla partita", "Il profitto netto che ti aspetti dal trade"], correct: 0, successMsg: "Corretto! Uno spread stretto (es. 1 tick) indica alta liquidità.", failMsg: "Sbagliato. Lo spread riguarda esclusivamente il prezzo. Riprova." },
-                        { q: "Cosa indica la 'Liquidità visibile' sotto una quota nel Ladder?", opts: ["Il denaro già abbinato che non può essere mosso", "I soldi degli scommettitori che hanno perso", "L'ammontare di denaro in attesa di essere abbinato a quel preciso livello di prezzo"], correct: 2, successMsg: "Esatto! È il volume reale in attesa di mercato (Unmatched).", failMsg: "No. Sono ordini in attesa (unmatched), non già abbinati. Riprova." },
-                        { q: "Perché i trader professionisti utilizzano la vista 'Ladder' invece di quella tradizionale?", opts: ["Perché ha colori più accesi e grafica migliore", "Perché permette di vedere la profondità del mercato e inviare/cancellare ordini con un solo clic", "Perché rimuove automaticamente il ritardo (delay) di invio ordine"], correct: 1, successMsg: "Perfetto! La velocità e la visualizzazione della 'Market Depth' sono cruciali.", failMsg: "Sbagliato. Il Ladder non annulla il delay imposto dalla piattaforma. Riprova." },
-                        { q: "Se la miglior quota Punta è 2.00 e la miglior quota Banca è 2.02, cosa succede se vuoi fare 'Maker' (Passive) puntando?", opts: ["Punti a 2.02: entri in coda e attendi che qualcuno ti banchi", "Punti a 2.00: vieni abbinato subito pagando lo spread", "Il sistema calcola la media automatica"], correct: 0, successMsg: "Esatto! Se vuoi fare 'Maker', chiedi una quota migliore (2.02) e attendi. Se vuoi essere Taker (subito) punti a 2.00.", failMsg: "Attenzione: fare 'Maker' significa aspettare per un prezzo migliore. Riprova." }
-                    ],
-                    ebookContent: `...` // Ebook HTML omitted for brevity, logic updated as per prompt
+                        { q: "Qual è l'interfaccia utilizzata dai professionisti per leggere il mercato?", opts: ["Il Ladder (Scala)", "La vista tradizionale del Bookmaker", "Il tabellone dei risultati live", "Il grafico a torta"], correct: 0 },
+                        { q: "Cosa si intende per 'Tick' nel Ladder?", opts: ["L'incremento minimo del prezzo", "La commissione pagata all'Exchange", "Il ritardo nell'inserimento dell'ordine", "Il profitto netto dell'operazione"], correct: 0 },
+                        { q: "Cos'è lo 'Spread'?", opts: ["La distanza in Ticks tra la miglior quota Punta e Banca", "Il volume totale scambiato sul mercato", "La somma dei soldi persi dagli scommettitori", "Il finto denaro inserito per spaventare il mercato"], correct: 0 },
+                        { q: "Cosa rappresenta la 'Market Depth' (Profondità del Mercato)?", opts: ["Il volume di denaro visibile in attesa di essere abbinato (Unmatched)", "I soldi già abbinati e scambiati", "Il limite massimo di scommessa consentito", "Il tempo rimanente alla fine della partita"], correct: 0 },
+                        { q: "Qual è la differenza tra entrare a mercato in modo 'Passive' (Maker) e 'Aggressive' (Taker)?", opts: ["Il Maker chiede un prezzo migliore e attende, il Taker accetta il prezzo attuale ed è eseguito subito", "Il Maker punta quote alte, il Taker punta quote basse", "Il Maker usa stake elevati, il Taker usa stake minimi", "Il Maker scommette prima del match, il Taker scommette live"], correct: 0 }
+                    ]
                 },
-                en: { /* ... dictionary updated with logic ... */ },
-                es: { /* ... dictionary updated with logic ... */ },
-                pt: { /* ... dictionary updated with logic ... */ }
+                en: {
+                    pageTitle: "Room AI | Global Exchange Academy - Day 2",
+                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
+                    moduleTitle: "DAY 2/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Learn to read the market. Anatomy of the price, Bid/Ask spread, and Ladder reading.",
+                    finLabel: "FINANCIAL PILL", finQuote: "Never buy at market if the spread is too wide. In sports trading, paying one tick too much every time destroys your long-term edge.",
+                    demoBadge: "INTERACTIVE DEMO", startSimulator: "START SIMULATOR",
+                    penaltiesTitle: "EDUCATIONAL GAME", penaltiesDesc: "Click the joystick to play the wheel of fortune.",
+                    quizProgress: "Question {step} of 5",
+                    btnPodcast: "LISTEN TO PODCAST", btnEbook: "VIEW MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Retry Quiz",
+                    navNextLesson: "NEXT LESSON",
+                    subNotActive: "SUBSCRIPTION INACTIVE! CONTACT YOUR REFERENT",
+                    quizCompletedTitle: "Checkpoint Passed!", quizCompletedDesc: "You unlocked 500 XP. You now master Ladder fundamentals.",
+                    videoUrl: "https://www.youtube.com/embed/rR3bFDSiZmk?rel=0&modestbranding=1",
+                    
+                    ebTitle1: "Day 2", ebTitle2: "Anatomy of the Price", ebTitle3: "Reading the Ladder & Spread",
+                    ebP1: "In sports trading, the price is not a static number, but a living entity moved by supply and demand. Understanding how it moves is the difference between betting blindly and operating as a Market Maker.",
+                    ebP2_strong: "The interface used by professionals is called the Ladder.",
+                    ebP2: "Unlike the traditional view, the Ladder shows you the price on a vertical axis and, above all, reveals the <strong>Market Depth</strong> (the money waiting to be matched on each tick).",
+                    ebMatchTitle: "The Logic of Matching", ebMatchDesc: "If you Back = You take liquidity from those who Lay",
+                    ebDictTitle: "Ladder Dictionary",
+                    ebTick1: "The minimum price increment. Example: from 2.00 to 2.02 there are two ticks (2.02-2.00 = 0.02).", ebTick2: "The tick changes based on the odds: 0.01 (under 2.00), 0.05 (between 3.0 and 4.0), 0.50 (above 10.0).",
+                    ebSpread: "Distance in Ticks between the best Back and Lay odds. If it's wide, entering is expensive (Slippage).",
+                    ebDepth: "The volume of visible money waiting (Unmatched). It reveals institutional intentions.", ebSpoof: "Watch out for Fake Money! Giant orders placed just to scare the market and then cancelled.",
+                    ebPassive1: "If you want to enter the market and ask for a better price (e.g. Back at 2.02 with Spread 2.00/2.02), you become a liquidity creator <strong>(Maker)</strong> and must wait.",
+                    ebPassive2: "If instead you accept the offered price (e.g. Back at 2.00), you are matched immediately but pay the spread <strong>(Taker)</strong>.",
+                    ebQuote1: "The bookmaker hides the spread in its overround (Vigorish). In the Exchange, the spread is visible and manageable.",
+                    ebQuote2: "The trader doesn't fight the price, he waits for it to come to him.",
+
+                    quizData: [
+                        { q: "What is the interface used by professionals to read the market?", opts: ["The Ladder", "The traditional Bookmaker view", "The live score board", "The pie chart"], correct: 0 },
+                        { q: "What is meant by 'Tick' in the Ladder?", opts: ["The minimum price increment", "The commission paid to the Exchange", "The delay in order placement", "The net profit of the trade"], correct: 0 },
+                        { q: "What is the 'Spread'?", opts: ["The distance in Ticks between the best Back and Lay odds", "The total volume traded on the market", "The sum of money lost by bettors", "The fake money inserted to scare the market"], correct: 0 },
+                        { q: "What does 'Market Depth' represent?", opts: ["The volume of visible money waiting to be matched (Unmatched)", "The money already matched and traded", "The maximum allowed bet limit", "The time remaining until the end of the match"], correct: 0 },
+                        { q: "What is the difference between entering the market 'Passive' (Maker) and 'Aggressive' (Taker)?", opts: ["The Maker asks for a better price and waits, the Taker accepts the current price and is matched immediately", "The Maker backs high odds, the Taker backs low odds", "The Maker uses high stakes, the Taker uses minimum stakes", "The Maker bets before the match, the Taker bets live"], correct: 0 }
+                    ]
+                },
+                es: {
+                    pageTitle: "Room AI | Global Exchange Academy - Día 2",
+                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
+                    moduleTitle: "DÍA 2/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Aprende a leer el mercado. Anatomía del precio, Spread Bid/Ask y lectura de la Escalera.",
+                    finLabel: "PÍLDORA FINANCIERA", finQuote: "Nunca compres a mercado si el spread es demasiado amplio. En el trading deportivo, pagar un tick de más cada vez destruye tu margen a largo plazo.",
+                    demoBadge: "DEMO INTERACTIVA", startSimulator: "INICIAR SIMULADOR",
+                    penaltiesTitle: "JUEGO EDUCATIVO", penaltiesDesc: "Haz clic en el joystick para jugar a la ruleta de la fortuna.",
+                    quizProgress: "Pregunta {step} de 5",
+                    btnPodcast: "ESCUCHAR PODCAST", btnEbook: "VER MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Repetir Prueba",
+                    navNextLesson: "PRÓXIMA LECCIÓN",
+                    subNotActive: "¡SUSCRIPCIÓN INACTIVA! CONTACTA A TU REFERENTE",
+                    quizCompletedTitle: "¡Punto de control superado!", quizCompletedDesc: "Has desbloqueado 500 XP. Ahora dominas los fundamentos de la Escalera.",
+                    videoUrl: "https://www.youtube.com/embed/rR3bFDSiZmk?rel=0&modestbranding=1",
+                    
+                    ebTitle1: "Día 2", ebTitle2: "Anatomía del Precio", ebTitle3: "Lectura del Ladder & Spread",
+                    ebP1: "En el trading deportivo, el precio no es un número estático, sino una entidad viva movida por la oferta y la demanda. Entender cómo se mueve es la diferencia entre apostar a ciegas y operar como un Creador de Mercado.",
+                    ebP2_strong: "La interfaz utilizada por los profesionales se llama Ladder (Escalera).",
+                    ebP2: "A diferencia de la vista tradicional, el Ladder te muestra el precio en un eje vertical y, sobre todo, revela la <strong>Profundidad del Mercado</strong> (el dinero esperando ser igualado en cada tick).",
+                    ebMatchTitle: "La Lógica del Matching", ebMatchDesc: "Si haces Back = Tomas liquidez de quienes hacen Lay",
+                    ebDictTitle: "Diccionario del Ladder",
+                    ebTick1: "El incremento mínimo del precio. Ejemplo: de 2.00 a 2.02 hay dos ticks (2.02-2.00 = 0.02).", ebTick2: "El tick cambia según la cuota: 0.01 (por debajo de 2.00), 0.05 (entre 3.0 y 4.0), 0.50 (por encima de 10.0).",
+                    ebSpread: "Distancia en Ticks entre la mejor cuota Back y Lay. Si es amplio, entrar es costoso (Slippage).",
+                    ebDepth: "El volumen de dinero visible en espera (Unmatched). Revela las intenciones institucionales.", ebSpoof: "¡Cuidado con el Dinero Falso! Órdenes gigantes puestas solo para asustar al mercado y luego canceladas.",
+                    ebPassive1: "Si quieres entrar al mercado y pides un precio mejor (ej. Back a 2.02 con Spread 2.00/2.02), te conviertes en un creador de liquidez <strong>(Maker)</strong> y debes esperar.",
+                    ebPassive2: "Si en cambio aceptas el precio ofrecido (ej. Back a 2.00), eres igualado de inmediato pero pagas el spread <strong>(Taker)</strong>.",
+                    ebQuote1: "El bookmaker oculta el spread en su margen (Vigorish). En el Exchange, el spread es visible y manejable.",
+                    ebQuote2: "El trader no lucha contra el precio, espera a que venga a él.",
+
+                    quizData: [
+                        { q: "¿Cuál es la interfaz utilizada por los profesionales para leer el mercado?", opts: ["El Ladder (Escalera)", "La vista tradicional del Bookmaker", "El marcador en vivo", "El gráfico circular"], correct: 0 },
+                        { q: "¿Qué se entiende por 'Tick' en el Ladder?", opts: ["El incremento mínimo del precio", "La comisión pagada al Exchange", "El retraso en la colocación de la orden", "El beneficio neto de la operación"], correct: 0 },
+                        { q: "¿Qué es el 'Spread'?", opts: ["La distancia en Ticks entre las mejores cuotas de Back y Lay", "El volumen total negociado en el mercado", "La suma del dinero perdido por los apostadores", "El dinero falso insertado para asustar al mercado"], correct: 0 },
+                        { q: "¿Qué representa la 'Profundidad del Mercado'?", opts: ["El volumen de dinero visible esperando a ser igualado (Unmatched)", "El dinero ya igualado y negociado", "El límite máximo de apuesta permitido", "El tiempo restante para el final del partido"], correct: 0 },
+                        { q: "¿Cuál es la diferencia entre entrar al mercado de forma 'Passive' (Maker) y 'Aggressive' (Taker)?", opts: ["El Maker pide un precio mejor y espera, el Taker acepta el precio actual y es igualado de inmediato", "El Maker hace back a cuotas altas, el Taker a cuotas bajas", "El Maker usa stakes altos, el Taker stakes mínimos", "El Maker apuesta antes del partido, el Taker en vivo"], correct: 0 }
+                    ]
+                },
+                pt: {
+                    pageTitle: "Room AI | Global Exchange Academy - Dia 2",
+                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
+                    moduleTitle: "DIA 2/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Aprenda a ler o mercado. Anatomia do preço, Spread Bid/Ask e leitura da Escada.",
+                    finLabel: "PÍLULA FINANCEIRA", finQuote: "Nunca compre a mercado se o spread for muito amplo. No trading esportivo, pagar um tick a mais a cada vez destrói sua margem a longo prazo.",
+                    demoBadge: "DEMO INTERATIVA", startSimulator: "INICIAR SIMULADOR",
+                    penaltiesTitle: "JOGO EDUCATIVO", penaltiesDesc: "Clique no joystick para jogar a roda da fortuna.",
+                    quizProgress: "Pergunta {step} de 5",
+                    btnPodcast: "OUVIR PODCAST", btnEbook: "VER MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Repetir Teste",
+                    navNextLesson: "PRÓXIMA LIÇÃO",
+                    subNotActive: "ASSINATURA INATIVA! CONTATE SEU REFERENTE",
+                    quizCompletedTitle: "Checkpoint Concluído!", quizCompletedDesc: "Você desbloqueou 500 XP. Agora você domina os fundamentos da Escada.",
+                    videoUrl: "https://www.youtube.com/embed/rR3bFDSiZmk?rel=0&modestbranding=1",
+                    
+                    ebTitle1: "Dia 2", ebTitle2: "Anatomia do Preço", ebTitle3: "Leitura do Ladder & Spread",
+                    ebP1: "No trading esportivo, o preço não é um número estático, mas uma entidade viva movida pela oferta e demanda. Entender como ele se move é a diferença entre apostar às cegas e operar como um Formador de Mercado.",
+                    ebP2_strong: "A interface usada pelos profissionais chama-se Ladder (Escada).",
+                    ebP2: "Ao contrário da visão tradicional, o Ladder mostra o preço em um eixo vertical e, acima de tudo, revela a <strong>Profundidade do Mercado</strong> (o dinheiro esperando para ser correspondido em cada tick).",
+                    ebMatchTitle: "A Lógica do Matching", ebMatchDesc: "Se você faz Back = Você pega liquidez de quem faz Lay",
+                    ebDictTitle: "Dicionário do Ladder",
+                    ebTick1: "O incremento mínimo do preço. Exemplo: de 2.00 a 2.02 existem dois ticks (2.02-2.00 = 0.02).", ebTick2: "O tick muda com base na odd: 0.01 (abaixo de 2.00), 0.05 (entre 3.0 e 4.0), 0.50 (acima de 10.0).",
+                    ebSpread: "Distância em Ticks entre a melhor odd de Back e Lay. Se for amplo, entrar é caro (Slippage).",
+                    ebDepth: "O volume de dinheiro visível em espera (Unmatched). Revela intenções institucionais.", ebSpoof: "Cuidado com o Dinheiro Falso! Ordens gigantes inseridas apenas para assustar o mercado e depois canceladas.",
+                    ebPassive1: "Se você quiser entrar no mercado e pedir um preço melhor (ex. Back a 2.02 com Spread 2.00/2.02), você se torna um criador de liquidez <strong>(Maker)</strong> e deve esperar.",
+                    ebPassive2: "Se, em vez disso, você aceitar o preço oferecido (ex. Back a 2.00), você é correspondido imediatamente, mas paga o spread <strong>(Taker)</strong>.",
+                    ebQuote1: "O bookmaker esconde o spread em sua margem (Vigorish). Na Exchange, o spread é visível e gerenciável.",
+                    ebQuote2: "O trader não luta contra o preço, ele espera que venha até ele.",
+
+                    quizData: [
+                        { q: "Qual é a interface usada pelos profissionais para ler o mercado?", opts: ["O Ladder (Escada)", "A visão tradicional do Bookmaker", "O placar ao vivo", "O gráfico de pizza"], correct: 0 },
+                        { q: "O que se entende por 'Tick' no Ladder?", opts: ["O incremento mínimo de preço", "A comissão paga à Exchange", "O atraso na colocação da ordem", "O lucro líquido da operação"], correct: 0 },
+                        { q: "O que é o 'Spread'?", opts: ["A distância em Ticks entre as melhores odds de Back e Lay", "O volume total negociado no mercado", "A soma do dinheiro perdido pelos apostadores", "O dinheiro falso inserido para assustar o mercado"], correct: 0 },
+                        { q: "O que a 'Profundidade do Mercado' representa?", opts: ["O volume de dinheiro visível esperando para ser correspondido (Unmatched)", "O dinheiro já correspondido e negociado", "O limite máximo de aposta permitido", "O tempo restante até o final da partida"], correct: 0 },
+                        { q: "Qual é a diferença entre entrar no mercado de forma 'Passive' (Maker) e 'Aggressive' (Taker)?", opts: ["O Maker pede um preço melhor e espera, o Taker aceita o preço atual e é correspondido imediatamente", "O Maker faz back em odds altas, o Taker em odds baixas", "O Maker usa stakes altas, o Taker stakes mínimas", "O Maker aposta antes da partida, o Taker ao vivo"], correct: 0 }
+                    ]
+                }
             };
 
-            /* Note: Remaining logic for dictionary text and UI updates is implemented inside the script tag */
+            for (const lang in dict) {
+                dict[lang].ebookContent = ebookTemplate(dict[lang]);
+            }
+
+            let currentLang = 'it';
+            let currentQuizStep = 0;
+            let xpPoints = parseInt(localStorage.getItem(CONFIG.STORAGE_KEY + '_xp')) || 0;
+
+            function applyLang(lang) {
+                currentLang = lang;
+                const d = dict[lang];
+                
+                document.title = d.pageTitle;
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (d[key]) {
+                        if (key.startsWith('quizProgress')) {
+                            // Handled separately
+                        } else {
+                            el.textContent = d[key];
+                        }
+                    }
+                });
+                
+                document.querySelectorAll('[data-i18n-html]').forEach(el => {
+                    const key = el.getAttribute('data-i18n-html');
+                    if (d[key]) el.innerHTML = d[key];
+                });
+
+                document.querySelectorAll('.lang-flag').forEach(btn => {
+                    if (btn.getAttribute('data-lang') === lang) {
+                        btn.classList.add('active'); btn.classList.remove('inactive');
+                    } else {
+                        btn.classList.remove('active'); btn.classList.add('inactive');
+                    }
+                });
+
+                document.getElementById('btn-podcast').href = podcastUrls[lang] || podcastUrls['en'];
+                document.getElementById('main-video').src = d.videoUrl;
+
+                if (document.getElementById('quiz-container').style.display !== 'none') {
+                    loadQuiz();
+                }
+            }
+
+            // STREAMING_CHUNK:Implementing WWTBAM Quiz Logic...
+            function loadQuiz() {
+                const d = dict[currentLang];
+                const qData = d.quizData[currentQuizStep];
+                
+                document.getElementById('quiz-progress-text').textContent = d.quizProgress.replace('{step}', currentQuizStep + 1);
+                document.getElementById('quiz-question-text').textContent = qData.q;
+                
+                const optionsContainer = document.getElementById('quiz-options-container');
+                optionsContainer.innerHTML = '';
+                
+                const letters = ['A', 'B', 'C', 'D'];
+                qData.opts.forEach((opt, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'wwtbam-btn w-full text-left px-4 sm:px-6 py-3 sm:py-4 flex items-center group';
+                    btn.onclick = () => handleAnswer(index, btn);
+                    btn.innerHTML = `
+                        <span class="text-[#d4af37] font-black mr-3 sm:mr-4 text-base sm:text-lg shrink-0 w-6">${letters[index]}:</span>
+                        <span class="text-gray-200 font-bold text-[11px] sm:text-sm md:text-base group-hover:text-white transition-colors leading-tight">${opt}</span>
+                        <div class="absolute right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div class="w-2 h-2 rounded-full bg-[#d4af37] shadow-[0_0_8px_#d4af37]"></div>
+                        </div>
+                    `;
+                    optionsContainer.appendChild(btn);
+                });
+                
+                updateProgressDots();
+            }
+
+            function handleAnswer(selectedIndex, btnElement) {
+                const d = dict[currentLang];
+                const qData = d.quizData[currentQuizStep];
+                const isCorrect = selectedIndex === qData.correct;
+                
+                const allBtns = document.getElementById('quiz-options-container').querySelectorAll('button');
+                allBtns.forEach(b => b.disabled = true);
+                
+                if (isCorrect) {
+                    SoundEngine.cashout();
+                    btnElement.classList.add('correct');
+                    showFeedback(true);
+                    xpPoints += 100;
+                    updateXP();
+                    
+                    setTimeout(() => {
+                        currentQuizStep++;
+                        if (currentQuizStep < d.quizData.length) {
+                            loadQuiz();
+                        } else {
+                            showCompletedScreen();
+                        }
+                    }, 1500);
+                } else {
+                    SoundEngine.error();
+                    btnElement.classList.add('wrong');
+                    
+                    setTimeout(() => {
+                        allBtns[qData.correct].classList.add('correct');
+                    }, 500);
+                    
+                    showFeedback(false);
+                    
+                    setTimeout(() => {
+                        btnElement.classList.remove('wrong');
+                        allBtns[qData.correct].classList.remove('correct');
+                        allBtns.forEach(b => b.disabled = false);
+                        hideFeedback();
+                    }, 2000);
+                }
+            }
+
+            function updateProgressDots() {
+                const dotsContainer = document.getElementById('quiz-dots');
+                dotsContainer.innerHTML = '';
+                for (let i = 0; i < 5; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = `w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${i < currentQuizStep ? 'bg-[#10b981] shadow-[0_0_8px_#10b981]' : i === currentQuizStep ? 'bg-[#d4af37] shadow-[0_0_8px_#d4af37] animate-pulse' : 'bg-gray-700'}`;
+                    dotsContainer.appendChild(dot);
+                }
+            }
+
+            function showFeedback(isSuccess) {
+                const feedbackEl = document.getElementById('quiz-feedback');
+                const iconEl = document.getElementById('quiz-feedback-icon');
+                const textEl = document.getElementById('quiz-feedback-text');
+                
+                feedbackEl.classList.remove('hidden');
+                
+                if (isSuccess) {
+                    feedbackEl.className = 'w-full max-w-2xl mx-auto p-4 sm:p-6 md:p-8 rounded-xl md:rounded-2xl text-center shadow-2xl mt-8 transition-all duration-500 transform-gpu relative overflow-hidden bg-gradient-to-br from-[#064e3b] to-[#022c22] border-2 border-[#10b981]';
+                    iconEl.textContent = '✅';
+                    textEl.textContent = "CORRETTO!";
+                    textEl.className = 'font-black text-[11px] sm:text-sm md:text-base uppercase tracking-[0.15em] leading-relaxed relative z-10 break-words text-[#10b981]';
+                } else {
+                    feedbackEl.className = 'w-full max-w-2xl mx-auto p-4 sm:p-6 md:p-8 rounded-xl md:rounded-2xl text-center shadow-2xl mt-8 transition-all duration-500 transform-gpu relative overflow-hidden bg-gradient-to-br from-[#7f1d1d] to-[#450a0a] border-2 border-[#ef4444]';
+                    iconEl.textContent = '❌';
+                    textEl.textContent = "ERRORE. RIPROVA.";
+                    textEl.className = 'font-black text-[11px] sm:text-sm md:text-base uppercase tracking-[0.15em] leading-relaxed relative z-10 break-words text-[#ef4444]';
+                }
+            }
+
+            function hideFeedback() {
+                document.getElementById('quiz-feedback').classList.add('hidden');
+            }
+
+            function showCompletedScreen() {
+                document.getElementById('quiz-container').style.display = 'none';
+                document.getElementById('quiz-feedback').classList.add('hidden');
+                const completedScreen = document.getElementById('quiz-completed-screen');
+                completedScreen.classList.remove('hidden');
+                completedScreen.classList.add('flex');
+            }
+
+            function updateXP() {
+                document.getElementById('xp-counter').innerText = `${xpPoints} XP`;
+                localStorage.setItem(CONFIG.STORAGE_KEY + '_xp', xpPoints);
+                const badge = document.getElementById('xp-badge');
+                badge.classList.add('scale-110', 'bg-yellow-500/20');
+                setTimeout(() => badge.classList.remove('scale-110', 'bg-yellow-500/20'), 300);
+            }
+
+            window.changeLang = function(lang) {
+                SoundEngine.click();
+                applyLang(lang);
+            };
+
+            window.resetQuiz = function() {
+                SoundEngine.click();
+                currentQuizStep = 0;
+                document.getElementById('quiz-container').style.display = 'flex';
+                const completedScreen = document.getElementById('quiz-completed-screen');
+                completedScreen.classList.add('hidden');
+                completedScreen.classList.remove('flex');
+                loadQuiz();
+            };
+
+            // Init
+            window.addEventListener('DOMContentLoaded', () => {
+                const userLang = navigator.language || navigator.userLanguage;
+                let initLang = 'en';
+                if(userLang.startsWith('it')) initLang = 'it';
+                else if(userLang.startsWith('es')) initLang = 'es';
+                else if(userLang.startsWith('pt')) initLang = 'pt';
+                
+                updateXP();
+                applyLang(initLang);
+            });
+
+            return { dict };
         })();
     </script>
 </body>
 </html>
+```eof
