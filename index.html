@@ -165,7 +165,7 @@
         disconnected: "Logged Out", disconnected_desc: "You have successfully logged out.",
         connected: "Login Successful", connected_desc: "Welcome back to your dashboard.",
         show_balances: "Show Balance", hide_balances: "Hide",
-        welcome_title: "Welcome to Elite Platform", welcome_desc: "Log in to manage your funds, monitor affiliate performance, and access exclusive tools.", select_to_start: "Select an option below to start.", start_conn: "Access Dashboard",
+        welcome_title: "Welcome to Elite Platform", login_title: "Elite Platform", welcome_desc: "Log in to manage your funds, monitor affiliate performance, and access exclusive tools.", select_to_start: "Select an option below to start.", start_conn: "Access Dashboard",
         treasury_center: "Treasury Operations", vault_id: "Contract", usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simulate Deposit",
         processed_volume: "Gross Volume", real_usdt: "On-Chain USDT", company_reserve: "Company Reserve", withdrawable_funds: "Liquid Funds", active_nodes: "Active Promoters", registered_pools: "Pool Allocation", cash_flow: "Revenue (7D)", 
         copy_link: "Copy Link", copied: "Copied!", copied_desc: "Referral link copied.", copy_error: "Clipboard Error", 
@@ -187,7 +187,7 @@
         locked: "Sesión Bloqueada", locked_desc: "Introduce tu PIN para reanudar.", unlock_session: "Desbloquear",
         disconnected: "Desconectado", disconnected_desc: "Desconexión exitosa.", connected: "Inicio Exitoso", connected_desc: "Bienvenido a tu panel.",
         show_balances: "Mostrar Saldo", hide_balances: "Ocultar",
-        welcome_title: "Bienvenido a la Plataforma Elite", welcome_desc: "Inicia sesión para gestionar tus fondos, monitorizar tu rendimiento y acceder a herramientas exclusivas.", select_to_start: "Selecciona una opción para empezar.", start_conn: "Acceder al Panel",
+        welcome_title: "Bienvenido a la Plataforma Elite", login_title: "Plataforma Elite", welcome_desc: "Inicia sesión para gestionar tus fondos, monitorizar tu rendimiento y acceder a herramientas exclusivas.", select_to_start: "Selecciona una opción para empezar.", start_conn: "Acceder al Panel",
         treasury_center: "Tesorería", vault_id: "Contrato", usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simular Depósito",
         processed_volume: "Volumen Bruto", real_usdt: "USDT On-Chain", company_reserve: "Reserva Empresa", withdrawable_funds: "Fondos Líquidos", active_nodes: "Promotores Activos", registered_pools: "Asignación Pool", cash_flow: "Ingresos (7D)", 
         copy_link: "Copiar Enlace", copied: "¡Copiado!", copied_desc: "Enlace copiado.", copy_error: "Error", 
@@ -209,7 +209,7 @@
         locked: "Sessão Bloqueada", locked_desc: "Insira seu PIN para continuar.", unlock_session: "Desbloquear",
         disconnected: "Desconectado", disconnected_desc: "Desconexão concluída.", connected: "Login Bem-sucedido", connected_desc: "Bem-vindo ao seu painel.",
         show_balances: "Mostrar Saldo", hide_balances: "Ocultar",
-        welcome_title: "Bem-vindo à Plataforma Elite", welcome_desc: "Faça login para gerenciar fundos, monitorar desempenho e acessar ferramentas exclusivas.", select_to_start: "Selecione uma opção para começar.", start_conn: "Acessar Painel",
+        welcome_title: "Bem-vindo à Plataforma Elite", login_title: "Plataforma Elite", welcome_desc: "Faça login para gerenciar fundos, monitorar desempenho e acessar ferramentas exclusivas.", select_to_start: "Selecione uma opção para começar.", start_conn: "Acessar Painel",
         treasury_center: "Tesouraria", vault_id: "Contrato", usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simular Depósito",
         processed_volume: "Volume Bruto", real_usdt: "USDT On-Chain", company_reserve: "Reserva Empresa", withdrawable_funds: "Fundos Líquidos", active_nodes: "Promotores Ativos", registered_pools: "Alocação Pool", cash_flow: "Receita (7D)", 
         copy_link: "Copiar Link", copied: "Copiado!", copied_desc: "Link copiado.", copy_error: "Erro", 
@@ -231,7 +231,7 @@
         locked: "Sessione Bloccata", locked_desc: "Inserisci il PIN per riprendere.", unlock_session: "Sblocca",
         disconnected: "Disconnesso", disconnected_desc: "Disconnessione completata.", connected: "Accesso Effettuato", connected_desc: "Bentornato nella tua dashboard.",
         show_balances: "Mostra Saldo", hide_balances: "Nascondi",
-        welcome_title: "Benvenuto sulla Piattaforma Elite", welcome_desc: "Accedi per gestire i tuoi fondi, monitorare le performance e accedere a strumenti esclusivi.", select_to_start: "Seleziona un'opzione per iniziare.", start_conn: "Accedi alla Dashboard",
+        welcome_title: "Benvenuto sulla Piattaforma Elite", login_title: "Piattaforma Elite", welcome_desc: "Accedi per gestire i tuoi fondi, monitorare le performance e accedere a strumenti esclusivi.", select_to_start: "Seleziona un'opzione per iniziare.", start_conn: "Accedi alla Dashboard",
         treasury_center: "Operazioni Tesoreria", vault_id: "Contratto", usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simula Deposito",
         processed_volume: "Volume Lordo", real_usdt: "USDT On-Chain", company_reserve: "Riserva Aziendale", withdrawable_funds: "Fondi Liquidi", active_nodes: "Promoter Attivi", registered_pools: "Allocazione Pool", cash_flow: "Ricavi (7G)", 
         copy_link: "Copia Link", copied: "Copiato!", copied_desc: "Link di affiliazione copiato.", copy_error: "Errore Appunti", 
@@ -809,7 +809,7 @@
                   <Icon name="shield-check" size={48} className="relative z-10" />
                 </div>
                 <div className="max-w-lg">
-                  <h2 className="text-3xl font-black text-zinc-100 uppercase tracking-wide">{t('welcome_title')}</h2>
+                  <h2 className="text-3xl font-black text-zinc-100 uppercase tracking-wide">{t('login_title')}</h2>
                 </div>
                 <button onClick={toggleWallet} className="px-10 py-4 bg-gold-gradient text-surface-950 rounded-xl font-black text-sm uppercase tracking-widest shadow-[0_10px_30px_rgba(212,175,55,0.3)] transition-transform hover:-translate-y-1 flex items-center gap-3 mt-4">
                    {t('start_conn')} <Icon name="arrow-right" size={20} />
