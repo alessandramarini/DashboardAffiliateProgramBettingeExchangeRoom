@@ -5,48 +5,83 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>BETTING EXCHANGE ROOM - Affiliate Program</title>
   
-  <meta name="theme-color" content="#0f172a">
+  <meta name="theme-color" content="#09090b">
 
   <style>
     /* Base Reset & Typography */
     body, html {
       margin: 0; padding: 0;
-      background-color: #0f172a !important; color: #f8fafc !important;
+      background-color: #09090b !important; color: #f4f4f5 !important;
       font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
     #root { min-height: 100vh; display: flex; flex-direction: column; position: relative; }
     
-    /* Subtle Pattern Background (Modern Fintech) */
+    /* Elite Fintech Pattern Background */
     .bg-grid-pattern {
-      background-image: radial-gradient(rgba(51, 65, 85, 0.25) 1px, transparent 1px);
-      background-size: 32px 32px;
+      background-color: #09090b;
+      background-image: 
+        radial-gradient(rgba(212, 175, 55, 0.07) 1px, transparent 1px),
+        radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 32px 32px, 64px 64px;
+      background-position: 0 0, 16px 16px;
+      position: relative;
+    }
+    /* Central Ambient Glow */
+    .bg-grid-pattern::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 1000px; height: 600px;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, rgba(9, 9, 11, 0) 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* Premium Metallic & Gold Text Gradients */
+    .text-gold-gradient {
+      background: linear-gradient(135deg, #fef08a 0%, #d4af37 50%, #92400e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .bg-gold-gradient {
+      background: linear-gradient(135deg, #fcd34d 0%, #d4af37 50%, #b45309 100%);
     }
 
     /* Clean Initial Loader */
     .initial-loader {
       display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;
-      background: #0f172a; color: #3b82f6; font-weight: 500;
+      background: #09090b; color: #d4af37; font-weight: 500; z-index: 9999;
     }
     .spinner-ring {
-      width: 48px; height: 48px; border: 3px solid rgba(59, 130, 246, 0.2);
-      border-radius: 50%; border-top-color: #3b82f6; animation: spin 1s linear infinite;
+      width: 48px; height: 48px; border: 3px solid rgba(212, 175, 55, 0.1);
+      border-radius: 50%; border-top-color: #d4af37; animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
       margin-bottom: 24px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Custom Scrollbar */
-    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    /* Custom Scrollbar - Minimalist */
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #27272a; border-radius: 10px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d4af37; }
 
-    /* Animations */
+    /* Core Animations */
     @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .toast-enter { animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); } 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); } }
+    
+    .toast-enter { animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .fade-in { animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    
+    /* Utility Classes */
+    .glass-panel {
+      background: rgba(24, 24, 27, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
   </style>
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -56,9 +91,10 @@
       theme: { 
         extend: { 
           colors: { 
-            brand: { 500: '#3b82f6', 400: '#60a5fa', 600: '#2563eb' },
+            brand: { 300: '#fde68a', 400: '#fcd34d', 500: '#d4af37', 600: '#b45309', 700: '#92400e' },
             success: { 500: '#10b981', 400: '#34d399', 600: '#059669' },
-            surface: { 900: '#1e293b', 800: '#334155', 950: '#0f172a', 700: '#475569' }
+            surface: { 950: '#09090b', 900: '#18181b', 800: '#27272a', 700: '#3f3f46' },
+            zinc: { 400: '#a1a1aa', 500: '#71717a' }
           },
           fontFamily: {
             sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
@@ -68,19 +104,21 @@
       }
     }
   </script>
+  
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Required for Recharts -->
   <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
-  <script src="https://unpkg.com/react-is@18.2.0/umd/react-is.production.min.js"></script>
   <script src="https://unpkg.com/recharts@2.1.12/umd/Recharts.js"></script>
 </head>
-<body class="bg-surface-950 text-slate-200 selection:bg-brand-500/30">
+<body class="bg-surface-950 text-zinc-300 selection:bg-brand-500/30">
   <div id="root">
     <div class="initial-loader">
       <div class="spinner-ring"></div>
-      <div class="text-sm text-slate-400 mt-2 font-medium tracking-widest uppercase">Initializing Environment...</div>
+      <div class="text-xs text-zinc-500 mt-2 font-bold tracking-widest uppercase">Initializing Elite Environment...</div>
     </div>
   </div>
 
@@ -88,200 +126,126 @@
     const { useState, useEffect, useCallback, useRef, useMemo } = React;
     const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar } = window.Recharts; 
 
+    // Bulletproof Lucide Icon Component
     const Icon = ({ name, size = 24, className = '', ...props }) => {
-      const iconRef = useRef(null);
+      const spanRef = useRef(null);
       useEffect(() => {
-        if (iconRef.current && window.lucide) {
-          iconRef.current.innerHTML = '';
-          lucide.createIcons({
-            icons: { [name]: window.lucide.icons[name] }, nameAttr: 'data-lucide',
+        if (spanRef.current && window.lucide) {
+          window.lucide.createIcons({
+            root: spanRef.current,
+            nameAttr: 'data-lucide',
             attrs: { width: size, height: size, class: className, ...props }
           });
-          lucide.createIcons({ root: iconRef.current });
         }
       }, [name, size, className, props]);
-      return <i ref={iconRef} data-lucide={name} className={className} style={{ display: 'inline-flex', width: size, height: size }}></i>;
+
+      return (
+        <span ref={spanRef} className={`inline-flex items-center justify-center shrink-0`}>
+          <i data-lucide={name} />
+        </span>
+      );
     };
+
+    const LANGUAGES = [
+      { code: 'en', name: 'ENG', flag: 'gb' },
+      { code: 'es', name: 'ESP', flag: 'es' },
+      { code: 'pt', name: 'POR', flag: 'pt' },
+      { code: 'it', name: 'ITA', flag: 'it' }
+    ];
 
     const translations = {
       en: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Affiliate Program",
-        user_dash: "User Area", academy_btn: "Zero to Hero Academy", signals_btn: "Telegram Signals Room",
+        user_dash: "User Area", partner_dash: "Partner Area", company_dash: "Treasury",
+        academy_btn: "Zero to Hero Academy", signals_btn: "Telegram Signals Room",
         setup_wallet: "Setup TON Wallet", setup_wallet_desc: "You must configure your TON USDT wallet to receive payouts.",
-        wallet_address: "TON Address", save_wallet: "Save Wallet", ton_required: "TON Wallet Required",
-        partner_dash: "Partner Area", company_dash: "Treasury",
-        login: "Log In", logout: "Log Out", session_ended: "Session Ended",
-        session_ended_desc: "You have been logged out due to inactivity.",
-        locked: "Session Locked", locked_desc: "Enter your PIN to resume.",
+        wallet_address: "TON Address", save_wallet: "Save Wallet", cancel: "Cancel",
+        login: "Log In", logout: "Log Out", session_ended: "Session Ended", session_ended_desc: "Logged out due to inactivity.",
+        locked: "Session Locked", locked_desc: "Enter your PIN to resume.", unlock_session: "Unlock",
         disconnected: "Logged Out", disconnected_desc: "You have successfully logged out.",
         connected: "Login Successful", connected_desc: "Welcome back to your dashboard.",
-        show_balances: "Show Balance", hide_balances: "Hide", network: "Network",
-        welcome_title: "Welcome to Betting Exchange Room", welcome_desc: "Log in to your dashboard to manage your funds, monitor your affiliate performance, and track your revenue.", select_to_start: "Select to start.",
-        start_conn: "Access Dashboard",
-        treasury_center: "Treasury Operations", vault_id: "Contract",
-        usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simulate Deposit",
-        processed_volume: "Gross Volume", real_usdt: "On-Chain USDT", company_reserve: "Company Reserve",
-        withdrawable_funds: "Liquid Funds", active_nodes: "Active Promoters",
-        registered_pools: "Pool Allocation", cash_flow: "Revenue (7D)", 
-        smart_contract_rules: "Revenue Split", immutable: "SMART CONTRACT", quota: "Allocation",
-        company_share: "Company", leader_pool: "Sponsors", base_pool: "Bonus Pool", destination: "Wallet",
-        copy_link: "Copy Link", copied: "Copied!",
-        copied_desc: "Referral link copied to clipboard.", copy_error: "Clipboard Error", 
-        vault_available: "Available for Withdrawal",
-        escrow_desc: "Your earnings are available. Withdrawals are processed instantly.",
-        no_funds: "No Funds Available", signing: "Processing...",
-        unlock_withdraw: "Withdraw Funds", network_fee: "Est. Gas: ~0.05 TON",
-        lifetime_deposit: "Total Earned", validated_earnings: "Lifetime revenue",
-        audit_trail: "Withdrawal History", latest_tx: "Recent Tx", no_tx: "No transactions yet.",
-        security_auth: "Confirm Withdrawal", crypto_signature_req: "Please enter your PIN to confirm this transaction.",
-        requested_amount: "Amount", dest_wallet: "Destination", enter_pin: "Enter PIN",
-        cancel: "Cancel", signing_btn: "Confirming...", sign_withdraw_btn: "Confirm Transfer",
-        transfer_auth: "Withdrawal Successful", funds_sent: "Funds have been sent to your wallet.",
-        deposit_detected: "Deposit Received", vault_updated: "Liquidity updated on-chain.",
-        mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", today: "Today",
-        unlock_session: "Unlock", earnings_chart: "Earnings Overview",
-        daily_subs: "Active Leads", subs_desc: "Registered users",
-        conv_rate: "Conv. Rate", conv_desc: "Lead to Active",
-        bot_interactions: "Link Clicks", interact_desc: "Total traffic",
+        show_balances: "Show Balance", hide_balances: "Hide",
+        welcome_title: "Welcome to Elite Platform", welcome_desc: "Log in to manage your funds, monitor affiliate performance, and access exclusive tools.", select_to_start: "Select an option below to start.", start_conn: "Access Dashboard",
+        treasury_center: "Treasury Operations", vault_id: "Contract", usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simulate Deposit",
+        processed_volume: "Gross Volume", real_usdt: "On-Chain USDT", company_reserve: "Company Reserve", withdrawable_funds: "Liquid Funds", active_nodes: "Active Promoters", registered_pools: "Pool Allocation", cash_flow: "Revenue (7D)", 
+        copy_link: "Copy Link", copied: "Copied!", copied_desc: "Referral link copied.", copy_error: "Clipboard Error", 
+        vault_available: "Available for Withdrawal", escrow_desc: "Your earnings are available instantly.", no_funds: "No Funds", signing: "Processing...", unlock_withdraw: "Withdraw Funds",
+        lifetime_deposit: "Total Earned", audit_trail: "Withdrawal History", no_tx: "No transactions yet.",
+        security_auth: "Confirm Withdrawal", crypto_signature_req: "Enter PIN to confirm.", requested_amount: "Amount", dest_wallet: "Destination", signing_btn: "Confirming...", sign_withdraw_btn: "Confirm Transfer", transfer_auth: "Success", funds_sent: "Funds sent to your wallet.", deposit_detected: "Deposit Received", vault_updated: "Liquidity updated.",
+        mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", today: "Today", yesterday: "Yesterday",
+        earnings_chart: "Earnings Overview", daily_subs: "Active Leads", subs_desc: "Registered users", conv_rate: "Conv. Rate", conv_desc: "Lead to Active", bot_interactions: "Link Clicks", interact_desc: "Total traffic",
         top_promoters: "Global Leaderboard", rank: "Rank", promoter: "Promoter", leads: "Leads", conversion: "Conv%",
-        geo_dist: "Global Distribution", lang_perf: "User Languages", users: "Users",
-        tier_status: "Current Tier", rev_share: "RevShare", next_tier: "to Platinum",
-        recent_activity: "Recent Referrals", joined: "joined via your link", deposited: "made a first deposit"
-      },
-      it: {
-        app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programma Affiliati",
-        user_dash: "Area Utente", academy_btn: "Zero to Hero Academy", signals_btn: "Sala Segnali Telegram",
-        setup_wallet: "Configura Wallet TON", setup_wallet_desc: "Devi impostare il tuo wallet TON per ricevere i prelievi in USDT.",
-        wallet_address: "Indirizzo TON", save_wallet: "Salva Wallet", ton_required: "Wallet TON Obbligatorio",
-        partner_dash: "Area Partner", company_dash: "Tesoreria",
-        login: "Accedi", logout: "Esci", session_ended: "Sessione Scaduta",
-        session_ended_desc: "Sei stato disconnesso per inattività.",
-        locked: "Sessione Bloccata", locked_desc: "Inserisci il PIN per riprendere.",
-        disconnected: "Disconnesso", disconnected_desc: "Disconnessione completata con successo.",
-        connected: "Accesso Effettuato", connected_desc: "Bentornato nella tua dashboard.",
-        show_balances: "Mostra Saldo", hide_balances: "Nascondi", network: "Rete",
-        welcome_title: "Benvenuto su Betting Exchange Room", welcome_desc: "Accedi alla tua dashboard per gestire i tuoi fondi, monitorare le performance di affiliazione e le tue entrate.", select_to_start: "Seleziona per iniziare.",
-        start_conn: "Accedi alla Dashboard",
-        treasury_center: "Operazioni Tesoreria", vault_id: "Contratto",
-        usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simula Deposito",
-        processed_volume: "Volume Lordo", real_usdt: "USDT On-Chain", company_reserve: "Riserva Aziendale",
-        withdrawable_funds: "Fondi Liquidi", active_nodes: "Promoter Attivi",
-        registered_pools: "Allocazione Pool", cash_flow: "Ricavi (7G)", 
-        smart_contract_rules: "Ripartizione Ricavi", immutable: "SMART CONTRACT", quota: "Quota",
-        company_share: "Azienda", leader_pool: "Sponsor", base_pool: "Pool Bonus", destination: "Wallet",
-        copy_link: "Copia Link", copied: "Copiato!",
-        copied_desc: "Link di affiliazione copiato negli appunti.", copy_error: "Errore Appunti", 
-        vault_available: "Disponibile per il Prelievo",
-        escrow_desc: "I tuoi guadagni sono disponibili. I prelievi vengono elaborati istantaneamente.",
-        no_funds: "Nessun Fondo", signing: "Elaborazione...",
-        unlock_withdraw: "Preleva Fondi", network_fee: "Gas Stimato: ~0.05 TON",
-        lifetime_deposit: "Guadagni Totali", validated_earnings: "Entrate storiche",
-        audit_trail: "Storico Prelievi", latest_tx: "Recenti Tx", no_tx: "Nessun prelievo.",
-        security_auth: "Conferma Prelievo", crypto_signature_req: "Inserisci il tuo PIN per confermare la transazione.",
-        requested_amount: "Importo", dest_wallet: "Destinazione", enter_pin: "Inserisci PIN",
-        cancel: "Annulla", signing_btn: "Conferma in corso...", sign_withdraw_btn: "Conferma Trasferimento",
-        transfer_auth: "Prelievo Completato", funds_sent: "I fondi sono stati inviati al tuo wallet.",
-        deposit_detected: "Deposito Ricevuto", vault_updated: "Liquidità aggiornata on-chain.",
-        mon: "Lun", tue: "Mar", wed: "Mer", thu: "Gio", fri: "Ven", sat: "Sab", today: "Oggi",
-        unlock_session: "Sblocca", earnings_chart: "Panoramica Guadagni",
-        daily_subs: "Lead Attivi", subs_desc: "Utenti registrati",
-        conv_rate: "Tasso Conv.", conv_desc: "Lead in Attivi",
-        bot_interactions: "Clic sul Link", interact_desc: "Traffico totale",
-        top_promoters: "Classifica Globale", rank: "Pos", promoter: "Promoter", leads: "Lead", conversion: "Conv%",
-        geo_dist: "Distribuzione Globale", lang_perf: "Lingue Utenti", users: "Utenti",
-        tier_status: "Tuo Livello", rev_share: "RevShare", next_tier: "per Platinum",
-        recent_activity: "Ultimi Referral", joined: "si è iscritto tramite il tuo link", deposited: "ha effettuato il primo deposito"
+        geo_dist: "Global Distribution", lang_perf: "User Languages", tier_status: "Current Tier", rev_share: "RevShare", next_tier: "to Platinum", recent_activity: "Recent Referrals", joined: "joined via your link", deposited: "made a deposit"
       },
       es: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programa de Afiliados",
-        user_dash: "Área de Usuario", academy_btn: "Zero to Hero Academy", signals_btn: "Sala de Señales Telegram",
+        user_dash: "Área de Usuario", partner_dash: "Área de Socios", company_dash: "Tesorería",
+        academy_btn: "Zero to Hero Academy", signals_btn: "Sala de Señales Telegram",
         setup_wallet: "Configurar Billetera TON", setup_wallet_desc: "Debes configurar tu billetera TON para recibir retiros en USDT.",
-        wallet_address: "Dirección TON", save_wallet: "Guardar Billetera", ton_required: "Billetera TON Requerida",
-        partner_dash: "Área de Socios", company_dash: "Tesorería",
-        login: "Iniciar Sesión", logout: "Cerrar Sesión", session_ended: "Sesión Finalizada",
-        session_ended_desc: "Has sido desconectado por inactividad.",
-        locked: "Sesión Bloqueada", locked_desc: "Introduce tu PIN para reanudar.",
-        disconnected: "Desconectado", disconnected_desc: "Desconexión completada con éxito.",
-        connected: "Inicio Exitoso", connected_desc: "Bienvenido de nuevo a tu panel.",
-        show_balances: "Mostrar Saldo", hide_balances: "Ocultar", network: "Red",
-        welcome_title: "Bienvenido a Betting Exchange Room", welcome_desc: "Inicia sesión para gestionar tus fondos y monitorizar tu rendimiento de afiliación.", select_to_start: "Selecciona para empezar.",
-        start_conn: "Acceder al Panel",
-        treasury_center: "Tesorería", vault_id: "Contrato",
-        usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simular Depósito",
-        processed_volume: "Volumen Bruto", real_usdt: "USDT On-Chain", company_reserve: "Reserva Empresa",
-        withdrawable_funds: "Fondos Líquidos", active_nodes: "Promotores Activos",
-        registered_pools: "Asignación Pool", cash_flow: "Ingresos (7D)", 
-        smart_contract_rules: "Reparto de Ingresos", immutable: "SMART CONTRACT", quota: "Cuota",
-        company_share: "Empresa", leader_pool: "Patrocinador", base_pool: "Bono", destination: "Billetera",
-        copy_link: "Copiar Enlace", copied: "¡Copiado!",
-        copied_desc: "Enlace de referido copiado al portapapeles.", copy_error: "Error", 
-        vault_available: "Disponible para Retiro",
-        escrow_desc: "Tus ganancias están disponibles. Los retiros se procesan al instante.",
-        no_funds: "Sin Fondos", signing: "Procesando...",
-        unlock_withdraw: "Retirar Fondos", network_fee: "Gas Est.: ~0.05 TON",
-        lifetime_deposit: "Ganancias Tot.", validated_earnings: "Ingresos históricos",
-        audit_trail: "Historial Retiros", latest_tx: "Recientes", no_tx: "Sin retiros.",
-        security_auth: "Confirmar Retiro", crypto_signature_req: "Introduce tu PIN para confirmar la transacción.",
-        requested_amount: "Monto", dest_wallet: "Destino", enter_pin: "Introduce PIN",
-        cancel: "Cancelar", signing_btn: "Confirmando...", sign_withdraw_btn: "Confirmar Transferencia",
-        transfer_auth: "Retiro Exitoso", funds_sent: "Fondos enviados a tu billetera.",
-        deposit_detected: "Depósito Recibido", vault_updated: "Liquidez actualizada.",
-        mon: "Lun", tue: "Mar", wed: "Mié", thu: "Jue", fri: "Vie", sat: "Sáb", today: "Hoy",
-        unlock_session: "Desbloquear", earnings_chart: "Resumen de Ganancias",
-        daily_subs: "Leads Activos", subs_desc: "Usuarios registrados",
-        conv_rate: "Tasa Conv.", conv_desc: "Lead a Activo",
-        bot_interactions: "Clics en Enlace", interact_desc: "Tráfico total",
+        wallet_address: "Dirección TON", save_wallet: "Guardar", cancel: "Cancelar",
+        login: "Iniciar Sesión", logout: "Cerrar Sesión", session_ended: "Sesión Finalizada", session_ended_desc: "Desconectado por inactividad.",
+        locked: "Sesión Bloqueada", locked_desc: "Introduce tu PIN para reanudar.", unlock_session: "Desbloquear",
+        disconnected: "Desconectado", disconnected_desc: "Desconexión exitosa.", connected: "Inicio Exitoso", connected_desc: "Bienvenido a tu panel.",
+        show_balances: "Mostrar Saldo", hide_balances: "Ocultar",
+        welcome_title: "Bienvenido a la Plataforma Elite", welcome_desc: "Inicia sesión para gestionar tus fondos, monitorizar tu rendimiento y acceder a herramientas exclusivas.", select_to_start: "Selecciona una opción para empezar.", start_conn: "Acceder al Panel",
+        treasury_center: "Tesorería", vault_id: "Contrato", usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simular Depósito",
+        processed_volume: "Volumen Bruto", real_usdt: "USDT On-Chain", company_reserve: "Reserva Empresa", withdrawable_funds: "Fondos Líquidos", active_nodes: "Promotores Activos", registered_pools: "Asignación Pool", cash_flow: "Ingresos (7D)", 
+        copy_link: "Copiar Enlace", copied: "¡Copiado!", copied_desc: "Enlace copiado.", copy_error: "Error", 
+        vault_available: "Disponible para Retiro", escrow_desc: "Retiros procesados al instante.", no_funds: "Sin Fondos", signing: "Procesando...", unlock_withdraw: "Retirar Fondos",
+        lifetime_deposit: "Ganancias Tot.", audit_trail: "Historial Retiros", no_tx: "Sin transacciones.",
+        security_auth: "Confirmar Retiro", crypto_signature_req: "Introduce PIN para confirmar.", requested_amount: "Monto", dest_wallet: "Destino", signing_btn: "Confirmando...", sign_withdraw_btn: "Confirmar Transferencia", transfer_auth: "Éxito", funds_sent: "Fondos enviados.", deposit_detected: "Depósito Recibido", vault_updated: "Liquidez actualizada.",
+        mon: "Lun", tue: "Mar", wed: "Mié", thu: "Jue", fri: "Vie", sat: "Sáb", today: "Hoy", yesterday: "Ayer",
+        earnings_chart: "Resumen de Ganancias", daily_subs: "Leads Activos", subs_desc: "Usuarios registrados", conv_rate: "Tasa Conv.", conv_desc: "Lead a Activo", bot_interactions: "Clics en Enlace", interact_desc: "Tráfico total",
         top_promoters: "Clasificación", rank: "Pos", promoter: "Promotor", leads: "Leads", conversion: "Conv%",
-        geo_dist: "Distribución Global", lang_perf: "Idiomas Usuarios", users: "Usuarios",
-        tier_status: "Tu Nivel", rev_share: "RevShare", next_tier: "para Platinum",
-        recent_activity: "Últimos Referidos", joined: "se unió con tu enlace", deposited: "hizo su primer depósito"
+        geo_dist: "Distribución Global", lang_perf: "Idiomas Usuarios", tier_status: "Tu Nivel", rev_share: "RevShare", next_tier: "para Platinum", recent_activity: "Últimos Referidos", joined: "se unió", deposited: "hizo un depósito"
       },
       pt: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programa de Afiliados",
-        user_dash: "Área do Usuário", academy_btn: "Zero to Hero Academy", signals_btn: "Sala de Sinais Telegram",
-        setup_wallet: "Configurar Carteira TON", setup_wallet_desc: "Você deve configurar sua carteira TON para receber saques em USDT.",
-        wallet_address: "Endereço TON", save_wallet: "Salvar Carteira", ton_required: "Carteira TON Necessária",
-        partner_dash: "Área Parceiro", company_dash: "Tesouraria",
-        login: "Entrar", logout: "Sair", session_ended: "Sessão Encerrada",
-        session_ended_desc: "Você foi desconectado por inatividade.",
-        locked: "Sessão Bloqueada", locked_desc: "Insira seu PIN para continuar.",
-        disconnected: "Desconectado", disconnected_desc: "Desconexão concluída com sucesso.",
-        connected: "Login Bem-sucedido", connected_desc: "Bem-vindo de volta ao seu painel.",
-        show_balances: "Mostrar Saldo", hide_balances: "Ocultar", network: "Rede",
-        welcome_title: "Bem-vindo à Betting Exchange Room", welcome_desc: "Faça login para gerenciar seus fundos e acompanhar seu desempenho como afiliado.", select_to_start: "Selecione para começar.",
-        start_conn: "Acessar Painel",
-        treasury_center: "Tesouraria", vault_id: "Contrato",
-        usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simular Depósito",
-        processed_volume: "Volume Bruto", real_usdt: "USDT On-Chain", company_reserve: "Reserva Empresa",
-        withdrawable_funds: "Fundos Líquidos", active_nodes: "Promotores Ativos",
-        registered_pools: "Alocação Pool", cash_flow: "Receita (7D)", 
-        smart_contract_rules: "Divisão de Receita", immutable: "SMART CONTRACT", quota: "Cota",
-        company_share: "Empresa", leader_pool: "Patrocinador", base_pool: "Bônus", destination: "Carteira",
-        copy_link: "Copiar Link", copied: "Copiado!",
-        copied_desc: "Link de indicação copiado.", copy_error: "Erro", 
-        vault_available: "Disponível para Saque",
-        escrow_desc: "Seus ganhos estão disponíveis. Os saques são processados instantaneamente.",
-        no_funds: "Sem Fundos", signing: "Processando...",
-        unlock_withdraw: "Sacar Fundos", network_fee: "Gás Est.: ~0.05 TON",
-        lifetime_deposit: "Ganhos Totais", validated_earnings: "Receita histórica",
-        audit_trail: "Histórico Saques", latest_tx: "Recentes", no_tx: "Nenhum saque.",
-        security_auth: "Confirmar Saque", crypto_signature_req: "Insira seu PIN para confirmar a transação.",
-        requested_amount: "Valor", dest_wallet: "Destino", enter_pin: "Inserir PIN",
-        cancel: "Cancelar", signing_btn: "Confirmando...", sign_withdraw_btn: "Confirmar Transferência",
-        transfer_auth: "Saque Concluído", funds_sent: "Fundos enviados para sua carteira.",
-        deposit_detected: "Depósito Recebido", vault_updated: "Liquidez atualizada.",
-        mon: "Seg", tue: "Ter", wed: "Qua", thu: "Qui", fri: "Sex", sat: "Sáb", today: "Hoje",
-        unlock_session: "Desbloquear", earnings_chart: "Resumo de Ganhos",
-        daily_subs: "Leads Ativos", subs_desc: "Usuários registrados",
-        conv_rate: "Taxa Conv.", conv_desc: "Lead para Ativo",
-        bot_interactions: "Cliques no Link", interact_desc: "Tráfego total",
+        user_dash: "Área do Usuário", partner_dash: "Área Parceiro", company_dash: "Tesouraria",
+        academy_btn: "Zero to Hero Academy", signals_btn: "Sala de Sinais Telegram",
+        setup_wallet: "Configurar Carteira TON", setup_wallet_desc: "Configure sua carteira TON para receber saques em USDT.",
+        wallet_address: "Endereço TON", save_wallet: "Salvar", cancel: "Cancelar",
+        login: "Entrar", logout: "Sair", session_ended: "Sessão Encerrada", session_ended_desc: "Desconectado por inatividade.",
+        locked: "Sessão Bloqueada", locked_desc: "Insira seu PIN para continuar.", unlock_session: "Desbloquear",
+        disconnected: "Desconectado", disconnected_desc: "Desconexão concluída.", connected: "Login Bem-sucedido", connected_desc: "Bem-vindo ao seu painel.",
+        show_balances: "Mostrar Saldo", hide_balances: "Ocultar",
+        welcome_title: "Bem-vindo à Plataforma Elite", welcome_desc: "Faça login para gerenciar fundos, monitorar desempenho e acessar ferramentas exclusivas.", select_to_start: "Selecione uma opção para começar.", start_conn: "Acessar Painel",
+        treasury_center: "Tesouraria", vault_id: "Contrato", usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simular Depósito",
+        processed_volume: "Volume Bruto", real_usdt: "USDT On-Chain", company_reserve: "Reserva Empresa", withdrawable_funds: "Fundos Líquidos", active_nodes: "Promotores Ativos", registered_pools: "Alocação Pool", cash_flow: "Receita (7D)", 
+        copy_link: "Copiar Link", copied: "Copiado!", copied_desc: "Link copiado.", copy_error: "Erro", 
+        vault_available: "Disponível para Saque", escrow_desc: "Saques processados instantaneamente.", no_funds: "Sem Fundos", signing: "Processando...", unlock_withdraw: "Sacar Fundos",
+        lifetime_deposit: "Ganhos Totais", audit_trail: "Histórico Saques", no_tx: "Nenhum saque.",
+        security_auth: "Confirmar Saque", crypto_signature_req: "Insira PIN para confirmar.", requested_amount: "Valor", dest_wallet: "Destino", signing_btn: "Confirmando...", sign_withdraw_btn: "Confirmar Transferência", transfer_auth: "Sucesso", funds_sent: "Fundos enviados.", deposit_detected: "Depósito Recebido", vault_updated: "Liquidez atualizada.",
+        mon: "Seg", tue: "Ter", wed: "Qua", thu: "Qui", fri: "Sex", sat: "Sáb", today: "Hoje", yesterday: "Ontem",
+        earnings_chart: "Resumo de Ganhos", daily_subs: "Leads Ativos", subs_desc: "Usuários registrados", conv_rate: "Taxa Conv.", conv_desc: "Lead para Ativo", bot_interactions: "Cliques", interact_desc: "Tráfego total",
         top_promoters: "Classificação", rank: "Pos", promoter: "Promotor", leads: "Leads", conversion: "Conv%",
-        geo_dist: "Distribuição Global", lang_perf: "Idiomas Usuários", users: "Usuários",
-        tier_status: "Seu Nível", rev_share: "RevShare", next_tier: "para Platinum",
-        recent_activity: "Últimos Indicados", joined: "entrou pelo seu link", deposited: "fez o primeiro depósito"
+        geo_dist: "Distribuição Global", lang_perf: "Idiomas", tier_status: "Seu Nível", rev_share: "RevShare", next_tier: "para Platinum", recent_activity: "Últimos Indicados", joined: "entrou", deposited: "fez um depósito"
+      },
+      it: {
+        app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programma Affiliati",
+        user_dash: "Area Utente", partner_dash: "Area Partner", company_dash: "Tesoreria",
+        academy_btn: "Zero to Hero Academy", signals_btn: "Sala Segnali Telegram",
+        setup_wallet: "Configura Wallet TON", setup_wallet_desc: "Devi impostare il tuo wallet TON per ricevere prelievi in USDT.",
+        wallet_address: "Indirizzo TON", save_wallet: "Salva", cancel: "Annulla",
+        login: "Accedi", logout: "Esci", session_ended: "Sessione Scaduta", session_ended_desc: "Disconnesso per inattività.",
+        locked: "Sessione Bloccata", locked_desc: "Inserisci il PIN per riprendere.", unlock_session: "Sblocca",
+        disconnected: "Disconnesso", disconnected_desc: "Disconnessione completata.", connected: "Accesso Effettuato", connected_desc: "Bentornato nella tua dashboard.",
+        show_balances: "Mostra Saldo", hide_balances: "Nascondi",
+        welcome_title: "Benvenuto sulla Piattaforma Elite", welcome_desc: "Accedi per gestire i tuoi fondi, monitorare le performance e accedere a strumenti esclusivi.", select_to_start: "Seleziona un'opzione per iniziare.", start_conn: "Accedi alla Dashboard",
+        treasury_center: "Operazioni Tesoreria", vault_id: "Contratto", usdt_master: "Master Wallet", usdt_wallet: "Vault Wallet", simulate_deposit: "Simula Deposito",
+        processed_volume: "Volume Lordo", real_usdt: "USDT On-Chain", company_reserve: "Riserva Aziendale", withdrawable_funds: "Fondi Liquidi", active_nodes: "Promoter Attivi", registered_pools: "Allocazione Pool", cash_flow: "Ricavi (7G)", 
+        copy_link: "Copia Link", copied: "Copiato!", copied_desc: "Link di affiliazione copiato.", copy_error: "Errore Appunti", 
+        vault_available: "Disponibile per il Prelievo", escrow_desc: "I prelievi vengono elaborati istantaneamente.", no_funds: "Nessun Fondo", signing: "Elaborazione...", unlock_withdraw: "Preleva Fondi",
+        lifetime_deposit: "Guadagni Totali", audit_trail: "Storico Prelievi", no_tx: "Nenhum prelievo.",
+        security_auth: "Conferma Prelievo", crypto_signature_req: "Inserisci PIN per confermare.", requested_amount: "Importo", dest_wallet: "Destinazione", signing_btn: "Conferma in corso...", sign_withdraw_btn: "Conferma Trasferimento", transfer_auth: "Completato", funds_sent: "Fondi inviati al tuo wallet.", deposit_detected: "Deposito Ricevuto", vault_updated: "Liquidità aggiornata.",
+        mon: "Lun", tue: "Mar", wed: "Mer", thu: "Gio", fri: "Ven", sat: "Sab", today: "Oggi", yesterday: "Ieri",
+        earnings_chart: "Panoramica Guadagni", daily_subs: "Lead Attivi", subs_desc: "Utenti registrati", conv_rate: "Tasso Conv.", conv_desc: "Lead in Attivi", bot_interactions: "Clic sul Link", interact_desc: "Traffico totale",
+        top_promoters: "Classifica Globale", rank: "Pos", promoter: "Promoter", leads: "Lead", conversion: "Conv%",
+        geo_dist: "Distribuzione Globale", lang_perf: "Lingue Utenti", tier_status: "Tuo Livello", rev_share: "RevShare", next_tier: "per Platinum", recent_activity: "Ultimi Referral", joined: "si è iscritto", deposited: "ha depositato"
       }
     };
 
+    // Mock Data Sets
     const RAW_REVENUE_DATA = [
       { rawKey: 'mon', amount: 1200 }, { rawKey: 'tue', amount: 2500 }, { rawKey: 'wed', amount: 1800 }, 
       { rawKey: 'thu', amount: 3000 }, { rawKey: 'fri', amount: 4500 }, { rawKey: 'sat', amount: 6000 }, { rawKey: 'today', amount: 5500 },
@@ -290,107 +254,128 @@
       { rawKey: 'mon', amount: 45 }, { rawKey: 'tue', amount: 120 }, { rawKey: 'wed', amount: 80 }, 
       { rawKey: 'thu', amount: 210 }, { rawKey: 'fri', amount: 150 }, { rawKey: 'sat', amount: 320 }, { rawKey: 'today', amount: 280 },
     ];
-    const RAW_SPLIT_DATA = [
-      { rawKey: 'company_share', value: 30, color: '#3b82f6', address: '0xCOMPANY...9F2A' },
-      { rawKey: 'leader_pool', value: 50, color: '#10b981', address: '0xPOOL1...B47C' },
-      { rawKey: 'base_pool', value: 20, color: '#f59e0b', address: '0xPOOL2...E19D' },
-    ];
-    const GEO_DATA = [
-      { name: 'IT', value: 45, color: '#3b82f6' }, { name: 'ES', value: 25, color: '#f59e0b' }, 
-      { name: 'BR', value: 20, color: '#10b981' }, { name: 'UK', value: 10, color: '#8b5cf6' }
-    ];
-    const LANG_DATA = [
-      { name: 'ITA', users: 450, fill: '#3b82f6' }, { name: 'SPA', users: 250, fill: '#f59e0b' }, 
-      { name: 'POR', users: 200, fill: '#10b981' }, { name: 'ENG', users: 100, fill: '#8b5cf6' }
-    ];
+    const GEO_DATA = [ { name: 'IT', value: 45, color: '#d4af37' }, { name: 'ES', value: 25, color: '#f59e0b' }, { name: 'BR', value: 20, color: '#10b981' }, { name: 'UK', value: 10, color: '#3b82f6' } ];
+    const LANG_DATA = [ { name: 'ITA', users: 450, fill: '#d4af37' }, { name: 'SPA', users: 250, fill: '#f59e0b' }, { name: 'POR', users: 200, fill: '#10b981' }, { name: 'ENG', users: 100, fill: '#3b82f6' } ];
     
-    // Expanded Mock Data for Networks
     const TOP_PROMOTERS_DATA = [
       { id: 1, name: 'Alex De Souza', username: '@alex_crypto_pro', leads: 345, conversion: 18.5 },
       { id: 2, name: 'Marco Rossi', username: '@marcorossi', leads: 280, conversion: 15.2 },
       { id: 3, name: 'Elena Gomez', username: '@elegomez', leads: 210, conversion: 12.8 },
       { id: 4, name: 'John Doe', username: '@johndoe_99', leads: 150, conversion: 10.5 },
-      { id: 5, name: 'Luca Bianchi', username: '@lucabianchi88', leads: 112, conversion: 9.8 },
-      { id: 6, name: 'Sofia Costa', username: '@sofi_costa', leads: 98, conversion: 11.2 },
-      { id: 7, name: 'David Smith', username: '@davidsmith_uk', leads: 85, conversion: 8.5 },
-      { id: 8, name: 'Carlos Ruiz', username: '@cruiz_invest', leads: 76, conversion: 7.9 },
-      { id: 9, name: 'Anna Kourni', username: '@anna_k_wealth', leads: 65, conversion: 14.1 },
-      { id: 10, name: 'Mike Johnson', username: '@mj_hustle', leads: 54, conversion: 6.5 },
+      { id: 5, name: 'Luca Bianchi', username: '@lucabianchi88', leads: 112, conversion: 9.8 }
     ];
     const RECENT_LEADS_DATA = [
       { username: '@lucam_88', type: 'deposit', amount: 50, time: '10 min ago' },
       { username: '@sarah_j', type: 'join', time: '1 hour ago' },
       { username: '@mario_rossi', type: 'join', time: '3 hours ago' },
-      { username: '@crypto_dan', type: 'deposit', amount: 200, time: '5 hours ago' },
-      { username: '@elena_trade', type: 'deposit', amount: 150, time: '1 day ago' },
-      { username: '@giuseppe_90', type: 'join', time: '1 day ago' },
-      { username: '@frank_x', type: 'join', time: '2 days ago' },
-      { username: '@alessia_b', type: 'deposit', amount: 25, time: '2 days ago' },
-      { username: '@tony_stark99', type: 'join', time: '2 days ago' },
+      { username: '@crypto_dan', type: 'deposit', amount: 200, time: '5 hours ago' }
     ];
 
-    const Card = ({ children, className = '', padding = 'p-4 sm:p-6' }) => (
-      <div className={`bg-surface-900 border border-slate-800 rounded-2xl ${padding} shadow-xl hover:border-slate-700 transition-colors duration-300 overflow-hidden min-w-0 ${className}`}>
+    const Card = ({ children, className = '', padding = 'p-5 sm:p-7' }) => (
+      <div className={`glass-panel rounded-2xl ${padding} shadow-[0_8px_30px_rgb(0,0,0,0.3)] hover:border-surface-700 transition-colors duration-300 overflow-hidden min-w-0 ${className}`}>
         {children}
       </div>
     );
 
     const StatCard = ({ title, value, subtext, icon, colorClass, highlight = false }) => (
-      <Card padding="p-4 sm:p-5" className={highlight ? 'ring-1 ring-inset ring-slate-700/50 bg-gradient-to-br from-surface-900 to-surface-800/50' : ''}>
+      <Card padding="p-5" className={highlight ? 'ring-1 ring-inset ring-brand-500/40 bg-gradient-to-br from-surface-900 to-surface-800/80 shadow-[0_0_20px_rgba(212,175,55,0.05)]' : ''}>
         <div className="flex justify-between items-start">
           <div className="flex-1 overflow-hidden pr-3 min-w-0">
-            <p className="text-slate-400 font-semibold mb-1.5 text-xs truncate uppercase tracking-wider">{title}</p>
-            <h3 className="text-2xl sm:text-3xl font-black text-white mb-2 tracking-tight truncate">{value}</h3>
-            <div className={`inline-flex items-center gap-1.5 text-[11px] font-medium ${colorClass} truncate max-w-full`}>
+            <p className="text-zinc-500 font-bold mb-1.5 text-[10px] sm:text-xs truncate uppercase tracking-widest">{title}</p>
+            <h3 className="text-2xl sm:text-3xl font-black text-zinc-100 mb-2 tracking-tight truncate drop-shadow-sm">{value}</h3>
+            <div className={`inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold ${colorClass} truncate max-w-full uppercase tracking-wider`}>
               {subtext}
             </div>
           </div>
-          <div className={`p-2.5 rounded-xl bg-surface-950/50 border border-surface-800 flex-shrink-0 ${colorClass}`}>
-            <Icon name={icon} size={20} />
+          <div className={`p-3 rounded-xl bg-surface-950 border border-surface-800 flex-shrink-0 ${colorClass} shadow-inner`}>
+            <Icon name={icon} size={22} />
           </div>
         </div>
       </Card>
     );
 
     const ToastContainer = ({ toasts }) => (
-      <div className="fixed top-4 right-4 sm:top-6 sm:right-6 z-[200] flex flex-col gap-2 pointer-events-none max-w-[calc(100vw-32px)] w-80">
+      <div className="fixed top-4 right-4 sm:top-6 sm:right-6 z-[200] flex flex-col gap-3 pointer-events-none max-w-[calc(100vw-32px)] w-80">
         {toasts.map(toast => (
-          <div key={toast.id} className="toast-enter pointer-events-auto flex items-start gap-3 bg-surface-800 border border-slate-700 text-white px-4 py-3 rounded-xl shadow-2xl">
+          <div key={toast.id} className="toast-enter pointer-events-auto flex items-start gap-3 bg-surface-900/95 backdrop-blur-md border border-surface-700 text-zinc-100 px-4 py-4 rounded-xl shadow-2xl">
             <div className={`mt-0.5 flex-shrink-0 ${toast.type === 'success' ? 'text-success-400' : toast.type === 'error' ? 'text-red-400' : 'text-brand-400'}`}>
-              <Icon name={toast.type === 'success' ? 'check-circle' : toast.type === 'error' ? 'alert-circle' : 'info'} size={18} />
+              <Icon name={toast.type === 'success' ? 'check-circle' : toast.type === 'error' ? 'alert-circle' : 'info'} size={20} />
             </div>
             <div className="overflow-hidden min-w-0 flex-1">
-              <p className="text-sm font-bold text-slate-100 truncate">{toast.title}</p>
-              {toast.message && <p className="text-xs text-slate-400 mt-0.5 leading-snug">{toast.message}</p>}
+              <p className="text-sm font-bold truncate">{toast.title}</p>
+              {toast.message && <p className="text-xs text-zinc-400 mt-1 leading-snug">{toast.message}</p>}
             </div>
           </div>
         ))}
       </div>
     );
 
-    const formatCurrency = (amount, isHidden) => {
-      if (isHidden) return '••,•••.••';
-      return amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const LanguageSelector = ({ lang, setLang }) => {
+      const [isOpen, setIsOpen] = useState(false);
+      const dropdownRef = useRef(null);
+
+      useEffect(() => {
+        const handleClickOutside = (event) => {
+          if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            setIsOpen(false);
+          }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener("touchstart", handleClickOutside, { passive: true });
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+          document.removeEventListener("touchstart", handleClickOutside);
+        };
+      }, []);
+
+      const currentLang = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
+
+      return (
+        <div className="relative" ref={dropdownRef}>
+          <button 
+            onClick={(e) => { e.preventDefault(); setIsOpen(!isOpen); }}
+            className="flex items-center gap-2 bg-surface-950/80 border border-surface-700 hover:border-brand-500/50 transition-all rounded-lg px-3 py-2 shadow-inner group"
+          >
+            <img src={`https://flagcdn.com/w40/${currentLang.flag}.png`} alt={currentLang.name} className="w-5 h-auto rounded-[2px] shadow-sm opacity-90 group-hover:opacity-100" />
+            <span className="text-xs font-bold text-zinc-300 tracking-wider hidden sm:block">{currentLang.name}</span>
+            <Icon name="chevron-down" size={14} className="text-zinc-500 group-hover:text-zinc-300 transition-colors" />
+          </button>
+
+          {isOpen && (
+            <div className="absolute right-0 mt-2 w-36 bg-surface-900 border border-surface-700 rounded-xl shadow-2xl overflow-hidden z-50 fade-in">
+              {LANGUAGES.map((l) => (
+                <button
+                  key={l.code}
+                  onClick={() => { setLang(l.code); setIsOpen(false); }}
+                  className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-surface-800 transition-colors ${lang === l.code ? 'bg-surface-800/80 text-brand-400' : 'text-zinc-300'}`}
+                >
+                  <img src={`https://flagcdn.com/w40/${l.flag}.png`} alt={l.name} className="w-6 h-auto rounded-[2px] shadow-sm" />
+                  <span className="text-xs font-bold tracking-wider">{l.name}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      );
     };
+
+    const formatCurrency = (amount, isHidden) => isHidden ? '••,•••.••' : amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     const TonWalletModal = ({ isOpen, onClose, onSave, t }) => {
       const [val, setVal] = useState('');
-      const inputRef = useRef(null);
-      useEffect(() => { if (isOpen && inputRef.current) inputRef.current.focus(); }, [isOpen]);
-
       if (!isOpen) return null;
       return (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-surface-950/80 backdrop-blur-sm p-4 fade-in">
-          <div className="bg-surface-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl p-6">
-            <div className="w-12 h-12 bg-amber-500/10 rounded-full flex items-center justify-center text-amber-500 mb-4 border border-amber-500/20">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-surface-950/90 backdrop-blur-md p-4 fade-in">
+          <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-md shadow-[0_0_50px_rgba(212,175,55,0.1)] p-6 sm:p-8">
+            <div className="w-12 h-12 bg-brand-500/10 rounded-full flex items-center justify-center text-brand-400 mb-6 border border-brand-500/20 mx-auto">
               <Icon name="wallet" size={24} />
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">{t('setup_wallet')}</h3>
-            <p className="text-slate-400 text-sm mb-6">{t('setup_wallet_desc')}</p>
-            <input ref={inputRef} type="text" value={val} onChange={e=>setVal(e.target.value)} placeholder="UQ... o EQ..." className="w-full bg-surface-950 border border-slate-700 rounded-xl px-4 py-4 text-white mb-6 font-mono focus:outline-none focus:border-brand-500 transition-colors" />
+            <h3 className="text-xl font-black text-zinc-100 mb-2 text-center uppercase tracking-wide">{t('setup_wallet')}</h3>
+            <p className="text-zinc-400 text-sm mb-6 text-center">{t('setup_wallet_desc')}</p>
+            <input type="text" value={val} onChange={e=>setVal(e.target.value)} placeholder="UQ... o EQ..." className="w-full bg-surface-950 border border-surface-700 rounded-xl px-4 py-4 text-zinc-100 mb-6 font-mono focus:outline-none focus:border-brand-500 transition-colors shadow-inner" />
             <div className="flex gap-3">
-              <button onClick={onClose} className="flex-1 py-3 rounded-xl font-bold text-slate-400 hover:text-white bg-surface-800 hover:bg-slate-700 transition-colors">{t('cancel')}</button>
-              <button onClick={()=>{onSave(val); onClose();}} disabled={val.length < 10} className="flex-[2] py-3 rounded-xl font-bold text-white bg-brand-600 hover:bg-brand-500 transition-colors disabled:opacity-50 shadow-lg shadow-brand-500/20">{t('save_wallet')}</button>
+              <button onClick={onClose} className="flex-1 py-3 rounded-xl font-bold text-zinc-400 bg-surface-800 hover:bg-surface-700 transition-colors">{t('cancel')}</button>
+              <button onClick={()=>{onSave(val); onClose();}} disabled={val.length < 10} className="flex-[2] py-3 rounded-xl font-black text-surface-950 bg-gold-gradient hover:opacity-90 transition-opacity disabled:opacity-50 shadow-lg uppercase tracking-wider">{t('save_wallet')}</button>
             </div>
           </div>
         </div>
@@ -400,40 +385,34 @@
     const SecurityModal = ({ isOpen, onClose, onConfirm, amount, walletAddress, t }) => {
       const [pin, setPin] = useState('');
       const [isSigning, setIsSigning] = useState(false);
-      const inputRef = useRef(null);
-
-      useEffect(() => { if (isOpen && inputRef.current) inputRef.current.focus(); }, [isOpen]);
-
       if (!isOpen) return null;
       const handleConfirm = () => { setIsSigning(true); setTimeout(() => { setIsSigning(false); onConfirm(); setPin(''); }, 1500); };
       
       return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-surface-950/80 backdrop-blur-sm p-4 fade-in">
-          <div className="bg-surface-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden min-w-0">
-            <div className="p-6 text-center border-b border-slate-800">
-              <div className="w-12 h-12 bg-surface-800 rounded-full flex items-center justify-center text-brand-400 mx-auto mb-4 border border-slate-700">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-surface-950/90 backdrop-blur-md p-4 fade-in">
+          <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-md shadow-[0_0_50px_rgba(212,175,55,0.1)] overflow-hidden min-w-0">
+            <div className="p-6 text-center border-b border-surface-800">
+              <div className="w-12 h-12 bg-surface-950 rounded-full flex items-center justify-center text-brand-400 mx-auto mb-4 border border-surface-800">
                 <Icon name="shield-check" size={24} />
               </div>
-              <h3 className="text-lg font-bold text-white uppercase tracking-wider">{t('security_auth')}</h3>
-              <p className="text-sm text-slate-400 mt-1">{t('crypto_signature_req')}</p>
+              <h3 className="text-lg font-black text-zinc-100 uppercase tracking-wider">{t('security_auth')}</h3>
+              <p className="text-sm text-zinc-400 mt-2">{t('crypto_signature_req')}</p>
             </div>
             <div className="p-6 space-y-6">
-              <div className="bg-surface-950 p-4 rounded-xl border border-slate-800 text-sm">
-                <div className="flex justify-between items-center mb-3 pb-3 border-b border-slate-800">
-                  <span className="text-slate-400">{t('requested_amount')}</span>
-                  <span className="text-success-400 font-black text-lg">{amount.toLocaleString('en-US', {minimumFractionDigits:2})} USDT</span>
+              <div className="bg-surface-950 p-4 rounded-xl border border-surface-800 text-sm shadow-inner">
+                <div className="flex justify-between items-center mb-3 pb-3 border-b border-surface-800">
+                  <span className="text-zinc-500 font-bold uppercase tracking-wider text-xs">{t('requested_amount')}</span>
+                  <span className="text-brand-400 font-black text-lg">{amount.toLocaleString('en-US', {minimumFractionDigits:2})} USDT</span>
                 </div>
                 <div className="flex justify-between items-center overflow-hidden">
-                  <span className="text-slate-400 flex-shrink-0">{t('dest_wallet')}</span>
-                  <span className="text-slate-300 font-mono text-xs truncate ml-3 bg-surface-800 px-2 py-0.5 rounded border border-slate-700">{walletAddress}</span>
+                  <span className="text-zinc-500 font-bold uppercase tracking-wider text-xs flex-shrink-0">{t('dest_wallet')}</span>
+                  <span className="text-zinc-300 font-mono text-xs truncate ml-3 bg-surface-800 px-2 py-0.5 rounded border border-surface-700">{walletAddress}</span>
                 </div>
               </div>
-              <div>
-                <input ref={inputRef} type="password" value={pin} onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, ''))} placeholder="••••••" maxLength={6} disabled={isSigning} className="w-full bg-surface-950 border border-slate-700 rounded-xl px-4 py-4 text-white text-center tracking-[1em] focus:outline-none focus:border-brand-500 transition-colors font-mono text-xl disabled:opacity-50" />
-              </div>
+              <input type="password" value={pin} onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, ''))} placeholder="••••••" maxLength={6} disabled={isSigning} className="w-full bg-surface-950 border border-surface-700 rounded-xl px-4 py-4 text-zinc-100 text-center tracking-[1em] focus:outline-none focus:border-brand-500 font-mono text-xl disabled:opacity-50 shadow-inner" />
               <div className="flex gap-3">
-                <button onClick={onClose} disabled={isSigning} className="flex-1 py-3 rounded-xl font-bold text-slate-400 hover:text-white bg-surface-800 hover:bg-slate-700 transition-colors disabled:opacity-50">{t('cancel')}</button>
-                <button onClick={handleConfirm} disabled={isSigning || pin.length < 4} className="flex-[2] py-3 rounded-xl font-bold text-white bg-brand-600 hover:bg-brand-500 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-brand-500/20">
+                <button onClick={onClose} disabled={isSigning} className="flex-1 py-3 rounded-xl font-bold text-zinc-400 bg-surface-800 hover:bg-surface-700 transition-colors disabled:opacity-50">{t('cancel')}</button>
+                <button onClick={handleConfirm} disabled={isSigning || pin.length < 4} className="flex-[2] py-3 rounded-xl font-black text-surface-950 bg-gold-gradient hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg">
                   {isSigning ? <Icon name="loader-2" size={18} className="animate-spin" /> : <Icon name="check" size={18} />}
                   <span className="uppercase tracking-wider text-sm">{isSigning ? t('signing_btn') : t('sign_withdraw_btn')}</span>
                 </button>
@@ -446,31 +425,19 @@
 
     const LockScreenModal = ({ isLocked, onUnlock, t }) => {
       const [pin, setPin] = useState('');
-      const inputRef = useRef(null);
-
-      useEffect(() => {
-        if (isLocked && inputRef.current) inputRef.current.focus();
-      }, [isLocked]);
-
       if (!isLocked) return null;
-      
-      const handleUnlock = () => {
-        if(pin.length >= 4) { onUnlock(); setPin(''); }
-      };
-
       return (
-        <div className="fixed inset-0 z-[150] flex items-center justify-center bg-surface-950/95 backdrop-blur-2xl p-4 fade-in">
+        <div className="fixed inset-0 z-[150] flex items-center justify-center bg-surface-950/95 backdrop-blur-xl p-4 fade-in">
           <div className="max-w-sm w-full flex flex-col items-center text-center">
-            <div className="w-20 h-20 bg-surface-900 rounded-full border-4 border-surface-800 flex items-center justify-center text-brand-500 mb-6 relative shadow-2xl">
-              <div className="absolute inset-0 bg-brand-500/20 rounded-full animate-ping"></div>
+            <div className="w-20 h-20 bg-surface-900 rounded-full border border-brand-500/50 flex items-center justify-center text-brand-400 mb-6 relative shadow-[0_0_40px_rgba(212,175,55,0.3)]">
+              <div className="absolute inset-0 rounded-full border-2 border-brand-500/20 animate-[pulseGlow_2s_infinite]"></div>
               <Icon name="lock" size={36} className="relative z-10" />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2 tracking-widest uppercase">{t('locked')}</h2>
-            <p className="text-slate-400 text-sm mb-8">{t('locked_desc')}</p>
-            
+            <h2 className="text-2xl font-black text-zinc-100 mb-2 tracking-widest uppercase">{t('locked')}</h2>
+            <p className="text-zinc-400 text-sm mb-8">{t('locked_desc')}</p>
             <div className="w-full space-y-4">
-              <input ref={inputRef} type="password" value={pin} onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, ''))} placeholder="PIN" maxLength={6} className="w-full bg-surface-900 border border-slate-700 rounded-xl px-4 py-4 text-white text-center tracking-[1em] focus:outline-none focus:border-brand-500 transition-all font-mono text-xl shadow-inner" />
-              <button onClick={handleUnlock} disabled={pin.length < 4} className="w-full py-4 rounded-xl font-bold text-white bg-brand-600 hover:bg-brand-500 transition-all flex items-center justify-center gap-2 disabled:opacity-50 text-base shadow-lg shadow-brand-500/20">
+              <input type="password" value={pin} onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, ''))} placeholder="PIN" maxLength={6} className="w-full bg-surface-900 border border-surface-700 rounded-xl px-4 py-4 text-zinc-100 text-center tracking-[1em] focus:outline-none focus:border-brand-500 transition-all font-mono text-xl shadow-inner" />
+              <button onClick={()=>{if(pin.length>=4){onUnlock();setPin('');}}} disabled={pin.length < 4} className="w-full py-4 rounded-xl font-black text-surface-950 bg-gold-gradient hover:opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-50 text-base shadow-lg uppercase tracking-wider">
                 <Icon name="unlock" size={20} /> {t('unlock_session')}
               </button>
             </div>
@@ -480,28 +447,59 @@
     };
 
     const UserDashboard = ({ lang, t }) => {
-      const tgUser = { first_name: "Alex", last_name: "De Souza", username: "@alex_crypto_pro", language_code: lang.toUpperCase() };
-      
+      const tgUser = { first_name: "Alex", last_name: "De Souza" };
       return (
-        <div className="space-y-6 max-w-4xl mx-auto fade-in">
-          <Card padding="p-8 sm:p-12" className="flex flex-col items-center text-center bg-gradient-to-b from-surface-800/50 to-surface-900 border-t-4 border-t-brand-500">
-            <div className="w-24 h-24 rounded-full bg-surface-950 flex items-center justify-center border-2 border-brand-500 shadow-[0_0_20px_rgba(59,130,246,0.3)] mb-6 overflow-hidden">
-               <img src={`https://ui-avatars.com/api/?name=${tgUser.first_name}+${tgUser.last_name}&background=1e293b&color=3b82f6&size=150`} alt="Profile" className="w-full h-full object-cover" />
+        <div className="space-y-6 max-w-5xl mx-auto fade-in">
+          <Card padding="p-8 sm:p-12" className="flex flex-col items-center text-center bg-gradient-to-b from-surface-900/90 to-surface-950 border-t-2 border-t-brand-500 relative">
+            
+            {/* Absolute decorative glow */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-brand-500/10 blur-[60px] pointer-events-none rounded-full"></div>
+
+            <div className="w-32 h-32 rounded-full bg-surface-950 flex items-center justify-center border-2 border-brand-500 shadow-[0_0_30px_rgba(212,175,55,0.3)] mb-8 overflow-hidden p-1 relative z-10">
+               <img src="logo-tondo.jpeg" alt="Logo" className="w-full h-full object-cover rounded-full" onError={(e)=>{e.target.src=`https://ui-avatars.com/api/?name=${tgUser.first_name}+${tgUser.last_name}&background=18181b&color=d4af37&size=150`}} />
             </div>
-            <h2 className="text-3xl font-black text-white mb-3 tracking-wide">{t('welcome_title')}, {tgUser.first_name}!</h2>
-            <p className="text-slate-400 max-w-lg mx-auto mb-10 leading-relaxed text-sm sm:text-base">
+            
+            <h2 className="text-3xl sm:text-4xl font-black text-zinc-100 mb-4 tracking-tight relative z-10"><span className="text-gold-gradient">{t('welcome_title')}</span>, {tgUser.first_name}!</h2>
+            <p className="text-zinc-400 max-w-lg mx-auto mb-12 leading-relaxed text-sm sm:text-base relative z-10">
               {t('select_to_start')}
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
-              <a href="SummaryZeroToHeroAcademy.html" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-8 rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 hover:from-brand-500 hover:to-brand-700 transition-all shadow-xl shadow-brand-500/20 group border border-brand-500/50 hover:-translate-y-1">
-                <Icon name="graduation-cap" size={56} className="text-white mb-4 group-hover:scale-110 transition-transform duration-300 drop-shadow-md" />
-                <h3 className="text-xl font-black text-white tracking-widest uppercase text-center">{t('academy_btn')}</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl relative z-10">
+              {/* Premium Custom Academy Button */}
+              <a href="https://affiliate-program-bettinge-exchange.vercel.app/SummaryZeroToHeroAcademy.html" target="_blank" rel="noopener noreferrer" className="relative overflow-hidden flex flex-col items-center justify-center p-8 rounded-2xl bg-surface-950 hover:bg-surface-900 transition-all shadow-[0_10px_40px_rgba(0,0,0,0.5)] group border border-brand-500/30 hover:border-brand-500 hover:-translate-y-1">
+                <div className="absolute inset-0 bg-gradient-to-br from-brand-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                
+                {/* Custom Elite SVG Icon for Academy */}
+                <div className="w-20 h-20 rounded-full bg-surface-900 border border-brand-500/40 flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(212,175,55,0.2)] group-hover:scale-110 transition-transform duration-500 ease-out">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
+                    <defs>
+                      <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#fef08a" />
+                        <stop offset="50%" stopColor="#d4af37" />
+                        <stop offset="100%" stopColor="#92400e" />
+                      </linearGradient>
+                    </defs>
+                    <path d="M12 3L1 9L12 15L21 10.09V17H23V9L12 3Z" fill="url(#goldGrad)"/>
+                    <path d="M5 13.18V17.18C5 17.18 8.5 21 12 21C15.5 21 19 17.18 19 17.18V13.18L12 17L5 13.18Z" fill="url(#goldGrad)" opacity="0.8"/>
+                    <circle cx="12" cy="12" r="3" fill="#09090b" />
+                    <path d="M12 10.5L13.5 13.5H10.5L12 10.5Z" fill="url(#goldGrad)"/>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-black text-zinc-100 tracking-widest uppercase text-center">{t('academy_btn')}</h3>
               </a>
               
-              <a href="https://t.me/BettingExchangeRoom" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-8 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-700 hover:from-sky-400 hover:to-sky-600 transition-all shadow-xl shadow-sky-500/20 group border border-sky-400/50 hover:-translate-y-1">
-                <Icon name="send" size={56} className="text-white mb-4 group-hover:scale-110 transition-transform duration-300 drop-shadow-md" />
-                <h3 className="text-xl font-black text-white tracking-widest uppercase text-center">{t('signals_btn')}</h3>
+              {/* Premium Telegram Button */}
+              <a href="https://t.me/BettingExchangeRoom" target="_blank" rel="noopener noreferrer" className="relative overflow-hidden flex flex-col items-center justify-center p-8 rounded-2xl bg-surface-950 hover:bg-surface-900 transition-all shadow-[0_10px_40px_rgba(0,0,0,0.5)] group border border-[#2AABEE]/30 hover:border-[#2AABEE] hover:-translate-y-1">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#2AABEE]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                
+                {/* Official Telegram SVG Icon */}
+                <div className="w-20 h-20 rounded-full bg-surface-900 border border-[#2AABEE]/40 flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(42,171,238,0.2)] group-hover:scale-110 transition-transform duration-500 ease-out">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
+                    <path d="M12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12z" fill="#2AABEE"/>
+                    <path d="M5.432 12.333l10.87-4.18c.513-.19.957.123.774.887l-1.854 8.742c-.156.697-.568.868-1.15.542l-3.18-2.344-1.533 1.478c-.17.17-.312.312-.642.312l.228-3.238 5.894-5.32c.256-.228-.056-.355-.397-.127L7.15 13.68l-3.136-.98c-.682-.213-.697-.683.143-1.013z" fill="#fff"/>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-black text-zinc-100 tracking-widest uppercase text-center">{t('signals_btn')}</h3>
               </a>
             </div>
           </Card>
@@ -509,167 +507,75 @@
       );
     };
 
-    const CompanyDashboard = ({ contractAddress, contractBalance, totalProcessed, activePromoters, chartData, onSimulateDeposit, isHidden, isTestnet, toggleNetwork, t }) => {
+    const CompanyDashboard = ({ contractBalance, totalProcessed, activePromoters, chartData, onSimulateDeposit, isHidden, t }) => {
       const [isSimulating, setIsSimulating] = useState(false);
-      const simulationTimeoutRef = useRef(null);
-      const usdtMaster = isTestnet ? "0xTEST...3H3H" : "0xMAIN...DOGS";
-      const contractUsdtWallet = isTestnet ? "0xTEST...4kLp" : "0xMAIN...9mXq";
-
-      const handleDeposit = () => { setIsSimulating(true); simulationTimeoutRef.current = setTimeout(() => { onSimulateDeposit(); setIsSimulating(false); }, 1000); };
-      useEffect(() => { return () => clearTimeout(simulationTimeoutRef.current); }, []);
-
       const localizedChartData = useMemo(() => chartData.map(d => ({...d, name: t(d.rawKey)})), [chartData, t]);
-      const localizedSplitData = useMemo(() => RAW_SPLIT_DATA.map(d => ({...d, name: t(d.rawKey)})), [t]);
+
+      const handleDeposit = () => { setIsSimulating(true); setTimeout(() => { onSimulateDeposit(); setIsSimulating(false); }, 1000); };
 
       return (
         <div className="space-y-6 fade-in">
-          {/* Header Panel */}
-          <Card padding="p-5" className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-gradient-to-r from-surface-900 to-surface-800/50">
+          <Card padding="p-5" className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-gradient-to-r from-surface-900 to-surface-800 border-l-4 border-l-brand-500">
             <div className="w-full lg:w-auto overflow-hidden min-w-0 flex-1">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-10 h-10 bg-brand-500/10 rounded-lg flex items-center justify-center text-brand-400 shrink-0 border border-brand-500/20"><Icon name="building" size={20} /></div>
-                <h2 className="text-xl font-black text-white truncate uppercase tracking-widest">{t('treasury_center')}</h2>
-              </div>
-              <div className="flex flex-col gap-1 pl-1 min-w-0 mt-3 border-l-2 border-brand-500/30 pl-3">
-                <p className="text-xs text-slate-400 flex items-center gap-2"><span className="w-20 font-bold shrink-0">{t('vault_id')}</span><span className="font-mono text-slate-300 truncate bg-surface-950 px-2 py-0.5 rounded border border-slate-800">{contractAddress}</span></p>
-                <p className="text-xs text-slate-400 flex items-center gap-2"><span className="w-20 font-bold shrink-0">{t('usdt_master')}</span><span className="font-mono text-success-400 truncate bg-surface-950 px-2 py-0.5 rounded border border-slate-800">{usdtMaster}</span></p>
+                <h2 className="text-xl font-black text-zinc-100 truncate uppercase tracking-widest">{t('treasury_center')}</h2>
               </div>
             </div>
-            <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-3 shrink-0 mt-2 lg:mt-0">
-              <button onClick={toggleNetwork} className={`px-4 py-2.5 rounded-xl text-sm font-bold border transition-colors flex items-center justify-center gap-2 uppercase tracking-wide ${isTestnet ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' : 'bg-surface-800 border-slate-700 text-slate-300 hover:bg-slate-700'}`}>
-                <Icon name="network" size={16} /> {isTestnet ? 'Testnet' : 'Mainnet'}
-              </button>
-              <button onClick={handleDeposit} disabled={isSimulating} className="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2 disabled:opacity-50 transition-colors uppercase tracking-wide shadow-lg shadow-brand-500/20">
-                {isSimulating ? <Icon name="loader-2" size={16} className="animate-spin" /> : <Icon name="plus" size={16} />}
-                {t('simulate_deposit')}
+            <div className="w-full lg:w-auto shrink-0 mt-2 lg:mt-0">
+              <button onClick={handleDeposit} disabled={isSimulating} className="w-full lg:w-auto px-6 py-3 bg-gold-gradient hover:opacity-90 text-surface-950 rounded-xl text-sm font-black flex items-center justify-center gap-2 disabled:opacity-50 transition-opacity uppercase tracking-wide shadow-lg">
+                {isSimulating ? <Icon name="loader-2" size={18} className="animate-spin" /> : <Icon name="plus" size={18} />} {t('simulate_deposit')}
               </button>
             </div>
           </Card>
 
-          {/* Financial Stats Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <StatCard title={t('processed_volume')} value={`${formatCurrency(totalProcessed, isHidden)}`} subtext={<><Icon name="trending-up" size={12}/>{t('real_usdt')}</>} icon="bar-chart-2" colorClass="text-brand-400" />
+            <StatCard title={t('processed_volume')} value={`${formatCurrency(totalProcessed, isHidden)}`} subtext={t('real_usdt')} icon="bar-chart-2" colorClass="text-brand-400" />
             <StatCard title={t('company_reserve')} value={`${formatCurrency(contractBalance, isHidden)}`} subtext={t('withdrawable_funds')} icon="wallet" colorClass="text-success-400" highlight={true} />
-            <StatCard title={t('active_nodes')} value={activePromoters.toString()} subtext={t('registered_pools')} icon="users" colorClass="text-indigo-400" />
+            <StatCard title={t('active_nodes')} value={activePromoters.toString()} subtext={t('registered_pools')} icon="users" colorClass="text-blue-400" />
           </div>
 
-          {/* Analytics Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <StatCard title={t('daily_subs')} value="342" subtext={<><Icon name="arrow-up-right" size={12}/>+12% vs {t('yesterday') || 'prev'}</>} icon="user-plus" colorClass="text-purple-400" />
-            <StatCard title={t('conv_rate')} value="14.8%" subtext={t('conv_desc')} icon="percent" colorClass="text-amber-400" />
-            <StatCard title={t('bot_interactions')} value="8,904" subtext={t('interact_desc')} icon="mouse-pointer-click" colorClass="text-cyan-400" />
-          </div>
-
-          {/* Charts Row */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 pb-20 md:pb-0">
             <Card className="xl:col-span-2">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-sm font-bold text-white flex items-center gap-2 uppercase tracking-widest">
-                  <Icon name="activity" size={16} className="text-brand-500"/> {t('cash_flow')}
-                </h3>
+                <h3 className="text-sm font-bold text-zinc-100 flex items-center gap-2 uppercase tracking-widest"><Icon name="activity" size={18} className="text-brand-500"/> {t('cash_flow')}</h3>
               </div>
               <div className="h-64 sm:h-72 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -20, bottom: 0}}>
                     <defs>
-                      <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                      </linearGradient>
+                      <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#d4af37" stopOpacity={0.4}/><stop offset="95%" stopColor="#d4af37" stopOpacity={0}/></linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
-                    <XAxis dataKey="name" stroke="#64748b" tick={{fill: '#64748b', fontSize: 12, fontWeight: 600}} axisLine={false} tickLine={false} dy={10} />
-                    <YAxis stroke="#64748b" tick={{fill: '#64748b', fontSize: 12, fontWeight: 600}} axisLine={false} tickLine={false} dx={-10} width={60} />
-                    <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '8px', color: '#fff' }} itemStyle={{ color: '#60a5fa', fontWeight: 'bold' }} />
-                    <Area type="monotone" dataKey="amount" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorAmount)" activeDot={{r: 5, fill: '#3b82f6', stroke: '#fff', strokeWidth: 2}} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+                    <XAxis dataKey="name" stroke="#71717a" tick={{fill: '#71717a', fontSize: 11, fontWeight: 700, textTransform:'uppercase'}} axisLine={false} tickLine={false} dy={10} />
+                    <YAxis stroke="#71717a" tick={{fill: '#71717a', fontSize: 11, fontWeight: 700}} axisLine={false} tickLine={false} dx={-10} width={60} />
+                    <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '12px', color: '#fff', boxShadow: '0 10px 25px rgba(0,0,0,0.5)' }} itemStyle={{ color: '#fcd34d', fontWeight: 'bold' }} />
+                    <Area type="monotone" dataKey="amount" stroke="#d4af37" strokeWidth={3} fillOpacity={1} fill="url(#colorAmount)" activeDot={{r: 6, fill: '#d4af37', stroke: '#fff', strokeWidth: 3}} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
             </Card>
-
+            
             <Card>
-              <h3 className="text-sm font-bold text-white mb-6 uppercase tracking-widest flex items-center gap-2">
-                <Icon name="globe-2" size={16} className="text-brand-500" /> {t('geo_dist')}
-              </h3>
-              <div className="h-40 w-full flex justify-center items-center relative">
+              <h3 className="text-sm font-bold text-zinc-100 mb-6 uppercase tracking-widest flex items-center gap-2"><Icon name="globe-2" size={18} className="text-brand-500" /> {t('geo_dist')}</h3>
+              <div className="h-48 w-full flex justify-center items-center relative">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={GEO_DATA} cx="50%" cy="50%" innerRadius="65%" outerRadius="85%" paddingAngle={4} dataKey="value" stroke="none">
-                      {GEO_DATA.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+                    <Pie data={GEO_DATA} cx="50%" cy="50%" innerRadius="65%" outerRadius="85%" paddingAngle={5} dataKey="value" stroke="none">
+                      {GEO_DATA.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} style={{ filter: 'drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.3))' }} />)}
                     </Pie>
-                    <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '8px' }} itemStyle={{ fontWeight: 'bold', color:'#fff' }} formatter={(value) => [`${value}%`, 'Users']}/>
+                    <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.5)' }} itemStyle={{ fontWeight: 'bold', color:'#fff' }} formatter={(value) => [`${value}%`, 'Users']}/>
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-              <div className="grid grid-cols-2 gap-3 mt-6">
+              <div className="grid grid-cols-2 gap-3 mt-4">
                 {GEO_DATA.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-2 text-xs bg-surface-950 p-2 rounded-lg border border-surface-800">
-                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color, boxShadow: `0 0 6px ${item.color}` }}></div>
-                    <span className="text-slate-300 font-bold">{item.name}</span>
-                    <span className="text-slate-400 ml-auto font-mono">{item.value}%</span>
+                  <div key={idx} className="flex items-center gap-2 text-xs bg-surface-950 p-2.5 rounded-xl border border-surface-800">
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color, boxShadow: `0 0 8px ${item.color}` }}></div>
+                    <span className="text-zinc-300 font-bold">{item.name}</span>
+                    <span className="text-zinc-500 ml-auto font-mono">{item.value}%</span>
                   </div>
                 ))}
-              </div>
-            </Card>
-          </div>
-
-          {/* Leaderboard Row */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 pb-20 md:pb-0">
-            <Card className="xl:col-span-2 p-0 overflow-hidden flex flex-col" padding="p-0">
-              <div className="p-5 border-b border-slate-800 bg-surface-900/50">
-                  <h3 className="text-white font-bold uppercase tracking-widest text-sm flex items-center gap-2">
-                    <Icon name="trophy" size={16} className="text-amber-500" /> {t('top_promoters')}
-                  </h3>
-              </div>
-              <div className="overflow-x-auto custom-scrollbar p-1 flex-1">
-                 <table className="w-full text-left border-collapse min-w-[500px]">
-                   <thead>
-                     <tr className="text-xs text-slate-500 uppercase tracking-wider font-bold bg-surface-950/50">
-                       <th className="py-4 px-5 w-16">{t('rank')}</th>
-                       <th className="py-4 px-5">{t('promoter')}</th>
-                       <th className="py-4 px-5 text-right">{t('leads')}</th>
-                       <th className="py-4 px-5 text-right">{t('conversion')}</th>
-                     </tr>
-                   </thead>
-                   <tbody>
-                     {TOP_PROMOTERS_DATA.map((p, idx) => (
-                       <tr key={p.id} className="border-t border-slate-800/50 hover:bg-surface-800/30 transition-colors">
-                         <td className="py-3 px-5">
-                             <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black border ${idx === 0 ? 'bg-amber-500/20 text-amber-400 border-amber-500/50 shadow-[0_0_10px_rgba(245,158,11,0.2)]' : idx === 1 ? 'bg-slate-300/20 text-slate-300 border-slate-300/50' : idx === 2 ? 'bg-orange-500/20 text-orange-400 border-orange-500/50' : 'bg-surface-950 text-slate-500 border-surface-800'}`}>
-                               {p.id}
-                             </div>
-                         </td>
-                         <td className="py-3 px-5">
-                           <div className="font-bold text-slate-200 text-sm truncate">{p.name}</div>
-                           <a href={`https://t.me/${p.username.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="text-xs text-brand-400 hover:text-brand-300 hover:underline flex items-center gap-1 w-fit mt-1 transition-colors font-mono">
-                             {p.username} <Icon name="external-link" size={10} />
-                           </a>
-                         </td>
-                         <td className="py-3 px-5 text-right font-black text-slate-300 font-mono">{p.leads}</td>
-                         <td className="py-3 px-5 text-right">
-                             <span className="text-success-400 font-bold text-sm bg-success-500/10 px-2 py-1 rounded border border-success-500/20 font-mono">{p.conversion}%</span>
-                         </td>
-                       </tr>
-                     ))}
-                   </tbody>
-                 </table>
-              </div>
-            </Card>
-
-            <Card>
-              <h3 className="text-sm font-bold text-white mb-6 uppercase tracking-widest flex items-center gap-2">
-                 <Icon name="languages" size={16} className="text-brand-500" /> {t('lang_perf')}
-              </h3>
-              <div className="h-64 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={LANG_DATA} margin={{top: 0, right: 0, left: -25, bottom: 0}}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
-                    <XAxis dataKey="name" stroke="#64748b" tick={{fill: '#64748b', fontSize: 12, fontWeight: 600}} axisLine={false} tickLine={false} dy={5} />
-                    <YAxis stroke="#64748b" tick={{fill: '#64748b', fontSize: 12, fontWeight: 600}} axisLine={false} tickLine={false} />
-                    <Tooltip cursor={{fill: '#1e293b', opacity: 0.5}} contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '8px', color: '#fff' }} />
-                    <Bar dataKey="users" radius={[4, 4, 0, 0]} maxBarSize={40} />
-                  </BarChart>
-                </ResponsiveContainer>
               </div>
             </Card>
           </div>
@@ -682,13 +588,11 @@
       const [copied, setCopied] = useState(false);
       const [showSecureModal, setShowSecureModal] = useState(false);
       const [showWalletModal, setShowWalletModal] = useState(false);
-
       const localizedChartData = useMemo(() => PROMOTER_CHART_DATA.map(d => ({...d, name: t(d.rawKey)})), [t]);
       const tgUser = { first_name: "Alex", last_name: "De Souza", username: "@alex_crypto_pro", language_code: lang.toUpperCase() };
 
       const copyReferral = () => {
-        const textToCopy = `https://tonpull.app/ref/${walletAddress.substring(0,8)}`;
-        navigator.clipboard.writeText(textToCopy).then(() => {
+        navigator.clipboard.writeText(`https://tonpull.app/ref/${walletAddress.substring(0,8)}`).then(() => {
           setCopied(true); addToast(t('copied'), t('copied_desc'), "success");
           setTimeout(() => setCopied(false), 2000);
         }).catch(() => addToast(t('copy_error'), "", "error"));
@@ -696,194 +600,123 @@
 
       return (
         <div className="space-y-6 max-w-6xl mx-auto fade-in">
-          
-          {/* Top Row: Profile, Tier & Action */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            {/* Profile & Tier Info */}
-            <Card className="lg:col-span-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6" padding="p-6">
+            <Card className="lg:col-span-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border-l-2 border-l-brand-500" padding="p-6">
               <div className="flex items-center gap-4">
-                <div className="relative w-16 h-16 rounded-full bg-surface-950 flex items-center justify-center shrink-0 border-2 border-brand-500/50 shadow-inner overflow-hidden">
-                   <img src={`https://ui-avatars.com/api/?name=${tgUser.first_name}+${tgUser.last_name}&background=1e293b&color=3b82f6&size=128`} alt="Profile" className="absolute inset-0 w-full h-full object-cover z-10" />
+                <div className="relative w-16 h-16 rounded-full bg-surface-950 flex items-center justify-center shrink-0 border-2 border-brand-500/50 shadow-[0_0_20px_rgba(212,175,55,0.2)] overflow-hidden">
+                   <img src={`https://ui-avatars.com/api/?name=${tgUser.first_name}+${tgUser.last_name}&background=18181b&color=d4af37&size=128`} alt="Profile" className="absolute inset-0 w-full h-full object-cover z-10" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-black text-white truncate tracking-wide">{tgUser.first_name} {tgUser.last_name}</h2>
+                  <h2 className="text-xl font-black text-zinc-100 truncate tracking-wide">{tgUser.first_name} {tgUser.last_name}</h2>
                   <div className="flex items-center gap-2 mt-1">
                     <a href={`https://t.me/${tgUser.username.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 text-sm truncate hover:underline flex items-center gap-1 font-mono font-bold">
                       {tgUser.username} <Icon name="external-link" size={12} />
                     </a>
-                    <span className="bg-surface-950 border border-surface-800 px-2 py-0.5 rounded text-[10px] text-slate-400 uppercase font-bold tracking-widest">{tgUser.language_code}</span>
                   </div>
                 </div>
               </div>
-
-              <div className="w-full sm:w-auto bg-surface-950 rounded-xl p-4 border border-slate-800/50 flex-1 sm:max-w-xs shadow-inner">
+              <div className="w-full sm:w-auto bg-surface-950 rounded-xl p-4 border border-surface-800 flex-1 sm:max-w-xs shadow-inner">
                 <div className="flex justify-between items-center mb-3">
-                  <span className="text-xs text-slate-400 font-bold uppercase tracking-widest">{t('tier_status')}</span>
-                  <span className="text-xs font-black text-amber-400 flex items-center gap-1 bg-amber-500/10 px-2 py-1 rounded border border-amber-500/20"><Icon name="star" size={12}/> GOLD PARTNER</span>
-                </div>
-                <div className="w-full bg-surface-800 rounded-full h-2 mb-2 overflow-hidden border border-surface-700">
-                  <div className="bg-gradient-to-r from-amber-500 to-yellow-300 h-2 rounded-full relative" style={{ width: '75%' }}>
-                    <div className="absolute top-0 bottom-0 right-0 left-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9InBhdHRlcm4iIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPjxwb2x5Z29uIHBvaW50cz0iMCA0IDQgMCA0IDQgMCA0IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMykiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjcGF0dGVybikiLz48L3N2Zz4=')] opacity-30"></div>
-                  </div>
-                </div>
-                <div className="flex justify-between text-[10px] text-slate-500 font-bold uppercase tracking-wider">
-                  <span>25% {t('rev_share')}</span>
-                  <span>15 Leads {t('next_tier')}</span>
+                  <span className="text-xs text-zinc-500 font-bold uppercase tracking-widest">{t('tier_status')}</span>
+                  <span className="text-[11px] font-black text-brand-400 flex items-center gap-1 bg-brand-500/10 px-2 py-1.5 rounded border border-brand-500/30 shadow-[0_0_10px_rgba(212,175,55,0.1)]"><Icon name="star" size={14}/> ELITE PARTNER</span>
                 </div>
               </div>
             </Card>
 
-            {/* Referral Link Area */}
-            <Card className="flex flex-col justify-center bg-gradient-to-br from-brand-900/40 to-surface-900 border-brand-500/20" padding="p-6">
-              <p className="text-xs text-brand-400 font-bold uppercase tracking-widest mb-3 flex items-center gap-2"><Icon name="link-2" size={14}/> Your Referral Link</p>
-              <div className="flex items-center bg-surface-950 rounded-lg border border-slate-700 p-1.5 shadow-inner">
-                <div className="px-3 text-sm text-slate-300 truncate flex-1 font-mono font-medium">
-                  tonpull.app/ref/{walletAddress.substring(0,8)}
-                </div>
-                <button onClick={copyReferral} className={`shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-bold transition-all uppercase tracking-wide shadow-lg ${copied ? 'bg-success-500 text-white shadow-success-500/20' : 'bg-brand-600 hover:bg-brand-500 text-white shadow-brand-500/20'}`}>
-                  <Icon name={copied ? 'check' : 'copy'} size={16} />
-                  <span className="hidden sm:inline">{copied ? t('copied') : t('copy_link')}</span>
+            <Card className="flex flex-col justify-center" padding="p-6">
+              <p className="text-xs text-brand-500 font-bold uppercase tracking-widest mb-3 flex items-center gap-2"><Icon name="link-2" size={16}/> Referral Link</p>
+              <div className="flex items-center bg-surface-950 rounded-xl border border-surface-700 p-1.5 shadow-inner">
+                <div className="px-3 text-sm text-zinc-300 truncate flex-1 font-mono font-medium">tonpull.app/ref/{walletAddress.substring(0,8)}</div>
+                <button onClick={copyReferral} className={`shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-black transition-all uppercase tracking-wide shadow-lg ${copied ? 'bg-success-500 text-white shadow-success-500/20' : 'bg-surface-800 hover:bg-surface-700 text-zinc-100'}`}>
+                  <Icon name={copied ? 'check' : 'copy'} size={18} /> <span className="hidden sm:inline">{copied ? t('copied') : t('copy_link')}</span>
                 </button>
               </div>
             </Card>
           </div>
 
-          {/* 4 KPIs Row */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
              <StatCard title={t('lifetime_deposit')} value={`${formatCurrency(lifetime, isHidden)}`} subtext="USDT" icon="coins" colorClass="text-brand-400" />
-             <StatCard title={t('daily_subs')} value="345" subtext="+12 this week" icon="users" colorClass="text-purple-400" />
-             <StatCard title={t('conv_rate')} value="18.5%" subtext="Lead to Active" icon="pie-chart" colorClass="text-amber-400" />
+             <StatCard title={t('daily_subs')} value="345" subtext="Registered" icon="users" colorClass="text-blue-400" />
+             <StatCard title={t('conv_rate')} value="18.5%" subtext="Lead to Active" icon="pie-chart" colorClass="text-brand-400" />
              <StatCard title={t('bot_interactions')} value="1,240" subtext="Total Clicks" icon="mouse-pointer-click" colorClass="text-cyan-400" />
           </div>
 
-          {/* Vault & Earnings Chart */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            {/* Vault Area */}
-            <Card className="flex flex-col items-center justify-center text-center relative overflow-hidden bg-gradient-to-b from-surface-900 to-surface-950" padding="p-8">
-              <div className="w-14 h-14 bg-success-500/10 border border-success-500/20 text-success-400 rounded-2xl flex items-center justify-center mb-5 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
-                <Icon name="wallet" size={28} />
-              </div>
-              <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-2">{t('vault_available')}</p>
-              
-              <div className="text-4xl sm:text-5xl font-black text-white mb-2 tracking-tight truncate w-full font-mono">
-                {formatCurrency(available, isHidden)} 
-                {!isHidden && <span className="text-xl text-success-400 ml-2 font-sans">USDT</span>}
-              </div>
-              
+            <Card className="flex flex-col items-center justify-center text-center relative overflow-hidden bg-gradient-to-b from-surface-900 to-surface-950 border-t-2 border-t-success-500" padding="p-8">
+              <div className="w-16 h-16 bg-success-500/10 border border-success-500/30 text-success-400 rounded-full flex items-center justify-center mb-5 shadow-[0_0_20px_rgba(16,185,129,0.2)]"><Icon name="wallet" size={30} /></div>
+              <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest mb-2">{t('vault_available')}</p>
+              <div className="text-4xl sm:text-5xl font-black text-zinc-100 mb-4 tracking-tight truncate w-full font-mono drop-shadow-md">{formatCurrency(available, isHidden)} {!isHidden && <span className="text-xl text-success-400 ml-2 font-sans tracking-normal">USDT</span>}</div>
               <div className="mb-8">
-                <button onClick={toggleHidden} className="text-slate-500 hover:text-slate-300 transition-colors p-2 bg-surface-950 rounded-lg border border-surface-800 flex items-center gap-2 text-xs font-bold uppercase mx-auto">
-                  <Icon name={isHidden ? 'eye' : 'eye-off'} size={14} /> {isHidden ? t('show_balances') : t('hide_balances')}
-                </button>
+                <button onClick={toggleHidden} className="text-zinc-500 hover:text-zinc-300 transition-colors p-2.5 bg-surface-950 rounded-xl border border-surface-800 flex items-center gap-2 text-xs font-bold uppercase mx-auto"><Icon name={isHidden ? 'eye' : 'eye-off'} size={16} /> {isHidden ? t('show_balances') : t('hide_balances')}</button>
               </div>
-              
               {!tonWallet ? (
-                <button onClick={() => setShowWalletModal(true)} className="w-full max-w-xs py-4 rounded-xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 transition-all bg-amber-600 hover:bg-amber-500 text-white shadow-[0_0_20px_rgba(217,119,6,0.3)] hover:-translate-y-0.5">
-                  <Icon name="wallet" size={20} /> {t('setup_wallet')}
-                </button>
+                <button onClick={() => setShowWalletModal(true)} className="w-full max-w-xs py-4 rounded-xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 transition-transform hover:-translate-y-0.5 bg-gold-gradient text-surface-950 hover:opacity-90 shadow-[0_10px_20px_rgba(212,175,55,0.2)]"><Icon name="wallet" size={20} /> {t('setup_wallet')}</button>
               ) : (
-                <button onClick={() => { if(available > 0) setShowSecureModal(true); }} disabled={isClaiming || available <= 0} className={`w-full max-w-xs py-4 rounded-xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${available <= 0 ? 'bg-surface-950 border border-surface-800 text-slate-600' : isClaiming ? 'bg-success-600 text-white cursor-wait' : 'bg-success-600 hover:bg-success-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:-translate-y-0.5'}`}>
-                  {available <= 0 ? (<><Icon name="lock" size={18} /> {t('no_funds')}</>) : isClaiming ? (<><Icon name="loader-2" size={18} className="animate-spin" /> {t('signing')}</>) : (<><Icon name="fingerprint" size={20} /> {t('unlock_withdraw')}</>)}
+                <button onClick={() => { if(available > 0) setShowSecureModal(true); }} disabled={isClaiming || available <= 0} className={`w-full max-w-xs py-4 rounded-xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${available <= 0 ? 'bg-surface-950 border border-surface-800 text-zinc-600' : isClaiming ? 'bg-success-600 text-white cursor-wait' : 'bg-success-600 hover:bg-success-500 text-white shadow-[0_10px_20px_rgba(16,185,129,0.3)] hover:-translate-y-0.5'}`}>
+                  {available <= 0 ? (<><Icon name="lock" size={20} /> {t('no_funds')}</>) : isClaiming ? (<><Icon name="loader-2" size={20} className="animate-spin" /> {t('signing')}</>) : (<><Icon name="fingerprint" size={22} /> {t('unlock_withdraw')}</>)}
                 </button>
-              )}
-              
-              {tonWallet && (
-                <div className="mt-4 flex items-center gap-2 text-xs text-slate-400 bg-surface-950 px-3 py-1.5 rounded-lg border border-surface-800">
-                  <Icon name="check-circle" size={14} className="text-success-500"/>
-                  <span>TON: <span className="font-mono text-slate-300">{tonWallet.substring(0,4)}...{tonWallet.substring(tonWallet.length-4)}</span></span>
-                  <button onClick={() => setShowWalletModal(true)} className="text-brand-400 hover:text-brand-300 ml-1"><Icon name="edit-2" size={12}/></button>
-                </div>
               )}
             </Card>
 
-            {/* Earnings Chart */}
             <Card className="lg:col-span-2 flex flex-col">
-              <h3 className="text-sm font-bold text-white mb-6 uppercase tracking-widest flex items-center gap-2">
-                <Icon name="bar-chart-3" size={16} className="text-success-500" /> {t('earnings_chart')}
-              </h3>
-              <div className="flex-1 w-full min-h-[200px]">
+              <h3 className="text-sm font-bold text-zinc-100 mb-6 uppercase tracking-widest flex items-center gap-2"><Icon name="bar-chart-3" size={18} className="text-success-500" /> {t('earnings_chart')}</h3>
+              <div className="flex-1 w-full min-h-[220px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -20, bottom: 0}}>
-                    <defs>
-                      <linearGradient id="colorPromoterAmount" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
-                    <XAxis dataKey="name" stroke="#64748b" tick={{fill: '#64748b', fontSize: 12, fontWeight: 600}} axisLine={false} tickLine={false} dy={10} />
-                    <YAxis stroke="#64748b" tick={{fill: '#64748b', fontSize: 12, fontWeight: 600}} axisLine={false} tickLine={false} dx={-10} width={60} />
-                    <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '8px', color: '#fff' }} itemStyle={{ color: '#34d399', fontWeight: 'bold' }} />
-                    <Area type="monotone" dataKey="amount" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorPromoterAmount)" activeDot={{r: 5, fill: '#10b981', stroke: '#fff', strokeWidth: 2}} />
+                    <defs><linearGradient id="colorPromoterAmount" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/><stop offset="95%" stopColor="#10b981" stopOpacity={0}/></linearGradient></defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+                    <XAxis dataKey="name" stroke="#71717a" tick={{fill: '#71717a', fontSize: 11, fontWeight: 700, textTransform:'uppercase'}} axisLine={false} tickLine={false} dy={10} />
+                    <YAxis stroke="#71717a" tick={{fill: '#71717a', fontSize: 11, fontWeight: 700}} axisLine={false} tickLine={false} dx={-10} width={60} />
+                    <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '12px', color: '#fff', boxShadow: '0 10px 25px rgba(0,0,0,0.5)' }} itemStyle={{ color: '#34d399', fontWeight: 'bold' }} />
+                    <Area type="monotone" dataKey="amount" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorPromoterAmount)" activeDot={{r: 6, fill: '#10b981', stroke: '#fff', strokeWidth: 3}} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
             </Card>
           </div>
 
-          {/* Activity & History Row */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-20 md:pb-0">
-            
-            {/* Recent Leads Activity */}
             <Card padding="p-0" className="flex flex-col h-[400px]">
-              <div className="p-5 border-b border-slate-800 bg-surface-900/50 flex justify-between items-center">
-                <h3 className="text-white font-bold uppercase tracking-widest text-sm flex items-center gap-2">
-                  <Icon name="users" size={16} className="text-brand-500" /> {t('recent_activity')}
-                </h3>
-                <span className="text-[10px] bg-brand-500/10 text-brand-400 px-2 py-1 rounded border border-brand-500/20 font-bold uppercase tracking-widest">LIVE</span>
+              <div className="p-5 border-b border-surface-800 bg-surface-900/50 flex justify-between items-center">
+                <h3 className="text-zinc-100 font-bold uppercase tracking-widest text-sm flex items-center gap-2"><Icon name="users" size={18} className="text-brand-500" /> {t('recent_activity')}</h3>
               </div>
-              <div className="flex-1 p-5 overflow-y-auto custom-scrollbar">
-                <div className="space-y-4">
-                  {RECENT_LEADS_DATA.map((lead, idx) => (
-                    <div key={idx} className="flex items-start gap-4">
-                      <div className={`p-2.5 rounded-xl shrink-0 border ${lead.type === 'deposit' ? 'bg-success-500/10 text-success-400 border-success-500/20' : 'bg-brand-500/10 text-brand-400 border-brand-500/20'}`}>
-                        <Icon name={lead.type === 'deposit' ? 'coins' : 'user-plus'} size={18} />
-                      </div>
-                      <div className="flex-1 min-w-0 pt-0.5">
-                        <p className="text-sm text-slate-300 leading-tight">
-                          <a href={`https://t.me/${lead.username.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="font-bold text-white hover:text-brand-300 hover:underline inline-flex items-center gap-1 font-mono transition-colors">
-                            {lead.username} <Icon name="external-link" size={10} />
-                          </a> <span className="text-slate-400 ml-1">{lead.type === 'deposit' ? t('deposited') : t('joined')}</span>
-                        </p>
-                        {lead.type === 'deposit' && <p className="text-xs font-black text-success-400 mt-1 font-mono bg-success-500/10 w-fit px-1.5 rounded">{lead.amount} USDT</p>}
-                        <p className="text-[10px] text-slate-500 mt-1.5 font-bold uppercase tracking-wider">{lead.time}</p>
-                      </div>
+              <div className="flex-1 p-5 overflow-y-auto custom-scrollbar space-y-4">
+                {RECENT_LEADS_DATA.map((lead, idx) => (
+                  <div key={idx} className="flex items-start gap-4">
+                    <div className={`p-3 rounded-xl shrink-0 border ${lead.type === 'deposit' ? 'bg-success-500/10 text-success-400 border-success-500/30' : 'bg-brand-500/10 text-brand-400 border-brand-500/30'}`}><Icon name={lead.type === 'deposit' ? 'coins' : 'user-plus'} size={20} /></div>
+                    <div className="flex-1 min-w-0 pt-0.5">
+                      <p className="text-sm text-zinc-300 leading-tight">
+                        <span className="font-black text-zinc-100 font-mono truncate inline-block max-w-[120px] sm:max-w-xs">{lead.username}</span> <span className="text-zinc-500">{lead.type === 'deposit' ? t('deposited') : t('joined')}</span>
+                      </p>
+                      {lead.type === 'deposit' && <p className="text-xs font-black text-success-400 mt-1.5 font-mono bg-success-500/10 w-fit px-2 py-0.5 rounded border border-success-500/20">{lead.amount} USDT</p>}
+                      <p className="text-[10px] text-zinc-500 mt-1.5 font-bold uppercase tracking-wider">{lead.time}</p>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             </Card>
-
-            {/* Withdrawal History */}
             <Card padding="p-0" className="flex flex-col h-[400px]">
-              <div className="p-5 border-b border-slate-800 bg-surface-900/50 flex justify-between items-center">
-                <h3 className="text-white font-bold uppercase tracking-widest text-sm flex items-center gap-2">
-                  <Icon name="history" size={16} className="text-slate-400" /> {t('audit_trail')}
-                </h3>
+              <div className="p-5 border-b border-surface-800 bg-surface-900/50 flex justify-between items-center">
+                <h3 className="text-zinc-100 font-bold uppercase tracking-widest text-sm flex items-center gap-2"><Icon name="history" size={18} className="text-zinc-500" /> {t('audit_trail')}</h3>
               </div>
               <div className="flex-1 p-5 overflow-y-auto custom-scrollbar">
                 {history.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-slate-500">
-                    <Icon name="history" size={32} className="mb-3 opacity-50" />
-                    <p className="text-sm font-bold uppercase tracking-widest">{t('no_tx')}</p>
-                  </div>
+                  <div className="h-full flex flex-col items-center justify-center text-zinc-600"><Icon name="history" size={36} className="mb-4 opacity-50" /><p className="text-sm font-bold uppercase tracking-widest">{t('no_tx')}</p></div>
                 ) : (
                   <div className="space-y-3">
                     {history.map((item, idx) => (
-                      <div key={idx} className="flex justify-between items-center bg-surface-950 p-3.5 rounded-xl border border-surface-800 hover:border-surface-700 transition-colors">
+                      <div key={idx} className="flex justify-between items-center bg-surface-950 p-4 rounded-xl border border-surface-800 hover:border-surface-700 transition-colors">
                         <div>
-                          <p className="text-slate-200 text-sm font-bold">{item.date}</p>
-                          <p className="text-[10px] text-slate-500 mt-1 font-mono uppercase tracking-widest flex items-center gap-1"><Icon name="check-circle-2" size={12} className="text-brand-500"/> {item.tx}</p>
+                          <p className="text-zinc-200 text-sm font-bold">{item.date}</p>
+                          <p className="text-[10px] text-zinc-500 mt-1.5 font-mono uppercase tracking-widest flex items-center gap-1"><Icon name="check-circle-2" size={14} className="text-success-500"/> {item.tx}</p>
                         </div>
-                        <span className="text-success-400 font-black text-sm font-mono bg-success-500/10 px-2 py-1 rounded border border-success-500/20">+{formatCurrency(item.amount, isHidden)}</span>
+                        <span className="text-success-400 font-black text-sm font-mono bg-success-500/10 px-2.5 py-1.5 rounded border border-success-500/20">+{formatCurrency(item.amount, isHidden)}</span>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
             </Card>
-
           </div>
           <SecurityModal isOpen={showSecureModal} onClose={() => setShowSecureModal(false)} onConfirm={() => { setShowSecureModal(false); setIsClaiming(true); setTimeout(() => { setIsClaiming(false); onProcessClaim(available); }, 1500); }} amount={available} walletAddress={tonWallet || walletAddress} t={t} />
           <TonWalletModal isOpen={showWalletModal} onClose={() => setShowWalletModal(false)} onSave={(val) => { setTonWallet(val); addToast('Success', t('save_wallet'), 'success'); }} t={t} />
@@ -893,32 +726,25 @@
 
     const App = () => {
       const [lang, setLang] = useState('en');
-      const [view, setView] = useState('user'); // Default view
-      const [tonWallet, setTonWallet] = useState('');
+      const [view, setView] = useState('user');
       const [wallet, setWallet] = useState({ connected: false, address: null });
       const [toasts, setToasts] = useState([]);
       const [isBalanceHidden, setIsBalanceHidden] = useState(false);
-      const [idleTime, setIdleTime] = useState(0);
       const [isLocked, setIsLocked] = useState(false);
-      const [isTestnet, setIsTestnet] = useState(false);
       const [isInitLoad, setIsInitLoad] = useState(true);
 
-      const contractAddress = "0xTON_SPLIT...8A2B"; 
       const [contractBalance, setContractBalance] = useState(3200.50);
       const [totalProcessed, setTotalProcessed] = useState(12450.00);
       const [activePromoters, setActivePromoters] = useState(142);
-      const [chartData, setChartData] = useState(RAW_REVENUE_DATA);
-
       const [promoterAvailable, setPromoterAvailable] = useState(450.00);
       const [promoterLifetime, setPromoterLifetime] = useState(3250.00);
-      const [claimHistory, setClaimHistory] = useState([
-        { date: '12 May 2026', amount: 120.00, tx: '0xTX...4f2' }, { date: '05 May 2026', amount: 300.00, tx: '0xTX...9x1' }
-      ]);
+      const [claimHistory, setClaimHistory] = useState([ { date: '12 May 2026', amount: 120.00, tx: '0xTX...4f2' } ]);
+      const [tonWallet, setTonWallet] = useState('');
 
       useEffect(() => {
         const browserLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
-        if (['en', 'es', 'pt', 'it'].includes(browserLang)) setLang(browserLang);
-        setTimeout(() => setIsInitLoad(false), 800); // Simulate initial boot sequence
+        if (['en', 'es', 'pt', 'it'].includes(browserLang)) { setLang(browserLang); }
+        setTimeout(() => setIsInitLoad(false), 800);
       }, []);
 
       const t = useCallback((key) => translations[lang]?.[key] || translations['en'][key] || key, [lang]);
@@ -927,96 +753,49 @@
         setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000); 
       }, []);
 
-      useEffect(() => {
-        if (!wallet.connected) return;
-        const timer = setInterval(() => {
-          setIdleTime(prev => {
-            const next = prev + 1;
-            if (next === 300 && !isLocked) setIsLocked(true); // 5 mins to lock
-            if (next >= 1800) { // 30 mins full logout
-              setWallet({ connected: false, address: null }); setIsLocked(false);
-              addToast(t('session_ended'), t('session_ended_desc'), "info"); return 0;
-            }
-            return next;
-          });
-        }, 1000);
-        const resetTimer = () => { if(!isLocked) setIdleTime(0); };
-        ['mousemove', 'keydown', 'touchstart'].forEach(e => window.addEventListener(e, resetTimer));
-        return () => { clearInterval(timer); ['mousemove', 'keydown', 'touchstart'].forEach(e => window.removeEventListener(e, resetTimer)); };
-      }, [wallet.connected, isLocked, addToast, t]);
-
       const toggleWallet = () => {
         if (wallet.connected) {
-          setWallet({ connected: false, address: null }); setIdleTime(0); setIsLocked(false); setIsBalanceHidden(false);
+          setWallet({ connected: false, address: null }); setIsLocked(false); setIsBalanceHidden(false);
           addToast(t('disconnected'), t('disconnected_desc'), "info");
         } else {
           setWallet({ connected: true, address: view === 'company' ? "0xCORP_ADMIN...77Xz" : "0xPARTNER...99Xz" });
-          setIdleTime(0); setIsBalanceHidden(false); addToast(t('connected'), t('connected_desc'), "success");
+          setIsBalanceHidden(false); addToast(t('connected'), t('connected_desc'), "success");
         }
       };
 
-      const handleProcessClaim = (amount) => {
-        setPromoterAvailable(0); setPromoterLifetime(prev => prev + amount); setContractBalance(prev => Math.max(0, prev - amount));
-        const dateStr = new Date().toLocaleDateString(lang === 'en' ? 'en-US' : lang === 'it' ? 'it-IT' : 'es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
-        setClaimHistory(prev => [{ date: dateStr, amount: amount, tx: '0xTX' + Math.random().toString(16).substring(2,8).toUpperCase() }, ...prev]);
-        addToast(t('transfer_auth'), t('funds_sent'), "success");
-      };
-
-      const handleSimulateDeposit = () => {
-        const deposit = parseFloat((Math.random() * 900 + 100).toFixed(2)); 
-        setTotalProcessed(prev => prev + deposit); setContractBalance(prev => prev + (deposit*0.3));
-        setChartData(prev => { const newData = [...prev]; newData[newData.length - 1].amount += deposit; return newData; });
-        setPromoterAvailable(prev => prev + (deposit*0.5)); addToast(t('deposit_detected'), t('vault_updated'), "info");
-      };
-
-      if (isInitLoad) return <div className="initial-loader"><div className="spinner-ring"></div><div className="text-xs text-slate-400 mt-2 font-bold tracking-widest uppercase">Initializing Environment...</div></div>;
+      if (isInitLoad) return <div className="initial-loader"><div className="spinner-ring"></div><div className="text-xs text-zinc-500 mt-2 font-bold tracking-widest uppercase">Initializing Elite Environment...</div></div>;
 
       return (
         <div className="bg-grid-pattern min-h-screen flex flex-col">
           <ToastContainer toasts={toasts} />
-          <LockScreenModal isLocked={isLocked} onUnlock={() => {setIsLocked(false); setIdleTime(0);}} t={t} />
+          <LockScreenModal isLocked={isLocked} onUnlock={() => setIsLocked(false)} t={t} />
 
-          {/* Header */}
-          <nav className="bg-surface-950/90 backdrop-blur-xl border-b border-slate-800 sticky top-0 z-40 shadow-sm">
+          {/* Premium Navbar */}
+          <nav className="glass-panel border-b border-surface-800 sticky top-0 z-40 shadow-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-4">
-              
               <div className="flex items-center gap-3 sm:gap-4">
-                <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden shrink-0 bg-gradient-to-br from-brand-600 to-brand-800 border border-brand-500/50 shadow-inner flex items-center justify-center">
-                   <Icon name="layers" size={24} className="text-white drop-shadow-md" />
+                <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden shrink-0 border border-brand-500/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] p-0.5 bg-surface-950">
+                   <img src="logo-tondo.jpeg" alt="Logo" className="w-full h-full object-cover rounded-full" onError={(e)=>{e.target.src='https://ui-avatars.com/api/?name=ER&background=18181b&color=d4af37'}} />
                 </div>
                 <div className="flex flex-col justify-center">
-                  <h1 className="text-sm sm:text-lg font-black tracking-widest text-white leading-none uppercase">{t('app_title')}</h1>
-                  <span className="text-[9px] sm:text-[10px] text-brand-400 font-bold tracking-widest uppercase mt-1">{t('affiliate_program')}</span>
+                  <h1 className="text-[11px] sm:text-base font-black tracking-widest text-zinc-100 leading-none uppercase">{t('app_title')}</h1>
+                  <span className="text-[9px] sm:text-[10px] text-brand-500 font-bold tracking-widest uppercase mt-1">{t('affiliate_program')}</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                <div className="flex items-center bg-surface-900 border border-slate-700 rounded-lg shadow-inner overflow-hidden hover:border-brand-500 transition-colors">
-                  <div className="pl-2.5 hidden sm:block text-slate-400">
-                    <Icon name="globe" size={14} />
-                  </div>
-                  <select 
-                    value={lang} 
-                    onChange={e => setLang(e.target.value)} 
-                    className="bg-transparent text-white text-xs font-bold outline-none cursor-pointer uppercase py-2 pl-2 pr-3 focus:ring-0"
-                  >
-                    <option value="en" className="bg-surface-950 text-white">EN</option>
-                    <option value="es" className="bg-surface-950 text-white">ES</option>
-                    <option value="pt" className="bg-surface-950 text-white">PT</option>
-                    <option value="it" className="bg-surface-950 text-white">IT</option>
-                  </select>
-                </div>
+              <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+                <LanguageSelector lang={lang} setLang={setLang} />
 
                 {wallet.connected && (
-                  <div className="hidden md:flex items-center bg-surface-950 border border-slate-800 rounded-lg p-1 shadow-inner">
-                    <button onClick={() => {setView('user');}} className={`px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-md transition-all ${view === 'user' ? 'bg-surface-800 text-white shadow-sm' : 'text-slate-500 hover:text-white'}`}>{t('user_dash')}</button>
-                    <button onClick={() => {setView('promoter'); setWallet(w => ({...w, address: "0xPARTNER...99Xz"}));}} className={`px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-md transition-all ${view === 'promoter' ? 'bg-surface-800 text-white shadow-sm' : 'text-slate-500 hover:text-white'}`}>{t('partner_dash')}</button>
-                    <button onClick={() => {setView('company'); setWallet(w => ({...w, address: "0xCORP_ADMIN...77Xz"}));}} className={`px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-md transition-all ${view === 'company' ? 'bg-surface-800 text-white shadow-sm' : 'text-slate-500 hover:text-white'}`}>{t('company_dash')}</button>
+                  <div className="hidden md:flex items-center bg-surface-950/80 border border-surface-800 rounded-lg p-1 shadow-inner">
+                    <button onClick={() => setView('user')} className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-md transition-all ${view === 'user' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}>{t('user_dash')}</button>
+                    <button onClick={() => setView('promoter')} className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-md transition-all ${view === 'promoter' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}>{t('partner_dash')}</button>
+                    <button onClick={() => setView('company')} className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-md transition-all ${view === 'company' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}>{t('company_dash')}</button>
                   </div>
                 )}
 
-                <button onClick={toggleWallet} className={`flex items-center gap-2 px-4 py-2 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm uppercase tracking-wider transition-all shadow-lg ${wallet.connected ? 'bg-surface-900 border border-slate-700 text-slate-300 hover:bg-surface-800 hover:text-white' : 'bg-brand-600 text-white hover:bg-brand-500 shadow-brand-500/20'}`}>
-                  {wallet.connected ? (<><Icon name="log-out" size={16} className="text-slate-400 shrink-0"/><span className="hidden sm:inline">{t('logout')}</span></>) : (<><Icon name="log-in" size={16} className="shrink-0"/> <span>{t('login')}</span></>)}
+                <button onClick={toggleWallet} className={`flex items-center gap-2 px-5 py-2.5 sm:py-3 rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider transition-all shadow-lg ${wallet.connected ? 'bg-surface-900 border border-surface-700 text-zinc-300 hover:bg-surface-800 hover:text-white' : 'bg-gold-gradient text-surface-950 hover:opacity-90 hover:-translate-y-0.5 shadow-[0_5px_20px_rgba(212,175,55,0.2)]'}`}>
+                  {wallet.connected ? (<><Icon name="log-out" size={18} className="text-zinc-500 shrink-0"/><span className="hidden sm:inline">{t('logout')}</span></>) : (<><Icon name="log-in" size={18} className="shrink-0"/> <span>{t('login')}</span></>)}
                 </button>
               </div>
             </div>
@@ -1025,32 +804,30 @@
           <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full relative z-10">
             {!wallet.connected ? (
               <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6 fade-in">
-                <div className="w-24 h-24 bg-surface-900 text-brand-500 rounded-[2rem] flex items-center justify-center border border-slate-800 mb-2 shadow-2xl relative">
+                <div className="w-28 h-28 bg-surface-900 text-brand-400 rounded-[2rem] flex items-center justify-center border border-brand-500/50 mb-4 shadow-[0_0_40px_rgba(212,175,55,0.2)] relative">
                   <div className="absolute inset-0 bg-brand-500/10 rounded-[2rem] animate-pulse"></div>
-                  <Icon name="layout-dashboard" size={40} className="relative z-10" />
+                  <Icon name="shield-check" size={48} className="relative z-10" />
                 </div>
-                <div className="max-w-md">
-                  <h2 className="text-2xl font-black text-white mb-3 uppercase tracking-wide">{t('welcome_title')}</h2>
-                  <p className="text-slate-400 text-sm leading-relaxed">{t('welcome_desc')}</p>
+                <div className="max-w-lg">
+                  <h2 className="text-3xl font-black text-zinc-100 mb-4 uppercase tracking-wide">{t('welcome_title')}</h2>
+                  <p className="text-zinc-400 text-sm sm:text-base leading-relaxed">{t('welcome_desc')}</p>
                 </div>
-                <button onClick={toggleWallet} className="px-8 py-3.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-bold text-sm uppercase tracking-widest shadow-xl shadow-brand-500/20 transition-all hover:-translate-y-0.5 flex items-center gap-2">
-                  <Icon name="arrow-right" size={18} /> {t('start_conn')}
+                <button onClick={toggleWallet} className="px-10 py-4 bg-gold-gradient text-surface-950 rounded-xl font-black text-sm uppercase tracking-widest shadow-[0_10px_30px_rgba(212,175,55,0.3)] transition-transform hover:-translate-y-1 flex items-center gap-3 mt-4">
+                   {t('start_conn')} <Icon name="arrow-right" size={20} />
                 </button>
               </div>
             ) : (
-              view === 'user' ? 
-                <UserDashboard lang={lang} t={t} /> :
-              view === 'company' ? 
-                <CompanyDashboard contractAddress={contractAddress} isTestnet={isTestnet} toggleNetwork={()=>setIsTestnet(!isTestnet)} contractBalance={contractBalance} totalProcessed={totalProcessed} activePromoters={activePromoters} chartData={chartData} onSimulateDeposit={handleSimulateDeposit} isHidden={isBalanceHidden} t={t} /> : 
-                <PromoterDashboard walletAddress={wallet.address} available={promoterAvailable} lifetime={promoterLifetime} history={claimHistory} onProcessClaim={handleProcessClaim} addToast={addToast} isHidden={isBalanceHidden} toggleHidden={() => setIsBalanceHidden(!isBalanceHidden)} lang={lang} t={t} tonWallet={tonWallet} setTonWallet={setTonWallet} />
+              view === 'user' ? <UserDashboard lang={lang} t={t} /> :
+              view === 'company' ? <CompanyDashboard contractBalance={contractBalance} totalProcessed={totalProcessed} activePromoters={activePromoters} chartData={RAW_REVENUE_DATA} onSimulateDeposit={()=>{setTotalProcessed(p=>p+150); setContractBalance(p=>p+45); addToast(t('deposit_detected'), t('vault_updated'), "info");}} isHidden={isBalanceHidden} t={t} /> : 
+              <PromoterDashboard walletAddress={wallet.address} available={promoterAvailable} lifetime={promoterLifetime} history={claimHistory} onProcessClaim={(amt)=>{setPromoterAvailable(0); setPromoterLifetime(p=>p+amt); addToast(t('transfer_auth'), t('funds_sent'), "success");}} addToast={addToast} isHidden={isBalanceHidden} toggleHidden={() => setIsBalanceHidden(!isBalanceHidden)} lang={lang} t={t} tonWallet={tonWallet} setTonWallet={setTonWallet} />
             )}
             
-            {/* Mobile View Switcher */}
+            {/* Mobile Nav */}
             {wallet.connected && (
-              <div className="md:hidden fixed bottom-6 left-4 right-4 bg-surface-950/95 backdrop-blur-xl border border-slate-800 rounded-xl p-1.5 flex shadow-2xl z-40 gap-1.5">
-                <button onClick={() => {setView('user');}} className={`flex-1 py-3 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all ${view === 'user' ? 'bg-brand-600 text-white shadow-lg shadow-brand-500/20' : 'text-slate-500 hover:bg-surface-800'}`}>{t('user_dash')}</button>
-                <button onClick={() => {setView('promoter'); setWallet(w => ({...w, address: "0xPARTNER...99Xz"}));}} className={`flex-1 py-3 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all ${view === 'promoter' ? 'bg-brand-600 text-white shadow-lg shadow-brand-500/20' : 'text-slate-500 hover:bg-surface-800'}`}>{t('partner_dash')}</button>
-                <button onClick={() => {setView('company'); setWallet(w => ({...w, address: "0xCORP_ADMIN...77Xz"}));}} className={`flex-1 py-3 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all ${view === 'company' ? 'bg-brand-600 text-white shadow-lg shadow-brand-500/20' : 'text-slate-500 hover:bg-surface-800'}`}>{t('company_dash')}</button>
+              <div className="md:hidden fixed bottom-6 left-4 right-4 bg-surface-950/95 backdrop-blur-xl border border-surface-800 rounded-xl p-1.5 flex shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-40 gap-1.5">
+                <button onClick={() => setView('user')} className={`flex-1 py-3.5 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all ${view === 'user' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}>{t('user_dash')}</button>
+                <button onClick={() => setView('promoter')} className={`flex-1 py-3.5 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all ${view === 'promoter' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}>{t('partner_dash')}</button>
+                <button onClick={() => setView('company')} className={`flex-1 py-3.5 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all ${view === 'company' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}>{t('company_dash')}</button>
               </div>
             )}
           </main>
