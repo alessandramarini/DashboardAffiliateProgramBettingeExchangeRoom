@@ -42,10 +42,9 @@
             background-color: var(--bg-main);
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            padding: 20px;
+            line-height: 1.5;
+            padding: 15px 20px 40px 20px; /* Ridotto il padding superiore per guadagnare spazio */
             min-height: 100vh;
-            /* Leggero gradiente di fondo */
             background-image: radial-gradient(circle at top center, rgba(204, 255, 0, 0.03) 0%, transparent 60%);
         }
 
@@ -54,15 +53,15 @@
             margin: 0 auto;
             display: flex;
             justify-content: flex-end;
-            padding: 10px 0;
+            padding: 5px 0;
         }
 
         .lang-switcher {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             background: var(--bg-card);
-            padding: 6px;
-            border-radius: 12px;
+            padding: 4px;
+            border-radius: 10px;
             border: 1px solid rgba(255,255,255,0.05);
             box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
@@ -72,11 +71,11 @@
             border: none;
             color: var(--text-dim);
             font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             cursor: pointer;
             padding: 6px 10px;
-            border-radius: 8px;
+            border-radius: 6px;
             transition: all 0.2s ease;
         }
 
@@ -93,7 +92,7 @@
 
         header {
             max-width: 1200px;
-            margin: 0 auto 60px auto;
+            margin: 0 auto 25px auto; /* Margine ridotto per compattare */
             text-align: center;
             display: flex;
             flex-direction: column;
@@ -101,13 +100,13 @@
         }
 
         .logo-img {
-            width: 110px;
-            height: 110px;
+            width: 80px; /* Logo più compatto per evitare scroll */
+            height: 80px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--accent-neon);
-            box-shadow: 0 0 25px rgba(204, 255, 0, 0.2);
-            margin-bottom: 24px;
+            box-shadow: 0 0 20px rgba(204, 255, 0, 0.2);
+            margin-bottom: 16px;
         }
 
         .status-badge {
@@ -117,29 +116,29 @@
             background: rgba(204, 255, 0, 0.08);
             color: var(--accent-neon);
             font-family: 'JetBrains Mono', monospace;
-            padding: 8px 16px;
+            padding: 6px 14px;
             border-radius: 30px;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 24px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 16px;
             border: 1px solid var(--border-color);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
         .status-badge .indicator {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             background-color: var(--accent-neon);
             border-radius: 50%;
             box-shadow: 0 0 8px var(--accent-neon);
         }
 
         h1 {
-            font-size: clamp(32px, 5vw, 52px);
+            font-size: clamp(26px, 4vw, 38px); /* Dimensioni ottimizzate */
             font-weight: 800;
-            letter-spacing: -1.5px;
-            margin-bottom: 16px;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
             line-height: 1.1;
             text-transform: uppercase;
         }
@@ -148,15 +147,15 @@
             color: var(--accent-neon);
             font-weight: 800;
             display: block;
-            font-size: clamp(24px, 4vw, 36px);
-            margin-top: 5px;
-            letter-spacing: 2px;
-            text-shadow: 0 0 20px rgba(204, 255, 0, 0.3);
+            font-size: clamp(18px, 3vw, 26px);
+            margin-top: 4px;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 15px rgba(204, 255, 0, 0.3);
         }
 
         p.subtitle {
             color: var(--text-dim);
-            font-size: clamp(16px, 2vw, 18px);
+            font-size: clamp(14px, 1.5vw, 16px);
             max-width: 600px;
             margin: 0 auto;
             font-weight: 400;
@@ -164,17 +163,17 @@
 
         .dashboard-container {
             max-width: 1400px;
-            margin: 0 auto 60px auto;
+            margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Ottimizzato per 3 colonne stabili */
+            gap: 20px; /* Spaziatura ridotta */
         }
 
         .module-card {
             background: var(--bg-card);
             border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 32px;
+            border-radius: 12px;
+            padding: 20px; /* Padding interno ridotto per compattezza */
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
@@ -198,7 +197,7 @@
         .module-card:hover {
             border-color: var(--border-hover);
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(204, 255, 0, 0.05);
-            transform: translateY(-5px);
+            transform: translateY(-3px);
         }
 
         .module-card:hover::before {
@@ -206,23 +205,23 @@
         }
 
         .module-header {
-            margin-bottom: 24px;
-            padding-bottom: 16px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .module-number {
             font-family: 'JetBrains Mono', monospace;
             color: var(--text-dim);
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
             display: block;
             letter-spacing: 1.5px;
         }
 
         .module-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--text-main);
             letter-spacing: -0.5px;
@@ -231,7 +230,7 @@
         .lessons-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 4px; /* Gap minimo tra le lezioni per salvare spazio */
             flex-grow: 1;
         }
 
@@ -241,11 +240,11 @@
             background: transparent;
             color: var(--text-dim);
             text-decoration: none;
-            padding: 12px 16px;
-            border-radius: 8px;
+            padding: 8px 12px; /* Compatto */
+            border-radius: 6px;
             border: 1px solid transparent;
             transition: all 0.2s ease;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 500;
         }
 
@@ -258,8 +257,8 @@
         .lesson-btn .lesson-num {
             font-family: 'JetBrains Mono', monospace;
             color: var(--accent-neon);
-            margin-right: 16px;
-            font-size: 13px;
+            margin-right: 12px;
+            font-size: 12px;
             min-width: 25px;
             font-weight: 700;
         }
@@ -270,7 +269,7 @@
             opacity: 0;
             transform: translateX(-10px);
             transition: all 0.2s ease;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .lesson-btn:hover i {
@@ -278,11 +277,12 @@
             transform: translateX(0);
         }
 
+        /* Responsive adjustments */
         @media (max-width: 768px) {
-            h1 { font-size: 36px; }
-            h1 span { font-size: 22px; }
-            .dashboard-container { grid-template-columns: 1fr; padding: 0 10px; }
-            .module-card { padding: 24px; }
+            h1 { font-size: 28px; }
+            h1 span { font-size: 20px; }
+            .dashboard-container { grid-template-columns: 1fr; padding: 0; gap: 16px; }
+            .module-card { padding: 20px; }
         }
     </style>
 </head>
@@ -323,22 +323,21 @@
                 <h2 class="module-title" data-i18n="m1_title">Fondamenta Operative</h2>
             </div>
             <div class="lessons-list">
-                <a href="lezione-01.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/1ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L1</span> <span data-i18n="l1_text">Il Paradigma dell'Exchange</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
                 
-                <!-- ATTENZIONE: Pulsante L2 corretto con target="_blank" per aprire in una nuova scheda -->
-                <a href="2-ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/2ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L2</span> <span data-i18n="l2_text">Anatomia del Prezzo & Ladder</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
 
-                <a href="lezione-03.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/3ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L3</span> <span data-i18n="l3_text">Liquidità e Profondità</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-04.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/4ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L4</span> <span data-i18n="l4_text">Slippage e Commissioni</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-05.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/5ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L5</span> <span data-i18n="l5_text">Cash Out & Green Up</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>
@@ -351,19 +350,19 @@
                 <h2 class="module-title" data-i18n="m2_title">Strumenti e Ingegneria</h2>
             </div>
             <div class="lessons-list">
-                <a href="lezione-06.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/6ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L6</span> <span data-i18n="l6_text">Software di Trading e API</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-07.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/7ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L7</span> <span data-i18n="l7_text">Analisi Quantitativa (xG)</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-08.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/8ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L8</span> <span data-i18n="l8_text">Leggere i Market Movers</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-09.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/9ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L9</span> <span data-i18n="l9_text">Psicologia e Disciplina</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-10.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/10ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L10</span> <span data-i18n="l10_text">Bankroll Management (Kelly)</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>
@@ -376,19 +375,19 @@
                 <h2 class="module-title" data-i18n="m3_title">Gestione del Capitale</h2>
             </div>
             <div class="lessons-list">
-                <a href="lezione-11.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/11ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L11</span> <span data-i18n="l11_text">Staking Plan per Exchange</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-12.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/12ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L12</span> <span data-i18n="l12_text">Expected Value (EV+)</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-13.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/13ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L13</span> <span data-i18n="l13_text">Risk/Reward Ratio Dinamico</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-14.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/14ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L14</span> <span data-i18n="l14_text">Stop Loss Mentali & Meccanici</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-15.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/15ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L15</span> <span data-i18n="l15_text">Gestione del Drawdown</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>
@@ -401,19 +400,19 @@
                 <h2 class="module-title" data-i18n="m4_title">Strategie Pre-Match</h2>
             </div>
             <div class="lessons-list">
-                <a href="lezione-16.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/16ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L16</span> <span data-i18n="l16_text">Data Modeling Avanzato</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-17.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/17ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L17</span> <span data-i18n="l17_text">Weight of Money (WoM)</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-18.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/18ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L18</span> <span data-i18n="l18_text">Scalping Pre-Match</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-19.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/19ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L19</span> <span data-i18n="l19_text">Swing Trading (News & Info)</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-20.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/20ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L20</span> <span data-i18n="l20_text">Dutching Matematico</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>
@@ -426,19 +425,19 @@
                 <h2 class="module-title" data-i18n="m5_title">Operatività In-Play</h2>
             </div>
             <div class="lessons-list">
-                <a href="lezione-21.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/21ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L21</span> <span data-i18n="l21_text">Time Decay (Decadimento)</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-22.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/22ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L22</span> <span data-i18n="l22_text">Lay The Draw (LTD) Evoluto</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-23.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/23ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L23</span> <span data-i18n="l23_text">Scalping In-Play Over/Under</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-24.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/24ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L24</span> <span data-i18n="l24_text">Trading sul Correct Score</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-25.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/25ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L25</span> <span data-i18n="l25_text">Eventi Estremi & Cigni Neri</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>
@@ -451,19 +450,19 @@
                 <h2 class="module-title" data-i18n="m6_title">Automazione & VIP</h2>
             </div>
             <div class="lessons-list">
-                <a href="lezione-26.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/26ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L26</span> <span data-i18n="l26_text">Record Keeping (Diario)</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-27.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/27ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L27</span> <span data-i18n="l27_text">Introduzione ai Bot (If/Then)</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-28.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/28ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L28</span> <span data-i18n="l28_text">Filtrare le Partite "Gold"</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-29.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/29ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L29</span> <span data-i18n="l29_text">Segnali Alfa & Beta: Regole</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="lezione-30.html" class="lesson-btn">
+                <a href="https://affiliate-program-bettinge-exchange.vercel.app/30ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
                     <span class="lesson-num">L30</span> <span data-i18n="l30_text">Il Piano Operativo Definitivo</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>
