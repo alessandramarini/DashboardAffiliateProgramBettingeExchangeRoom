@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en" class="w-full h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Betting Exchange Room</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    
+    <style>
+        :root {
+            --pitch-green: #15803d;
+            --pitch-light: #16a34a;
+            --gold: #fbbf24;
+        }
+
+        /* Prevent all scrolling and bouncing on mobile devices */
+        html, body {
+            margin: 0; padding: 0; 
+            width: 100vw; height: 100vh; height: 100dvh; 
+            overflow: hidden; touch-action: none; overscroll-behavior: none;
+            background-color: #020617; 
+            color: #f8fafc;
+            font-family: 'Inter', system-ui, sans-serif;
+            display: flex; align-items: center; justify-content: center;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* The physical machine body - mobile first, centered on desktop */
+        #app-wrapper {
+            width: 100%; height: 100%; max-width: 600px; 
+            display: flex; flex-direction: column;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            box-shadow: 0 0 50px rgba(0,0,0,0.9);
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+            position: relative;
+        }
+
+        .pitch-container {
+            background-color: var(--pitch-green);
+            background-image: 
+                linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px),
+                linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px),
+                repeating-linear-gradient(0deg, var(--pitch-green), var(--pitch-green) 20px, var(--pitch-light) 20px, var(--pitch-light) 40px);
+            background-size: 20px 20px, 20px 20px, 100% 100%;
+            border: clamp(2px, 1vh, 4px) solid #f8fafc;
+            border-radius: clamp(0.5rem, 2vw, 1rem);
+            position: relative; overflow: hidden;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.8), 0 10px 20px rgba(0,0,0,0.5);
+            width: 100%; height: 100%;
+        }
+
+        /* Pitch markings */
+        .pitch-container::before {
+            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: clamp(80px, 30vw, 150px); aspect-ratio: 1/1;
+            border: clamp(2px, 0.5vh, 4px) solid rgba(255,255,255,0.4); border-radius: 50%; z-index: 0;
+        }
+        .pitch-container::after {
+            content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: clamp(2px, 0.5vh, 4px);
+            background-color: rgba(255,255,255,0.4); transform: translateY(-50%); z-index: 0;
+        }
+
+        /* Slot Window */
+        .slot-window {
+            background: #0f172a;
+            padding: clamp(6px, 2vw, 12px);
+            border-radius: clamp(0.5rem, 3vw, 1.25rem);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7), inset 0 2px 5px rgba(255,255,255,0.1);
+            border: 2px solid #334155;
+            z-index: 10;
+            width: 92%;
+        }
+
+        .reel-wrapper {
+            display: flex; justify-content: center; gap: clamp(4px, 1.5vw, 10px); width: 100%;
+            height: clamp(80px, 22vh, 180px);
+        }
+
+        /* Cylindrical Reels */
+        .reel {
+            flex: 1; height: 100%;
+            background: linear-gradient(180deg, #cbd5e1 0%, #ffffff 25%, #ffffff 75%, #cbd5e1 100%);
+            border-radius: clamp(0.25rem, 1vw, 0.5rem);
+            box-shadow: inset 0 25px 20px -15px rgba(0,0,0,0.85), inset 0 -25px 20px -15px rgba(0,0,0,0.85);
+            position: relative; overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+            will-change: transform;
+            border: 1px solid #64748b;
+        }
+
+        .symbol-icon { 
+            font-size: clamp(2.5rem, 10vw, 5rem); 
+            user-select: none; 
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.4)); 
+        }
+        
+        .title-text { 
+            font-size: clamp(0.85rem, 4.5vw, 1.4rem);
+            background: linear-gradient(to bottom, #4ade80, #16a34a);
+            -webkit-background-clip: text; color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            line-height: 1.1;
+        }
+
+        /* Casino-grade Play Button */
+        .btn-spin-premium {
+            background: linear-gradient(to bottom, #22c55e, #14532d);
+            box-shadow: 
+                0 6px 0 #064e3b, 
+                0 15px 20px rgba(0,0,0,0.6), 
+                inset 0 2px 5px rgba(255,255,255,0.4),
+                inset 0 -2px 10px rgba(0,0,0,0.4); 
+            border: 1px solid #4ade80;
+            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+        }
+        
+        .btn-spin-premium:active:not(:disabled) {
+            transform: translateY(6px);
+            box-shadow: 
+                0 0px 0 #064e3b, 
+                0 5px 10px rgba(0,0,0,0.6), 
+                inset 0 2px 5px rgba(255,255,255,0.4);
+        }
+
+        .btn-spin-premium:disabled {
+            filter: grayscale(1) brightness(0.6);
+            transform: translateY(6px);
+            box-shadow: 0 0px 0 #064e3b;
+            cursor: not-allowed;
+        }
+
+        /* Flags */
+        .lang-flag {
+            width: clamp(20px, 5vw, 28px); height: auto; aspect-ratio: 4/3; object-fit: cover; 
+            border-radius: 4px; border: 1px solid rgba(255,255,255,0.1);
+            filter: grayscale(0.8) brightness(0.5); transition: all 0.2s; cursor: pointer;
+        }
+        .lang-flag.active { 
+            filter: grayscale(0) brightness(1); transform: scale(1.15); 
+            box-shadow: 0 0 12px rgba(74, 222, 128, 0.8); 
+            border-color: #4ade80; 
+        }
+
+        @keyframes win-pulse {
+            0% { background: #fef08a; box-shadow: inset 0 25px 20px -15px rgba(0,0,0,0.8), inset 0 -25px 20px -15px rgba(0,0,0,0.8), 0 0 0 0 rgba(234, 179, 8, 0.8); }
+            50% { background: #fde047; box-shadow: inset 0 25px 20px -15px rgba(0,0,0,0.8), inset 0 -25px 20px -15px rgba(0,0,0,0.8), 0 0 20px 8px rgba(234, 179, 8, 0); }
+            100% { background: #fef08a; box-shadow: inset 0 25px 20px -15px rgba(0,0,0,0.8), inset 0 -25px 20px -15px rgba(0,0,0,0.8), 0 0 0 0 rgba(234, 179, 8, 0); }
+        }
+        .win-anim { animation: win-pulse 0.8s infinite; border-color: #eab308; }
+        
+        @keyframes pop-in { 0% { opacity: 0; transform: translateY(10px) scale(0.95); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        .msg-anim { animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+        @keyframes jackpot-bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-5px) scale(1.02); box-shadow: 0 15px 35px rgba(74,222,128,0.8); }
+        }
+        .msg-jackpot { animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, jackpot-bounce 0.5s ease-in-out infinite alternate 0.3s !important; }
+
+        * { -webkit-tap-highlight-color: transparent; }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div id="app-wrapper">
+        <!-- HEADER -->
+        <header class="flex justify-between items-center px-3 py-2 bg-slate-900 border-b border-slate-700 h-[10%] min-h-[60px] shrink-0 z-30 shadow-md">
+            <div class="flex items-center gap-2 flex-1 min-w-0 pr-2">
+                <div class="relative shrink-0">
+                    <div class="absolute inset-0 bg-green-500 blur-md opacity-40 rounded-full"></div>
+                    <img src="logo-tondo.jpeg" alt="Logo" class="relative w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-green-400 object-cover z-10 shadow-[0_0_10px_rgba(74,222,128,0.3)]" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 50 50\'><circle cx=\'25\' cy=\'25\' r=\'25\' fill=\'%2315803d\'/></svg>'">
+                </div>
+                <!-- Title text wraps if needed, sized fluidly -->
+                <h1 class="font-black title-text flex-1 break-words">
+                    BETTING EXCHANGE<br>ROOM
+                </h1>
+            </div>
+            
+            <div class="flex items-center gap-1.5 md:gap-2 shrink-0 bg-slate-800 p-1.5 rounded-xl border border-slate-700 shadow-inner">
+                <!-- EN, ES, PT, IT strictly ordered -->
+                <img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f1ec-1f1e7.svg" alt="EN" id="flag_en" onclick="changeLang('en')" class="lang-flag">
+                <img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f1ea-1f1f8.svg" alt="ES" id="flag_es" onclick="changeLang('es')" class="lang-flag">
+                <img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f1f5-1f1f9.svg" alt="PT" id="flag_pt" onclick="changeLang('pt')" class="lang-flag">
+                <img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f1ee-1f1f9.svg" alt="IT" id="flag_it" onclick="changeLang('it')" class="lang-flag">
+            </div>
+        </header>
+
+        <!-- MAIN GIOCO -->
+        <main class="flex-1 min-h-0 flex flex-col p-3 md:p-5 justify-center relative bg-slate-800">
+            <div class="pitch-container">
+                
+                <div class="slot-window">
+                    <div class="reel-wrapper">
+                        <div class="reel" id="reel0"><div class="absolute w-full h-full flex items-center justify-center symbol-icon">⚽</div></div>
+                        <div class="reel" id="reel1"><div class="absolute w-full h-full flex items-center justify-center symbol-icon">⚽</div></div>
+                        <div class="reel" id="reel2"><div class="absolute w-full h-full flex items-center justify-center symbol-icon">⚽</div></div>
+                    </div>
+                </div>
+                
+                <!-- Fixed height container for messages to prevent layout shift -->
+                <div class="h-[50px] w-full flex items-center justify-center mt-3 md:mt-4 z-20">
+                    <div id="msgBox" class="w-11/12 max-w-[400px] text-center py-2 px-4 rounded-xl bg-slate-900/95 font-bold msg-anim shadow-xl text-[clamp(0.8rem,2.5vw,1.1rem)] hidden border border-transparent backdrop-blur-sm whitespace-nowrap overflow-hidden text-ellipsis"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER CONTROLLI -->
+        <footer class="bg-slate-900 border-t-2 border-slate-700 h-[28%] min-h-[150px] shrink-0 flex flex-col p-3 md:p-4 justify-between gap-2 z-30 shadow-[0_-10px_20px_rgba(0,0,0,0.5)]">
+            
+            <div class="flex justify-between items-stretch gap-2 md:gap-3 flex-1 min-h-[50px]">
+                <!-- Credit -->
+                <div class="flex-[1] bg-slate-800 rounded-xl p-2 flex flex-col items-center justify-center border border-slate-600 shadow-inner relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-slate-500 to-transparent opacity-20"></div>
+                    <div class="flex items-center justify-center gap-1.5 md:gap-2 h-full w-full">
+                        <span class="text-xl md:text-2xl drop-shadow-md">💰</span>
+                        <span id="txt_balance" class="font-mono text-green-400 font-black text-[clamp(1.2rem,4vw,1.8rem)] tracking-tight leading-none mt-0.5">1000</span>
+                    </div>
+                </div>
+                
+                <!-- Bet Control -->
+                <div class="flex-[1.2] bg-slate-800 rounded-xl p-2 flex flex-col items-center justify-center border border-slate-600 shadow-inner">
+                    <div class="flex items-center justify-center gap-2 md:gap-4 w-full h-full">
+                        <button onclick="changeBet(-5)" class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-slate-700 hover:bg-slate-600 border border-slate-500 text-white flex items-center justify-center font-bold text-xl active:scale-95 transition-transform disabled:opacity-30 shadow-md shrink-0" id="btn_minus">−</button>
+                        <div class="flex items-center justify-center gap-1 md:gap-1.5 min-w-[4ch]">
+                            <span class="text-xl md:text-2xl drop-shadow-md">💵</span>
+                            <span id="txt_bet" class="font-mono text-yellow-400 font-black text-[clamp(1.2rem,4vw,1.8rem)] text-center leading-none mt-0.5">10</span>
+                        </div>
+                        <button onclick="changeBet(5)" class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-slate-700 hover:bg-slate-600 border border-slate-500 text-white flex items-center justify-center font-bold text-xl active:scale-95 transition-transform disabled:opacity-30 shadow-md shrink-0" id="btn_plus">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spin Button -->
+            <div class="flex flex-col justify-end flex-1 min-h-[60px]">
+                <button id="btn_spin" onclick="startSpin()" class="btn-spin-premium w-full h-full max-h-[70px] rounded-xl font-black uppercase tracking-widest text-white text-[clamp(1.2rem,4vw,1.8rem)] flex justify-center items-center gap-2">
+                    <span id="lbl_play">PLAY</span>
+                </button>
+            </div>
+            
+            <!-- Paytable Link -->
+            <div class="flex justify-center shrink-0">
+                <button onclick="toggleModal()" class="text-slate-400 hover:text-white text-[clamp(0.7rem,2.5vw,0.85rem)] font-semibold tracking-wide transition-colors uppercase mt-1">
+                    <span id="lbl_paytableBtn">View Paytable</span>
+                </button>
+            </div>
+        </footer>
+
+        <!-- MODALE PAYTABLE -->
+        <div id="modal_payout" class="absolute inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex-col justify-center items-center p-4">
+            <div class="bg-slate-800 p-5 rounded-2xl border border-slate-600 w-full max-w-sm max-h-[80vh] flex flex-col shadow-[0_20px_50px_rgba(0,0,0,0.9)]">
+                <h2 id="lbl_modalTitle" class="text-[clamp(1.1rem,4vw,1.5rem)] font-black text-white mb-4 text-center border-b border-slate-700 pb-3 uppercase tracking-widest">Paytable</h2>
+                <div class="flex-grow overflow-y-auto space-y-2 pr-2 custom-scrollbar text-[clamp(0.8rem,3vw,1rem)]" id="list_paytable"></div>
+                <button onclick="toggleModal()" class="mt-5 py-3 bg-red-600 hover:bg-red-500 active:bg-red-700 text-white font-bold rounded-xl w-full transition uppercase tracking-wider shadow-[0_4px_0_#7f1d1d] active:translate-y-[4px] active:shadow-[0_0px_0_#7f1d1d] text-[clamp(1rem,3.5vw,1.2rem)]">
+                    <span id="lbl_close">Close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const i18n = {
+            en: { play: "PLAY", spinning: "SPINNING...", btn_paytable: "View Paytable", modal_title: "Paytable", close: "Close", msg_win: "GOAL! Won €", msg_jack: "JACKPOT! Won €", msg_ref: "Refund! Won €", msg_lose: "Try Again!", msg_fund: "Insufficient Funds!", pay_2: "Any 2 Matching" },
+            es: { play: "JUGAR", spinning: "GIRANDO...", btn_paytable: "Ver Tabla de Pagos", modal_title: "Tabla de Pagos", close: "Cerrar", msg_win: "¡GOL! Ganaste €", msg_jack: "¡BOTE! Ganaste €", msg_ref: "¡Reembolso! €", msg_lose: "¡Inténtalo de nuevo!", msg_fund: "¡Saldo insuficiente!", pay_2: "2 Iguales Cualquiera" },
+            pt: { play: "JOGAR", spinning: "GIRANDO...", btn_paytable: "Ver Tabela", modal_title: "Tabela de Pagamentos", close: "Fechar", msg_win: "GOLO! Ganhou €", msg_jack: "JACKPOT! Ganhou €", msg_ref: "Reembolso! €", msg_lose: "Tente Novamente!", msg_fund: "Saldo Insuficiente!", pay_2: "Quaisquer 2 Iguais" },
+            it: { play: "GIOCA", spinning: "GIRANDO...", btn_paytable: "Vedi Pagamenti", modal_title: "Tabella Pagamenti", close: "Chiudi", msg_win: "GOL! Vinti €", msg_jack: "JACKPOT! Vinti €", msg_ref: "Rimborso! €", msg_lose: "Ritenta!", msg_fund: "Credito Insufficiente!", pay_2: "Qualsiasi 2 Uguali" }
+        };
+
+        // FIX: Tutti i simboli hanno p2: 1 per rispettare rigorosamente "Qualsiasi 2 Uguali x1" nella paytable.
+        const symbols = [
+            { id: 'trophy', icon: '🏆', p3: 100, p2: 1, weight: 1 },
+            { id: 'medal',  icon: '🥇', p3: 50,  p2: 1, weight: 2 },
+            { id: 'stadium',icon: '🏟️', p3: 20,  p2: 1, weight: 4 },
+            { id: 'goal',   icon: '🥅', p3: 10,  p2: 1, weight: 6 },
+            { id: 'shirt',  icon: '👕', p3: 5,   p2: 1, weight: 8 },
+            { id: 'boots',  icon: '👟', p3: 3,   p2: 1, weight: 10 },
+            { id: 'ball',   icon: '⚽', p3: 2,   p2: 1, weight: 14 }
+        ];
+
+        let lang = 'en', bal = 1000, bet = 10, spinning = false;
+        let results = [symbols[6], symbols[6], symbols[6]];
+        let currentMsgType = ''; // To track dynamic translations of the active message
+
+        const el = {
+            bal: document.getElementById('txt_balance'), bet: document.getElementById('txt_bet'),
+            msg: document.getElementById('msgBox'), btnSpin: document.getElementById('btn_spin'),
+            btnSub: document.getElementById('btn_minus'), btnAdd: document.getElementById('btn_plus'),
+            reels: [document.getElementById('reel0'), document.getElementById('reel1'), document.getElementById('reel2')],
+            modal: document.getElementById('modal_payout'), payList: document.getElementById('list_paytable')
+        };
+
+        const AudioEngine = {
+            ready: false,
+            synths: {},
+            
+            async init() {
+                if (this.ready) {
+                    if (Tone.context.state !== 'running') await Tone.context.resume();
+                    return;
+                }
+                
+                try {
+                    await Tone.start();
+                    if (Tone.context.state !== 'running') await Tone.context.resume();
+                    
+                    const masterVol = new Tone.Volume(-2).toDestination();
+                    const comp = new Tone.Compressor(-20, 3).connect(masterVol);
+                    const delay = new Tone.FeedbackDelay("8n", 0.1).connect(comp);
+                    
+                    this.synths.click = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { attack: 0.005, decay: 0.05, sustain: 0, release: 0.01 }, volume: -15 }).connect(comp);
+                    this.synths.thud = new Tone.MembraneSynth({ pitchDecay: 0.05, octaves: 2, envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.1 }, volume: -2 }).connect(comp);
+                    this.synths.lose = new Tone.Synth({ oscillator: { type: 'sawtooth' }, envelope: { attack: 0.05, decay: 0.3, sustain: 0, release: 0.1 }, volume: -14 }).connect(comp);
+                    
+                    // Simple poly synth prevents Safari crashes
+                    this.synths.win = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 6, oscillator: { type: 'triangle' }, envelope: { attack: 0.02, decay: 0.3, sustain: 0.1, release: 0.5 }, volume: -8 }).connect(delay);
+
+                    this.ready = true;
+                } catch(err) { console.warn("Audio error:", err); }
+            },
+            
+            async play(sound) {
+                if (!this.ready) await this.init();
+                if (Tone.context && Tone.context.state !== 'running') { try { await Tone.context.resume(); } catch(e){} }
+                if (!this.ready) return;
+
+                const now = Tone.now();
+            try {
+                switch(sound) {
+                    case 'click': this.synths.click.triggerAttackRelease("C6", "64n", now); break;
+                    case 'thud': this.synths.thud.triggerAttackRelease("E1", "16n", now); break;
+                    case 'win':
+                        this.synths.win.releaseAll();
+                        ["C5", "E5", "G5"].forEach((n, i) => this.synths.win.triggerAttackRelease(n, "8n", now + i*0.15)); break;
+                        case 'jackpot':
+                            this.synths.win.releaseAll();
+                            ["C5", "E5", "G5", "C6", "E6", "G6"].forEach((n, i) => this.synths.win.triggerAttackRelease(n, "8n", now + i*0.1)); break;
+                        case 'lose': this.synths.lose.triggerAttackRelease("C3", "4n", now); break;
+                    case 'error': this.synths.lose.triggerAttackRelease("D#2", "8n", now); break;
+                }
+            } catch(e) {}
+        }
+    };
+
+    // Universal unlocker
+    const unlockAudio = () => { AudioEngine.init(); ['touchstart', 'touchend', 'click'].forEach(evt => document.body.removeEventListener(evt, unlockAudio)); };
+        ['touchstart', 'touchend', 'click'].forEach(evt => document.body.addEventListener(evt, unlockAudio, { once: true, passive: true }));
+
+        function initApp() {
+            const navLang = (navigator.language || '').split('-')[0].toLowerCase();
+            lang = ['en', 'es', 'pt', 'it'].includes(navLang) ? navLang : 'en';
+            
+            document.documentElement.lang = lang;
+            updateLangUI();
+            buildPaytable();
+            syncUI();
+        }
+
+        function changeLang(l) {
+            lang = l;
+            document.documentElement.lang = lang;
+            AudioEngine.play('click');
+            updateLangUI();
+            buildPaytable();
+            
+            // Re-translate active message if visible
+            if(!el.msg.classList.contains('hidden') && currentMsgType) {
+                const amt = el.msg.getAttribute('data-amt');
+                el.msg.textContent = i18n[lang][currentMsgType] + (amt ? ` ${amt}` : '');
+            }
+        }
+
+        function updateLangUI() {
+            ['en','es','pt','it'].forEach(l => { document.getElementById('flag_'+l).className = `lang-flag ${l === lang ? 'active' : ''}`; });
+            
+            const t = i18n[lang];
+            document.getElementById('lbl_paytableBtn').textContent = t.btn_paytable;
+            document.getElementById('lbl_modalTitle').textContent = t.modal_title;
+            document.getElementById('lbl_close').textContent = t.close;
+            if(!spinning) document.getElementById('lbl_play').textContent = t.play;
+            else document.getElementById('lbl_play').textContent = t.spinning;
+        }
+
+        function buildPaytable() {
+            el.payList.innerHTML = '';
+            symbols.forEach(s => {
+                if(s.p3 > 0) el.payList.innerHTML += `<div class="flex justify-between items-center bg-slate-700/50 p-2 md:p-3 rounded-lg border border-slate-600/50"><span class="tracking-[0.3em]">${s.icon}${s.icon}${s.icon}</span> <span class="font-mono text-green-400 font-bold">x${s.p3}</span></div>`;
+            });
+            el.payList.innerHTML += `<div class="flex justify-between items-center bg-slate-700/50 p-2 md:p-3 rounded-lg mt-3 border-t-2 border-slate-600"><span class="opacity-80">${i18n[lang].pay_2}</span> <span class="font-mono text-yellow-400 font-bold">x1</span></div>`;
+        }
+
+        function syncUI() {
+            el.bal.textContent = bal;
+            el.bet.textContent = bet;
+            el.btnSub.disabled = spinning || bet <= 5;
+            el.btnAdd.disabled = spinning || bet >= 100 || bet >= bal;
+            el.btnSpin.disabled = spinning || bal < bet;
+        }
+
+        function changeBet(amt) {
+            if(spinning) return;
+            const nb = bet + amt;
+            if(nb >= 5 && nb <= 100 && nb <= bal) { bet = nb; AudioEngine.play('click'); syncUI(); }
+        }
+
+        function toggleModal() { AudioEngine.play('click'); el.modal.classList.toggle('hidden'); el.modal.classList.toggle('flex'); }
+
+        function getRndSym() {
+            let r = Math.random() * symbols.reduce((a, s) => a + s.weight, 0);
+            for (let s of symbols) { if (r < s.weight) return s; r -= s.weight; }
+            return symbols[0];
+        }
+
+        function startSpin() {
+            AudioEngine.init(); // Force resume check on click
+
+            if (spinning || bal < bet) { 
+                if (bal < bet) { showMsg('msg_fund', null, 'err'); AudioEngine.play('error'); }
+                return; 
+            }
+
+            spinning = true; bal -= bet; syncUI();
+            el.reels.forEach(r => r.classList.remove('win-anim'));
+            el.msg.classList.add('hidden');
+            
+            document.getElementById('lbl_play').textContent = i18n[lang].spinning;
+
+            const nextResults = [getRndSym(), getRndSym(), getRndSym()];
+            const baseTime = 1000; 
+            
+            el.reels.forEach((reel, i) => {
+                reel.innerHTML = '';
+                const strip = document.createElement('div');
+                const count = 30; 
+                
+                strip.className = 'w-full absolute top-0 left-0 flex flex-col items-center';
+                strip.style.height = `${count * 100}%`; 
+                strip.style.willChange = 'transform'; 
+                
+                for(let j = 0; j < count; j++) {
+                    const sDiv = document.createElement('div');
+                    sDiv.className = 'w-full flex items-center justify-center symbol-icon shrink-0';
+                    sDiv.style.height = `${100 / count}%`; 
+                    
+                    if (j === 0) sDiv.textContent = results[i].icon;
+                    else if (j === count - 1) sDiv.textContent = nextResults[i].icon;
+                    else sDiv.textContent = symbols[Math.floor(Math.random()*symbols.length)].icon;
+                    
+                    strip.appendChild(sDiv);
+                }
+                reel.appendChild(strip);
+
+                const duration = baseTime + (i * 600);
+                const targetY = -(count - 1) * (100 / count);
+                
+                const anim = strip.animate([
+                    { transform: 'translate3d(0, 0%, 0)', offset: 0 },
+                    { transform: 'translate3d(0, 1.5%, 0)', offset: 0.05, easing: 'ease-in' },
+                    { transform: `translate3d(0, ${targetY * 0.8}%, 0)`, offset: 0.8, easing: 'linear' },
+                    { transform: `translate3d(0, ${targetY - 1.5}%, 0)`, offset: 0.92, easing: 'ease-out' },
+                    { transform: `translate3d(0, ${targetY}%, 0)`, offset: 1, easing: 'ease-in-out' }
+                ], { duration: duration, fill: 'forwards' });
+
+                anim.onfinish = () => {
+                    AudioEngine.play('thud');
+                    reel.style.transition = 'transform 0.1s cubic-bezier(0.2, 0.8, 0.2, 1)';
+                    reel.style.transform = 'translate3d(0, 8px, 0)';
+                    setTimeout(() => reel.style.transform = 'translate3d(0,0,0)', 100);
+
+                    if (i === 2) {
+                        results = nextResults;
+                        setTimeout(() => evalWin(nextResults), 300);
+                    }
+                };
+            });
+        }
+
+        function evalWin(res) {
+            const [s1, s2, s3] = res;
+            let winAmt = 0, type = 'lose';
+
+            // Logica di valutazione senza "allucinazioni": corrisponde in modo infallibile alla paytable.
+            if (s1.id === s2.id && s2.id === s3.id) {
+                if (s1.p3 > 0) {
+                    winAmt = bet * s1.p3; bal += winAmt;
+                    el.reels.forEach(r => r.classList.add('win-anim'));
+                    type = s1.id === 'trophy' ? 'jackpot' : 'win';
+                    showMsg(type === 'jackpot' ? 'msg_jack' : 'msg_win', winAmt, type);
+                    triggerCoinCascade(type === 'jackpot'); 
+                } else showMsg('msg_lose', null, 'lose');
+            } 
+            else if (s1.id === s2.id && s1.p2 > 0) { winAmt = bet*s1.p2; bal+=winAmt; [0,1].forEach(i=>el.reels[i].classList.add('win-anim')); showMsg('msg_ref', winAmt, 'win'); type='win'; triggerCoinCascade(false);}
+            else if (s2.id === s3.id && s2.p2 > 0) { winAmt = bet*s2.p2; bal+=winAmt; [1,2].forEach(i=>el.reels[i].classList.add('win-anim')); showMsg('msg_ref', winAmt, 'win'); type='win'; triggerCoinCascade(false);}
+            else if (s1.id === s3.id && s1.p2 > 0) { winAmt = bet*s1.p2; bal+=winAmt; [0,2].forEach(i=>el.reels[i].classList.add('win-anim')); showMsg('msg_ref', winAmt, 'win'); type='win'; triggerCoinCascade(false);}
+            else { showMsg('msg_lose', null, 'lose'); }
+
+            AudioEngine.play(type);
+
+            el.reels.forEach((reel, i) => { reel.innerHTML = `<div class="absolute w-full h-full flex items-center justify-center symbol-icon">${res[i].icon}</div>`; });
+
+            spinning = false;
+            document.getElementById('lbl_play').textContent = i18n[lang].play;
+            syncUI();
+        }
+
+        function showMsg(k, amt, style) {
+            currentMsgType = k;
+            el.msg.setAttribute('data-amt', amt || '');
+            el.msg.textContent = i18n[lang][k] + (amt ? ` ${amt}` : '');
+            
+            el.msg.className = "w-11/12 max-w-[400px] text-center py-2 px-3 rounded-xl font-bold msg-anim shadow-[0_10px_25px_rgba(0,0,0,0.8)] whitespace-nowrap overflow-hidden text-ellipsis text-[clamp(0.8rem,2.5vw,1.1rem)]";
+            
+            if (style === 'err') el.msg.classList.add('bg-red-900/90', 'text-red-100', 'border-2', 'border-red-500');
+            else if (style === 'win') el.msg.classList.add('bg-yellow-800/90', 'text-yellow-100', 'border-2', 'border-yellow-400');
+            else if (style === 'jackpot') el.msg.classList.add('bg-green-700/90', 'text-green-50', 'border-2', 'border-green-400', 'msg-jackpot');
+            else el.msg.classList.add('bg-slate-800/90', 'text-white', 'border-2', 'border-slate-600');
+
+            el.msg.classList.remove('hidden');
+        }
+
+        function triggerCoinCascade(isJackpot) {
+            const count = isJackpot ? 60 : 25;
+            const container = document.getElementById('app-wrapper');
+            const emojis = ['🪙', '💰', '💵'];
+            
+            for(let i=0; i<count; i++) {
+                const coin = document.createElement('div');
+                coin.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                coin.className = 'absolute top-[-50px] z-[100] pointer-events-none drop-shadow-xl';
+                coin.style.left = (Math.random() * 100) + '%';
+                coin.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                container.appendChild(coin);
+
+                const duration = Math.random() * 1500 + 1000;
+                const delay = Math.random() * (isJackpot ? 2500 : 1000); 
+                
+                const anim = coin.animate([
+                    { transform: `translate3d(0, 0, 0) rotate(0deg) scale(1)`, opacity: 1 },
+                    { transform: `translate3d(${Math.random()*100-50}px, 110vh, 0) rotate(${Math.random()*720}deg) scale(1.5)`, opacity: 0 }
+                ], { duration: duration, delay: delay, easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)', fill: 'forwards' });
+
+                anim.onfinish = () => coin.remove();
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
