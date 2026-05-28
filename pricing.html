@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architettura & Sicurezza - Betting Exchange</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+.chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 40vh; max-height: 400px; }
+@media (min-width: 768px) { .chart-container { height: 350px; } }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.step-item { transition: all 0.3s ease; }
+.step-active { background-color: #fef3c7; border-left: 4px solid #f59e0b; }
+.step-inactive { opacity: 0.5; }
+body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+</style>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+colors: {
+stone: { 50: '#fafaf9', 100: '#f5f5f4', 200: '#e7e5e4', 300: '#d6d3d1', 800: '#292524', 900: '#1c1917' },
+amber: { 500: '#f59e0b', 600: '#d97706' },
+emerald: { 600: '#059669' }
+}
+}
+}
+}
+</script>
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans h-screen overflow-hidden flex flex-col md:flex-row">
+
+<!-- Chosen Palette: Warm Neutral Tech (Stone, Amber, Emerald, Blue) -->
+<!-- Application Structure Plan: Sidebar navigation dashboard. Divides the technical document into logical, digestible modules (Overview, Security Logic, Transaction Flow, Repository). Chosen to allow stakeholders to explore complex backend mechanics visually rather than reading a dry markdown file. -->
+<!-- Visualization & Content Choices: Report Info: Anti-VPN Logic -> Goal: Compare expected vs actual -> Viz: Bar Chart (Chart.js) -> Interaction: Dropdown to simulate VPN spoofing -> Justification: Clearly shows the punitive mathematical effect of underpaying. Report Info: Firestore Flow -> Goal: Organize process -> Viz: Interactive Step Diagram (HTML/Tailwind) -> Interaction: Next/Prev buttons. NO SVG/Mermaid. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+<nav class="w-full md:w-64 bg-stone-900 text-stone-100 flex flex-col shadow-xl z-20 h-auto md:h-full shrink-0">
+<div class="p-6 bg-stone-950">
+<h1 class="text-xl font-bold tracking-tight text-amber-500">🛡️ Blueprint Sicurezza</h1>
+<p class="text-xs text-stone-400 mt-1">Betting Exchange Room</p>
+</div>
+<div class="flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto p-4 gap-2 flex-1 scrollbar-hide">
+<button onclick="switchTab('overview')" id="btn-overview" class="tab-btn w-full text-left px-4 py-3 rounded-lg bg-stone-800 text-stone-50 font-medium transition-colors hover:bg-stone-700 whitespace-nowrap md:whitespace-normal">📊 Sintesi Zero-Trust</button>
+<button onclick="switchTab('antivpn')" id="btn-antivpn" class="tab-btn w-full text-left px-4 py-3 rounded-lg text-stone-400 font-medium transition-colors hover:bg-stone-700 whitespace-nowrap md:whitespace-normal">🛑 Logica Anti-VPN</button>
+<button onclick="switchTab('firestore')" id="btn-firestore" class="tab-btn w-full text-left px-4 py-3 rounded-lg text-stone-400 font-medium transition-colors hover:bg-stone-700 whitespace-nowrap md:whitespace-normal">🔄 Flusso Firestore</button>
+<button onclick="switchTab('arch')" id="btn-arch" class="tab-btn w-full text-left px-4 py-3 rounded-lg text-stone-400 font-medium transition-colors hover:bg-stone-700 whitespace-nowrap md:whitespace-normal">📁 Monorepo Next.js</button>
+</div>
+<div class="p-4 text-xs text-stone-500 text-center md:text-left border-t border-stone-800 hidden md:block">
+Ambiente Vercel / TON
+</div>
+</nav>
+
+<main class="flex-1 overflow-y-auto p-6 md:p-10 bg-stone-50 relative">
+
+<div id="overview" class="tab-content active max-w-5xl mx-auto">
+<header class="mb-8">
+<h2 class="text-3xl font-extrabold text-stone-900 mb-2">Sintesi del Modello Zero-Trust</h2>
+<p class="text-lg text-stone-600">Questa sezione offre una panoramica sulle difese primarie implementate per garantire la sicurezza del sistema "Pay-per-Day". Clicca sulle schede sottostanti per esplorare le specifiche di sicurezza.</p>
+</header>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 hover:shadow-md transition-shadow cursor-pointer" onclick="toggleDetail('detail-truth')">
+<div class="text-2xl mb-3">⚖️</div>
+<h3 class="text-xl font-bold text-stone-800 mb-2">Verità On-Chain</h3>
+<p class="text-stone-600 text-sm">Il backend ignora i dati geografici del frontend. Il calcolo dei giorni è derivato esclusivamente dai fondi reali arrivati su TON.</p>
+<div id="detail-truth" class="hidden mt-4 p-4 bg-stone-50 rounded-lg text-sm text-stone-700 border-l-4 border-amber-500">
+Tutte le informazioni IP possono essere falsificate tramite VPN. Affidandosi solo al dato on-chain, si neutralizza alla radice qualsiasi attacco di spoofing geografico.
+</div>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 hover:shadow-md transition-shadow cursor-pointer" onclick="toggleDetail('detail-decimals')">
+<div class="text-2xl mb-3">🔢</div>
+<h3 class="text-xl font-bold text-stone-800 mb-2">Gestione Decimali USDT</h3>
+<p class="text-stone-600 text-sm">Su TON, USDT ha esattamente 6 decimali. Un invio di 199 USDT è processato dal sistema come 199000000.</p>
+<div id="detail-decimals" class="hidden mt-4 p-4 bg-stone-50 rounded-lg text-sm text-stone-700 border-l-4 border-amber-500">
+Qualsiasi discrepanza in questa conversione attiva immediatamente i fail-safe del sistema, respingendo transazioni anomale.
+</div>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 hover:shadow-md transition-shadow cursor-pointer" onclick="toggleDetail('detail-token')">
+<div class="text-2xl mb-3">🛡️</div>
+<h3 class="text-xl font-bold text-stone-800 mb-2">Protezione Fake Token</h3>
+<p class="text-stone-600 text-sm">Controllo rigoroso del <code class="bg-stone-200 px-1 rounded text-xs">jetton_master_address</code> per validare l'autenticità dell'USDT.</p>
+<div id="detail-token" class="hidden mt-4 p-4 bg-stone-50 rounded-lg text-sm text-stone-700 border-l-4 border-amber-500">
+I truffatori possono creare token falsi chiamati "USDT". Il backend verifica che l'indirizzo corrisponda a EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs.
+</div>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 hover:shadow-md transition-shadow cursor-pointer" onclick="toggleDetail('detail-cron')">
+<div class="text-2xl mb-3">⏱️</div>
+<h3 class="text-xl font-bold text-stone-800 mb-2">Sicurezza Cron Job</h3>
+<p class="text-stone-600 text-sm">Espulsione automatica gestita da un endpoint protetto da Bearer Token accessibile solo dal demone Vercel.</p>
+<div id="detail-cron" class="hidden mt-4 p-4 bg-stone-50 rounded-lg text-sm text-stone-700 border-l-4 border-amber-500">
+Nessun utente esterno può invocare l'API <code class="bg-stone-200 px-1 rounded text-xs">/api/cron/check-expiry</code> per manipolare le scadenze o l'accesso al gruppo Telegram.
+</div>
+</div>
+</div>
+</div>
+
+<div id="antivpn" class="tab-content max-w-5xl mx-auto">
+<header class="mb-8">
+<h2 class="text-3xl font-extrabold text-stone-900 mb-2">Logica Anti-VPN & Ricalibrazione Prezzo</h2>
+<p class="text-lg text-stone-600">Esplora come il backend reagisce quando rileva uno spoofing VPN. Seleziona uno scenario dal menu a tendina per osservare l'impatto sui giorni assegnati rispetto a quelli previsti dall'utente fraudolento.</p>
+</header>
+<div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 mb-8">
+<div class="flex flex-col md:flex-row gap-4 items-end mb-6">
+<div class="w-full md:w-1/2">
+<label class="block text-sm font-bold text-stone-700 mb-1">Scenario Simulato</label>
+<select id="scenario-select" class="w-full border border-stone-300 rounded-lg px-4 py-2 bg-stone-50 text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-500" onchange="updateVpnChart()">
+<option value="honest">Utente Onesto (Paga 199 USDT per 30 gg)</option>
+<option value="spoof_c" selected>Frodatore usa VPN LatAm (Paga 37 USDT aspettandosi 30 gg Premium)</option>
+<option value="spoof_b">Frodatore usa VPN Estera (Paga 97 USDT aspettandosi 30 gg Premium)</option>
+</select>
+</div>
+<div class="w-full md:w-1/2 bg-stone-100 p-3 rounded-lg border border-stone-200">
+<div class="text-xs text-stone-500 font-bold uppercase tracking-wider mb-1">Dettaglio Calcolo Proporzionale</div>
+<div id="calc-formula" class="font-mono text-sm text-stone-800">(37 / 199) * 30 = 5.5 giorni</div>
+</div>
+</div>
+<div class="chart-container">
+<canvas id="vpnChart"></canvas>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-emerald-50 border border-emerald-200 p-5 rounded-lg">
+<h4 class="font-bold text-emerald-800 mb-2">✅ Strict Mode</h4>
+<p class="text-sm text-emerald-700">Se l'importo corrisponde esattamente a uno dei pacchetti noti, vengono assegnati i giorni esatti previsti dal listino.</p>
+</div>
+<div class="bg-amber-50 border border-amber-200 p-5 rounded-lg">
+<h4 class="font-bold text-amber-800 mb-2">⚠️ Proportional Mode</h4>
+<p class="text-sm text-amber-700">Se si rileva un pagamento inferiore rispetto all'anagrafica geografica reale, il sistema assegna giorni proporzionati alla quota versata, rendendo inutile la frode.</p>
+</div>
+</div>
+</div>
+
+<div id="firestore" class="tab-content max-w-5xl mx-auto">
+<header class="mb-8">
+<h2 class="text-3xl font-extrabold text-stone-900 mb-2">Validazione Transazionale (Firestore)</h2>
+<p class="text-lg text-stone-600">Visualizza i passaggi eseguiti in modo atomico durante una Firestore Transaction. Clicca sui pulsanti per avanzare nel flusso e comprendere le difese contro i Replay Attacks.</p>
+</header>
+<div class="bg-white p-8 rounded-xl shadow-sm border border-stone-200 relative">
+<div class="flex justify-between items-center mb-8">
+<button onclick="changeStep(-1)" class="px-4 py-2 bg-stone-200 text-stone-700 rounded hover:bg-stone-300 font-bold">⬅️ Precedente</button>
+<span class="font-bold text-stone-500">Step <span id="current-step-display">1</span> di 5</span>
+<button onclick="changeStep(1)" class="px-4 py-2 bg-amber-500 text-white rounded hover:bg-amber-600 font-bold">Successivo ➡️</button>
+</div>
+<div class="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-stone-300 before:to-transparent">
+<div id="step-1" class="step-item step-active relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active p-4 rounded-lg">
+<div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-amber-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">1</div>
+<div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded border border-stone-200 bg-white shadow-sm">
+<h4 class="font-bold text-stone-800">transaction.get(txRef)</h4>
+<p class="text-sm text-stone-600 mt-1">Controllo in <code class="bg-stone-100 px-1 rounded text-xs">processed_txs</code> se l'hash esiste. Se sì, abortisce per difendere dal Replay Attack.</p>
+</div>
+</div>
+<div id="step-2" class="step-item step-inactive relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group p-4 rounded-lg">
+<div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-stone-300 text-stone-700 font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">2</div>
+<div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded border border-stone-200 bg-white shadow-sm">
+<h4 class="font-bold text-stone-800">transaction.get(userRef)</h4>
+<p class="text-sm text-stone-600 mt-1">Recupero dati utente dal DB usando il <code class="bg-stone-100 px-1 rounded text-xs">telegram_id</code> decodificato dal memo della transazione TON.</p>
+</div>
+</div>
+<div id="step-3" class="step-item step-inactive relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group p-4 rounded-lg">
+<div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-stone-300 text-stone-700 font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">3</div>
+<div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded border border-stone-200 bg-white shadow-sm">
+<h4 class="font-bold text-stone-800">Calcolo new_expiry</h4>
+<p class="text-sm text-stone-600 mt-1">Applicazione logica: <br><code class="bg-stone-100 px-1 rounded text-xs">Max(now, current_expiry) + purchased_days</code>.</p>
+</div>
+</div>
+<div id="step-4" class="step-item step-inactive relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group p-4 rounded-lg">
+<div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-stone-300 text-stone-700 font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">4</div>
+<div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded border border-stone-200 bg-white shadow-sm">
+<h4 class="font-bold text-stone-800">transaction.set(txRef)</h4>
+<p class="text-sm text-stone-600 mt-1">Salvataggio irreversibile dell'hash della transazione per bloccare successivi tentativi doppi.</p>
+</div>
+</div>
+<div id="step-5" class="step-item step-inactive relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group p-4 rounded-lg">
+<div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-stone-300 text-stone-700 font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">5</div>
+<div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded border border-stone-200 bg-white shadow-sm">
+<h4 class="font-bold text-stone-800">transaction.update(userRef)</h4>
+<p class="text-sm text-stone-600 mt-1">Aggiornamento finale dell'anagrafica utente con la nuova data di scadenza e lo status "active".</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="arch" class="tab-content max-w-5xl mx-auto">
+<header class="mb-8">
+<h2 class="text-3xl font-extrabold text-stone-900 mb-2">Monorepo Next.js + Vercel</h2>
+<p class="text-lg text-stone-600">Esplora la struttura del repository. Clicca sulle cartelle per visualizzarne il contenuto e il ruolo all'interno dell'architettura ibrida.</p>
+</header>
+<div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden font-mono text-sm">
+<div class="bg-stone-800 text-stone-300 px-4 py-2 flex items-center gap-2">
+<span>📁</span> betting-exchange-monorepo
+</div>
+<div class="p-4 space-y-2">
+
+<div class="folder-group">
+<div class="flex items-center gap-2 cursor-pointer hover:bg-stone-50 p-2 rounded" onclick="toggleFolder('folder-app')">
+<span class="text-amber-500">▶</span> <span>📁 src/app/</span>
+</div>
+<div id="folder-app" class="hidden pl-8 border-l border-stone-200 ml-3 space-y-2 py-2">
+<div class="flex items-start gap-2">
+<span>📄</span> <div><span class="font-bold text-blue-600">(dashboard)/page.tsx</span> <br><span class="text-stone-500 text-xs font-sans">UI frontend con TON Connect per la gestione utente.</span></div>
+</div>
+<div class="flex items-start gap-2 mt-2">
+<span>📁</span> <div><span class="font-bold text-amber-600">api/webhooks/ton/route.ts</span> <br><span class="text-stone-500 text-xs font-sans">Endpoint primario serverless per ascoltare le transazioni dalla blockchain.</span></div>
+</div>
+<div class="flex items-start gap-2 mt-2">
+<span>📁</span> <div><span class="font-bold text-amber-600">api/cron/check-expiry/route.ts</span> <br><span class="text-stone-500 text-xs font-sans">Endpoint protetto chiamato dal Vercel Cron.</span></div>
+</div>
+</div>
+</div>
+
+<div class="folder-group">
+<div class="flex items-center gap-2 cursor-pointer hover:bg-stone-50 p-2 rounded" onclick="toggleFolder('folder-lib')">
+<span class="text-amber-500">▶</span> <span>📁 src/lib/</span>
+</div>
+<div id="folder-lib" class="hidden pl-8 border-l border-stone-200 ml-3 space-y-2 py-2">
+<div class="flex items-start gap-2">
+<span>📁</span> <div><span class="font-bold text-stone-800">firebase/</span> <br><span class="text-stone-500 text-xs font-sans">admin.ts (Inizializzazione SDK Server) e rules.firestore.</span></div>
+</div>
+<div class="flex items-start gap-2 mt-2">
+<span>📁</span> <div><span class="font-bold text-stone-800">ton/</span> <br><span class="text-stone-500 text-xs font-sans">parser.ts (Validazione) e payload.ts (Generatore payload per Frontend).</span></div>
+</div>
+<div class="flex items-start gap-2 mt-2">
+<span>📁</span> <div><span class="font-bold text-stone-800">security/</span> <br><span class="text-stone-500 text-xs font-sans">anti-vpn.ts (Algoritmo matematico validazione giorni).</span></div>
+</div>
+</div>
+</div>
+
+<div class="folder-group">
+<div class="flex items-center gap-2 cursor-pointer hover:bg-stone-50 p-2 rounded" onclick="toggleFolder('folder-config')">
+<span class="text-amber-500">▶</span> <span>📁 src/config/</span>
+</div>
+<div id="folder-config" class="hidden pl-8 border-l border-stone-200 ml-3 space-y-2 py-2">
+<div class="flex items-start gap-2">
+<span>📄</span> <div><span class="font-bold text-stone-800">pricing.ts</span> <br><span class="text-stone-500 text-xs font-sans">Mappatura rigorosa dei Tier A, B, C per la validazione backend.</span></div>
+</div>
+<div class="flex items-start gap-2 mt-2">
+<span>📄</span> <div><span class="font-bold text-stone-800">constants.ts</span> <br><span class="text-stone-500 text-xs font-sans">Indirizzo master USDT, Wallet di destinazione.</span></div>
+</div>
+</div>
+</div>
+
+<div class="flex items-center gap-2 p-2 text-stone-600">
+<span>📄</span> <span>vercel.json</span> <span class="text-stone-400 text-xs font-sans ml-2">(Config Cron Jobs)</span>
+</div>
+<div class="flex items-center gap-2 p-2 text-stone-600">
+<span>📄</span> <span>.env.local</span> <span class="text-stone-400 text-xs font-sans ml-2">(Secret Keys)</span>
+</div>
+</div>
+</div>
+</div>
+
+</main>
+
+<script>
+function switchTab(tabId) {
+document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+document.getElementById(tabId).classList.add('active');
+document.querySelectorAll('.tab-btn').forEach(el => {
+el.classList.remove('bg-stone-800', 'text-stone-50');
+el.classList.add('text-stone-400');
+});
+const activeBtn = document.getElementById('btn-' + tabId);
+activeBtn.classList.remove('text-stone-400');
+activeBtn.classList.add('bg-stone-800', 'text-stone-50');
+if(tabId === 'antivpn') {
+setTimeout(initChart, 100);
+}
+}
+
+function toggleDetail(id) {
+const el = document.getElementById(id);
+if(el.classList.contains('hidden')) {
+el.classList.remove('hidden');
+} else {
+el.classList.add('hidden');
+}
+}
+
+function toggleFolder(id) {
+const el = document.getElementById(id);
+const icon = el.previousElementSibling.querySelector('span:first-child');
+if(el.classList.contains('hidden')) {
+el.classList.remove('hidden');
+icon.textContent = '▼';
+} else {
+el.classList.add('hidden');
+icon.textContent = '▶';
+}
+}
+
+let currentStep = 1;
+function changeStep(dir) {
+const maxSteps = 5;
+const prevStep = currentStep;
+currentStep += dir;
+if(currentStep < 1) currentStep = 1;
+if(currentStep > maxSteps) currentStep = maxSteps;
+
+document.getElementById('current-step-display').textContent = currentStep;
+
+for(let i=1; i<=maxSteps; i++) {
+const el = document.getElementById('step-' + i);
+const icon = el.querySelector('div:first-child');
+if(i === currentStep) {
+el.classList.remove('step-inactive');
+el.classList.add('step-active');
+icon.classList.remove('bg-stone-300', 'text-stone-700');
+icon.classList.add('bg-amber-500', 'text-white');
+} else {
+el.classList.remove('step-active');
+el.classList.add('step-inactive');
+icon.classList.remove('bg-amber-500', 'text-white');
+icon.classList.add('bg-stone-300', 'text-stone-700');
+}
+}
+}
+
+let vpnChartInstance = null;
+
+function initChart() {
+if (vpnChartInstance) return;
+const ctx = document.getElementById('vpnChart').getContext('2d');
+vpnChartInstance = new Chart(ctx, {
+type: 'bar',
+data: {
+labels: ['Giorni Attesi dall\'Utente', 'Giorni Assegnati dal Backend'],
+datasets: [{
+label: 'Giorni di Accesso',
+data: [30, 5.5],
+backgroundColor: ['rgba(217, 119, 6, 0.2)', 'rgba(5, 150, 105, 0.8)'],
+borderColor: ['rgba(217, 119, 6, 1)', 'rgba(5, 150, 105, 1)'],
+borderWidth: 1,
+borderRadius: 4
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: {
+legend: { display: false },
+tooltip: {
+callbacks: {
+label: function(context) { return context.raw + ' Giorni'; }
+}
+}
+},
+scales: {
+y: { beginAtZero: true, max: 35, title: { display: true, text: 'Numero di Giorni' } }
+}
+}
+});
+}
+
+function updateVpnChart() {
+if(!vpnChartInstance) return;
+const scenario = document.getElementById('scenario-select').value;
+const formulaEl = document.getElementById('calc-formula');
+
+let expected = 30;
+let assigned = 30;
+
+if(scenario === 'spoof_c') {
+assigned = (37 / 199) * 30;
+formulaEl.textContent = "(37 / 199) * 30 = 5.5 giorni";
+} else if(scenario === 'spoof_b') {
+assigned = (97 / 199) * 30;
+formulaEl.textContent = "(97 / 199) * 30 = 14.6 giorni";
+} else {
+assigned = 30;
+formulaEl.textContent = "Pagamento corretto = 30 giorni";
+}
+
+vpnChartInstance.data.datasets[0].data = [expected, assigned.toFixed(1)];
+vpnChartInstance.update();
+}
+</script>
+</body>
+</html>
