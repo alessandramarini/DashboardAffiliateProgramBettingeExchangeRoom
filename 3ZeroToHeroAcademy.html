@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#050a05">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title id="page-title">Room AI | Global Exchange Academy - Day 3</title>
+    <meta name="description" content="Interactive Academy for Betting Exchange. Day 3: Liquidity and Depth: Volumes and the Soul of the Market.">
+
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&display=swap"></noscript>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050a05;
+            background-image: 
+                linear-gradient(to bottom, rgba(5, 10, 5, 0.96), rgba(10, 20, 10, 0.90)),
+                url('https://images.unsplash.com/photo-1518605368461-1e125222058c?auto=format,compress&fit=crop&w=1920&q=70&fm=webp');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-text-size-adjust: 100%;
+            text-rendering: optimizeLegibility;
+            overflow-x: hidden;
+            width: 100vw;
+        }
+
+        .glass-panel {
+            background: rgba(10, 15, 10, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(153, 232, 20, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transform: translateZ(0); 
+            will-change: transform, opacity;
+        }
+
+        .text-neon-green { color: #99E814; text-shadow: 0 0 12px rgba(153, 232, 20, 0.4); }
+        .bg-neon-green { background-color: #99E814; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.5); }
+        ::-webkit-scrollbar-thumb { background: #99E814; border-radius: 10px; }
+        .tg-scrollbar::-webkit-scrollbar { width: 4px; }
+        .tg-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .tg-scrollbar::-webkit-scrollbar-thumb { background: rgba(153,232,20,0.4); border-radius: 4px; }
+        .tg-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(153,232,20,0.8); }
+
+        @keyframes pulse-sub {
+            0% { color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); border-color: rgba(239, 68, 68, 0.6); background-color: rgba(20,5,5,0.9); }
+            50% { color: #99E814; box-shadow: 0 0 20px rgba(153, 232, 20, 0.3); border-color: rgba(153, 232, 20, 0.6); background-color: rgba(5,20,5,0.9); }
+            100% { color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); border-color: rgba(239, 68, 68, 0.6); background-color: rgba(20,5,5,0.9); }
+        }
+        .sub-warning { animation: pulse-sub 3s infinite ease-in-out; border: 1px solid; transition: all 0.3s ease; transform: translateZ(0); }
+
+        @keyframes joystickNeon {
+            0% { filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.5)); transform: scale(1) translateZ(0); }
+            50% { filter: drop-shadow(0 0 35px rgba(59, 130, 246, 1)); transform: scale(1.15) translateZ(0); }
+            100% { filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.5)); transform: scale(1) translateZ(0); }
+        }
+        .joystick-pulse { animation: joystickNeon 2.5s ease-in-out infinite; display: inline-block; cursor: pointer; will-change: transform, filter; }
+
+        @keyframes play-shadow-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(153, 232, 20, 0.6), 0 8px 32px rgba(0,0,0,0.5); }
+            70% { box-shadow: 0 0 0 20px rgba(153, 232, 20, 0), 0 8px 32px rgba(0,0,0,0.5); }
+            100% { box-shadow: 0 0 0 0 rgba(153, 232, 20, 0), 0 8px 32px rgba(0,0,0,0.5); }
+        }
+        .play-pulse { animation: play-shadow-pulse 2.5s infinite cubic-bezier(0.66, 0, 0, 1); transform: translateZ(0); }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translate3d(0, 15px, 0); }
+            to { opacity: 1; transform: translate3d(0, 0, 0); }
+        }
+        .animate-fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; will-change: transform, opacity; }
+
+        .premium-card {
+            background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+            border-radius: 24px;
+            position: relative;
+            transform: translateZ(0);
+            width: 100%;
+            box-sizing: border-box;
+            overflow: hidden; 
+        }
+        
+        .frame-gold {
+            border: 2px solid #c5a059;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(197, 160, 89, 0.15);
+        }
+        .wwtbam-question-box {
+            background: radial-gradient(ellipse at center, rgba(30, 41, 59, 0.95) 0%, rgba(2, 6, 23, 0.95) 100%);
+            border: 1px solid #d4af37;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7), inset 0 0 15px rgba(212,175,55,0.15);
+            position: relative;
+            width: 100%;
+        }
+
+        .frame-cyan {
+            border: 2px solid #00e5ff;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(0, 229, 255, 0.15);
+            background: linear-gradient(135deg, #041419 0%, #08222a 100%);
+        }
+
+        .frame-neon {
+            border: 2px solid #99E814;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(153, 232, 20, 0.15);
+            background: linear-gradient(135deg, #0a140f 0%, #112211 100%);
+        }
+
+        .frame-purple {
+            border: 2px solid #a855f7;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(168, 85, 247, 0.15);
+            background: linear-gradient(135deg, #13051a 0%, #260a33 100%);
+        }
+
+        .frame-blue {
+            border: 2px solid #3b82f6;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(59, 130, 246, 0.15);
+            background: linear-gradient(135deg, #05101a 0%, #0a2133 100%);
+        }
+
+        .wwtbam-btn {
+            background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+            border: 1px solid rgba(197, 160, 89, 0.5);
+            border-radius: 9999px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            min-height: 3.5rem;
+            word-wrap: break-word;
+        }
+        .wwtbam-btn:hover:not(:disabled) {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4), inset 0 0 10px rgba(212, 175, 55, 0.2);
+            transform: translateY(-1px);
+        }
+        .wwtbam-btn.correct {
+            background: linear-gradient(180deg, #064e3b 0%, #022c22 100%) !important;
+            border-color: #10b981 !important;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.3) !important;
+            color: #ffffff !important;
+        }
+        .wwtbam-btn.wrong {
+            background: linear-gradient(180deg, #7f1d1d 0%, #450a0a 100%) !important;
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.3) !important;
+            color: #ffffff !important;
+        }
+
+        .lang-flag {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border-radius: 6px;
+        }
+        .lang-flag.active {
+            opacity: 1;
+            transform: scale(1.15) translateY(-2px);
+            border-color: #99E814;
+            box-shadow: 0 6px 12px rgba(153, 232, 20, 0.3), 0 0 0 2px rgba(153, 232, 20, 0.5);
+            filter: grayscale(0%);
+            z-index: 10;
+        }
+        .lang-flag.inactive {
+            opacity: 0.6;
+            filter: grayscale(60%) contrast(1.2);
+            border-color: transparent;
+            transform: scale(1);
+        }
+        .lang-flag.inactive:hover {
+            opacity: 0.9;
+            filter: grayscale(20%);
+            transform: scale(1.05);
+        }
+        
+        .btn-hover-fix:hover span {
+            color: #050a05 !important;
+        }
+    </style>
+</head>
+<body class="text-gray-200 pb-12 selection:bg-[#99E814] selection:text-black antialiased relative w-full overflow-x-hidden">
+
+    <header class="sticky top-0 z-40 glass-panel border-b-0 border-t-0 border-x-0 border-b border-[#99E814]/20 px-3 sm:px-6 py-2 sm:py-3 flex justify-between items-center transform-gpu w-full">
+        <div class="flex items-center gap-2 md:gap-4 flex-shrink min-w-0">
+            <img src="logo-tondo.jpeg" alt="Logo" class="w-8 h-8 md:w-10 md:h-10 rounded-full shadow-[0_0_15px_rgba(153,232,20,0.3)] object-cover shrink-0 border border-[#99E814]/30" onerror="this.src='https://placehold.co/100x100/102010/99E814?text=BE'">
+            <h1 class="font-black text-[10px] sm:text-xs md:text-sm lg:text-base tracking-wider uppercase whitespace-nowrap overflow-hidden text-ellipsis" data-i18n-html="headerTitle">BETTING EXCHANGE <span class="text-neon-green">ROOM</span></h1>
+        </div>
+        
+        <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+            <div class="flex items-center bg-black/60 border border-gray-700 px-2.5 py-1.5 sm:px-3 rounded-full shadow-inner" id="xp-badge">
+                <span class="text-yellow-400 text-[10px] sm:text-xs mr-1.5">⚡</span>
+                <span id="xp-counter" class="font-mono font-bold text-[11px] sm:text-sm text-white tabular-nums">0 XP</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="w-full max-w-5xl mx-auto px-3 sm:px-6 mt-4 md:mt-8 space-y-6 md:space-y-10">
+
+        <div class="flex justify-center w-full px-4 mb-4 animate-fade-in-up">
+            <div class="flex items-center justify-center gap-3 sm:gap-5 bg-gradient-to-r from-gray-900/40 via-gray-900/80 to-gray-900/40 border border-[#99E814]/20 py-2.5 px-6 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md">
+                <button onclick="window.changeLang('en')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="en" aria-label="English">
+                    <img src="https://flagcdn.com/w40/gb.png" alt="EN" class="w-full h-full object-cover">
+                </button>
+                <button onclick="window.changeLang('es')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="es" aria-label="Español">
+                    <img src="https://flagcdn.com/w40/es.png" alt="ES" class="w-full h-full object-cover">
+                </button>
+                <button onclick="window.changeLang('pt')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="pt" aria-label="Português">
+                    <img src="https://flagcdn.com/w40/br.png" alt="PT" class="w-full h-full object-cover">
+                </button>
+                <button onclick="window.changeLang('it')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="it" aria-label="Italiano">
+                    <img src="https://flagcdn.com/w40/it.png" alt="IT" class="w-full h-full object-cover">
+                </button>
+            </div>
+        </div>
+
+        <div class="text-center space-y-2 md:space-y-3 px-2 animate-fade-in-up flex flex-col items-center">
+            <p class="text-[#99E814] font-black text-[10px] sm:text-xs md:text-sm tracking-[0.3em] uppercase drop-shadow-lg break-words text-center" data-i18n="moduleTitle">GIORNO 3/30</p>
+            <h2 class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tighter leading-tight break-words text-center w-full" data-i18n="lessonTitle">ZERO TO HERO academy</h2>
+            <p class="text-gray-400 max-w-2xl mx-auto text-xs sm:text-sm md:text-base font-bold leading-relaxed mt-2" data-i18n="lessonDesc">Volumi e l'Anima del Mercato</p>
+        </div>
+
+        <section class="premium-card frame-cyan w-full p-3 sm:p-6 md:p-8" style="content-visibility: auto; contain-intrinsic-size: 500px;">
+            <div id="video-wrapper" class="relative w-full aspect-video bg-[#0a140f] rounded-xl md:rounded-2xl overflow-hidden border border-[#00e5ff]/30 shadow-xl ring-1 ring-white/5 transform-gpu">
+                <iframe id="main-video" class="absolute inset-0 w-full h-full z-20" src="https://www.youtube.com/embed/pNxPsx7FpLY?rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 mt-4 sm:mt-6 w-full max-w-4xl mx-auto">
+                <a id="btn-podcast" href="#" target="_blank" rel="noopener noreferrer" onclick="SoundEngine.click()" class="flex items-center justify-center p-3 sm:p-5 md:p-6 bg-gray-900/80 hover:bg-[#00e5ff]/10 hover:border-[#00e5ff]/50 border border-gray-700/50 rounded-xl md:rounded-2xl transition-all active:scale-95 group shadow-md text-center flex-row touch-manipulation transform-gpu min-h-[70px]">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 mr-3 text-[#00e5ff] group-hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.8)] group-hover:scale-110 transition-all duration-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                    <span class="font-black text-[11px] sm:text-xs md:text-sm tracking-widest uppercase text-[#00e5ff] break-words leading-tight" data-i18n="btnPodcast">ASCOLTA IL PODCAST</span>
+                </a>
+                <button onclick="openEbookModal()" class="flex items-center justify-center p-3 sm:p-5 md:p-6 bg-gray-900/80 hover:bg-[#ffb703]/10 hover:border-[#ffb703]/50 border border-gray-700/50 rounded-xl md:rounded-2xl transition-all active:scale-95 group shadow-md text-center flex-row touch-manipulation transform-gpu min-h-[70px]">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 mr-3 text-[#ffb703] group-hover:drop-shadow-[0_0_8px_rgba(255,183,3,0.8)] group-hover:scale-110 transition-all duration-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477-4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    <span class="font-black text-[11px] sm:text-xs md:text-sm tracking-widest uppercase text-[#ffb703] transition-colors break-words leading-tight" data-i18n="btnEbook">VISUALIZZA IL MANUALE</span>
+                </button>
+            </div>
+        </section>
+
+        <section class="premium-card frame-gold w-full p-4 sm:p-6 md:p-10 h-fit" id="quiz-section">
+            <div id="quiz-container" class="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center">
+                <div class="w-full flex flex-wrap justify-between items-center mb-6 sm:mb-8 px-2 gap-2">
+                    <div class="text-[#d4af37] text-[10px] sm:text-xs font-black uppercase tracking-widest bg-[#d4af37]/10 px-3 py-1 rounded-full border border-[#d4af37]/40 whitespace-nowrap shadow-inner" id="quiz-progress-text">Domanda 1 di 5</div>
+                    <div class="flex gap-1.5 shrink-0" id="quiz-dots"></div>
+                </div>
+                <div class="wwtbam-question-box px-4 sm:px-6 py-8 sm:py-10 rounded-xl text-center mb-8 sm:mb-10 w-full">
+                    <p id="quiz-question-text" class="text-[15px] sm:text-lg md:text-xl text-white font-black leading-relaxed drop-shadow-md break-words"></p>
+                </div>
+                <div id="quiz-options-container" class="space-y-3 sm:space-y-4 w-full"></div>
+            </div>
+            
+            <div id="quiz-feedback" class="hidden w-full max-w-2xl mx-auto p-6 sm:p-8 md:p-10 rounded-xl md:rounded-2xl text-center shadow-2xl mt-8 transition-all duration-500 transform-gpu relative overflow-hidden flex justify-center items-center">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
+                <div id="quiz-feedback-icon" class="text-6xl sm:text-8xl relative z-10 drop-shadow-lg flex items-center justify-center">✅</div>
+                <p id="quiz-feedback-text" class="hidden"></p>
+            </div>
+
+            <div id="quiz-completed-screen" class="hidden flex-col items-center justify-center py-10 md:py-16 text-center transition-all duration-500 w-full">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-[#d4af37]/10 rounded-full flex items-center justify-center mb-6 border-2 border-[#d4af37] shadow-[0_0_30px_rgba(212,175,55,0.4)] shrink-0">
+                    <span class="text-4xl sm:text-5xl drop-shadow-lg">🏆</span>
+                </div>
+                <h4 class="text-[#d4af37] font-black text-xl sm:text-2xl md:text-3xl uppercase tracking-widest mb-3 drop-shadow-md break-words w-full" data-i18n="quizCompletedTitle">Check-Point Superato!</h4>
+                <p class="text-gray-200 text-sm md:text-base font-medium mb-10 max-w-md mx-auto px-4 break-words" data-i18n="quizCompletedDesc">Hai sbloccato 500 XP. Ora domini le dinamiche di liquidità.</p>
+                <button onclick="resetQuiz()" class="wwtbam-btn px-6 sm:px-10 py-3 sm:py-4 text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-[0.2em] text-[#d4af37] hover:text-white flex items-center justify-center gap-2 sm:gap-3 group max-w-full">
+                    <span class="group-hover:-rotate-180 transition-transform duration-500 text-base sm:text-lg shrink-0">🔄</span> 
+                    <span data-i18n="btnRetryQuiz" class="truncate">Ripeti il test</span>
+                </button>
+            </div>
+        </section>
+
+        <section class="premium-card frame-neon w-full p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center relative overflow-hidden" style="content-visibility: auto;">
+            <div class="absolute inset-0 bg-gray-600 opacity-[0.02] blur-3xl pointer-events-none"></div>
+            <div class="w-full max-w-4xl mx-auto flex justify-start items-center mb-3 md:mb-5 relative z-10">
+                <div class="bg-gray-900 text-[#99E814] border border-[#99E814]/30 text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest break-words" data-i18n="demoBadge">DEMO INTERATTIVA</div>
+            </div>
+            <a href="demo-tick.html" target="_blank" class="demo-link block group relative w-full max-w-4xl mx-auto rounded-xl sm:rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl border border-[#99E814]/30 hover:border-[#99E814] transition-all duration-700 cursor-pointer bg-[#050a05] transform-gpu hover:-translate-y-1" onclick="SoundEngine.click()">
+                <div class="relative w-full overflow-hidden" style="aspect-ratio: 16/9;">
+                    <img src="demo-tick.jpeg" onerror="this.src='https://placehold.co/1280x720/102010/99E814?text=SIMULATOR'" alt="Demo Simulator" class="absolute inset-0 w-full h-full object-cover object-top z-0 transition-transform duration-1000 group-hover:scale-105 opacity-100 grayscale-[0.8] mix-blend-lighten">
+                    <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-[#0a140f]/90 z-10 transition-opacity duration-700 opacity-80 group-hover:opacity-90 pointer-events-none"></div>
+                    <div class="absolute inset-0 flex items-center justify-center z-20 pointer-events-none px-2">
+                        <div class="play-pulse px-4 py-3 sm:px-8 sm:py-4 bg-[#99E814] border border-[#99E814] rounded-lg sm:rounded-xl flex items-center justify-center shadow-[0_0_30px_rgba(153,232,20,0.5)] transform group-hover:scale-105 transition-all duration-500 ease-out group-hover:bg-[#b3ff33] group-hover:shadow-[0_0_40px_rgba(153,232,20,0.7)] pointer-events-auto gap-2 sm:gap-3 backdrop-blur-sm max-w-[90%]">
+                            <svg class="w-4 h-4 sm:w-6 sm:h-6 text-[#050a05] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                            <span class="text-[#050a05] font-black text-[10px] sm:text-sm md:text-base tracking-[0.1em] sm:tracking-[0.2em] uppercase truncate" data-i18n="startSimulator">Avvia Simulatore</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </section>
+        
+        <section class="premium-card frame-purple w-full p-5 sm:p-8 relative overflow-hidden transform-gpu" style="content-visibility: auto;">
+            <p class="text-[9px] sm:text-[11px] md:text-xs text-[#a855f7] font-black mb-2 sm:mb-4 tracking-[0.2em] uppercase text-center md:text-left break-words" data-i18n="finLabel">PILLOLA FINANZIARIA</p>
+            <p class="text-xs sm:text-base md:text-lg text-gray-300 font-medium italic leading-relaxed text-center md:text-left break-words w-full">"<span data-i18n="finQuote">Il trader amatoriale guarda solo la quota di una squadra. Il professionista guarda quanti soldi stanno difendendo quella quota.</span>"</p>
+        </section>
+
+        <section class="premium-card frame-blue w-full p-6 sm:p-10 flex flex-col items-center justify-center relative transform-gpu">
+            <div class="text-center space-y-3 mb-6 px-4 animate-fade-in-up relative z-10 w-full">
+                <h4 class="text-[#3b82f6] font-black text-lg sm:text-xl md:text-2xl tracking-[0.2em] uppercase drop-shadow-[0_0_15px_rgba(59,130,246,0.5)] w-full break-words" data-i18n="penaltiesTitle">GIOCO EDUCATIVO</h4>
+                <p class="text-gray-300 text-xs sm:text-sm md:text-base font-medium max-w-lg mx-auto leading-relaxed w-full break-words" data-i18n="penaltiesDesc">Scommetti contro il banco e senza strategia alla slot machine.</p>
+            </div>
+            <a href="slotmachine.html" target="_blank" rel="noopener noreferrer" class="text-6xl sm:text-7xl md:text-8xl hover:scale-125 transition-transform duration-500 touch-manipulation joystick-pulse transform-gpu shrink-0 relative z-10 mt-4" title="Play Game" onclick="SoundEngine.click()">
+                🎰
+                <div class="absolute inset-0 bg-[#3b82f6] rounded-full blur-[50px] opacity-20 -z-10"></div>
+            </a>
+        </section>
+
+        <div class="flex flex-col justify-center items-center pt-8 pb-4 border-t border-gray-800/50 relative gap-4 w-full">
+            <div id="sub-warning-msg" class="hidden absolute inset-0 md:static sub-warning px-4 sm:px-8 py-3.5 sm:py-4 rounded-xl text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-center w-full items-center justify-center gap-2 z-20 break-words">
+                <span data-i18n="subNotActive">ABBONAMENTO NON ATTIVO! CONTATTA IL TUO REFERENTE</span>
+            </div>
+            
+            <a id="btn-next-lesson" href="https://affiliate-program-bettinge-exchange.vercel.app/SummaryZeroToHeroAcademy.html" onclick="SoundEngine.click()" class="bg-[#0a140f] text-[#99E814] border-2 border-[#99E814] font-black w-full max-w-md mx-auto justify-center px-6 sm:px-10 py-5 rounded-2xl hover:bg-[#99E814] hover:border-[#99E814] transition-all duration-300 text-xs sm:text-sm md:text-base uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(153,232,20,0.2)] hover:shadow-[0_0_40px_rgba(153,232,20,0.6)] touch-manipulation active:scale-95 flex items-center gap-3 z-10 transform-gpu group btn-hover-fix h-auto min-h-[4rem]">
+                <span data-i18n="navNextLesson" class="truncate transition-colors duration-300">PROSSIMA LEZIONE</span> 
+                <span class="text-xl sm:text-2xl group-hover:translate-x-2 group-hover:text-black transition-all duration-300 shrink-0">→</span>
+            </a>
+        </div>
+    </main>
+
+    <div id="ebook-modal" class="fixed inset-0 z-[100] hidden flex-col items-center justify-center bg-[#050a05]/95 backdrop-blur-md p-0 sm:p-4 md:p-6 opacity-0 transition-opacity duration-300">
+        <div class="bg-[#050a05] w-full max-w-4xl h-full sm:h-auto sm:max-h-[95vh] rounded-none sm:rounded-3xl border-0 sm:border border-gray-700 flex flex-col overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 relative modern-ebook" id="ebook-modal-content">
+            <div class="flex justify-between items-center p-4 md:p-6 border-b border-gray-800 bg-[#050a05] shrink-0 z-10 w-full">
+                <h3 class="text-[#99E814] font-black uppercase tracking-widest text-[11px] sm:text-sm md:text-base flex items-center gap-2 truncate">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#ffb703] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477-4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg> 
+                    <span class="text-[#ffb703] truncate" data-i18n="btnEbookTitle">MANUALE</span>
+                </h3>
+                <button onclick="closeEbookModal()" class="text-gray-400 hover:text-white text-3xl md:text-4xl leading-none px-3 py-1 rounded-lg active:scale-95 touch-manipulation transition-colors shrink-0">&times;</button>
+            </div>
+            <div class="flex-1 overflow-y-auto relative flex flex-col items-center tg-scrollbar bg-[#050a05] w-full">
+                <div class="w-full max-w-3xl p-5 sm:p-8 md:p-10 text-justify md:text-left break-words" id="ebook-content-container" data-i18n-html="ebookContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SoundEngine = {
+            ctx: null, unlocked: false,
+            init: function() { 
+                if(!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if(AudioContext) this.ctx = new AudioContext(); 
+                }
+                if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+                this.unlocked = true;
+            },
+            playTone: function(freq, type, duration, vol) {
+                if(!this.unlocked) this.init();
+                if(!this.ctx || this.ctx.state === 'suspended') return;
+                try {
+                    const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+                    osc.type = type; osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+                    osc.connect(gain); gain.connect(this.ctx.destination);
+                    osc.start(); osc.stop(this.ctx.currentTime + duration);
+                } catch(e) {}
+            },
+            click: function() { this.playTone(600, 'sine', 0.1, 0.1); },
+            cashout: function() { this.playTone(880, 'sine', 0.1, 0.1); setTimeout(() => this.playTone(1760, 'sine', 0.3, 0.15), 100); },
+            error: function() { this.playTone(150, 'sawtooth', 0.3, 0.1); }
+        };
+
+        function openEbookModal() {
+            SoundEngine.click();
+            const modal = document.getElementById('ebook-modal');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+            void modal.offsetWidth; 
+            modal.classList.remove('opacity-0'); modal.classList.add('opacity-100');
+            document.getElementById('ebook-modal-content').classList.remove('scale-95'); document.getElementById('ebook-modal-content').classList.add('scale-100');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeEbookModal() {
+            SoundEngine.click();
+            const modal = document.getElementById('ebook-modal');
+            modal.classList.remove('opacity-100'); modal.classList.add('opacity-0');
+            document.getElementById('ebook-modal-content').classList.remove('scale-100'); document.getElementById('ebook-modal-content').classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); document.body.style.overflow = ''; }, 300);
+        }
+
+        window.RoomApp = (function() {
+            const CONFIG = { STORAGE_KEY: 'bx_academy_demo_hd_v2_day3' }; 
+
+            const podcastUrls = {
+                it: "https://spotifycreators-web.app.link/e/qkEBnZrGv3b",
+                en: "https://spotifycreators-web.app.link/e/YysNbQfMv3b",
+                es: "https://spotifycreators-web.app.link/e/ZpQWnLLMv3b",
+                pt: "https://spotifycreators-web.app.link/e/jknQVXDNv3b"
+            };
+
+            const ebookTemplate = (langDict) => `
+                <div class="space-y-6 text-gray-300">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl md:text-3xl font-black text-[#99E814] tracking-widest uppercase drop-shadow-md">${langDict.ebTitle1}</h2>
+                        <h3 class="text-xl md:text-2xl font-bold text-white mt-2">${langDict.ebTitle2}</h3>
+                        <p class="text-[#ffb703] font-semibold mt-1 uppercase tracking-wider">${langDict.ebTitle3}</p>
+                    </div>
+                    
+                    <div class="bg-gray-900/50 p-5 rounded-xl border border-gray-700/50 shadow-inner">
+                        <p class="leading-relaxed">${langDict.ebIntro}</p>
+                    </div>
+
+                    <div class="bg-[#3b82f6]/10 p-5 rounded-xl border border-[#3b82f6]/30">
+                        <p class="leading-relaxed"><strong class="text-[#3b82f6]">${langDict.ebLawTitle}</strong><br>${langDict.ebLawText}</p>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-white border-b border-gray-700 pb-2 mt-8 mb-4">${langDict.ebDictTitle}</h3>
+
+                    <div class="space-y-4">
+                        <div class="bg-gray-800/80 p-4 rounded-lg border-l-4 border-[#ffb703]">
+                            <h4 class="font-bold text-[#ffb703] flex items-center gap-2"><span class="text-xl">🤝</span> ${langDict.ebMatchedTitle}</h4>
+                            <p class="mt-1">${langDict.ebMatchedText}</p>
+                            <p class="text-sm text-gray-400 mt-2 bg-gray-900 p-2 rounded italic">💡 Tip: ${langDict.ebRule1}</p>
+                        </div>
+
+                        <div class="bg-gray-800/80 p-4 rounded-lg border-l-4 border-[#ef4444]">
+                            <h4 class="font-bold text-[#ef4444] flex items-center gap-2"><span class="text-xl">🧱</span> ${langDict.ebUnmatchedTitle}</h4>
+                            <p class="mt-1">${langDict.ebUnmatchedText}</p>
+                        </div>
+
+                        <div class="bg-gray-800/80 p-4 rounded-lg border-l-4 border-[#a855f7]">
+                            <h4 class="font-bold text-[#a855f7] flex items-center gap-2"><span class="text-xl">🕳️</span> ${langDict.ebGapsTitle}</h4>
+                            <p class="mt-1">${langDict.ebGapsText}</p>
+                            <p class="text-sm text-gray-400 mt-2 bg-gray-900 p-2 rounded italic">💡 Tip: ${langDict.ebRule2}</p>
+                        </div>
+                        
+                        <div class="bg-gray-800/80 p-4 rounded-lg border-l-4 border-red-500">
+                            <h4 class="font-bold text-red-500 flex items-center gap-2"><span class="text-xl">⚠️</span> ${langDict.ebWarningTitle}</h4>
+                            <p class="mt-1">${langDict.ebWarningText}</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-black/40 p-6 rounded-xl border-l-2 border-[#00e5ff] italic text-center mt-6">
+                        <p class="text-lg text-gray-200">"${langDict.ebQuote1}"</p>
+                        <p class="text-xl font-black text-white mt-4 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">"${langDict.ebQuote2}"</p>
+                    </div>
+                </div>
+            `;
+
+            const dict = {
+                it: {
+                    pageTitle: "Room AI | Global Exchange Academy - Giorno 3",
+                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
+                    moduleTitle: "GIORNO 3/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Volumi e l'Anima del Mercato. Liquidità e Profondità.",
+                    finLabel: "PILLOLA FINANZIARIA", finQuote: "Il trader amatoriale guarda solo la quota di una squadra. Il professionista guarda quanti soldi stanno difendendo quella quota.",
+                    demoBadge: "DEMO INTERATTIVA", startSimulator: "AVVIA SIMULATORE",
+                    penaltiesTitle: "GIOCO EDUCATIVO", penaltiesDesc: "Scommetti contro il banco e senza strategia alla slot machine.",
+                    quizProgress: "Domanda {step} di 5",
+                    btnPodcast: "ASCOLTA IL PODCAST", btnEbook: "VISUALIZZA IL MANUALE", btnEbookTitle: "MANUALE", btnRetryQuiz: "Ripeti il test",
+                    navNextLesson: "PROSSIMA LEZIONE",
+                    subNotActive: "ABBONAMENTO NON ATTIVO! CONTATTA IL TUO REFERENTE",
+                    quizCompletedTitle: "Check-Point Superato!", quizCompletedDesc: "Hai sbloccato 500 XP. Ora domini le dinamiche di liquidità.",
+                    videoUrl: "https://www.youtube.com/embed/pNxPsx7FpLY?rel=0&modestbranding=1",
+                    
+                    ebTitle1: "Giorno 3", ebTitle2: "Liquidità e Profondità", ebTitle3: "I Volumi e l'Anima del Mercato",
+                    ebIntro: "Nel Betting Exchange, la liquidità è ossigeno. Un mercato senza liquidità è un mercato in cui sei in trappola: non puoi entrare al prezzo desiderato e, peggio ancora, non puoi uscire quando il rischio diventa insostenibile. Comprendere la Profondità del Mercato significa saper leggere le 'impronte' lasciate dai grandi capitali sul Ladder e anticipare le dinamiche di prezzo.",
+                    ebLawTitle: "⚖️ La Legge della Resistenza",
+                    ebLawText: "Più denaro in attesa (Unmatched) c'è su un livello = Maggiore è la resistenza a un cambiamento di quella quota.",
+                    ebDictTitle: "Il Dizionario della Liquidità",
+                    ebMatchedTitle: "Matched Volume (Volume Abbinato)",
+                    ebMatchedText: "La quantità totale di denaro che ha già trovato un accordo tra chi Punta e chi Banca a un prezzo specifico. Indica l'affidabilità storica di quel livello.",
+                    ebRule1: "Opera sempre in mercati ad alto volume. Nelle leghe minori (illiquide), un singolo ordine da 500€ può far crollare la quota di 10 tick all'improvviso.",
+                    ebUnmatchedTitle: "Unmatched Money (I Muri)",
+                    ebUnmatchedText: "Capitali visibili sul Ladder in attesa di essere abbinati. Formano veri e propri 'muri' di supporto o resistenza. Se vedi 15.000€ in attesa a quota 2.00, quel livello agirà come barriera fisica contro cui i prezzi tenderanno a rimbalzare.",
+                    ebGapsTitle: "Liquidity Gaps (Vuoti di Liquidità)",
+                    ebGapsText: "Aree sul Ladder dove c'è pochissimo denaro in attesa. In queste zone, il prezzo accelera rapidamente perché non incontra ostacoli.",
+                    ebRule2: "I trader esperti cercano attivamente i vuoti di liquidità per lasciar scivolare il prezzo a loro favore, spingendolo dove non ci sono ordini a difenderlo.",
+                    ebWarningTitle: "Buchi, Spikes e Slippage",
+                    ebWarningText: "Quando la liquidità in attesa è sottile, basta un piccolo ordine a mercato (Aggressive Entry) per 'spazzare' i prezzi disponibili su più tick, creando un salto improvviso (Spike). Operare in mercati illiquidi è letale: aumenta il rischio di non poter fare Cash Out e di subire uno Slippage distruttivo (entrare a un prezzo pessimo).",
+                    ebQuote1: "La liquidità è la differenza tra un'opportunità di trading profittevole e una trappola senza via d'uscita.",
+                    ebQuote2: "Il trader amatoriale guarda solo la quota di una squadra. Il professionista guarda quanti soldi stanno difendendo quella quota.",
+
+                    quizData: [
+                        { q: "Perché la liquidità è definita 'l'ossigeno' del Betting Exchange?", opts: ["Permette di entrare e uscire dal mercato ai prezzi desiderati senza rimanere in trappola", "Garantisce sempre un profitto ad ogni scommessa", "Abbassa le commissioni pagate all'Exchange", "Aumenta la durata della partita in corso"], correct: 0 },
+                        { q: "Cosa indica il 'Matched Volume' (Volume Abbinato)?", opts: ["La quantità totale di denaro che ha già trovato un accordo tra Punta e Banca a un prezzo specifico", "I soldi persi dai trader principianti", "Il limite massimo che il bookmaker accetta", "Il denaro che è ancora in attesa di essere scambiato"], correct: 0 },
+                        { q: "Cosa succede quando il prezzo incontra un 'Liquidity Gap' (Vuoto di Liquidità)?", opts: ["Accelera rapidamente perché non incontra ostacoli (ordini in attesa)", "Si ferma e rimbalza indietro", "La partita viene temporaneamente sospesa", "L'Exchange cancella tutti gli ordini pendenti"], correct: 0 },
+                        { q: "Qual è uno dei maggiori rischi di operare in mercati illiquidi?", opts: ["Non poter fare Cash Out e subire uno Slippage distruttivo", "Essere bannati dalla piattaforma", "Pagare tasse aggiuntive sulle vincite", "Avere un rimborso automatico dell'ordine"], correct: 0 },
+                        { q: "Cosa rappresentano i 'Muri' (grandi quantità di Unmatched Money) sul Ladder?", opts: ["Barriere fisiche di supporto o resistenza contro cui i prezzi tenderanno a rimbalzare", "Errori del sistema dell'Exchange", "Soldi finti creati per ingannare i giocatori", "Il budget totale della squadra sfavorita"], correct: 0 }
+                    ]
+                },
+                en: {
+                    pageTitle: "Room AI | Global Exchange Academy - Day 3",
+                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
+                    moduleTitle: "DAY 3/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Volumes and the Soul of the Market. Liquidity and Depth.",
+                    finLabel: "FINANCIAL PILL", finQuote: "The amateur trader only looks at a team's odds. The professional looks at how much money is defending those odds.",
+                    demoBadge: "INTERACTIVE DEMO", startSimulator: "START SIMULATOR",
+                    penaltiesTitle: "EDUCATIONAL GAME", penaltiesDesc: "Bet against the house with no strategy at the slot machine.",
+                    quizProgress: "Question {step} of 5",
+                    btnPodcast: "LISTEN TO PODCAST", btnEbook: "VIEW MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Retry Quiz",
+                    navNextLesson: "NEXT LESSON",
+                    subNotActive: "SUBSCRIPTION INACTIVE! CONTACT YOUR REFERENT",
+                    quizCompletedTitle: "Checkpoint Passed!", quizCompletedDesc: "You unlocked 500 XP. You now master liquidity dynamics.",
+                    videoUrl: "https://www.youtube.com/embed/WHMCdxN9g3s?rel=0&modestbranding=1",
+                    
+                    ebTitle1: "Day 3", ebTitle2: "Liquidity and Depth", ebTitle3: "Volumes and the Soul of the Market",
+                    ebIntro: "In the Betting Exchange, liquidity is oxygen. A market without liquidity is a market where you are trapped: you cannot enter at your desired price and, even worse, you cannot exit when the risk becomes unsustainable. Understanding Market Depth means knowing how to read the 'footprints' left by big capital on the Ladder and anticipating price dynamics.",
+                    ebLawTitle: "⚖️ The Law of Resistance",
+                    ebLawText: "More waiting money (Unmatched) on a level = Greater resistance to a change in those odds.",
+                    ebDictTitle: "The Liquidity Dictionary",
+                    ebMatchedTitle: "Matched Volume",
+                    ebMatchedText: "The total amount of money that has already found an agreement between Backers and Layers at a specific price. It indicates the historical reliability of that level.",
+                    ebRule1: "Always trade in high-volume markets. In minor leagues (illiquid markets), a single €500 order can suddenly crash the odds by 10 ticks.",
+                    ebUnmatchedTitle: "Unmatched Money (Walls)",
+                    ebUnmatchedText: "Visible capital on the Ladder waiting to be matched. They form literal 'walls' of support or resistance. If you see €15,000 waiting at odds of 2.00, that level will act as a physical barrier against which prices will tend to bounce.",
+                    ebGapsTitle: "Liquidity Gaps",
+                    ebGapsText: "Areas on the Ladder where there is very little waiting money. In these areas, the price accelerates rapidly because it encounters no obstacles.",
+                    ebRule2: "Expert traders actively look for liquidity gaps to let the price slide in their favor, pushing it where there are no orders to defend it.",
+                    ebWarningTitle: "Holes, Spikes, and Slippage",
+                    ebWarningText: "When waiting liquidity is thin, a small market order (Aggressive Entry) is enough to 'sweep' the available prices across multiple ticks, creating a sudden jump (Spike). Trading in illiquid markets is lethal: it increases the risk of not being able to Cash Out and suffering destructive Slippage (entering at a terrible price).",
+                    ebQuote1: "Liquidity is the difference between a profitable trading opportunity and a trap with no way out.",
+                    ebQuote2: "The amateur trader only looks at a team's odds. The professional looks at how much money is defending those odds.",
+
+                    quizData: [
+                        { q: "Why is liquidity called the 'oxygen' of the Betting Exchange?", opts: ["It allows entering and exiting the market at desired prices without getting trapped", "It always guarantees a profit on every bet", "It lowers the commissions paid to the Exchange", "It increases the length of the ongoing match"], correct: 0 },
+                        { q: "What does 'Matched Volume' indicate?", opts: ["The total amount of money that has already found an agreement between Back and Lay at a specific price", "The money lost by beginner traders", "The maximum limit the bookmaker accepts", "The money that is still waiting to be traded"], correct: 0 },
+                        { q: "What happens when the price encounters a 'Liquidity Gap'?", opts: ["It accelerates rapidly because it encounters no obstacles (waiting orders)", "It stops and bounces back", "The match is temporarily suspended", "The Exchange cancels all pending orders"], correct: 0 },
+                        { q: "What is one of the biggest risks of trading in illiquid markets?", opts: ["Not being able to Cash Out and suffering destructive Slippage", "Being banned from the platform", "Paying extra taxes on winnings", "Getting an automatic order refund"], correct: 0 },
+                        { q: "What do 'Walls' (large amounts of Unmatched Money) represent on the Ladder?", opts: ["Physical barriers of support or resistance against which prices will tend to bounce", "Exchange system errors", "Fake money created to trick players", "The total budget of the underdog team"], correct: 0 }
+                    ]
+                },
+                es: {
+                    pageTitle: "Room AI | Global Exchange Academy - Día 3",
+                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
+                    moduleTitle: "DÍA 3/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Volúmenes y el Alma del Mercado. Liquidez y Profundidad.",
+                    finLabel: "PÍLDORA FINANCIERA", finQuote: "El trader aficionado solo mira la cuota de un equipo. El profesional mira cuánto dinero está defendiendo esa cuota.",
+                    demoBadge: "DEMO INTERACTIVA", startSimulator: "INICIAR SIMULADOR",
+                    penaltiesTitle: "JUEGO EDUCATIVO", penaltiesDesc: "Apuesta contra la banca sin estrategia en la máquina tragamonedas.",
+                    quizProgress: "Pregunta {step} de 5",
+                    btnPodcast: "ESCUCHAR PODCAST", btnEbook: "VER MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Repetir Prueba",
+                    navNextLesson: "PRÓXIMA LECCIÓN",
+                    subNotActive: "¡SUSCRIPCIÓN INACTIVA! CONTACTA A TU REFERENTE",
+                    quizCompletedTitle: "¡Punto de control superado!", quizCompletedDesc: "Has desbloqueado 500 XP. Ahora dominas las dinámicas de liquidez.",
+                    videoUrl: "https://www.youtube.com/embed/eJDIXZV3Ztk?rel=0&modestbranding=1",
+                    
+                    ebTitle1: "Día 3", ebTitle2: "Liquidez y Profundidad", ebTitle3: "Volúmenes y el Alma del Mercado",
+                    ebIntro: "En el Betting Exchange, la liquidez es oxígeno. Un mercado sin liquidez es un mercado en el que estás atrapado: no puedes entrar al precio deseado y, peor aún, no puedes salir cuando el riesgo se vuelve insostenible. Entender la Profundidad del Mercado significa saber leer las 'huellas' dejadas por los grandes capitales en la Escalera y anticipar las dinámicas de precios.",
+                    ebLawTitle: "⚖️ La Ley de la Resistencia",
+                    ebLawText: "Más dinero en espera (Unmatched) en un nivel = Mayor resistencia a un cambio en esa cuota.",
+                    ebDictTitle: "El Diccionario de la Liquidez",
+                    ebMatchedTitle: "Matched Volume (Volumen Igualado)",
+                    ebMatchedText: "La cantidad total de dinero que ya ha encontrado un acuerdo entre quienes hacen Back y Lay a un precio específico. Indica la fiabilidad histórica de ese nivel.",
+                    ebRule1: "Opera siempre en mercados de alto volumen. En ligas menores (ilíquidas), una sola orden de 500€ puede hacer caer la cuota 10 ticks de repente.",
+                    ebUnmatchedTitle: "Unmatched Money (Los Muros)",
+                    ebUnmatchedText: "Capitales visibles en la Escalera esperando ser igualados. Forman verdaderos 'muros' de soporte o resistencia. Si ves 15.000€ esperando a cuota 2.00, ese nivel actuará como una barrera física contra la cual los precios tenderán a rebotar.",
+                    ebGapsTitle: "Liquidity Gaps (Huecos de Liquidez)",
+                    ebGapsText: "Áreas en la Escalera donde hay muy poco dinero en espera. En estas zonas, el precio acelera rápidamente porque no encuentra obstáculos.",
+                    ebRule2: "Los traders expertos buscan activamente huecos de liquidez para dejar que el precio se deslice a su favor, empujándolo hacia donde no hay órdenes que lo defiendan.",
+                    ebWarningTitle: "Agujeros, Spikes y Slippage",
+                    ebWarningText: "Cuando la liquidez en espera es delgada, una pequeña orden a mercado (Aggressive Entry) es suficiente para 'barrer' los precios disponibles en varios ticks, creando un salto repentino (Spike). Operar en mercados ilíquidos es letal: aumenta el riesgo de no poder hacer Cash Out y sufrir un Slippage destructivo (entrar a un precio terrible).",
+                    ebQuote1: "La liquidez es la diferencia entre una oportunidad de trading rentable y una trampa sin salida.",
+                    ebQuote2: "El trader aficionado solo mira la cuota de un equipo. El profesional mira cuánto dinero está defendiendo esa cuota.",
+
+                    quizData: [
+                        { q: "¿Por qué se llama a la liquidez el 'oxígeno' del Betting Exchange?", opts: ["Permite entrar y salir del mercado a los precios deseados sin quedar atrapado", "Garantiza siempre un beneficio en cada apuesta", "Reduce las comisiones pagadas al Exchange", "Aumenta la duración del partido en curso"], correct: 0 },
+                        { q: "¿Qué indica el 'Matched Volume' (Volumen Igualado)?", opts: ["La cantidad total de dinero que ya ha encontrado un acuerdo entre Back y Lay a un precio específico", "El dinero perdido por los traders principiantes", "El límite máximo que acepta el bookmaker", "El dinero que aún espera ser negociado"], correct: 0 },
+                        { q: "¿Qué ocurre cuando el precio encuentra un 'Liquidity Gap' (Hueco de Liquidez)?", opts: ["Acelera rápidamente porque no encuentra obstáculos (órdenes en espera)", "Se detiene y rebota hacia atrás", "El partido se suspende temporalmente", "El Exchange cancela todas las órdenes pendientes"], correct: 0 },
+                        { q: "¿Cuál es uno de los mayores riesgos de operar en mercados ilíquidos?", opts: ["No poder hacer Cash Out y sufrir un Slippage destructivo", "Ser baneado de la plataforma", "Pagar impuestos extra sobre las ganancias", "Tener un reembolso automático de la orden"], correct: 0 },
+                        { q: "¿Qué representan los 'Muros' (grandes cantidades de Unmatched Money) en la Escalera?", opts: ["Barreras físicas de soporte o resistencia contra las cuales los precios tenderán a rebotar", "Errores del sistema del Exchange", "Dinero falso creado para engañar a los jugadores", "El presupuesto total del equipo menos favorito"], correct: 0 }
+                    ]
+                },
+                pt: {
+                    pageTitle: "Room AI | Global Exchange Academy - Dia 3",
+                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
+                    moduleTitle: "DIA 3/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Volumes e a Alma do Mercado. Liquidez e Profundidade.",
+                    finLabel: "PÍLULA FINANCEIRA", finQuote: "O trader amador só olha para a odd de um time. O profissional olha quanto dinheiro está defendendo essa odd.",
+                    demoBadge: "DEMO INTERATIVA", startSimulator: "INICIAR SIMULADOR",
+                    penaltiesTitle: "JOGO EDUCATIVO", penaltiesDesc: "Aposte contra a banca sem estratégia na máquina caça-níqueis.",
+                    quizProgress: "Pergunta {step} de 5",
+                    btnPodcast: "OUVIR PODCAST", btnEbook: "VER MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Repetir Teste",
+                    navNextLesson: "PRÓXIMA LIÇÃO",
+                    subNotActive: "ASSINATURA INATIVA! CONTATE SEU REFERENTE",
+                    quizCompletedTitle: "Checkpoint Concluído!", quizCompletedDesc: "Você desbloqueou 500 XP. Agora você domina as dinâmicas de liquidez.",
+                    videoUrl: "https://www.youtube.com/embed/Hfd6PwUs8UA?rel=0&modestbranding=1",
+                    
+                    ebTitle1: "Dia 3", ebTitle2: "Liquidez e Profundidade", ebTitle3: "Volumes e a Alma do Mercado",
+                    ebIntro: "Na Betting Exchange, liquidez é oxigênio. Um mercado sem liquidez é um mercado onde você está preso: não consegue entrar no preço desejado e, pior ainda, não consegue sair quando o risco se torna insustentável. Entender a Profundidade do Mercado significa saber ler as 'pegadas' deixadas pelos grandes capitais na Escada e antecipar as dinâmicas de preços.",
+                    ebLawTitle: "⚖️ A Lei da Resistência",
+                    ebLawText: "Mais dinheiro em espera (Unmatched) em um nível = Maior resistência a uma mudança nessa odd.",
+                    ebDictTitle: "O Dicionário da Liquidez",
+                    ebMatchedTitle: "Matched Volume (Volume Correspondido)",
+                    ebMatchedText: "A quantidade total de dinheiro que já encontrou um acordo entre Backers e Layers a um preço específico. Indica a confiabilidade histórica desse nível.",
+                    ebRule1: "Opere sempre em mercados de alto volume. Em ligas menores (ilíquidas), uma única ordem de €500 pode fazer a odd despencar 10 ticks de repente.",
+                    ebUnmatchedTitle: "Unmatched Money (Os Muros)",
+                    ebUnmatchedText: "Capitais visíveis na Escada esperando para serem correspondidos. Eles formam verdadeiros 'muros' de suporte ou resistência. Se você vir €15.000 esperando a uma odd de 2.00, esse nível atuará como uma barreira física contra a qual os preços tenderão a quicar.",
+                    ebGapsTitle: "Liquidity Gaps (Vazios de Liquidez)",
+                    ebGapsText: "Áreas na Escada onde há muito pouco dinheiro em espera. Nessas zonas, o preço acelera rapidamente porque não encontra obstáculos.",
+                    ebRule2: "Traders especialistas buscam ativamente vazios de liquidez para deixar o preço deslizar a seu favor, empurrando-o para onde não há ordens para defendê-lo.",
+                    ebWarningTitle: "Buracos, Spikes e Slippage",
+                    ebWarningText: "Quando a liquidez em espera é fina, uma pequena ordem a mercado (Aggressive Entry) é suficiente para 'varrer' os preços disponíveis em vários ticks, criando um salto repentino (Spike). Operar em mercados ilíquidos é letal: aumenta o risco de não conseguir fazer Cash Out e sofrer um Slippage destrutivo (entrar a um preço péssimo).",
+                    ebQuote1: "A liquidez é a diferença entre uma oportunidade de trading lucrativa e uma armadilha sem saída.",
+                    ebQuote2: "O trader amador só olha para a odd de um time. O profissional olha quanto dinheiro está defendendo essa odd.",
+
+                    quizData: [
+                        { q: "Por que a liquidez é chamada de 'oxigênio' da Betting Exchange?", opts: ["Permite entrar e sair do mercado aos preços desejados sem ficar preso", "Garante sempre um lucro em cada aposta", "Reduz as comissões pagas à Exchange", "Aumenta a duração da partida em andamento"], correct: 0 },
+                        { q: "O que indica o 'Matched Volume' (Volume Correspondido)?", opts: ["A quantidade total de dinheiro que já encontrou um acordo entre Back e Lay a um preço específico", "O dinheiro perdido por traders iniciantes", "O limite máximo que o bookmaker aceita", "O dinheiro que ainda espera para ser negociado"], correct: 0 },
+                        { q: "O que acontece quando o preço encontra um 'Liquidity Gap' (Vazio de Liquidez)?", opts: ["Acelera rapidamente porque não encontra obstáculos (ordens em espera)", "Para e quica para trás", "A partida é temporariamente suspensa", "A Exchange cancela todas as ordens pendentes"], correct: 0 },
+                        { q: "Qual é um dos maiores riscos de operar em mercados ilíquidos?", opts: ["Não conseguir fazer Cash Out e sofrer um Slippage destrutivo", "Ser banido da plataforma", "Pagar impostos extras sobre os ganhos", "Ter um reembolso automático da ordem"], correct: 0 },
+                        { q: "O que representam os 'Muros' (grandes quantidades de Unmatched Money) na Escada?", opts: ["Barreiras físicas de suporte ou resistência contra as quais os preços tenderão a quicar", "Erros do sistema da Exchange", "Dinheiro falso criado para enganar os jogadores", "O orçamento total do time menos favorito"], correct: 0 }
+                    ]
+                }
+            };
+
+            for (const lang in dict) {
+                dict[lang].ebookContent = ebookTemplate(dict[lang]);
+            }
+
+            let currentLang = 'it';
+            let currentQuizStep = 0;
+            let xpPoints = parseInt(localStorage.getItem(CONFIG.STORAGE_KEY + '_xp')) || 0;
+
+            function applyLang(lang) {
+                currentLang = lang;
+                const d = dict[lang];
+                
+                document.title = d.pageTitle;
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (d[key]) {
+                        if (key.startsWith('quizProgress')) {
+                            // Handled separately
+                        } else {
+                            el.textContent = d[key];
+                        }
+                    }
+                });
+                
+                document.querySelectorAll('[data-i18n-html]').forEach(el => {
+                    const key = el.getAttribute('data-i18n-html');
+                    if (d[key]) el.innerHTML = d[key];
+                });
+
+                document.querySelectorAll('.lang-flag').forEach(btn => {
+                    if (btn.getAttribute('data-lang') === lang) {
+                        btn.classList.add('active'); btn.classList.remove('inactive');
+                    } else {
+                        btn.classList.remove('active'); btn.classList.add('inactive');
+                    }
+                });
+
+                document.getElementById('btn-podcast').href = podcastUrls[lang] || podcastUrls['en'];
+                document.getElementById('main-video').src = d.videoUrl;
+
+                if (document.getElementById('quiz-container').style.display !== 'none') {
+                    loadQuiz();
+                }
+            }
+
+            function loadQuiz() {
+                const d = dict[currentLang];
+                const qData = d.quizData[currentQuizStep];
+                
+                document.getElementById('quiz-progress-text').textContent = d.quizProgress.replace('{step}', currentQuizStep + 1);
+                document.getElementById('quiz-question-text').textContent = qData.q;
+                
+                const optionsContainer = document.getElementById('quiz-options-container');
+                optionsContainer.innerHTML = '';
+                
+                const letters = ['A', 'B', 'C', 'D'];
+                qData.opts.forEach((opt, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'wwtbam-btn w-full text-left px-4 sm:px-6 py-3 sm:py-4 flex items-center group';
+                    btn.onclick = () => handleAnswer(index, btn);
+                    btn.innerHTML = `
+                        <span class="text-[#d4af37] font-black mr-3 sm:mr-4 text-base sm:text-lg shrink-0 w-6">${letters[index]}:</span>
+                        <span class="text-gray-200 font-bold text-[11px] sm:text-sm md:text-base group-hover:text-white transition-colors leading-tight">${opt}</span>
+                        <div class="absolute right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div class="w-2 h-2 rounded-full bg-[#d4af37] shadow-[0_0_8px_#d4af37]"></div>
+                        </div>
+                    `;
+                    optionsContainer.appendChild(btn);
+                });
+                
+                updateProgressDots();
+            }
+
+            function handleAnswer(selectedIndex, btnElement) {
+                const d = dict[currentLang];
+                const qData = d.quizData[currentQuizStep];
+                const isCorrect = selectedIndex === qData.correct;
+                
+                const allBtns = document.getElementById('quiz-options-container').querySelectorAll('button');
+                allBtns.forEach(b => b.disabled = true);
+                
+                if (isCorrect) {
+                    SoundEngine.cashout();
+                    btnElement.classList.add('correct');
+                    showFeedback(true);
+                    xpPoints += 100;
+                    updateXP();
+                    
+                    setTimeout(() => {
+                        currentQuizStep++;
+                        if (currentQuizStep < d.quizData.length) {
+                            loadQuiz();
+                        } else {
+                            showCompletedScreen();
+                        }
+                    }, 1500);
+                } else {
+                    SoundEngine.error();
+                    btnElement.classList.add('wrong');
+                    
+                    setTimeout(() => {
+                        allBtns[qData.correct].classList.add('correct');
+                    }, 500);
+                    
+                    showFeedback(false);
+                    
+                    setTimeout(() => {
+                        btnElement.classList.remove('wrong');
+                        allBtns[qData.correct].classList.remove('correct');
+                        allBtns.forEach(b => b.disabled = false);
+                        hideFeedback();
+                    }, 2000);
+                }
+            }
+
+            function updateProgressDots() {
+                const dotsContainer = document.getElementById('quiz-dots');
+                dotsContainer.innerHTML = '';
+                for (let i = 0; i < 5; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = `w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${i < currentQuizStep ? 'bg-[#10b981] shadow-[0_0_8px_#10b981]' : i === currentQuizStep ? 'bg-[#d4af37] shadow-[0_0_8px_#d4af37] animate-pulse' : 'bg-gray-700'}`;
+                    dotsContainer.appendChild(dot);
+                }
+            }
+
+            function showFeedback(isSuccess) {
+                const feedbackEl = document.getElementById('quiz-feedback');
+                const iconEl = document.getElementById('quiz-feedback-icon');
+                
+                feedbackEl.classList.remove('hidden');
+                
+                if (isSuccess) {
+                    feedbackEl.className = 'w-full max-w-2xl mx-auto p-6 sm:p-8 md:p-10 rounded-xl md:rounded-2xl text-center shadow-2xl mt-8 transition-all duration-500 transform-gpu relative overflow-hidden bg-gradient-to-br from-[#064e3b] to-[#022c22] border-2 border-[#10b981] flex justify-center items-center';
+                    iconEl.textContent = '✅';
+                } else {
+                    feedbackEl.className = 'w-full max-w-2xl mx-auto p-6 sm:p-8 md:p-10 rounded-xl md:rounded-2xl text-center shadow-2xl mt-8 transition-all duration-500 transform-gpu relative overflow-hidden bg-gradient-to-br from-[#7f1d1d] to-[#450a0a] border-2 border-[#ef4444] flex justify-center items-center';
+                    iconEl.textContent = '❌';
+                }
+            }
+
+            function hideFeedback() {
+                document.getElementById('quiz-feedback').classList.add('hidden');
+                document.getElementById('quiz-feedback').classList.remove('flex');
+            }
+
+            function showCompletedScreen() {
+                document.getElementById('quiz-container').style.display = 'none';
+                hideFeedback();
+                const completedScreen = document.getElementById('quiz-completed-screen');
+                completedScreen.classList.remove('hidden');
+                completedScreen.classList.add('flex');
+            }
+
+            function updateXP() {
+                document.getElementById('xp-counter').innerText = `${xpPoints} XP`;
+                localStorage.setItem(CONFIG.STORAGE_KEY + '_xp', xpPoints);
+                const badge = document.getElementById('xp-badge');
+                badge.classList.add('scale-110', 'bg-yellow-500/20');
+                setTimeout(() => badge.classList.remove('scale-110', 'bg-yellow-500/20'), 300);
+            }
+
+            window.changeLang = function(lang) {
+                SoundEngine.click();
+                applyLang(lang);
+            };
+
+            window.resetQuiz = function() {
+                SoundEngine.click();
+                currentQuizStep = 0;
+                document.getElementById('quiz-container').style.display = 'flex';
+                const completedScreen = document.getElementById('quiz-completed-screen');
+                completedScreen.classList.add('hidden');
+                completedScreen.classList.remove('flex');
+                loadQuiz();
+            };
+
+            // Init
+            window.addEventListener('DOMContentLoaded', () => {
+                const userLang = navigator.language || navigator.userLanguage;
+                let initLang = 'en';
+                if(userLang.startsWith('it')) initLang = 'it';
+                else if(userLang.startsWith('es')) initLang = 'es';
+                else if(userLang.startsWith('pt')) initLang = 'pt';
+                
+                updateXP();
+                applyLang(initLang);
+            });
+
+            return { dict };
+        })();
+    </script>
+</body>
+</html>
