@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#111111">
+    <meta name="description" content="Simulatore didattico di Betting Exchange.">
+    <meta name="format-detection" content="telephone=no">
+    
+    <title>Zero To Hero | Pro Trading Simulator</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root { 
+            --bf-yellow: #fab400; 
+            --pitch-green: #2d6b22;
+            --btn-back: #72BBEB;       
+            --btn-back-hover: #5DA5D6;
+            --btn-lay: #F29BB4;        
+            --btn-lay-hover: #E386A1;
+            --zth-green: #00e676;
+            --panel-bg: #1e1e1e;
+        }
+        
+        /* OVERRIDE PER MOBILE: Consente lo scroll verticale naturale per non nascondere le quote */
+        html, body { 
+            background-color: #0f1115; color: #333; margin: 0; padding: 0; 
+            font-family: 'Inter', system-ui, sans-serif; 
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body { 
+            opacity: 0; transition: opacity 0.4s ease-in-out; 
+            background-image: radial-gradient(circle at 50% 0%, #1f222b 0%, #0f1115 100%);
+            min-height: 100dvh;
+        }
+        body.ready { opacity: 1; }
+        
+        #app-wrapper { 
+            width: 100%; display: flex; flex-direction: column; 
+            min-height: 100dvh;
+        }
+        
+        @media (min-width: 1024px) {
+            html, body { height: 100dvh; overflow: hidden; }
+            body { display: flex; align-items: center; justify-content: center; padding: 2vh 2vw; }
+            #app-wrapper { 
+                flex-direction: row; gap: 20px; 
+                max-width: 1400px; max-height: 900px; height: calc(100dvh - 4vh); min-height: auto;
+            }
+            .panel {
+                border-radius: 16px; overflow: hidden;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.05);
+            }
+            #left-pane { width: 40%; background: var(--panel-bg); display: flex; flex-direction: column; }
+            #right-pane { width: 60%; background: #f8fafc; display: flex; flex-direction: column; }
+            .markets-container { flex-grow: 1; overflow-y: auto; }
+            .mobile-only { display: none !important; }
+        }
+        
+        @media (max-width: 1023px) {
+            #app-wrapper { flex-direction: column; background: #000; }
+            .panel { border-radius: 0; }
+            #left-pane { display: flex; flex-direction: column; flex-shrink: 0; background: var(--panel-bg); z-index: 10;}
+            #right-pane { display: flex; flex-direction: column; flex-shrink: 0; min-height: 500px; background: #f8fafc; z-index: 5; padding-bottom: 40px;}
+            .markets-container { flex-grow: 1; height: auto; }
+            .desktop-only { display: none !important; }
+        }
+
+        /* PITCH RESPONSIVE CONTAINER */
+        #pitch-container {
+            position: relative; width: 100%; height: 18vh; min-height: 140px; max-height: 220px;
+            background-color: var(--pitch-green); border-bottom: 2px solid #111; overflow: hidden;
+            display: flex; justify-content: center; align-items: center; flex-shrink: 0;
+        }
+        @media (min-width: 1024px) { #pitch-container { flex-grow: 1; height: auto; max-height: none; } }
+        
+        .pitch-stripes { position: absolute; inset: 0; background-image: repeating-linear-gradient(90deg, transparent, transparent 10%, rgba(0,0,0,0.06) 10%, rgba(0,0,0,0.06) 20%); }
+        .pitch-wrapper { position: relative; height: 90%; aspect-ratio: 105/68; max-width: 96%; z-index: 1; }
+        .pitch-lines { position: absolute; inset: 0; border: 1.5px solid rgba(255,255,255,0.6); pointer-events: none; }
+        .pitch-center-line { position: absolute; left: 50%; top: 0; bottom: 0; width: 1.5px; background: rgba(255,255,255,0.6); transform: translateX(-50%); }
+        .pitch-center-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); height: 35%; aspect-ratio: 1/1; border: 1.5px solid rgba(255,255,255,0.6); border-radius: 50%; }
+        .pitch-center-dot { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 4px; height: 4px; background: white; border-radius: 50%; }
+        .pitch-area-left { position: absolute; top: 21%; left: 0; width: 16%; height: 58%; border: 1.5px solid rgba(255,255,255,0.6); border-left: 0; }
+        .pitch-area-right { position: absolute; top: 21%; right: 0; width: 16%; height: 58%; border: 1.5px solid rgba(255,255,255,0.6); border-right: 0; }
+        
+        .ball { position: absolute; z-index: 25; transform: translate(-50%, -50%); transition: left 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); font-size: 14px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+        .attack-cone { position: absolute; top: 50%; height: 60%; width: 35%; transform: translateY(-50%); z-index: 10; transition: all 0.8s ease; opacity: 0; pointer-events: none; clip-path: polygon(0 35%, 100% 0, 100% 100%, 0 65%); }
+
+        /* PULSANTI QUOTE */
+        .bf-btn-back { background-color: var(--btn-back); transition: background-color 0.1s; border-radius: 6px; box-shadow: inset 0 -2px 0 rgba(0,0,0,0.15); border: 1px solid #5DA5D6;}
+        .bf-btn-back:active { background-color: var(--btn-back-hover); transform: translateY(1px); box-shadow: none; }
+        .bf-btn-lay { background-color: var(--btn-lay); transition: background-color 0.1s; border-radius: 6px; box-shadow: inset 0 -2px 0 rgba(0,0,0,0.15); border: 1px solid #E386A1;}
+        .bf-btn-lay:active { background-color: var(--btn-lay-hover); transform: translateY(1px); box-shadow: none; }
+        
+        .btn-odd-container { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 48px; cursor: pointer; }
+        .odd-price { font-size: 18px; font-weight: 900; line-height: 1; color: #111; font-family: 'Inter', sans-serif;}
+        .odd-vol { font-size: 10px; font-weight: 600; color: #333; margin-top: 2px; line-height: 1; }
+
+        /* WIDGET CASHOUT E MODALI */
+        #position-panel { position: fixed; will-change: transform, left, top; touch-action: none; z-index: 999999; box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,0,0,0.05); }
+        #instructions-modal { transition: opacity 0.3s ease; }
+        .modal-content { transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); max-height: 90vh; overflow-y: auto;}
+        #instructions-modal.active { opacity: 1; pointer-events: auto; }
+        #instructions-modal.active .modal-content { transform: scale(1); }
+
+        .flag-img { width: 26px; height: 18px; object-fit: cover; border-radius: 3px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        .flag-btn { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #f1f5f9; border: 2px solid transparent; border-radius: 8px; cursor: pointer; font-weight: 700; transition: all 0.2s; color: #333;}
+        .flag-btn:hover { background: #e2e8f0; }
+        .flag-btn.active { border-color: #3b82f6; background: #eff6ff; }
+
+        .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; }
+        .t-b { color: var(--zth-green); font-weight: 800; } .t-l { color: #ff4d4d; font-weight: 800; } 
+        .t-y { color: var(--bf-yellow); font-weight: 800; } 
+        .font-mono-nums { font-family: 'Roboto Mono', monospace; }
+    </style>
+</head>
+<body>
+
+<!-- WIDGET CASHOUT DRAGGABILE -->
+<div id="position-panel" class="w-[260px] bg-white rounded-xl flex-col transition-opacity duration-300 opacity-0 pointer-events-none cursor-move select-none" style="transform: translate(-50%, -50%); display: flex; left: 50%; top: 50%;">
+    <div class="bg-slate-50 p-3 border-b border-slate-200 rounded-t-xl flex justify-between items-center pointer-events-none">
+        <div class="flex items-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#64748b"><path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"/></svg>
+            <span class="text-[10px] font-black text-slate-500 uppercase tracking-wider" data-i18n="pos_open">Open Position</span>
+        </div>
+        <span id="pos-odds" class="text-[12px] font-black text-slate-800 bg-slate-200 px-2 py-0.5 rounded-md">@ 0.00</span>
+    </div>
+    <div class="p-4 flex flex-col gap-3">
+        <div class="flex justify-between items-center pb-3 border-b border-slate-100 pointer-events-none">
+            <span id="pos-label" class="text-[#111] text-[11px] font-black px-2.5 py-1 rounded-md shadow-sm tracking-wide">BACK</span>
+            <div class="flex flex-col items-end">
+                <span id="pos-stake" class="text-[11px] font-mono-nums font-bold text-slate-600">Stake: €0.00</span>
+                <span id="pos-liab" class="text-[11px] font-mono-nums font-bold text-red-500">Resp: €0.00</span>
+            </div>
+        </div>
+        <div class="flex items-center justify-between pt-1">
+            <div class="flex flex-col leading-none pointer-events-none">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wide mb-1" data-i18n="pnl">Live PNL</span>
+                <span id="pnl-val" class="text-[22px] font-black text-[#111] leading-none font-mono-nums transition-colors duration-200">€ 0.00</span>
+            </div>
+            <button onclick="Trade.cashOut()" id="btn-cashout-mob" class="bg-[var(--zth-green)] hover:bg-[#00c853] text-[#111] font-black px-4 py-2.5 rounded-lg text-[11px] uppercase tracking-widest shadow-md active:scale-95 transition-all cursor-pointer" data-i18n="cashout">Cash Out</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODALE ISTRUZIONI INIZIALE -->
+<div id="instructions-modal" class="fixed inset-0 z-[9999999] bg-black/85 backdrop-blur-sm opacity-0 pointer-events-none flex items-center justify-center p-4">
+    <div class="modal-content bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+        <div class="bg-slate-900 p-5 flex flex-col gap-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-white font-black text-xl flex items-center gap-2">
+                    🎓 <span data-i18n="inst_title">Istruzioni Demo</span>
+                </h3>
+                <button onclick="UI.closeInstructions()" class="text-slate-400 hover:text-white transition-colors">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            
+            <!-- SELETTORE LINGUA IN HD: EN, ES, PT, IT -->
+            <div class="flex flex-wrap gap-2">
+                <button class="flag-btn" onclick="App.setLang('en', this)" id="lang-btn-en"><img src="https://flagcdn.com/w40/gb.png" class="flag-img" alt="EN"> EN</button>
+                <button class="flag-btn" onclick="App.setLang('es', this)" id="lang-btn-es"><img src="https://flagcdn.com/w40/es.png" class="flag-img" alt="ES"> ES</button>
+                <button class="flag-btn" onclick="App.setLang('pt', this)" id="lang-btn-pt"><img src="https://flagcdn.com/w40/pt.png" class="flag-img" alt="PT"> PT</button>
+                <button class="flag-btn" onclick="App.setLang('it', this)" id="lang-btn-it"><img src="https://flagcdn.com/w40/it.png" class="flag-img" alt="IT"> IT</button>
+            </div>
+        </div>
+
+        <div class="p-6 flex flex-col gap-5 text-sm text-slate-700">
+            <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                <p class="font-black text-blue-900 mb-1 text-base" data-i18n="inst_intro_title">🏆 Finale Mondiali 2022 (ARG-FRA)</p>
+                <p class="text-blue-800" data-i18n="inst_intro_desc">Benvenuto nel simulatore! Rivivrai la finale. Il <b>Maestro</b> (in basso a sinistra) ti spiegherà i movimenti del mercato. Guarda come cambiano le quote e impara a fare Trading Sportivo senza rischiare nulla.</p>
+            </div>
+
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 shrink-0 bg-[var(--btn-back)] rounded-lg flex items-center justify-center font-black text-[#111] shadow-sm border border-[#5DA5D6]">BACK</div>
+                <div>
+                    <p class="font-bold text-slate-900 mb-1 text-base" data-i18n="inst_p1_title">Tasto Azzurro (Punta / Back)</p>
+                    <p data-i18n="inst_p1_desc">Scommetti <b>A FAVORE</b> di un evento (es. vince l'Argentina). Rischi solo l'importo che decidi di puntare (Stake).</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 shrink-0 bg-[var(--btn-lay)] rounded-lg flex items-center justify-center font-black text-[#111] shadow-sm border border-[#E386A1]">LAY</div>
+                <div>
+                    <p class="font-bold text-slate-900 mb-1 text-base" data-i18n="inst_p2_title">Tasto Rosa (Banca / Lay)</p>
+                    <p data-i18n="inst_p2_desc">Scommetti <b>CONTRO</b> un evento (diventi tu il Bookmaker). Attenzione: il tuo rischio (Liability) si moltiplica in base alla quota!</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 shrink-0 bg-slate-100 rounded-lg flex items-center justify-center text-2xl shadow-sm border border-slate-200">⏩</div>
+                <div>
+                    <p class="font-bold text-slate-900 mb-1 text-base" data-i18n="inst_p3_title">Pulsante 80' Minuto & Cash Out</p>
+                    <p data-i18n="inst_p3_desc">Usa il bottone "⏩ 80'" per saltare subito all'azione. Quando sei a mercato, usa il <b>Cash Out</b> per chiudere la giocata e assicurarti un profitto se le quote sono a tuo favore!</p>
+                </div>
+            </div>
+        </div>
+        <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
+            <button onclick="UI.closeInstructions()" class="bg-blue-600 text-white font-black px-8 py-3 rounded-xl hover:bg-blue-700 transition-colors shadow-lg text-base w-full sm:w-auto" data-i18n="inst_btn">Ho capito, Iniziamo!</button>
+        </div>
+    </div>
+</div>
+
+<div id="app-wrapper">
+    <div id="left-pane" class="panel">
+        
+        <!-- HEADER TOP -->
+        <header class="bg-[#14161a] flex justify-between items-center px-4 py-3 shrink-0 border-b border-gray-800">
+            <div class="flex items-center gap-3 text-white">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-[var(--zth-green)] to-blue-500 flex items-center justify-center font-black text-sm shadow-lg">Z</div>
+                <div class="flex flex-col">
+                    <span class="font-black text-[15px] tracking-tight leading-none text-white font-sans">ZERO TO HERO</span>
+                    <span class="text-[9px] font-bold leading-none uppercase mt-[2px] text-[var(--bf-yellow)] tracking-widest">Simulator Pro</span>
+                </div>
+            </div>
+            
+            <button onclick="UI.openInstructions()" class="flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-full px-3 py-1.5 text-white hover:bg-slate-700 transition-colors shadow-sm">
+                ℹ️ <span class="text-[10px] font-bold uppercase tracking-wider" data-i18n="inst_btn_top">Istruzioni Demo</span>
+            </button>
+        </header>
+
+        <!-- LIVE SCORE STRIP -->
+        <div class="bg-gradient-to-b from-[#1a1c23] to-[#14161a] flex flex-col shrink-0 relative border-b border-gray-800">
+            <div class="text-white px-4 py-2 flex items-center h-[70px]">
+                <div class="flex flex-col items-center justify-center mr-4">
+                    <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse mb-1"></div>
+                    <span class="text-white text-[8px] font-black uppercase tracking-widest" data-i18n="live">Live</span>
+                </div>
+                
+                <div class="flex flex-col items-center">
+                    <span class="text-[var(--zth-green)] font-mono-nums text-[16px] font-bold w-12 text-center" id="match-timer">00:00</span>
+                    <button onclick="Sim.fastForward()" class="text-[9px] font-bold text-[#111] bg-[var(--bf-yellow)] hover:bg-[#e0a200] px-2 py-0.5 rounded transition-colors mt-1 whitespace-nowrap shadow-sm animate-pulse border border-yellow-600" id="btn-ff">⏩ 80'</button>
+                </div>
+                
+                <div class="flex flex-col gap-1 items-center text-[var(--zth-green)] font-mono-nums text-[20px] font-black leading-none mx-4 bg-black/50 px-3 py-2 rounded-lg shadow-inner border border-gray-800">
+                    <span id="score-h">0</span>
+                    <span id="score-a">0</span>
+                </div>
+                
+                <div class="flex flex-col gap-2 text-[14px] font-bold tracking-tight leading-none flex-grow overflow-hidden">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <img src="https://flagcdn.com/w40/ar.png" class="flag-img" alt="AR">
+                            <span class="text-white truncate">Argentina</span>
+                        </div>
+                        <div id="cards-h" class="flex shrink-0"></div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <img src="https://flagcdn.com/w40/fr.png" class="flag-img" alt="FR">
+                            <span class="text-white truncate" data-i18n="france">Francia</span>
+                        </div>
+                        <div id="cards-a" class="flex shrink-0"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="px-4 pb-2 flex items-center justify-between relative h-[14px]">
+                <div class="relative w-[49%] h-[4px] bg-gray-700 rounded-full overflow-hidden">
+                    <div id="timeline-1" class="absolute left-0 top-0 bottom-0 bg-[var(--zth-green)] transition-all duration-1000" style="width: 0%"></div>
+                </div>
+                <div class="relative w-[49%] h-[4px] bg-gray-700 rounded-full overflow-hidden">
+                    <div id="timeline-2" class="absolute left-0 top-0 bottom-0 bg-[var(--zth-green)] transition-all duration-1000" style="width: 0%"></div>
+                </div>
+                <!-- TIMELINE EVENTS (Goals and Cards) -->
+                <div id="timeline-events" class="absolute left-4 right-4 top-1/2 -translate-y-1/2 h-[4px] pointer-events-none z-10"></div>
+            </div>
+        </div>
+
+        <!-- PITCH RADAR -->
+        <section id="pitch-container">
+            <div class="pitch-stripes"></div>
+            <div class="pitch-wrapper">
+                <div class="pitch-lines">
+                    <div class="pitch-center-line"></div><div class="pitch-center-dot"></div><div class="pitch-center-circle"></div>
+                    <div class="pitch-area-left"></div><div class="pitch-area-right"></div>
+                    <div class="pitch-goal-left"></div><div class="pitch-goal-right"></div>
+                    <div class="pitch-arc-left"></div><div class="pitch-arc-right"></div>
+                </div>
+                <div id="attack-cone" class="attack-cone"></div>
+                <div id="ball" class="ball" style="left: 50%; top: 50%;">⚽</div>
+                <div id="event-badge" class="absolute left-1/2 top-[10%] -translate-x-1/2 flex flex-col items-center z-30 transition-all duration-500 opacity-0 pointer-events-none bg-black/60 px-3 py-1 rounded-full backdrop-blur-sm border border-white/10">
+                    <span id="event-team" class="text-white font-black text-[12px] tracking-wide">Argentina</span>
+                    <span id="event-desc" class="text-[var(--zth-green)] text-[9px] font-bold uppercase tracking-widest mt-0.5">Attacking</span>
+                </div>
+            </div>
+
+            <!-- GOAL ALERT: Responsive sizing to prevent clipping -->
+            <div id="goal-alert" class="absolute inset-0 z-50 bg-black/90 flex flex-col items-center justify-center hidden backdrop-blur-md px-4 text-center">
+                <span class="bg-red-600 text-white font-black text-[10px] sm:text-[12px] px-4 py-1.5 sm:px-5 sm:py-2 rounded shadow-xl tracking-widest uppercase mb-2 animate-pulse" data-i18n="susp">Sospeso</span>
+                <span class="text-[50px] sm:text-[80px] animate-bounce mb-1 leading-none">⚽</span>
+                <h2 id="scorer-name" class="text-2xl sm:text-4xl font-black text-white italic drop-shadow-xl mt-1">Messi</h2>
+                <h2 class="text-4xl sm:text-6xl font-black text-[var(--zth-green)] italic mt-0 tracking-tighter drop-shadow-[0_0_15px_rgba(0,230,118,0.6)]">GOAL!</h2>
+            </div>
+            <div id="suspended" class="absolute inset-0 z-40 bg-black/80 hidden flex-col items-center justify-center backdrop-blur-sm">
+                <span class="bg-red-600 text-white font-black text-lg px-8 py-3 rounded shadow-xl tracking-widest uppercase" data-i18n="susp">Sospeso</span>
+            </div>
+        </section>
+
+        <!-- MARKET ANALYST (MENTOR) BAR -->
+        <div class="bg-[#14161a] p-3 sm:p-4 flex items-start gap-4 shrink-0 h-[95px] sm:h-[110px] border-t border-gray-800">
+            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#1e2128] border border-gray-600 flex items-center justify-center shrink-0 relative shadow-lg">
+                <div class="absolute inset-0 bg-[var(--bf-yellow)] opacity-10 blur-md rounded-full"></div>
+                <span class="text-2xl sm:text-3xl relative z-10">👨‍🏫</span>
+            </div>
+            <div class="flex flex-col w-full">
+                <span class="text-[10px] font-black text-[var(--bf-yellow)] uppercase tracking-widest mb-0.5" data-i18n="mentor_title">Il Maestro & Pro Tips</span>
+                <p id="mentor-txt" class="text-[11px] sm:text-[13px] font-medium text-white leading-snug sm:leading-relaxed line-clamp-3">Caricamento...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="right-pane" class="panel relative">
+        
+        <div class="bg-white flex justify-between items-center px-4 py-3 border-b border-slate-200 shrink-0 z-10">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                <span class="text-[10px] font-black text-slate-500 uppercase tracking-wide" data-i18n="stake_lbl">Stake Base:</span>
+                <div class="flex gap-2">
+                    <button onclick="Trade.setStakePct(1)" id="stk-1" class="px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-md text-[12px] font-bold text-slate-600 hover:bg-slate-100 transition-colors">1%</button>
+                    <button onclick="Trade.setStakePct(2)" id="stk-2" class="px-3 py-1.5 bg-slate-800 border border-slate-800 rounded-md text-[12px] font-bold text-[var(--bf-yellow)] transition-colors shadow-md">2%</button>
+                    <button onclick="Trade.setStakePct(5)" id="stk-5" class="px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-md text-[12px] font-bold text-slate-600 hover:bg-slate-100 transition-colors">5%</button>
+                </div>
+            </div>
+            
+            <div class="flex gap-4 items-center">
+                <div class="flex flex-col items-end leading-tight">
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest" data-i18n="avail">Cassa</span>
+                    <span id="bankroll-dsk" class="font-mono-nums font-black text-[16px] text-[#00c853]">€ 100.00</span>
+                </div>
+                <div class="h-8 w-px bg-slate-200"></div>
+                <div class="flex flex-col items-end leading-tight">
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest" data-i18n="liability">Rischio (Liab)</span>
+                    <span id="val-liab" class="font-mono-nums font-black text-[16px] text-slate-400">€ 0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="market-tabs shrink-0">
+            <div class="tab-item tab-active" data-i18n="mo">Esito Finale</div>
+            <div class="tab-item" data-i18n="ou">Over/Under 2.5</div>
+        </div>
+
+        <div class="markets-container bg-slate-50 relative">
+            
+            <div id="market-suspended-overlay" class="absolute inset-0 z-50 bg-white/50 backdrop-blur-[2px] hidden flex-col items-center justify-center">
+                <span class="bg-red-600 text-white font-black text-lg px-6 py-2 rounded shadow-2xl tracking-widest uppercase border border-red-800" data-i18n="susp">Sospeso</span>
+            </div>
+
+            <div class="bg-slate-800 text-white flex justify-between items-center px-4 py-2 sticky top-0 z-10 shadow-sm">
+                <span class="text-[12px] font-bold tracking-wide" data-i18n="mo">Esito Finale</span>
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-[var(--bf-yellow)] rounded-sm flex items-center justify-center"><div class="w-1 h-1 bg-black rounded-full"></div></div>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--zth-green)"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                </div>
+            </div>
+
+            <div class="bg-white flex items-center justify-between px-4 py-2 text-[11px] font-bold text-slate-500 border-b border-slate-200">
+                <div class="truncate flex-grow uppercase tracking-wider">
+                    <span data-i18n="matched">Abbinate</span>: <span id="vol-tot" class="font-normal text-slate-400">€0</span>
+                </div>
+                <div class="flex gap-2 shrink-0">
+                    <div class="w-[75px] sm:w-[90px] text-center text-[#1c6fa5] bg-[#e4f1f9] rounded py-1 uppercase tracking-wider" data-i18n="back">Punta</div>
+                    <div class="w-[75px] sm:w-[90px] text-center text-[#b33959] bg-[#fdebf0] rounded py-1 uppercase tracking-wider" data-i18n="lay">Banca</div>
+                </div>
+            </div>
+
+            <!-- ROW ARGENTINA -->
+            <div class="flex items-center justify-between w-full bg-white border-b border-slate-100 px-4 py-3 hover:bg-slate-50 transition-colors">
+                <div class="flex items-center gap-3 flex-grow truncate pr-4">
+                    <img src="https://flagcdn.com/w40/ar.png" class="flag-img shrink-0" alt="AR">
+                    <span class="text-[15px] font-bold text-slate-800 tracking-tight truncate">Argentina</span>
+                </div>
+                <div class="flex gap-2 shrink-0">
+                    <div class="w-[75px] sm:w-[90px]">
+                        <button onclick="Trade.trade('H', 'back')" class="btn-odd-container bf-btn-back" id="btn-H-b">
+                            <span class="odd-price" id="odd-H-b">-</span>
+                            <span class="odd-vol" id="vol-H-b">-</span>
+                        </button>
+                    </div>
+                    <div class="w-[75px] sm:w-[90px]">
+                        <button onclick="Trade.trade('H', 'lay')" class="btn-odd-container bf-btn-lay" id="btn-H-l">
+                            <span class="odd-price" id="odd-H-l">-</span>
+                            <span class="odd-vol" id="vol-H-l">-</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROW FRANCIA -->
+            <div class="flex items-center justify-between w-full bg-white border-b border-slate-100 px-4 py-3 hover:bg-slate-50 transition-colors">
+                <div class="flex items-center gap-3 flex-grow truncate pr-4">
+                    <img src="https://flagcdn.com/w40/fr.png" class="flag-img shrink-0" alt="FR">
+                    <span class="text-[15px] font-bold text-slate-800 tracking-tight truncate" data-i18n="france">Francia</span>
+                </div>
+                <div class="flex gap-2 shrink-0">
+                    <div class="w-[75px] sm:w-[90px]">
+                        <button onclick="Trade.trade('A', 'back')" class="btn-odd-container bf-btn-back" id="btn-A-b">
+                            <span class="odd-price" id="odd-A-b">-</span>
+                            <span class="odd-vol" id="vol-A-b">-</span>
+                        </button>
+                    </div>
+                    <div class="w-[75px] sm:w-[90px]">
+                        <button onclick="Trade.trade('A', 'lay')" class="btn-odd-container bf-btn-lay" id="btn-A-l">
+                            <span class="odd-price" id="odd-A-l">-</span>
+                            <span class="odd-vol" id="vol-A-l">-</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROW DRAW -->
+            <div class="flex items-center justify-between w-full bg-white border-b border-slate-200 px-4 py-3 hover:bg-slate-50 transition-colors">
+                <div class="flex items-center gap-3 flex-grow truncate pr-4">
+                    <div class="w-6 flex justify-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="#94a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div>
+                    <span class="text-[15px] font-bold text-slate-800 tracking-tight truncate" data-i18n="draw">Pareggio</span>
+                </div>
+                <div class="flex gap-2 shrink-0">
+                    <div class="w-[75px] sm:w-[90px]">
+                        <button onclick="Trade.trade('X', 'back')" class="btn-odd-container bf-btn-back" id="btn-X-b">
+                            <span class="odd-price" id="odd-X-b">-</span>
+                            <span class="odd-vol" id="vol-X-b">-</span>
+                        </button>
+                    </div>
+                    <div class="w-[75px] sm:w-[90px]">
+                        <button onclick="Trade.trade('X', 'lay')" class="btn-odd-container bf-btn-lay" id="btn-X-l">
+                            <span class="odd-price" id="odd-X-l">-</span>
+                            <span class="odd-vol" id="vol-X-l">-</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<script>
+const I18N = {
+    it: {
+        avail: "Cassa", draw: "Pareggio", france: "Francia",
+        mo: "Esito Finale", ou: "Under/Over 2.5", inst_btn_top: "Istruzioni Demo",
+        susp: "Sospeso", pos_open: "Pos. Aperta", mentor_title: "Il Maestro & Pro Tips",
+        matched: "Abbinate", back: "Punta (Azzurro)", lay: "Banca (Rosa)", liability: "Rischio (Liab)", stake_lbl: "Puntata (Stake):", cashout: "Cash Out", pnl: "Profitto",
+        
+        inst_title: "Come usare il Simulatore",
+        inst_intro_title: "🏆 Finale Mondiali 2022 (ARG-FRA)",
+        inst_intro_desc: "Benvenuto! Rivivrai i momenti clou della finale. Il <b>Maestro</b> ti spiegherà cosa succede ai prezzi. Impara a fare Trading Sportivo senza rischiare nulla.",
+        inst_p1_title: "Tasto Azzurro (Punta / Back)",
+        inst_p1_desc: "Scommetti <b>A FAVORE</b> di un evento (es. vince l'Argentina). Rischi solo l'importo che decidi di puntare (Stake).",
+        inst_p2_title: "Tasto Rosa (Banca / Lay)",
+        inst_p2_desc: "Scommetti <b>CONTRO</b> un evento (diventi tu il Bookmaker). Attenzione: il tuo rischio (Liability) si moltiplica in base alla quota!",
+        inst_p3_title: "Pulsante 80' Minuto & Cash Out",
+        inst_p3_desc: "Usa il bottone in alto <b>⏩ 80'</b> per saltare subito all'azione. Quando sei a mercato, usa il <b>Cash Out</b> per chiudere la giocata e assicurarti un profitto se le quote scendono!",
+        inst_btn: "Tutto chiaro, Iniziamo!",
+
+        mentor_idle: "👋 Ciao! Le quote del Pareggio scendono lentamente col passare dei minuti. Si chiama <span class='t-y'>Time Decay</span>. Meno tempo resta, più il pareggio è probabile se non segnano!",
+        mentor_h: "L'Argentina spinge! Guarda come la sua quota azzurra scende. 💡 <b>PRO TIP</b>: Quando una squadra attacca pericolosamente, la probabilità di un suo gol sale, quindi la quota si abbassa.",
+        mentor_a: "La Francia si fa vedere in avanti. 💡 <b>PRO TIP</b>: Quando l'azione è incerta, i trader tolgono i soldi dal mercato per paura. Lo spazio tra l'azzurro e il rosa (<span class='t-y'>Spread</span>) si allarga.",
+        mentor_card_y: "🟨 Ammonizione per {player}. L'algoritmo matematico inizia a prezzare il <span class='t-l'>Rischio Cartellino Rosso</span> correggendo leggermente le quote.",
+        
+        tut_1: "Iniziamo! ⚡ Prova a cliccare un tasto Azzurro per Puntare, o Rosa per Bancare (scommettere contro). 💡 <b>PRO TIP</b>: Clicca sul pulsante <b>⏩ 80'</b> in alto per saltare ai minuti di fuoco!",
+        tut_2: "💡 <b>PRO TIP</b>: Nel <span class='t-b'>Back (Azzurro)</span> rischi solo quello che punti. Nel <span class='t-l'>Lay (Rosa)</span>, diventi il banco e il tuo rischio viene moltiplicato per la quota! Occhio al rischio.",
+        tut_3: "🎯 <b>L'ESERCIZIO</b>: Prova a bancare (tasto Rosa) il Pareggio ora. Appena c'è un gol, la quota del Pareggio esploderà verso l'alto e tu potrai fare un <span class='t-y'>Cash Out</span> in super profitto!",
+        
+        mentor_23: "⚽ RIGORE ARGENTINA! Crollo totale delle quote argentine. Il mercato va nel panico! Chi aveva bancato l'Argentina ora sta perdendo molto.",
+        mentor_35: "⚽ 2-0 ARGENTINA! Di Maria! La quota dell'Argentina sfiora l'1.05. Il mercato dà la Francia per spacciata. Hai già cliccato <b>⏩ 80'</b> per vedere cosa succede dopo?",
+        mentor_54: "La palla gira a centrocampo ma le quote non si muovono. Nessuno crede in una rimonta francese. Manca poco...",
+        mentor_80: "😱 RIGORE FRANCIA ALL'80'! CIGNO NERO! I bot impazziscono. L'Argentina torna a salire. Se avevi bancato il pareggio, la quota si sta muovendo violentemente!",
+        mentor_81: "🌪️ CRASH DEL MERCATO! 2-2 in 90 secondi! La quota del Pareggio collassa da 15.0 a 1.60 in un istante. Questo è il potere devastante dell'Exchange!",
+        
+        mentor_co_win: "✅ Bravissimo! Cash Out in <b>PROFITTO</b> completato. Hai guadagnato €{net}. Questo si chiama 'chiudere il trade in green'.",
+        mentor_co_loss: "❌ Uscita dal mercato in perdita. Hai perso €{net}. Accettare una piccola perdita ('Stop Loss') a volte salva la cassa da disastri. Fa parte del gioco!",
+        mentor_no_funds: "🚫 Cassa insufficiente! Per bancare a questa quota, il tuo rischio (<span class='t-l'>Liability</span>) è di €{liab}. Non hai abbastanza soldi.",
+        mentor_bet_back: "Hai Puntato (Azzurro) a quota {odd}. Rischio bloccato: €{liab}. Profitto se vinci: €{prof}. Osserva il PNL muoversi coi secondi! Quando vuoi, clicca Cash Out.",
+        mentor_bet_lay: "Hai Bancato (Rosa) a quota {odd}. Hai fatto il Banco! Rischio bloccato (<span class='t-l'>Liability</span>): €{liab}. Ora spera che la squadra NON vinca. Usa il Cash Out per uscire in sicurezza.",
+        mentor_refill: "Cassa azzerata. Niente panico, è una demo! Ti ho fatto un ricarico di 100€. Riprova e fai molta attenzione a come calcoli il rischio nel Lay!"
+    },
+    en: {
+        avail: "Bankroll", draw: "Draw", france: "France",
+        mo: "Match Odds", ou: "Over/Under 2.5", inst_btn_top: "Instructions",
+        susp: "Suspended", pos_open: "Open Pos.", mentor_title: "The Mentor & Pro Tips",
+        matched: "Matched", back: "Back (Blue)", lay: "Lay (Pink)", liability: "Liability", stake_lbl: "Stake:", cashout: "Cash Out", pnl: "Profit",
+        
+        inst_title: "How to use the Simulator",
+        inst_intro_title: "🏆 2022 World Cup Final",
+        inst_intro_desc: "Welcome! You will relive the climax of the final. The <b>Mentor</b> will explain what happens to prices. Learn Sports Trading without risking anything.",
+        inst_p1_title: "Blue Button (Back)",
+        inst_p1_desc: "Bet <b>FOR</b> an event (e.g., Argentina wins). You only risk the amount you stake.",
+        inst_p2_title: "Pink Button (Lay)",
+        inst_p2_desc: "Bet <b>AGAINST</b> an event (you act as the Bookie). Warning: your risk (Liability) multiplies based on the odds!",
+        inst_p3_title: "80' Button & Cash Out",
+        inst_p3_desc: "Use the top <b>⏩ 80'</b> button to skip to the action. When in a trade, use <b>Cash Out</b> to close it and secure a profit if odds drop!",
+        inst_btn: "Got it, let's start!",
+
+        mentor_idle: "👋 Hi! Draw odds slowly drop as minutes pass. This is <span class='t-y'>Time Decay</span>. Less time = Draw is more likely if no one scores!",
+        mentor_h: "Argentina pushes! Watch their blue odds drop. 💡 <b>PRO TIP</b>: When a team attacks dangerously, their probability of scoring goes up, so odds go down.",
+        mentor_a: "France moves forward. 💡 <b>PRO TIP</b>: When action is uncertain, traders pull money out of fear. The gap between blue and pink (<span class='t-y'>Spread</span>) widens.",
+        mentor_card_y: "🟨 Yellow card for {player}. The algorithm starts pricing the <span class='t-l'>Red Card Risk</span> slightly correcting the odds.",
+        
+        tut_1: "Let's go! ⚡ Try clicking a Blue box to Back, or Pink to Lay (bet against). 💡 <b>PRO TIP</b>: Click the <b>⏩ 80'</b> button to jump to the crazy ending!",
+        tut_2: "💡 <b>PRO TIP</b>: In <span class='t-b'>Back (Blue)</span> you only risk your stake. In <span class='t-l'>Lay (Pink)</span>, you act as the bookie and your risk is multiplied by the odds!",
+        tut_3: "🎯 <b>THE DRILL</b>: Try to Lay (Pink box) the Draw now. At the first goal, Draw odds will spike upwards and you can <span class='t-y'>Cash Out</span> in huge profit!",
+        
+        mentor_23: "⚽ ARGENTINA PENALTY! Total collapse of Argentina odds. The market panics! Those who laid Argentina are bleeding money.",
+        mentor_35: "⚽ 2-0 ARGENTINA! Di Maria! Argentina odds hit 1.05. Market writes off France. Have you clicked <b>⏩ 80'</b> to see what happens next?",
+        mentor_54: "Ball moving in midfield, odds flat. Nobody believes in a French comeback. Time running out...",
+        mentor_80: "😱 FRANCE PENALTY AT 80'! BLACK SWAN! Trading bots go crazy. Argentina odds spike. If you laid the draw, it's moving wildly!",
+        mentor_81: "🌪️ MARKET CRASH! 2-2 in 90 seconds! Draw odds collapse from 15.0 to 1.60 instantly. This is the devastating power of the Exchange!",
+        
+        mentor_co_win: "✅ Great job! Cash Out in <b>PROFIT</b> complete. You earned €{net}. This is called 'greening up'.",
+        mentor_co_loss: "❌ Loss exit completed. You lost €{net}. Taking a small loss ('Stop Loss') saves you from ruin. It's part of the game!",
+        mentor_no_funds: "🚫 Insufficient bankroll! To lay at these odds, your risk (<span class='t-l'>Liability</span>) is €{liab}.",
+        mentor_bet_back: "Backed (Blue) @ {odd}. Locked risk: €{liab}. Profit if win: €{prof}. Watch the PNL move! Click Cash Out whenever you want.",
+        mentor_bet_lay: "Laid (Pink) @ {odd}. You are the Bookmaker! Locked risk (<span class='t-l'>Liability</span>): €{liab}. Now hope they DON'T win. Use Cash Out to exit.",
+        mentor_refill: "Bankroll busted. Don't panic, it's a demo! I gave you a €100 refill. Try again and mind the Lay risk!"
+    },
+    es: {
+        avail: "Fondo", draw: "Empate", france: "Francia",
+        mo: "Cuotas de partido", ou: "Más/Menos 2.5", inst_btn_top: "Instrucciones",
+        susp: "Suspendido", pos_open: "Pos. Abierta", mentor_title: "El Maestro y Pro Tips",
+        matched: "Igualadas", back: "Back (Azul)", lay: "Lay (Rosa)", liability: "Riesgo (Liab)", stake_lbl: "Apuesta:", cashout: "Cash Out", pnl: "Beneficio",
+        
+        inst_title: "Cómo usar el Simulador",
+        inst_intro_title: "🏆 Final Mundial 2022",
+        inst_intro_desc: "¡Bienvenido! Revivirás la final. El <b>Maestro</b> te explicará los movimientos de los precios. Aprende Trading Deportivo sin arriesgar nada.",
+        inst_p1_title: "Botón Azul (Punta / Back)",
+        inst_p1_desc: "Apuesta <b>A FAVOR</b> de un evento. Solo arriesgas la cantidad que decides apostar.",
+        inst_p2_title: "Botón Rosa (Banca / Lay)",
+        inst_p2_desc: "Apuesta <b>EN CONTRA</b> de un evento (tú eres la casa). ¡Atención: tu riesgo (Liability) se multiplica por la cuota!",
+        inst_p3_title: "Botón 80' y Cash Out",
+        inst_p3_desc: "Usa el botón <b>⏩ 80'</b> para saltar a la acción. En el mercado, usa <b>Cash Out</b> para cerrar y asegurar ganancias.",
+        inst_btn: "¡Entendido, vamos!",
+
+        mentor_idle: "👋 ¡Hola! Las cuotas del Empate bajan con los minutos. Es el <span class='t-y'>Time Decay</span>. ¡A menos tiempo, el empate es más probable!",
+        mentor_h: "¡Argentina empuja! Mira cómo baja su cuota. 💡 <b>PRO TIP</b>: Cuando un equipo ataca con peligro, su probabilidad de gol sube y la cuota cae.",
+        mentor_a: "Francia ataca. 💡 <b>PRO TIP</b>: Con la incertidumbre, los traders retiran dinero. La brecha entre azul y rosa (<span class='t-y'>Spread</span>) se amplía.",
+        mentor_card_y: "🟨 Amonestación para {player}. El algoritmo cotiza el <span class='t-l'>Riesgo de Tarjeta Roja</span> ajustando las cuotas.",
+        
+        tut_1: "¡Empecemos! ⚡ Prueba hacer clic en Azul para Back, o Rosa para Lay (apostar en contra). 💡 <b>PRO TIP</b>: ¡Haz clic en <b>⏩ 80'</b> para ir al final loco!",
+        tut_2: "💡 <b>PRO TIP</b>: En el <span class='t-b'>Back (Azul)</span> solo arriesgas lo apostado. En <span class='t-l'>Lay (Rosa)</span>, ¡eres la casa y tu riesgo se multiplica por la cuota!",
+        tut_3: "🎯 <b>EL EJERCICIO</b>: Haz Lay (Rosa) al Empate ahora. Al primer gol, la cuota volará y ¡podrás hacer un <span class='t-y'>Cash Out</span> ganador!",
+        
+        mentor_23: "⚽ ¡PENALTI ARGENTINA! Colapso de cuotas argentinas. ¡El mercado en pánico! Quien apostó Lay a Argentina está perdiendo mucho.",
+        mentor_35: "⚽ ¡2-0 ARGENTINA! Di Maria. Cuota toca 1.05. Mercado da a Francia por muerta. ¿Has hecho clic en <b>⏩ 80'</b> para ver qué pasa?",
+        mentor_54: "Pelota en el medio, cuotas planas. Nadie cree en Francia. Falta poco...",
+        mentor_80: "😱 ¡PENALTI FRANCIA AL 80'! ¡CISNE NEGRO! Los bots enloquecen. ¡Argentina vuelve a subir!",
+        mentor_81: "🌪️ ¡CRASH DEL MERCADO! 2-2 en 90 segundos. Empate colapsa de 15.0 a 1.60 al instante. ¡Ese es el poder del Exchange!",
+        
+        mentor_co_win: "✅ ¡Excelente! Cash Out en <b>BENEFICIO</b>. Ganaste €{net}. A esto se le llama 'cerrar en verde'.",
+        mentor_co_loss: "❌ Salida en pérdida. Perdiste €{net}. Asumir una pequeña pérdida salva tu cuenta de desastres.",
+        mentor_no_funds: "🚫 ¡Fondo insuficiente! Para hacer Lay a esta cuota, tu riesgo (<span class='t-l'>Liability</span>) es €{liab}.",
+        mentor_bet_back: "Has apostado (Azul) a cuota {odd}. Riesgo máximo: €{liab}. Ganancia si ganas: €{prof}. ¡Mira el PNL! Usa Cash Out cuando quieras.",
+        mentor_bet_lay: "Has apostado (Rosa) a cuota {odd}. ¡Eres la Casa! Riesgo bloqueado: €{liab}. Espera que NO ganen. Usa Cash Out para salir a salvo.",
+        mentor_refill: "Fondo a cero. ¡Te recargué €100! ¡Inténtalo de nuevo prestando atención al riesgo en Lay!"
+    },
+    pt: {
+        avail: "Saldo", draw: "Empate", france: "França",
+        mo: "Probabilidades", ou: "Mais/Menos 2.5", inst_btn_top: "Instruções",
+        susp: "Suspenso", pos_open: "Pos. Aberta", mentor_title: "O Mestre e Pro Tips",
+        matched: "Correspondidas", back: "Back (Azul)", lay: "Lay (Rosa)", liability: "Risco (Liab)", stake_lbl: "Aposta:", cashout: "Cash Out", pnl: "Lucro",
+        
+        inst_title: "Como usar o Simulador",
+        inst_intro_title: "🏆 Final Mundial 2022",
+        inst_intro_desc: "Bem-vindo! Vais reviver a final. O <b>Mestre</b> explicará os movimentos dos preços. Aprende Trading Desportivo sem arriscar nada.",
+        inst_p1_title: "Botão Azul (Back)",
+        inst_p1_desc: "Aposta <b>A FAVOR</b> de um evento. Só arriscas o montante que decides apostar.",
+        inst_p2_title: "Botão Rosa (Lay)",
+        inst_p2_desc: "Aposta <b>CONTRA</b> um evento (és a casa). Atenção: o teu risco (Liability) multiplica-se pela odd!",
+        inst_p3_title: "Botão 80' e Cash Out",
+        inst_p3_desc: "Usa o botão <b>⏩ 80'</b> para saltar para a ação. Usa o <b>Cash Out</b> para fechar a posição e garantir lucro!",
+        inst_btn: "Percebi, vamos começar!",
+
+        mentor_idle: "👋 Olá! As odds do Empate descem com os minutos. É o <span class='t-y'>Time Decay</span>. Menos tempo = Empate mais provável!",
+        mentor_h: "A Argentina ataca! Vê como a odd azul desce. 💡 <b>PRO TIP</b>: Quando uma equipa ataca com perigo, a odd cai.",
+        mentor_a: "A França ataca. 💡 <b>PRO TIP</b>: Com incerteza, os traders retiram dinheiro. O espaço entre azul e rosa (<span class='t-y'>Spread</span>) aumenta.",
+        mentor_card_y: "🟨 Cartão amarelo para {player}. O algoritmo começa a cotar o <span class='t-l'>Risco de Cartão Vermelho</span>.",
+        
+        tut_1: "Vamos lá! ⚡ Clica num botão Azul para Back, ou Rosa para Lay. 💡 <b>PRO TIP</b>: Clica no botão <b>⏩ 80'</b> para ir ao final de loucos!",
+        tut_2: "💡 <b>PRO TIP</b>: No <span class='t-b'>Back (Azul)</span> só arriscas o que apostas. No <span class='t-l'>Lay (Rosa)</span>, és a casa e o risco é multiplicado pela odd!",
+        tut_3: "🎯 <b>O EXERCÍCIO</b>: Faz Lay (Rosa) ao Empate agora. Ao 1º golo, a odd vai disparar e poderás fazer um <span class='t-y'>Cash Out</span> com grande lucro!",
+        
+        mentor_23: "⚽ PÊNALTI ARGENTINA! Colapso das odds. O mercado em pânico! Quem fez Lay à Argentina está a sangrar.",
+        mentor_35: "⚽ 2-0 ARGENTINA! Di Maria. Odd quase a 1.05. Mercado dá a França como derrotada. Já clicaste em <b>⏩ 80'</b>?",
+        mentor_54: "Bola no meio, odds planas. Ninguém acredita na França. Falta pouco...",
+        mentor_80: "😱 PÊNALTI FRANÇA AOS 80'! CISNE NEGRO! Bots enlouquecem. A Argentina volta a subir!",
+        mentor_81: "🌪️ CRASH DE MERCADO! 2-2 em 90 segundos. O Empate colapsa de 15.0 para 1.60 num instante. Bem-vindo ao Exchange!",
+        
+        mentor_co_win: "✅ Excelente! Cash Out em <b>LUCRO</b>. Ganhaste €{net}. Isto é fechar em verde.",
+        mentor_co_loss: "❌ Saída com perda. Perdeste €{net}. Aceitar uma pequena perda salva a tua banca de desastres.",
+        mentor_no_funds: "🚫 Saldo insuficiente! Para fazer Lay a esta odd, o risco (<span class='t-l'>Liability</span>) é de €{liab}.",
+        mentor_bet_back: "Apostaste (Azul) à odd {odd}. Risco máximo: €{liab}. Lucro possível: €{prof}. Observa o PNL! Usa Cash Out quando quiseres.",
+        mentor_bet_lay: "Apostaste (Rosa) à odd {odd}. És a Casa! Risco bloqueado: €{liab}. Espera que NÃO ganhem. Usa o Cash Out para sair em segurança.",
+        mentor_refill: "Banca a zero. Recarreguei €100! Tenta de novo e tem atenção ao risco no Lay!"
+    }
+};
+
+const UI = {
+    openInstructions() {
+        document.getElementById('instructions-modal').classList.add('active');
+    },
+    closeInstructions() {
+        document.getElementById('instructions-modal').classList.remove('active');
+        if(!State.active) Sim.start();
+    }
+};
+
+const DOM = {
+    odds: {}, vols: {}, btns: {},
+    timer: null, scoreH: null, scoreA: null, volTot: null,
+    tl1: null, tl2: null, tlEv: null, mentorTxt: null,
+    balDsk: null, valLiab: null, pnlMob: null, posPanel: null
+};
+
+const Drag = {
+    active: false, initialX: 0, initialY: 0, xOffset: 0, yOffset: 0,
+    init() {
+        const panel = document.getElementById('position-panel');
+        if(!panel) return;
+        panel.addEventListener("pointerdown", (e) => this.start(e), {passive: false});
+        document.addEventListener("pointerup", (e) => this.end(e));
+        document.addEventListener("pointermove", (e) => this.move(e), {passive: false});
+        window.addEventListener('resize', () => { if(State.pos) this.checkBounds(); });
+    },
+    start(e) {
+        if (e.target.tagName.toLowerCase() === 'button' || e.target.closest('button')) return;
+        this.initialX = e.clientX - this.xOffset;
+        this.initialY = e.clientY - this.yOffset;
+        if (e.target.closest('#position-panel')) {
+            this.active = true;
+            try { DOM.posPanel.setPointerCapture(e.pointerId); } catch(err) {}
+        }
+    },
+    end(e) { this.active = false; this.checkBounds(); },
+    move(e) {
+        if (this.active) {
+            e.preventDefault();
+            this.xOffset = e.clientX - this.initialX;
+            this.yOffset = e.clientY - this.initialY;
+            this.updateTransform();
+        }
+    },
+    updateTransform() {
+        if(DOM.posPanel) DOM.posPanel.style.transform = `translate(calc(-50% + ${this.xOffset}px), calc(-50% + ${this.yOffset}px))`;
+    },
+    checkBounds() {
+        if(!DOM.posPanel || !State.pos) return;
+        const rect = DOM.posPanel.getBoundingClientRect();
+        const winW = window.innerWidth;
+        const winH = window.innerHeight;
+        
+        let outX = 0; let outY = 0;
+        if(rect.left < 0) outX = -rect.left + 10;
+        if(rect.right > winW) outX = winW - rect.right - 10;
+        if(rect.top < 0) outY = -rect.top + 10;
+        if(rect.bottom > winH) outY = winH - rect.bottom - 10;
+
+        if(outX !== 0 || outY !== 0) {
+            this.xOffset += outX; this.yOffset += outY;
+            DOM.posPanel.style.transition = 'transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            this.updateTransform();
+            setTimeout(() => DOM.posPanel.style.transition = 'opacity 0.3s', 200);
+        }
+    },
+    reset() {
+        this.xOffset = 0; this.yOffset = 0;
+        if(DOM.posPanel) {
+            const isDesktop = window.innerWidth >= 1024;
+            if(isDesktop) {
+                DOM.posPanel.style.left = '20vw';
+                DOM.posPanel.style.top = '75vh';
+            } else {
+                DOM.posPanel.style.left = '50%';
+                DOM.posPanel.style.top = '50%';
+            }
+            this.updateTransform();
+        }
+    }
+};
+
+const App = {
+    lang: 'en',
+    
+    init() {
+        ['H', 'X', 'A'].forEach(k => {
+            DOM.odds[`${k}-b`] = document.getElementById(`odd-${k}-b`);
+            DOM.odds[`${k}-l`] = document.getElementById(`odd-${k}-l`);
+            DOM.vols[`${k}-b`] = document.getElementById(`vol-${k}-b`);
+            DOM.vols[`${k}-l`] = document.getElementById(`vol-${k}-l`);
+            DOM.btns[`${k}-b`] = document.getElementById(`btn-${k}-b`);
+            DOM.btns[`${k}-l`] = document.getElementById(`btn-${k}-l`);
+        });
+        
+        DOM.timer = document.getElementById('match-timer');
+        DOM.scoreH = document.getElementById('score-h');
+        DOM.scoreA = document.getElementById('score-a');
+        DOM.volTot = document.getElementById('vol-tot');
+        DOM.tl1 = document.getElementById('timeline-1');
+        DOM.tl2 = document.getElementById('timeline-2');
+        DOM.tlEv = document.getElementById('timeline-events');
+        DOM.mentorTxt = document.getElementById('mentor-txt');
+        DOM.balDsk = document.getElementById('bankroll-dsk');
+        DOM.valLiab = document.getElementById('val-liab');
+        DOM.pnlMob = document.getElementById('pnl-val');
+        DOM.posPanel = document.getElementById('position-panel');
+
+        Drag.init();
+        this.detectLanguage();
+        Trade.setStakePct(2);
+        Sim.updateTime();
+        Sim.renderUI();
+        
+        setTimeout(() => { UI.openInstructions(); }, 300);
+    },
+
+    detectLanguage() {
+        let userLang = navigator.language || navigator.userLanguage;
+        let shortLang = userLang.split('-')[0].toLowerCase();
+        let supported = ['it', 'en', 'es', 'pt'];
+        this.lang = supported.includes(shortLang) ? shortLang : 'en';
+        
+        document.querySelectorAll('.flag-btn').forEach(btn => btn.classList.remove('active'));
+        const activeBtn = document.getElementById(`lang-btn-${this.lang}`);
+        if(activeBtn) activeBtn.classList.add('active');
+
+        this.updateI18n();
+    },
+
+    setLang(code, btnElement) {
+        this.lang = code;
+        if(btnElement) {
+            document.querySelectorAll('.flag-btn').forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+        } else {
+            document.querySelectorAll('.flag-btn').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.getElementById(`lang-btn-${code}`);
+            if(activeBtn) activeBtn.classList.add('active');
+        }
+
+        this.updateI18n();
+        if(State.lastMentorKey) Sim.mentor(State.lastMentorKey, State.lastMentorVars, true, State.mentorPriority);
+    },
+
+    updateI18n() {
+        const dict = I18N[this.lang];
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (dict[key]) el.innerHTML = dict[key];
+        });
+        
+        if(State.pos) {
+            let label = State.pos.sel === 'H' ? 'Argentina' : (State.pos.sel === 'X' ? dict.draw : dict.france);
+            let action = State.pos.t === 'back' ? dict.back.split(' ')[0].toUpperCase() : dict.lay.split(' ')[0].toUpperCase();
+            document.getElementById('pos-label').innerText = `${action} ${label}`;
+        }
+    },
+    
+    t(key) { return I18N[this.lang][key] || key; }
+};
+
+let State = {
+    active: false, susp: false, 
+    sec: 0, 
+    score: [0,0], bal: 100.00, stake: 2.00, currentPct: 2,
+    odds: { H: 2.78, X: 3.05, A: 2.84 }, 
+    vol: { H: [15400, 8400], X: [12300, 9500], A: [14200, 8900] },
+    pos: null, mState: 'idle',
+    cards: { H: {y:0, r:0}, A: {y:0, r:0} },
+    mentorLockUntil: 0, mentorPriority: 0, lastMentorKey: 'mentor_idle', lastMentorVars: {},
+    
+    events: [
+        { time: 3, type: 'info', mentor: 'tut_1', priority: 10 }, 
+        { time: 25, type: 'info', mentor: 'tut_2', priority: 9 }, 
+        { time: 50, type: 'info', mentor: 'tut_3', priority: 9 }, 
+        { time: 1380, type: 'goal', team: 'H', scorer: 'Messi (Pen)', mentor: 'mentor_23', priority: 10 },
+        { time: 2160, type: 'goal', team: 'H', scorer: 'Di Maria', mentor: 'mentor_35', priority: 10 },
+        { time: 2700, type: 'card', color: 'yellow', team: 'H', player: 'E. Fernandez', mentor: 'mentor_card_y', priority: 8 },
+        { time: 3240, type: 'attack', team: 'A', desc: 'Attacking', mentor: 'mentor_54', priority: 9 },
+        { time: 4800, type: 'goal', team: 'A', scorer: 'Mbappé (Pen)', mentor: 'mentor_80', priority: 10 },
+        { time: 4860, type: 'goal', team: 'A', scorer: 'Mbappé', mentor: 'mentor_81', priority: 10 },
+        { time: 5400, type: 'info', mentor: 'mentor_ah', priority: 10 }
+    ].map(e => ({...e, triggered: false}))
+};
+
+const Sim = {
+    _currentSpreadFactor: 1,
+    _targetOdds: { H: 2.78, X: 3.05, A: 2.84 },
+
+    start() {
+        if(State.active) return;
+        State.active = true;
+        this.renderCards();
+        this.tick();
+        setInterval(() => this.tick(), 1000); 
+    },
+
+    fastForward() {
+        if(!State.active) return;
+        document.getElementById('btn-ff').classList.remove('animate-pulse');
+        
+        State.sec = 4750; // Jump to right before France's comeback
+        State.score = [2,0];
+        State.cards.H.y = 1; // Assuming 1 yellow for ARG
+        
+        State.events.forEach(e => { e.triggered = (e.time <= State.sec); });
+        
+        DOM.scoreH.innerText = State.score[0];
+        DOM.scoreA.innerText = State.score[1];
+        
+        this.renderCards();
+        this.updateTime();
+        this.calculateTargetOdds();
+        State.odds = { ...this._targetOdds };
+        this.renderUI();
+        this.renderTimeline();
+    },
+
+    tick() {
+        if(State.susp) return;
+        if (State.sec >= 5700) { this.endMatch(); return; }
+
+        State.sec++;
+        this.updateTime();
+        this.checkEvents();
+        
+        if(!State.susp) {
+            this.calculateTargetOdds();
+            this.interpolateOdds();
+            if (State.sec % 3 === 0) this.animRadar(); 
+            this.renderUI();
+        }
+    },
+
+    endMatch() {
+        State.susp = true;
+        document.getElementById('suspended').style.display = 'flex';
+        Trade.renderState();
+    },
+
+    checkEvents() {
+        const ev = State.events.find(e => e.time === State.sec && !e.triggered);
+        if (ev) {
+            ev.triggered = true;
+            if (ev.mentor) this.mentor(ev.mentor, { player: ev.player || '' }, true, ev.priority || 10);
+            if (ev.type === 'goal') this.goal(ev.team, ev.scorer, ev.mentor);
+            if (ev.type === 'attack') this.forceAttack(ev.team, ev.desc);
+            if (ev.type === 'card') this.card(ev.team, ev.color, ev.player);
+            this.renderTimeline(); // Re-render timeline to show goals/cards
+        }
+    },
+
+    updateTime() {
+        let m = Math.floor(State.sec/60).toString().padStart(2,'0');
+        let s = (State.sec%60).toString().padStart(2,'0');
+        DOM.timer.innerText = `${m}:${s}`;
+        
+        let p1 = Math.min(100, (State.sec / 2700) * 100);
+        let p2 = State.sec > 2700 ? Math.min(100, ((State.sec - 2700) / 2700) * 100) : 0;
+        DOM.tl1.style.width = p1 + '%';
+        DOM.tl2.style.width = p2 + '%';
+    },
+
+    renderTimeline() {
+        if (!DOM.tlEv) return;
+        DOM.tlEv.innerHTML = '';
+        State.events.forEach(ev => {
+            if (ev.triggered && (ev.type === 'goal' || ev.type === 'card')) {
+                let el = document.createElement('div');
+                if (ev.type === 'goal') {
+                    el.innerText = '⚽';
+                    el.className = 'absolute text-[12px] transform -translate-x-1/2 flex items-center justify-center z-10 drop-shadow-md leading-none';
+                } else if (ev.type === 'card') {
+                    el.className = `absolute transform -translate-x-1/2 z-10 drop-shadow-md w-2 h-3 rounded-sm ${ev.color === 'yellow' ? 'bg-[#ffd600] border border-[#ccaa00]' : 'bg-[#d50000] border border-[#aa0000]'}`;
+                }
+                
+                let leftPct;
+                if(ev.time <= 2700) {
+                    leftPct = (ev.time / 2700) * 49;
+                } else {
+                    leftPct = 51 + ((ev.time - 2700) / 2700) * 49;
+                }
+                el.style.left = leftPct + '%';
+                
+                if (ev.team === 'H') {
+                    el.style.bottom = '100%';
+                    el.style.marginBottom = '2px';
+                } else {
+                    el.style.top = '100%';
+                    el.style.marginTop = '2px';
+                }
+                DOM.tlEv.appendChild(el);
+            }
+        });
+    },
+
+    renderCards() {
+        const renderTeamCards = (team) => {
+            const container = document.getElementById(`cards-${team.toLowerCase()}`);
+            if (!container) return;
+            container.innerHTML = '';
+            for(let i=0; i<State.cards[team].y; i++) container.innerHTML += '<div class="w-2 h-3 bg-[#ffd600] border border-[#ccaa00] rounded-sm ml-1 shadow-sm"></div>';
+            for(let i=0; i<State.cards[team].r; i++) container.innerHTML += '<div class="w-2 h-3 bg-[#d50000] border border-[#aa0000] rounded-sm ml-1 shadow-sm"></div>';
+        };
+        renderTeamCards('H');
+        renderTeamCards('A');
+    },
+
+    card(team, color, player) {
+        if(color === 'yellow') State.cards[team].y++;
+        if(color === 'red') State.cards[team].r++;
+        this.renderCards();
+    },
+
+    calculateTargetOdds() {
+        let rem = Math.max(0, (5400 - State.sec) / 5400);
+        let probH, probX, probA;
+
+        if (State.score[0] === 0 && State.score[1] === 0) {
+            probX = 0.32 + (1-rem)*0.4; probH = 0.36 - (1-rem)*0.2; probA = 0.32 - (1-rem)*0.2;
+        } else if (State.score[0] === 1 && State.score[1] === 0) {
+            probH = 0.70 + (1-rem)*0.15; probX = 0.20 - (1-rem)*0.1; probA = 0.10 - (1-rem)*0.05;
+        } else if (State.score[0] === 2 && State.score[1] === 0) {
+            probH = 0.90 + (1-rem)*0.08; probX = 0.08 - (1-rem)*0.06; probA = 0.02 - (1-rem)*0.02;
+        } else if (State.score[0] === 2 && State.score[1] === 1) {
+            probH = 0.75; probX = 0.15; probA = 0.10;
+        } else if (State.score[0] === 2 && State.score[1] === 2) {
+            probX = 0.60; probA = 0.25; probH = 0.15;
+        }
+
+        let sum = probH + probX + probA;
+        probH /= sum; probX /= sum; probA /= sum;
+
+        this._currentSpreadFactor = 1;
+        if(State.mState.includes('attack')) {
+            this._currentSpreadFactor = 2;
+            if(State.mState === 'h-attack') { probH += 0.05; probA -= 0.03; probX -= 0.02; }
+            if(State.mState === 'a-attack') { probA += 0.05; probH -= 0.03; probX -= 0.02; }
+        }
+        if(State.sec > 4800 && State.sec < 4900) {
+             this._currentSpreadFactor = 4;
+        }
+
+        this._targetOdds.H = Math.min(100, Math.max(1.01, 1/probH));
+        this._targetOdds.X = Math.min(100, Math.max(1.01, 1/probX));
+        this._targetOdds.A = Math.min(100, Math.max(1.01, 1/probA));
+    },
+
+    interpolateOdds() {
+        const speed = 0.2;
+        ['H','X','A'].forEach(k => {
+            State.odds[k] += (this._targetOdds[k] - State.odds[k]) * speed + (Math.random()-0.5)*0.02;
+            State.odds[k] = Math.max(1.01, State.odds[k]);
+            let volSpike = this._currentSpreadFactor > 1 ? 5000 : 100;
+            State.vol[k][0] += Math.floor(Math.random() * volSpike);
+            State.vol[k][1] += Math.floor(Math.random() * volSpike);
+        });
+        
+        let totalVol = ['H','X','A'].reduce((acc, k) => acc + State.vol[k][0] + State.vol[k][1], 0);
+        if (DOM.volTot) DOM.volTot.innerText = `€${(totalVol + 8500000).toLocaleString()}`; 
+        
+        window.requestAnimationFrame(() => Trade.updatePnl());
+    },
+
+    renderUI() {
+        const formatOdd = (n) => n >= 100 ? Math.round(n).toString() : parseFloat(n.toFixed(2)).toString();
+        const formatK = (num) => num > 999 ? (num/1000).toFixed(1) + 'K' : num;
+        let sf = this._currentSpreadFactor || 1;
+
+        ['H','X','A'].forEach(k => {
+            let oB = Trade.roundTick(State.odds[k]); 
+            let oL = Trade.roundTick(oB + (Trade.getTickStep(oB) * sf)); 
+            
+            if (DOM.odds[`${k}-b`]) DOM.odds[`${k}-b`].innerText = formatOdd(oB);
+            if (DOM.odds[`${k}-l`]) DOM.odds[`${k}-l`].innerText = formatOdd(oL);
+            if (DOM.vols[`${k}-b`]) DOM.vols[`${k}-b`].innerText = `€${formatK(State.vol[k][0])}`;
+            if (DOM.vols[`${k}-l`]) DOM.vols[`${k}-l`].innerText = `€${formatK(State.vol[k][1])}`;
+        });
+    },
+
+    forceAttack(team, desc) {
+        State.mState = team === 'H' ? 'h-attack' : 'a-attack';
+        this.updateRadarVisuals(team, desc);
+    },
+
+    animRadar() {
+        if(!State.active || State.susp || State.events.some(e => Math.abs(e.time - State.sec) < 5)) return;
+        let r = Math.random();
+        if (r < 0.25) {
+            State.mState = 'h-attack'; this.mentor('mentor_h', {}, false, 2);
+            this.updateRadarVisuals('H', 'Attacking');
+        } else if (r < 0.50) {
+            State.mState = 'a-attack'; this.mentor('mentor_a', {}, false, 2);
+            this.updateRadarVisuals('A', 'Attacking');
+        } else {
+            State.mState = 'idle'; this.mentor('mentor_idle', {}, false, 1);
+            this.updateRadarVisuals('N', 'Ball Safe');
+        }
+    },
+
+    updateRadarVisuals(team, desc) {
+        const b = document.getElementById('ball');
+        const c = document.getElementById('attack-cone');
+        const badge = document.getElementById('event-badge');
+        
+        if(team === 'H') {
+            b.style.left = `${75 + Math.random()*15}%`; b.style.top = `${20 + Math.random()*60}%`;
+            c.style.opacity = '1'; c.style.left = '60%'; c.style.transform = 'translateY(-50%) rotate(0deg)';
+            badge.style.opacity = '1'; 
+            document.getElementById('event-team').innerText = 'Argentina'; 
+            document.getElementById('event-desc').innerText = desc; document.getElementById('event-desc').style.color = 'var(--zth-green)';
+        } else if (team === 'A') {
+            b.style.left = `${10 + Math.random()*15}%`; b.style.top = `${20 + Math.random()*60}%`;
+            c.style.opacity = '1'; c.style.left = '0%'; c.style.transform = 'translateY(-50%) rotate(180deg)';
+            badge.style.opacity = '1'; 
+            document.getElementById('event-team').innerText = App.t('france'); 
+            document.getElementById('event-desc').innerText = desc; document.getElementById('event-desc').style.color = '#ff4d4d';
+        } else {
+            b.style.left = `${40 + Math.random()*20}%`; b.style.top = `${30 + Math.random()*40}%`;
+            c.style.opacity = '0'; badge.style.opacity = '0';
+        }
+    },
+
+    goal(team, scorer, customMentor) {
+        State.susp = true;
+        if(team === 'H') State.score[0]++; else State.score[1]++;
+        
+        document.getElementById('goal-alert').style.display = 'flex';
+        document.getElementById('scorer-name').innerText = scorer;
+        document.getElementById('event-badge').style.opacity = '0';
+        document.getElementById('attack-cone').style.opacity = '0';
+        if (DOM.scoreH) DOM.scoreH.innerText = State.score[0];
+        if (DOM.scoreA) DOM.scoreA.innerText = State.score[1];
+        
+        if(!customMentor) this.mentor('mentor_goal', {}, true, 10);
+        Trade.renderState(); 
+
+        setTimeout(() => {
+            State.susp = false;
+            document.getElementById('goal-alert').style.display = 'none';
+            document.getElementById('ball').style.left = '50%'; document.getElementById('ball').style.top = '50%';
+            Trade.renderState();
+        }, 5000); 
+    },
+
+    mentor(key, vars = {}, force = false, priority = 1) {
+        if (State.sec >= State.mentorLockUntil) State.mentorPriority = 0;
+        if (!force && State.sec < State.mentorLockUntil && priority <= State.mentorPriority) return;
+        
+        State.lastMentorKey = key; State.lastMentorVars = vars;
+        let txt = App.t(key);
+        for (const [k, v] of Object.entries(vars)) txt = txt.replace(`{${k}}`, v);
+        
+        if (DOM.mentorTxt) DOM.mentorTxt.innerHTML = txt;
+        
+        let lockTime = priority >= 8 ? 40 : (priority >= 5 ? 25 : 10);
+        State.mentorLockUntil = State.sec + lockTime;
+        State.mentorPriority = priority;
+    }
+};
+
+const Trade = {
+    _round(val) { return Math.round(val * 100) / 100; },
+
+    roundTick(p) {
+        if(p <= 1.01) return 1.01; if(p < 2) return Math.round(p*100)/100; if(p < 3) return Math.round(p*50)/50;
+        if(p < 4) return Math.round(p*20)/20; if(p < 6) return Math.round(p*10)/10; if(p < 10) return Math.round(p*5)/5;
+        if(p < 20) return Math.round(p*2)/2; if(p < 30) return Math.round(p); if(p < 50) return Math.round(p/2)*2;
+        if(p < 100) return Math.round(p/5)*5; return Math.round(p/10)*10;
+    },
+    
+    getTickStep(p) {
+        if(p < 2) return 0.01; if(p < 3) return 0.02; if(p < 4) return 0.05;
+        if(p < 6) return 0.1; if(p < 10) return 0.2; if(p < 20) return 0.5;
+        if(p < 30) return 1; if(p < 50) return 2; if(p < 100) return 5; return 10;
+    },
+    
+    setStakePct(pct) {
+        State.currentPct = pct;
+        State.stake = Math.max(0.10, this._round(State.bal * (pct / 100)));
+
+        [1, 2, 5].forEach(i => {
+            let el = document.getElementById(`stk-${i}`);
+            if(el) {
+                if(i === pct) el.className = "px-3 py-1.5 bg-slate-800 border border-slate-800 rounded-md text-[12px] font-bold text-[var(--bf-yellow)] transition-colors shadow-md";
+                else el.className = "px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-md text-[12px] font-bold text-slate-600 hover:bg-slate-100 transition-colors";
+            }
+        });
+        
+        this.updateHeader();
+    },
+
+    updateHeader() {
+        let balStr = `€ ${State.bal.toFixed(2)}`;
+        if(DOM.balDsk) DOM.balDsk.innerText = balStr;
+        
+        let l = State.pos ? State.pos.l : 0;
+        if(DOM.valLiab) {
+            DOM.valLiab.innerText = `€ ${l.toFixed(2)}`;
+            DOM.valLiab.className = `font-mono-nums font-black text-[16px] ${l > 0 ? 'text-red-500' : 'text-slate-400'}`;
+        }
+    },
+
+    checkBust() {
+        if (State.bal < 1.00 && !State.pos) {
+            State.bal = 100.00;
+            Sim.mentor('mentor_refill', {}, true, 10);
+            this.setStakePct(State.currentPct || 2);
+            this.updateHeader();
+            return true;
+        }
+        return false;
+    },
+
+    trade(sel, type) {
+        if(!State.active || State.susp || State.pos) return;
+        
+        let sf = Sim._currentSpreadFactor || 1;
+        let rawB = State.odds[sel];
+        let o = type === 'back' ? this.roundTick(rawB) : this.roundTick(rawB + (this.getTickStep(rawB) * sf));
+        
+        let s = this._round(State.stake); 
+        let l = type === 'lay' ? this._round(s * (o - 1)) : s;
+
+        if(State.bal < l) {
+            if (!this.checkBust()) Sim.mentor('mentor_no_funds', { liab: l.toFixed(2) }, true, 10);
+            return;
+        }
+        
+        State.bal = this._round(State.bal - l);
+        State.pos = { sel, t: type, e: o, s: s, l: l };
+        
+        if(State.currentPct) this.setStakePct(State.currentPct);
+        
+        Drag.reset(); 
+        if(DOM.posPanel) {
+            DOM.posPanel.classList.remove('opacity-0', 'pointer-events-none');
+            DOM.posPanel.classList.add('opacity-100', 'pointer-events-auto');
+        }
+        
+        App.updateI18n(); 
+        
+        document.getElementById('pos-label').className = `text-[#111] text-[11px] font-black px-2.5 py-1 rounded-md shadow-sm tracking-wide ${type==='back'?'bg-[var(--btn-back)]':'bg-[var(--btn-lay)]'}`;
+        document.getElementById('pos-odds').innerText = `@ ${o.toFixed(2)}`;
+        document.getElementById('pos-stake').innerText = `Stake: €${s.toFixed(2)}`;
+        document.getElementById('pos-liab').innerText = `Resp: €${l.toFixed(2)}`;
+        
+        let potProf = type === 'back' ? this._round(s * (o - 1)) : s;
+        let mentorKey = type === 'back' ? 'mentor_bet_back' : 'mentor_bet_lay';
+        Sim.mentor(mentorKey, { odd: o.toFixed(2), liab: l.toFixed(2), prof: potProf.toFixed(2) }, true, 9);
+
+        this.renderState();
+        this.updateHeader();
+    },
+
+    updatePnl() {
+        if(!State.pos) return;
+        
+        let sf = Sim._currentSpreadFactor || 1;
+        let rawB = State.odds[State.pos.sel];
+        let cB = this.roundTick(rawB);
+        let cL = this.roundTick(rawB + (this.getTickStep(rawB) * sf));
+        
+        let current = State.pos.t === 'back' ? cL : cB;
+        let pnl = State.pos.t === 'back' ? State.pos.s * (State.pos.e / current - 1) : State.pos.s * (1 - State.pos.e / current);
+        
+        let net = pnl > 0 ? pnl * 0.95 : pnl;
+        net = this._round(net);
+        
+        let str = `${net >= 0 ? '+' : '-'}€${Math.abs(net).toFixed(2)}`;
+        if (DOM.pnlMob) { 
+            DOM.pnlMob.innerText = str; 
+            DOM.pnlMob.className = `text-[22px] font-black leading-none font-mono-nums transition-colors duration-200 ${net > 0 ? 'text-[var(--zth-green)]' : (net < 0 ? 'text-red-500' : 'text-slate-800')}`; 
+        }
+    },
+
+    cashOut() {
+        if(!State.pos || State.susp) return;
+        
+        let sf = Sim._currentSpreadFactor || 1;
+        let rawB = State.odds[State.pos.sel];
+        let cB = this.roundTick(rawB);
+        let cL = this.roundTick(rawB + (this.getTickStep(rawB) * sf));
+        let current = State.pos.t === 'back' ? cL : cB;
+        
+        let pnl = State.pos.t === 'back' ? State.pos.s * (State.pos.e / current - 1) : State.pos.s * (1 - State.pos.e / current);
+        let net = this._round(pnl > 0 ? pnl * 0.95 : pnl); 
+        
+        if (pnl > 0) Sim.mentor('mentor_co_win', { net: net.toFixed(2) }, true, 10);
+        else Sim.mentor('mentor_co_loss', { net: Math.abs(net).toFixed(2) }, true, 10);
+        
+        State.bal = this._round(State.bal + State.pos.l + net);
+        State.pos = null;
+        
+        if(State.currentPct) this.setStakePct(State.currentPct);
+        
+        if(DOM.posPanel) {
+            DOM.posPanel.classList.remove('opacity-100', 'pointer-events-auto');
+            DOM.posPanel.classList.add('opacity-0', 'pointer-events-none');
+        }
+        
+        this.renderState();
+        this.updateHeader();
+        this.checkBust();
+    },
+
+    renderState() {
+        let isSuspended = State.susp || State.sec >= 5700;
+        let lock = State.pos !== null || isSuspended;
+        
+        let mOverlay = document.getElementById('market-suspended-overlay');
+        if (mOverlay) mOverlay.style.display = isSuspended ? 'flex' : 'none';
+
+        ['H','X','A'].forEach(k => {
+            if(DOM.btns[`${k}-b`] && DOM.btns[`${k}-l`]) {
+                DOM.btns[`${k}-b`].disabled = lock; DOM.btns[`${k}-l`].disabled = lock;
+                if (lock) {
+                    DOM.btns[`${k}-b`].classList.add('opacity-30', 'cursor-not-allowed');
+                    DOM.btns[`${k}-l`].classList.add('opacity-30', 'cursor-not-allowed');
+                } else {
+                    DOM.btns[`${k}-b`].classList.remove('opacity-30', 'cursor-not-allowed');
+                    DOM.btns[`${k}-l`].classList.remove('opacity-30', 'cursor-not-allowed');
+                }
+            }
+        });
+        
+        let coBtn = document.getElementById('btn-cashout-mob');
+        if(coBtn) {
+            if(isSuspended) {
+                coBtn.disabled = true; coBtn.className = "bg-slate-300 text-slate-500 font-black px-4 py-2.5 rounded-lg text-[11px] uppercase tracking-widest cursor-not-allowed";
+                coBtn.innerText = App.t('susp');
+            } else {
+                coBtn.disabled = false; coBtn.className = "bg-[var(--zth-green)] hover:bg-[#00c853] text-[#111] font-black px-4 py-2.5 rounded-lg text-[11px] uppercase tracking-widest shadow-md active:scale-95 transition-all cursor-pointer";
+                coBtn.innerText = App.t('cashout');
+            }
+        }
+    }
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+    requestAnimationFrame(() => {
+        document.body.classList.add('ready');
+        App.init(); 
+    });
+});
+</script>
+</body>
+</html>
