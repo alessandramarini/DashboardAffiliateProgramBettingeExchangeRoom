@@ -147,7 +147,7 @@
         recent_activity: "Recent Referrals", joined: "joined", deposited: "deposited",
         network_dir: "Network Directory", my_network: "My Downline", wallet: "Wallet Address", status: "Status", volume: "Volume", weekly_pool: "Weekly Bonus Pool (10%)", pool_qualified: "Qualified for Pool!",
         pool_unqualified: "Not Qualified", target: "Target: 500 USDT", ends_sat: "Closes on Sunday", leads: "Leads", promoter: "Promoter", rank: "Rank",
-        white_paper: "White Paper", close_doc: "Close Document",
+        white_paper: "White Paper", close_doc: "Close Document", specifications: "Specifications",
         
         wp_title: "Smart Contract Architecture", wp_v: "Betting Exchange Room • v1.0",
         wp_sec1_title: "1. The Ecosystem & Services", wp_sec1_desc: "The Betting Exchange Room project is based on a decentralized monthly subscription model offering an All-Inclusive package for training and profit in the Betting Exchange.",
@@ -180,7 +180,7 @@
         recent_activity: "Referral Recenti", joined: "si è unito", deposited: "ha depositato",
         network_dir: "Directory di Rete", my_network: "La Tua Downline", wallet: "Indirizzo Wallet", status: "Stato", volume: "Volume", weekly_pool: "Pool Bonus Settimanale (10%)", pool_qualified: "Qualificato per la Pool!",
         pool_unqualified: "Non Qualificato", target: "Obiettivo: 500 USDT", ends_sat: "Scade Domenica", leads: "Lead", promoter: "Promoter", rank: "Pos",
-        white_paper: "White Paper", close_doc: "Chiudi Documento",
+        white_paper: "White Paper", close_doc: "Chiudi Documento", specifications: "Specifiche",
 
         wp_title: "Architettura Smart Contract", wp_v: "Betting Exchange Room • v1.0",
         wp_sec1_title: "1. L'Ecosistema e i Servizi", wp_sec1_desc: "Il progetto Betting Exchange Room si fonda su un modello ad abbonamento mensile decentralizzato che offre un pacchetto All-Inclusive orientato alla formazione e al profitto.",
@@ -213,7 +213,7 @@
         recent_activity: "Referidos Recientes", joined: "se unió", deposited: "depositó",
         network_dir: "Directorio de Red", my_network: "Tu Red", wallet: "Dirección Wallet", status: "Estado", volume: "Volumen", weekly_pool: "Pool de Bonificación Semanal (10%)", pool_qualified: "¡Calificado para la Pool!",
         pool_unqualified: "No Calificado", target: "Objetivo: 500 USDT", ends_sat: "Vence el Domingo", leads: "Leads", promoter: "Promotor", rank: "Pos",
-        white_paper: "White Paper", close_doc: "Cerrar Documento",
+        white_paper: "White Paper", close_doc: "Cerrar Documento", specifications: "Especificaciones",
         wp_title: "Arquitectura de Smart Contract", wp_v: "Betting Exchange Room • v1.0",
         wp_sec1_title: "1. El Ecosistema y Servicios", wp_sec1_desc: "El proyecto se basa en un modelo de suscripción mensual descentralizado que ofrece un paquete Todo Incluido orientado a la formación y el beneficio.",
         wp_academy_title: "Zero to Hero Academy", wp_academy_desc: "Plataforma interactiva con lecciones en video, podcasts, e-books y juegos educativos para dominar el mercado.",
@@ -245,7 +245,7 @@
         recent_activity: "Indicados Recentes", joined: "entrou", deposited: "depositou",
         network_dir: "Diretório de Rede", my_network: "A Sua Rede", wallet: "Endereço Carteira", status: "Status", volume: "Volume", weekly_pool: "Pool de Bônus Semanal (10%)", pool_qualified: "Qualificado para a Pool!",
         pool_unqualified: "Não Qualificado", target: "Meta: 500 USDT", ends_sat: "Termina no Domingo", leads: "Leads", promoter: "Promotor", rank: "Pos",
-        white_paper: "White Paper", close_doc: "Fechar Documento",
+        white_paper: "White Paper", close_doc: "Fechar Documento", specifications: "Especificações",
         wp_title: "Arquitetura Smart Contract", wp_v: "Betting Exchange Room • v1.0",
         wp_sec1_title: "1. O Ecossistema e Serviços", wp_sec1_desc: "O projeto baseia-se num modelo de subscrição mensal descentralizado oferecendo um pacote Tudo Incluído focado no treino e lucro.",
         wp_academy_title: "Zero to Hero Academy", wp_academy_desc: "Plataforma interativa com videoaulas, podcasts, e-books e jogos educativos para dominar o mercado do zero.",
@@ -260,7 +260,7 @@
         wp_tech_btn: "Mostrar Especificações Técnicas (Para Devs)", wp_tech_hide: "Ocultar",
         wp_tech_1_title: "1. Arquitetura do Token (SBT / NFT)", wp_tech_1_desc: "Subscrição gerida via Token Intransferível (SBT) para evitar revenda em mercado secundário.",
         wp_tech_2_title: "2. Armazenamento e Referenciador Imutável", wp_tech_2_desc: "O estado guarda a data de validade e o 'referrer' fixado apenas na criação inicial.",
-        wp_tech_3_title: "3. Lógica de Época (Domingo)", wp_tech_3_desc: "Distribuído todos os Domingos às 23:59 UTC. O Top Promotor ganha a Pool Principal. A Pool de Rendimento é dividida entre quem supera 500 USDT.",
+        wp_tech_3_title: "3. Lógica de Época (Domingo)", wp_tech_3_desc: "Distribuido todos os Domingos às 23:59 UTC. O Top Promotor ganha a Pool Principal. A Pool de Rendimento é dividida entre quem supera 500 USDT.",
         wp_tech_4_title: "4. Fluxo de Comissões Sem Atrito", wp_tech_4_desc: "Como o 'referrer' é imutável, cada 'renew()' envia matematicamente 50% ao Promotor original.",
         wp_tech_5_title: "5. Segurança de Nível Militar (Anti-Exploit)", wp_tech_5_desc: "Padrão CEI rigoroso com Reentrancy Guards. Estado imutável previne Privilege Escalation. Validação com assinatura ED25519 bloqueia injeção de falsas renovações."
       }
@@ -560,7 +560,10 @@
                 )}
               </div>
             </div>
-            <div className="p-5 border-t border-surface-800 bg-surface-900/50 shrink-0 flex justify-end">
+            <div className="p-5 border-t border-surface-800 bg-surface-900/50 shrink-0 flex justify-between sm:justify-end items-center gap-3">
+              <a href="pricing.html" className="px-6 py-2.5 bg-surface-950 border border-brand-500/30 hover:border-brand-500/60 text-brand-400 rounded-xl text-sm font-bold transition-colors uppercase tracking-wider shadow-lg flex items-center justify-center gap-2">
+                 <Icon name="file-text" size={18} /> {t('specifications')}
+              </a>
               <button onClick={onClose} className="px-6 py-2.5 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded-xl text-sm font-bold transition-colors uppercase tracking-wider shadow-lg">{t('close_doc')}</button>
             </div>
           </div>
@@ -578,9 +581,9 @@
                <img src="logo-tondo.jpeg" alt="Logo" className="w-full h-full object-cover rounded-full" onError={(e)=>{e.target.src=`https://ui-avatars.com/api/?name=${tgUser.first_name}+${tgUser.last_name}&background=18181b&color=d4af37&size=150`}} />
             </div>
             
-            <h2 className="text-3xl sm:text-4xl font-black text-zinc-100 mb-4 tracking-tight relative z-10"><span className="text-gold-gradient">{t('welcome_title')}</span>, {tgUser.first_name}!</h2>
+            <h2 className="text-3xl sm:text-4xl font-black text-zinc-100 mb-4 tracking-tight relative z-10"><span className="text-gold-gradient">{t('welcome_title') || 'Welcome'}</span>, {tgUser.first_name}!</h2>
             <p className="text-zinc-400 max-w-lg mx-auto mb-12 leading-relaxed text-sm sm:text-base relative z-10">
-              {t('select_to_start')}
+              {t('select_to_start') || 'Select an option to get started'}
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl relative z-10">
