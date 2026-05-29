@@ -1,0 +1,987 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { ShieldAlert, Zap, Timer, Brain, TrendingUp, TrendingDown, Crosshair, AlertTriangle, Info, X, Flame, Users, User, Trophy, Swords } from 'lucide-react';
+
+const TRANSLATIONS = {
+  en: {
+    ui: {
+      title: "Slippage Survival",
+      subtitle: "Market Ninja Edition",
+      introDesc: "You are a professional trader. The market is trying to devour your edge through <strong>Slippage, Spread, and Commissions</strong>. Defend your initial Bankroll of",
+      timeTitle: "15 Seconds",
+      timeDesc: "To read the market.",
+      speedTitle: "Speed Bonus",
+      speedDesc: "Fast execution = More Edge.",
+      penaltyTitle: "Rekt Penalty",
+      penaltyDesc: "Errors destroy your capital.",
+      btn1Player: "1 Player",
+      btn2Players: "2 Players",
+      howToPlay: "How to Play",
+      bankroll: "Bankroll",
+      score: "XP Score",
+      combo: "Multiplier!",
+      questionNum: "Market Event",
+      perfect: "CRITICAL EXECUTION!",
+      trap: "ILLIQUIDITY TRAP!",
+      btnContinue: "Next Trade",
+      master: "Market Grandmaster",
+      liquidated: "Margin Called",
+      winDesc: "You tamed the Order Book. You've proven you understand the ruthless math of slippage and commissions.",
+      loseDesc: "The market ate you alive. Ignorance of market depth and spread drained your capital to zero.",
+      finalBankroll: "Final Equity",
+      execScore: "Trading XP",
+      goldenRuleTitle: "The Grandmaster's Rule",
+      goldenRule: '"Your profits are just illusions until the Exchange settles the market."',
+      btnRetry: "Respawn in Market",
+      floatingDamage: "-€1,500 REKT!",
+      floatingHeal: "PROFIT!",
+      p1Turn: "Player 1's Turn",
+      p2Turn: "Player 2's Turn",
+      p1Wins: "Player 1 Wins!",
+      p2Wins: "Player 2 Wins!",
+      draw: "It's a Draw!",
+      vs: "VS"
+    },
+    instructions: {
+      title: "Tactical Briefing",
+      rule1: "1. The Bankroll:",
+      desc1: "Start with €10,000. Goal: survive all market scenarios without hitting 0.",
+      rule2: "2. The Timer:",
+      desc2: "15 seconds per order. Faster answers grant massive Speed Bonuses (Critical Hits).",
+      rule3: "3. The Penalty:",
+      desc3: "A wrong answer represents a catastrophic execution error. Lose €1,500 instantly.",
+      rule4: "4. Versus Mode:",
+      desc4: "In 2 Player mode, you take turns. The trader with the highest Bankroll at the end wins.",
+      btnClose: "Understood, let's trade"
+    },
+    questions: [
+      {
+        type: "concept",
+        question: "What is considered the 'Silent Killer' in the Betting Exchange?",
+        options: ["The 5% Commissions", "Slippage (Execution deviation)", "The Back/Lay Spread", "The Tick Size"],
+        correctIndex: 1,
+        explanation: "Slippage is the silent killer. It's the mathematical deviation between your target odds and actual execution, caused by insufficient liquidity."
+      },
+      {
+        type: "formula",
+        question: "To find your True Net Profit, how do you handle Slippage?",
+        options: ["Add it to the Gross Return", "Ignore it if Spread is tight", "Subtract Slippage Cost from Expected Gross Return before Commissions", "Multiply it by the Tick Size"],
+        correctIndex: 2,
+        explanation: "Rule of thumb: Expected Gross Return - Slippage Cost = Actual Gross. ONLY THEN do you deduct the Exchange Commission to find your Net Profit."
+      },
+      {
+        type: "definition",
+        question: "What exactly is a 'Tick' on the Exchange interface?",
+        options: ["The broker's fixed hidden fee", "The absolute minimum price increment on the ladder", "The 200ms order delay", "A volume spike indicator"],
+        correctIndex: 1,
+        explanation: "A Tick is the smallest step on the ladder. Moving from @1.80 to @1.81 is exactly a 1-Tick jump."
+      },
+      {
+        type: "math",
+        question: "CASE STUDY: €500 order at @1.80. You only match €100 at @1.80, the other €400 fall to @1.78. What's your Slippage Cost?",
+        options: ["€2", "€8", "€10", "€18"],
+        correctIndex: 1,
+        explanation: "Target: 500*1.80 = €900. Reality: (100*1.80) + (400*1.78) = €180 + €712 = €892. 900 - 892 = €8 lost to Slippage!"
+      },
+      {
+        type: "mantra",
+        question: "Complete the Grandmaster's mantra: 'Spread is the tax on impatience; Slippage is the fine for ignoring...'",
+        options: ["...market depth.", "...average odds.", "...expert signals.", "...bankroll management."],
+        correctIndex: 0,
+        explanation: "If you ignore Market Depth (the volume available at each price level), the market will fine you heavily through slippage."
+      },
+      {
+        type: "definition",
+        question: "What does a 'Wide Spread' actually mean in an order book?",
+        options: ["A gap of empty price ticks between the best Back and best Lay", "A high commission rate applied to winners", "Fast trade execution speed", "Massive capital entering the market"],
+        correctIndex: 0,
+        explanation: "The spread is the empty gap between buyers and sellers. In illiquid lower leagues, this gap can be a lethal 5-6 ticks wide!"
+      },
+      {
+        type: "mindset",
+        question: "Before executing a heavy volume trade, what does the Pro check that the Novice ignores?",
+        options: ["The highest possible odds on odds-checkers", "The worst-case execution scenario based on ladder liquidity", "The team's recent Twitter news", "How to use heavy stakes to manipulate the price"],
+        correctIndex: 1,
+        explanation: "The Pro checks the 'Worst-Case Execution Scenario'. If the ladder is empty, the math edge is a mirage."
+      },
+      {
+        type: "concept",
+        question: "In a thin, illiquid market, what happens when you try to 'Cash Out' heavy volume?",
+        options: ["It improves your Net Profit", "It destroys your mathematical edge by eating through bad prices", "It reduces the exchange commissions you pay", "It instantly attracts more liquidity"],
+        correctIndex: 1,
+        explanation: "Entering is easy, but exiting a heavy position into a thin book forces you to 'eat' terrible odds, instantly destroying your edge."
+      }
+    ]
+  },
+  es: {
+    ui: {
+      title: "Slippage Survival",
+      subtitle: "Market Ninja Edition",
+      introDesc: "Eres un trader profesional. El mercado intenta devorar tu ventaja con <strong>Slippage, Spread y Comisiones</strong>. Defiende tu Bankroll inicial de",
+      timeTitle: "15 Segundos",
+      timeDesc: "Para leer el mercado.",
+      speedTitle: "Bono Velocidad",
+      speedDesc: "Ejecución rápida = Más Edge.",
+      penaltyTitle: "Castigo Severo",
+      penaltyDesc: "Errores destruyen capital.",
+      btn1Player: "1 Jugador",
+      btn2Players: "2 Jugadores",
+      howToPlay: "Cómo Jugar",
+      bankroll: "Bankroll",
+      score: "Puntos XP",
+      combo: "Multiplicador!",
+      questionNum: "Evento de Mercado",
+      perfect: "¡EJECUCIÓN CRÍTICA!",
+      trap: "¡TRAMPA DE ILIQUIDEZ!",
+      btnContinue: "Siguiente Trade",
+      master: "Market Grandmaster",
+      liquidated: "Liquidado (Margin Call)",
+      winDesc: "Domaste el Order Book. Demostraste conocer la implacable matemática del slippage y comisiones.",
+      loseDesc: "El mercado te devoró. La ignorancia sobre la profundidad de mercado y el spread drenó tu capital.",
+      finalBankroll: "Capital Final",
+      execScore: "XP de Trading",
+      goldenRuleTitle: "La Regla del Gran Maestro",
+      goldenRule: '"Tus beneficios son solo ilusiones hasta que el Exchange liquida el mercado."',
+      btnRetry: "Reaparecer en el Mercado",
+      floatingDamage: "¡-€1.500 REKT!",
+      floatingHeal: "¡PROFIT!",
+      p1Turn: "Turno del Jugador 1",
+      p2Turn: "Turno del Jugador 2",
+      p1Wins: "¡Gana el Jugador 1!",
+      p2Wins: "¡Gana el Jugador 2!",
+      draw: "¡Es un Empate!",
+      vs: "VS"
+    },
+    instructions: {
+      title: "Briefing Táctico",
+      rule1: "1. El Bankroll:",
+      desc1: "Empiezas con 10.000€. Objetivo: sobrevivir a todos los escenarios sin llegar a 0.",
+      rule2: "2. El Reloj:",
+      desc2: "15 segundos por orden. Respuestas rápidas dan Bonos de Velocidad masivos (Golpes Críticos).",
+      rule3: "3. La Penalización:",
+      desc3: "Una respuesta incorrecta es un error catastrófico. Pierdes 1.500€ al instante.",
+      rule4: "4. Modo Versus:",
+      desc4: "En el modo de 2 jugadores, se turnan. El trader con el Bankroll más alto al final gana.",
+      btnClose: "Entendido, a operar"
+    },
+    questions: [
+      {
+        type: "concept",
+        question: "¿Qué se considera el 'Asesino Silencioso' en el Betting Exchange?",
+        options: ["Las comisiones del 5%", "El Slippage (desviación de ejecución)", "El Spread Back/Lay", "El tamaño del Tick"],
+        correctIndex: 1,
+        explanation: "El Slippage es el asesino silencioso. Es la desviación matemática entre tu cuota deseada y la ejecución real, por falta de liquidez."
+      },
+      {
+        type: "formula",
+        question: "Para hallar el Beneficio Neto Real, ¿cómo manejas el Slippage?",
+        options: ["Lo sumo al Retorno Bruto", "Lo ignoro si el Spread es bajo", "Resto el Costo del Slippage al Retorno Bruto antes de las Comisiones", "Lo multiplico por el valor del Tick"],
+        correctIndex: 2,
+        explanation: "Regla de oro: Retorno Bruto Esperado - Costo de Slippage = Bruto Real. SOLO ENTONCES descuentas la comisión para el Neto."
+      },
+      {
+        type: "definition",
+        question: "¿Qué es exactamente un 'Tick' en la interfaz del Exchange?",
+        options: ["La tarifa oculta del broker", "El incremento mínimo absoluto de precio en la escalera", "El retraso de 200ms", "Un indicador de volumen"],
+        correctIndex: 1,
+        explanation: "Un Tick es el escalón más pequeño en la escalera. Pasar de @1.80 a @1.81 es un salto exacto de 1 Tick."
+      },
+      {
+        type: "math",
+        question: "CASO: Orden de 500€ a @1.80. Igualas 100€ a @1.80, los otros 400€ caen a @1.78. ¿Cuál es el Costo de Slippage?",
+        options: ["2€", "8€", "10€", "18€"],
+        correctIndex: 1,
+        explanation: "Objetivo: 500*1.80 = 900€. Realidad: (100*1.80) + (400*1.78) = 180 + 712 = 892€. ¡900 - 892 = 8€ perdidos por Slippage!"
+      },
+      {
+        type: "mantra",
+        question: "Completa el mantra del Gran Maestro: 'El Spread es el impuesto a la impaciencia; el Slippage es la multa por ignorar...'",
+        options: ["...la profundidad de mercado.", "...las cuotas medias.", "...las señales de expertos.", "...la gestión de banca."],
+        correctIndex: 0,
+        explanation: "Si ignoras la Profundidad de Mercado (volumen en cada nivel de precio), el mercado te multará con un duro slippage."
+      },
+      {
+        type: "definition",
+        question: "¿Qué significa realmente un 'Spread Amplio' en el order book?",
+        options: ["Una brecha de ticks vacíos entre el mejor Back y Lay", "Una comisión alta para ganadores", "Velocidad rápida de ejecución", "Mucho capital entrando"],
+        correctIndex: 0,
+        explanation: "El spread es el hueco entre compradores y vendedores. En ligas menores ilíquidas, ¡esta brecha puede ser de 5-6 ticks letales!"
+      },
+      {
+        type: "mindset",
+        question: "Antes de meter mucho volumen, ¿qué comprueba el Pro que el Novato ignora?",
+        options: ["La cuota más alta en comparadores", "El peor escenario de ejecución basado en la liquidez de la escalera", "Las noticias de Twitter del equipo", "Cómo manipular el precio"],
+        correctIndex: 1,
+        explanation: "El Pro revisa el 'Peor Escenario de Ejecución'. Si la escalera está vacía, la ventaja matemática es un espejismo."
+      },
+      {
+        type: "concept",
+        question: "En un mercado ilíquido, ¿qué pasa cuando intentas hacer 'Cash Out' de mucho volumen?",
+        options: ["Mejora tu Beneficio Neto", "Destruye tu ventaja matemática al comerte malos precios", "Reduce las comisiones que pagas", "Atrae liquidez al instante"],
+        correctIndex: 1,
+        explanation: "Entrar es fácil, pero salir con mucho volumen en un book vacío te obliga a 'comerte' cuotas horribles, destruyendo tu edge."
+      }
+    ]
+  },
+  pt: {
+    ui: {
+      title: "Slippage Survival",
+      subtitle: "Market Ninja Edition",
+      introDesc: "És um trader profissional. O mercado tenta devorar a tua vantagem através de <strong>Slippage, Spread e Comissões</strong>. Defende a tua Banca de",
+      timeTitle: "15 Segundos",
+      timeDesc: "Para ler o mercado.",
+      speedTitle: "Bónus Velocidade",
+      speedDesc: "Execução rápida = Mais Edge.",
+      penaltyTitle: "Punição Severa",
+      penaltyDesc: "Erros destroem capital.",
+      btn1Player: "1 Jogador",
+      btn2Players: "2 Jogadores",
+      howToPlay: "Como Jogar",
+      bankroll: "Banca",
+      score: "Pontos XP",
+      combo: "Multiplicador!",
+      questionNum: "Evento de Mercado",
+      perfect: "EXECUÇÃO CRÍTICA!",
+      trap: "ARMADILHA DE ILIQUIDEZ!",
+      btnContinue: "Próximo Trade",
+      master: "Market Grandmaster",
+      liquidated: "Liquidado (Margin Call)",
+      winDesc: "Domaste o Order Book. Provaste conhecer a matemática implacável do slippage e comissões.",
+      loseDesc: "O mercado engoliu-te. A ignorância sobre a profundidade do mercado e o spread drenou o teu capital.",
+      finalBankroll: "Capital Final",
+      execScore: "XP de Trading",
+      goldenRuleTitle: "A Regra do Grande Mestre",
+      goldenRule: '"Os teus lucros são apenas ilusões até que a Exchange liquide o mercado."',
+      btnRetry: "Renacer no Mercado",
+      floatingDamage: "-€1.500 REKT!",
+      floatingHeal: "PROFIT!",
+      p1Turn: "Turno do Jogador 1",
+      p2Turn: "Turno do Jogador 2",
+      p1Wins: "Jogador 1 Vence!",
+      p2Wins: "Jogador 2 Vence!",
+      draw: "É um Empate!",
+      vs: "VS"
+    },
+    instructions: {
+      title: "Briefing Táctico",
+      rule1: "1. A Banca:",
+      desc1: "Começas com 10.000€. Objetivo: sobreviver a todos os cenários sem chegar a 0.",
+      rule2: "2. O Relógio:",
+      desc2: "15 segundos por ordem. Respostas rápidas dão Bónus de Velocidade (Golpes Críticos).",
+      rule3: "3. A Penalização:",
+      desc3: "Uma resposta errada é um erro catastrófico. Perdes 1.500€ instantaneamente.",
+      rule4: "4. Modo Versus:",
+      desc4: "No modo de 2 jogadores, alternam os turnos. O trader com a maior Banca no final vence.",
+      btnClose: "Entendido, vamos operar"
+    },
+    questions: [
+      {
+        type: "concept",
+        question: "O que é considerado o 'Assassino Silencioso' na Betting Exchange?",
+        options: ["As comissões de 5%", "O Slippage (desvio de execução)", "O Spread Back/Lay", "O tamanho do Tick"],
+        correctIndex: 1,
+        explanation: "O Slippage é o assassino silencioso. É o desvio matemático entre a tua odd desejada e a execução real, por falta de liquidez."
+      },
+      {
+        type: "formula",
+        question: "Para calcular o Lucro Líquido Real, como lidas com o Slippage?",
+        options: ["Somo ao Retorno Bruto", "Ignoro se o Spread for pequeno", "Subtraio o Custo do Slippage ao Retorno Bruto antes das Comissões", "Multiplico pelo valor do Tick"],
+        correctIndex: 2,
+        explanation: "Regra de ouro: Retorno Bruto Esperado - Custo de Slippage = Bruto Real. SÓ DEPOIS descontas a comissão para obter o Neto."
+      },
+      {
+        type: "definition",
+        question: "O que é exatamente um 'Tick' na interface da Exchange?",
+        options: ["A taxa oculta da corretora", "O incremento mínimo absoluto de preço na escada", "O atraso de 200ms", "Um indicador de volume"],
+        correctIndex: 1,
+        explanation: "Um Tick é o degrau mais pequeno na escada. Passar de @1.80 para @1.81 é um salto exato de 1 Tick."
+      },
+      {
+        type: "math",
+        question: "CASO: Ordem de 500€ a @1.80. Correspondes 100€ a @1.80, os outros 400€ caem para @1.78. Qual é o Custo de Slippage?",
+        options: ["2€", "8€", "10€", "18€"],
+        correctIndex: 1,
+        explanation: "Alvo: 500*1.80 = 900€. Realidade: (100*1.80) + (400*1.78) = 180 + 712 = 892€. 900 - 892 = 8€ perdidos por Slippage!"
+      },
+      {
+        type: "mantra",
+        question: "Completa o mantra do Grande Mestre: 'O Spread é o imposto sobre a impaciência; o Slippage é a multa por ignorar...'",
+        options: ["...a profundidade de mercado.", "...as odds médias.", "...os sinais de especialistas.", "...a gestão de banca."],
+        correctIndex: 0,
+        explanation: "Se ignorares a Profundidade de Mercado (o volume em cada nível de preço), o mercado vai multar-te fortemente com slippage."
+      },
+      {
+        type: "definition",
+        question: "O que significa realmente um 'Spread Largo' no order book?",
+        options: ["Um fosso de ticks vazios entre o melhor Back e Lay", "Uma comissão alta para vencedores", "Velocidade rápida de execução", "Muito capital a entrar"],
+        correctIndex: 0,
+        explanation: "O spread é o fosso entre compradores e vendedores. Em ligas menores ilíquidas, esta lacuna pode ser de 5-6 ticks letais!"
+      },
+      {
+        type: "mindset",
+        question: "Antes de inserir muito volume, o que o Pro verifica que o Novato ignora?",
+        options: ["A odd mais alta em comparadores", "O pior cenário de execução baseado na liquidez da escada", "As notícias de Twitter da equipa", "Como manipular o preço"],
+        correctIndex: 1,
+        explanation: "O Pro verifica o 'Pior Cenário de Execução'. Se a escada estiver vazia, a vantagem matemática é uma miragem."
+      },
+      {
+        type: "concept",
+        question: "Num mercado ilíquido, o que acontece quando tentas fazer 'Cash Out' de muito volume?",
+        options: ["Melhora o teu Lucro Líquido", "Destrói a tua vantagem matemática ao consumires odds terríveis", "Reduz as comissões que pagas", "Atrai liquidez instantaneamente"],
+        correctIndex: 1,
+        explanation: "Entrar é fácil, mas sair com muito volume num book vazio força-te a 'comer' odds horríveis, destruindo a tua vantagem."
+      }
+    ]
+  },
+  it: {
+    ui: {
+      title: "Slippage Survival",
+      subtitle: "Market Ninja Edition",
+      introDesc: "Sei un trader professionista. Il mercato sta cercando di divorare il tuo vantaggio tramite <strong>Slippage, Spread e Commissioni</strong>. Difendi il tuo Bankroll iniziale di",
+      timeTitle: "15 Secondi",
+      timeDesc: "Per leggere il mercato.",
+      speedTitle: "Bonus Velocità",
+      speedDesc: "Esecuzione rapida = Più Edge.",
+      penaltyTitle: "Penalità Severa",
+      penaltyDesc: "Gli errori polverizzano il capitale.",
+      btn1Player: "1 Giocatore",
+      btn2Players: "2 Giocatori",
+      howToPlay: "Come Giocare",
+      bankroll: "Bankroll",
+      score: "Punti XP",
+      combo: "Moltiplicatore!",
+      questionNum: "Evento di Mercato",
+      perfect: "ESECUZIONE CRITICA!",
+      trap: "TRAPPOLA ILLIQUIDITÀ!",
+      btnContinue: "Prossimo Trade",
+      master: "Gran Maestro del Mercato",
+      liquidated: "Liquidato (Margin Call)",
+      winDesc: "Hai domato l'Order Book. Hai dimostrato di conoscere la matematica spietata dello slippage e delle commissioni.",
+      loseDesc: "Il mercato ti ha sbranato. L'ignoranza sulla profondità di mercato e sullo spread ha portato il tuo capitale a zero.",
+      finalBankroll: "Capitale Finale",
+      execScore: "XP di Trading",
+      goldenRuleTitle: "La Regola del Gran Maestro",
+      goldenRule: '"I tuoi profitti sono solo illusioni finché l\'Exchange non liquida il mercato."',
+      btnRetry: "Riprova Simulazione",
+      floatingDamage: "-€1.500 REKT!",
+      floatingHeal: "PROFITTO!",
+      p1Turn: "Turno Giocatore 1",
+      p2Turn: "Turno Giocatore 2",
+      p1Wins: "Vince il Giocatore 1!",
+      p2Wins: "Vince il Giocatore 2!",
+      draw: "È un Pareggio!",
+      vs: "VS"
+    },
+    instructions: {
+      title: "Briefing Tattico",
+      rule1: "1. Il Bankroll:",
+      desc1: "Inizi con 10.000€. Obiettivo: sopravvivere a tutti gli scenari senza arrivare a 0.",
+      rule2: "2. Il Timer:",
+      desc2: "15 secondi a domanda. Risposte rapide garantiscono enormi Bonus Velocità.",
+      rule3: "3. La Penalità:",
+      desc3: "Una risposta errata è un errore di esecuzione catastrofico. Perderai 1.500€ istantaneamente.",
+      rule4: "4. Modalità Versus (2P):",
+      desc4: "Nella modalità 2 Giocatori, ci si alterna. Vince il trader con il Bankroll più alto alla fine.",
+      btnClose: "Ricevuto, andiamo a mercato"
+    },
+    questions: [
+      {
+        type: "concept",
+        question: "Cos'è considerato il 'Killer Silenzioso' nel Betting Exchange?",
+        options: ["Le commissioni del 5%", "Lo Slippage (deviazione di esecuzione)", "Lo Spread Back/Lay", "Il valore del Tick"],
+        correctIndex: 1,
+        explanation: "Lo Slippage è il vero killer. È la deviazione matematica tra la quota target e l'esecuzione reale, causata da assenza di liquidità."
+      },
+      {
+        type: "formula",
+        question: "Per trovare il tuo Profitto Netto Reale, come gestisci lo Slippage?",
+        options: ["Lo aggiungo al Ritorno Lordo", "Lo ignoro se lo Spread è stretto", "Sottraggo il Costo dello Slippage dal Ritorno Lordo Atteso prima delle Commissioni", "Lo moltiplico per il Tick"],
+        correctIndex: 2,
+        explanation: "Regola di base: Ritorno Lordo Atteso - Costo Slippage = Ritorno Lordo Reale. SOLO A QUESTO PUNTO deduci le commissioni."
+      },
+      {
+        type: "definition",
+        question: "Cos'è esattamente un 'Tick' nell'interfaccia dell'Exchange?",
+        options: ["La tassa occulta del broker", "Il minimo incremento di prezzo assoluto sulla scala (ladder)", "Il delay di 200ms", "Un indicatore di picco volumetrico"],
+        correctIndex: 1,
+        explanation: "Un Tick è il gradino più piccolo della ladder. Passare da @1.80 a @1.81 è un salto esatto di 1 Tick."
+      },
+      {
+        type: "math",
+        question: "CASO STUDIO: Ordine 500€ a @1.80. Abbini 100€ a @1.80, gli altri 400€ cadono a @1.78. Qual è il tuo Costo di Slippage?",
+        options: ["2€", "8€", "10€", "18€"],
+        correctIndex: 1,
+        explanation: "Target: 500*1.80 = 900€. Realtà: (100*1.80) + (400*1.78) = 180 + 712 = 892€. 900 - 892 = 8€ polverizzati dallo Slippage!"
+      },
+      {
+        type: "mantra",
+        question: "Completa il mantra del Gran Maestro: 'Lo Spread è la tassa sull'impazienza; lo Slippage è la multa per aver ignorato...'",
+        options: ["...la profondità di mercato.", "...le quote medie.", "...i segnali degli esperti.", "...la gestione del bankroll."],
+        correctIndex: 0,
+        explanation: "Se ignori la Profondità di Mercato (il volume di capitale fermo ad ogni livello di prezzo), il mercato ti multerà con lo slippage."
+      },
+      {
+        type: "definition",
+        question: "Cosa significa materialmente uno 'Spread Largo' in un order book?",
+        options: ["Un buco di ticks vuoti tra la migliore offerta Back e Lay", "Una commissione più alta per chi vince", "Esecuzione rapida", "Grandi capitali in ingresso"],
+        correctIndex: 0,
+        explanation: "Lo spread è il buco tra compratori e venditori. Nelle leghe minori illiquide, questo buco può essere largo 5-6 ticks letali!"
+      },
+      {
+        type: "mindset",
+        question: "Prima di piazzare grossi volumi, cosa controlla il Pro che il Novizio ignora?",
+        options: ["Le quote più alte sui comparatori", "Lo scenario peggiore di esecuzione basato sulla liquidità visibile sulla ladder", "Le news su Twitter", "Come manipolare il prezzo"],
+        correctIndex: 1,
+        explanation: "Il Pro verifica il 'Worst-Case Execution Scenario'. Se la ladder è vuota, il vantaggio matematico è un miraggio."
+      },
+      {
+        type: "concept",
+        question: "In un mercato illiquido, cosa succede se tenti il 'Cash Out' di volumi pesanti?",
+        options: ["Migliori il Profitto Netto", "Distruggi il tuo vantaggio matematico 'mangiando' quote pessime", "Riduci le commissioni", "Attrai immediatamente liquidità"],
+        correctIndex: 1,
+        explanation: "Entrare è facile, ma uscire con grandi volumi in un book vuoto ti costringe a 'mangiare' quote orribili, azzerando il tuo edge."
+      }
+    ]
+  }
+};
+
+const FLAGS = {
+  en: 'https://flagcdn.com/w80/gb.png',
+  es: 'https://flagcdn.com/w80/es.png',
+  pt: 'https://flagcdn.com/w80/pt.png',
+  it: 'https://flagcdn.com/w80/it.png'
+};
+const LANGUAGES = ['en', 'es', 'pt', 'it'];
+
+export default function App() {
+  const [lang, setLang] = useState('en');
+  const [gameState, setGameState] = useState('intro'); // intro, playing, feedback, gameover, victory
+  const [showInstructions, setShowInstructions] = useState(false);
+  const [gameMode, setGameMode] = useState(1); // 1 or 2 players
+  const [activePlayer, setActivePlayer] = useState(0); // 0 = Player 1, 1 = Player 2
+  const [playersData, setPlayersData] = useState([
+    { bankroll: 10000, score: 0, streak: 0 },
+    { bankroll: 10000, score: 0, streak: 0 }
+  ]);
+  
+  const [currentQIndex, setCurrentQIndex] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(15);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [shake, setShake] = useState(false);
+  const [floatingText, setFloatingText] = useState(null);
+
+  const timerRef = useRef(null);
+
+  useEffect(() => {
+    const browserLang = navigator.language.split('-')[0];
+    if (LANGUAGES.includes(browserLang)) {
+      setLang(browserLang);
+    } else {
+      setLang('en'); 
+    }
+  }, []);
+
+  const t = TRANSLATIONS[lang].ui;
+  const inst = TRANSLATIONS[lang].instructions;
+  const currentQuestions = TRANSLATIONS[lang].questions;
+
+  useEffect(() => {
+    if (gameState === 'playing' && timeLeft > 0) {
+      timerRef.current = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+    } else if (timeLeft === 0 && gameState === 'playing') {
+      handleTimeOut();
+    }
+    return () => clearInterval(timerRef.current);
+  }, [timeLeft, gameState]);
+
+  const startGame = (mode) => {
+    setGameMode(mode);
+    setGameState('playing');
+    setCurrentQIndex(0);
+    setActivePlayer(0);
+    setPlayersData([
+      { bankroll: 10000, score: 0, streak: 0 },
+      { bankroll: 10000, score: 0, streak: 0 }
+    ]);
+    setTimeLeft(15);
+    setFloatingText(null);
+  };
+
+  const triggerVisuals = (isWin, amount) => {
+    if (!isWin) {
+      setShake(true);
+      setTimeout(() => setShake(false), 600);
+      setFloatingText({ text: t.floatingDamage, type: 'damage' });
+    } else {
+      setFloatingText({ text: `+€${amount} ${t.floatingHeal}`, type: 'heal' });
+    }
+    setTimeout(() => setFloatingText(null), 1500);
+  };
+
+  const handleAnswer = (index) => {
+    clearInterval(timerRef.current);
+    setSelectedAnswer(index);
+    const correct = index === currentQuestions[currentQIndex].correctIndex;
+    setIsCorrect(correct);
+    
+    setPlayersData(prev => {
+      const newPlayers = [...prev];
+      const p = newPlayers[activePlayer];
+      
+      if (correct) {
+        const timeBonus = timeLeft * 10;
+        const baseProfit = 200;
+        const multiplier = 1 + (p.streak * 0.5);
+        const totalProfit = Math.round((baseProfit + timeBonus) * multiplier);
+        
+        p.bankroll += totalProfit;
+        p.score += Math.round((100 + timeBonus) * multiplier);
+        p.streak += 1;
+        triggerVisuals(true, totalProfit);
+      } else {
+        const penalty = 1500;
+        p.bankroll -= penalty;
+        p.streak = 0;
+        triggerVisuals(false, penalty);
+      }
+      return newPlayers;
+    });
+    
+    setGameState('feedback');
+  };
+
+  const handleTimeOut = () => {
+    clearInterval(timerRef.current);
+    setSelectedAnswer(-1); 
+    setIsCorrect(false);
+    setPlayersData(prev => {
+      const newPlayers = [...prev];
+      newPlayers[activePlayer].bankroll -= 1500;
+      newPlayers[activePlayer].streak = 0;
+      return newPlayers;
+    });
+    triggerVisuals(false, 1500);
+    setGameState('feedback');
+  };
+
+  const nextQuestion = () => {
+    // Check game over
+    const p1Dead = playersData[0].bankroll <= 0;
+    const p2Dead = gameMode === 2 && playersData[1].bankroll <= 0;
+    
+    if (gameMode === 1 && p1Dead) {
+      setGameState('gameover');
+      return;
+    }
+    
+    if (gameMode === 2 && p1Dead && p2Dead) {
+      setGameState('gameover');
+      return;
+    }
+
+    if (currentQIndex + 1 < currentQuestions.length) {
+      if (gameMode === 2) {
+        // Swap player
+        setActivePlayer(prev => prev === 0 ? 1 : 0);
+      }
+      setCurrentQIndex(prev => prev + 1);
+      setTimeLeft(15);
+      setSelectedAnswer(null);
+      setIsCorrect(null);
+      setGameState('playing');
+    } else {
+      setGameState('victory');
+    }
+  };
+
+  const renderTopNav = () => (
+    <nav className="w-full bg-slate-950 border-b border-slate-800 p-2 sm:p-4 flex justify-between items-center z-50 shrink-0 shadow-lg">
+      <div className="flex items-center space-x-2 sm:space-x-3">
+        <img 
+          src="logo-tondo.jpeg" 
+          alt="Academy Logo" 
+          className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-blue-500 object-cover shadow-[0_0_10px_rgba(59,130,246,0.5)]"
+          onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/48?text=ZTH'; }} 
+        />
+        <div className="flex flex-col">
+          <h1 className="text-sm sm:text-xl font-black text-white tracking-widest uppercase leading-none">
+            ZERO TO HERO
+          </h1>
+          <h1 className="text-xs sm:text-lg font-black text-blue-500 tracking-widest uppercase leading-none">
+            ACADEMY
+          </h1>
+        </div>
+      </div>
+      
+      <div className="flex items-center space-x-1 sm:space-x-2 bg-slate-900 border border-slate-700 p-1 sm:p-1.5 rounded-lg">
+        {LANGUAGES.map(l => (
+          <button 
+            key={l}
+            onClick={() => setLang(l)}
+            className={`transition-all duration-300 rounded overflow-hidden border-2 ${lang === l ? 'border-blue-500 scale-110 shadow-md' : 'border-transparent opacity-60 hover:opacity-100'}`}
+            title={l.toUpperCase()}
+          >
+            <img src={FLAGS[l]} alt={`${l} flag`} className="w-6 h-4 sm:w-8 sm:h-5 object-cover block" />
+          </button>
+        ))}
+      </div>
+    </nav>
+  );
+
+  const getComboTitle = (streak) => {
+    if (streak >= 5) return "GODLIKE!";
+    if (streak >= 3) return "ON FIRE!";
+    if (streak >= 2) return "COMBO!";
+    return "";
+  };
+
+  const renderGameHeader = () => {
+    const p1 = playersData[0];
+    const p2 = playersData[1];
+    
+    return (
+      <div className="bg-slate-900 border-b border-slate-800 p-2 sm:p-4 flex flex-col z-40 shadow-md shrink-0">
+        
+        {/* Turn Indicator */}
+        <div className="text-center w-full mb-2">
+           <span className={`inline-flex items-center px-4 py-1 rounded-full text-xs sm:text-sm font-black uppercase tracking-widest border-2 animate-pulse ${activePlayer === 0 ? 'bg-blue-900/30 text-blue-400 border-blue-500' : 'bg-purple-900/30 text-purple-400 border-purple-500'}`}>
+             <User size={14} className="mr-2"/> {activePlayer === 0 ? t.p1Turn : t.p2Turn}
+           </span>
+        </div>
+
+        <div className={`flex justify-between items-center ${gameMode === 2 ? 'gap-2' : ''}`}>
+          {/* Player 1 Stats */}
+          <div className={`flex-1 bg-slate-950 p-2 sm:p-3 rounded-xl border-2 transition-colors ${activePlayer === 0 ? 'border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'border-slate-800 opacity-70'}`}>
+             <div className="flex justify-between items-center mb-1">
+               <span className="text-[10px] sm:text-xs text-slate-500 font-bold uppercase">{gameMode === 2 ? 'P1 Bankroll' : t.bankroll}</span>
+               <span className="text-[10px] sm:text-xs text-blue-500 font-bold">{p1.score} XP</span>
+             </div>
+             <div className="flex justify-between items-end">
+               <span className={`text-lg sm:text-2xl font-black font-mono leading-none ${p1.bankroll <= 3000 ? 'text-rose-500' : 'text-emerald-400'}`}>
+                 €{p1.bankroll.toLocaleString()}
+               </span>
+               {p1.streak >= 2 && (
+                 <span className="text-[10px] sm:text-xs font-black text-orange-400 flex items-center bg-orange-950/50 px-1.5 py-0.5 rounded animate-bounce">
+                   <Flame size={12} className="mr-0.5"/> {getComboTitle(p1.streak)}
+                 </span>
+               )}
+             </div>
+          </div>
+
+          {/* VS Divider (if 2P) */}
+          {gameMode === 2 && (
+            <div className="text-slate-600 font-black text-xs sm:text-sm mx-1 sm:mx-2">{t.vs}</div>
+          )}
+
+          {/* Player 2 Stats (if 2P) */}
+          {gameMode === 2 && (
+            <div className={`flex-1 bg-slate-950 p-2 sm:p-3 rounded-xl border-2 transition-colors ${activePlayer === 1 ? 'border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.3)]' : 'border-slate-800 opacity-70'}`}>
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-[10px] sm:text-xs text-slate-500 font-bold uppercase">P2 Bankroll</span>
+                <span className="text-[10px] sm:text-xs text-purple-500 font-bold">{p2.score} XP</span>
+              </div>
+              <div className="flex justify-between items-end">
+                <span className={`text-lg sm:text-2xl font-black font-mono leading-none ${p2.bankroll <= 3000 ? 'text-rose-500' : 'text-emerald-400'}`}>
+                  €{p2.bankroll.toLocaleString()}
+                </span>
+                {p2.streak >= 2 && (
+                 <span className="text-[10px] sm:text-xs font-black text-orange-400 flex items-center bg-orange-950/50 px-1.5 py-0.5 rounded animate-bounce">
+                   <Flame size={12} className="mr-0.5"/> {getComboTitle(p2.streak)}
+                 </span>
+               )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderFloatingText = () => {
+    if (!floatingText) return null;
+    const isDmg = floatingText.type === 'damage';
+    return (
+      <div className={`absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none animate-float-up font-black text-3xl sm:text-6xl drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] ${isDmg ? 'text-rose-500' : 'text-emerald-400'}`}>
+        {floatingText.text}
+      </div>
+    );
+  };
+
+  if (gameState === 'intro') {
+    return (
+      <div className="min-h-dvh h-dvh w-full bg-slate-950 text-slate-200 font-sans flex flex-col overflow-hidden selection:bg-blue-500/30">
+        {renderTopNav()}
+        
+        {showInstructions && (
+          <div className="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
+            <div className="bg-slate-900 border-2 border-blue-500/50 rounded-2xl p-5 sm:p-8 max-w-lg w-full max-h-[90dvh] overflow-y-auto shadow-2xl">
+              <div className="flex justify-between items-center mb-4 sm:mb-6">
+                <h2 className="text-xl sm:text-2xl font-black text-white uppercase flex items-center"><Info className="mr-2 text-blue-400"/> {inst.title}</h2>
+                <button onClick={() => setShowInstructions(false)} className="text-slate-400 hover:text-white"><X size={28} /></button>
+              </div>
+              <div className="space-y-3 sm:space-y-4 mb-6">
+                <div className="bg-slate-950 p-3 rounded-lg border border-slate-800"><h3 className="text-emerald-400 font-bold text-sm">{inst.rule1}</h3><p className="text-xs text-slate-300">{inst.desc1}</p></div>
+                <div className="bg-slate-950 p-3 rounded-lg border border-slate-800"><h3 className="text-yellow-400 font-bold text-sm">{inst.rule2}</h3><p className="text-xs text-slate-300">{inst.desc2}</p></div>
+                <div className="bg-slate-950 p-3 rounded-lg border border-rose-900/50"><h3 className="text-rose-500 font-bold text-sm">{inst.rule3}</h3><p className="text-xs text-slate-300">{inst.desc3}</p></div>
+                <div className="bg-slate-950 p-3 rounded-lg border border-purple-900/50"><h3 className="text-purple-400 font-bold text-sm">{inst.rule4}</h3><p className="text-xs text-slate-300">{inst.desc4}</p></div>
+              </div>
+              <button onClick={() => setShowInstructions(false)} className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black uppercase py-3 sm:py-4 rounded-xl shadow-lg">{inst.btnClose}</button>
+            </div>
+          </div>
+        )}
+
+        <div className="flex-1 overflow-y-auto flex items-center justify-center p-4">
+          <div className="max-w-3xl w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-10 text-center shadow-2xl relative z-10">
+            <div className="inline-flex justify-center items-center p-3 sm:p-4 bg-slate-950 rounded-2xl border border-slate-800 mb-4 sm:mb-6 shadow-[0_0_40px_rgba(37,99,235,0.3)] animate-pulse-slow">
+              <Crosshair size={40} className="text-blue-500" />
+            </div>
+            
+            <h1 className="text-3xl sm:text-5xl font-black text-white mb-2 tracking-tighter uppercase drop-shadow-md">{t.title}</h1>
+            <h2 className="text-sm sm:text-xl text-blue-400 font-bold mb-4 sm:mb-6 tracking-widest uppercase">{t.subtitle}</h2>
+            
+            <p className="text-slate-400 mb-6 sm:mb-8 text-xs sm:text-base max-w-xl mx-auto leading-relaxed" dangerouslySetInnerHTML={{ __html: t.introDesc + ' <span className="text-emerald-400 font-black font-mono text-lg sm:text-2xl drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]">€10,000</span>.' }} />
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
+              <div className="bg-slate-950 p-3 sm:p-4 rounded-xl border border-slate-800 flex flex-col items-center">
+                <Timer size={24} className="text-yellow-500 mb-1" />
+                <p className="text-slate-200 font-bold uppercase text-xs sm:text-sm">{t.timeTitle}</p>
+                <p className="text-slate-500 text-[10px] sm:text-xs text-center mt-1">{t.timeDesc}</p>
+              </div>
+              <div className="bg-slate-950 p-3 sm:p-4 rounded-xl border border-slate-800 flex flex-col items-center">
+                <TrendingUp size={24} className="text-emerald-500 mb-1" />
+                <p className="text-slate-200 font-bold uppercase text-xs sm:text-sm">{t.speedTitle}</p>
+                <p className="text-slate-500 text-[10px] sm:text-xs text-center mt-1">{t.speedDesc}</p>
+              </div>
+              <div className="bg-slate-950 p-3 sm:p-4 rounded-xl border border-rose-900/30 flex flex-col items-center">
+                <TrendingDown size={24} className="text-rose-500 mb-1" />
+                <p className="text-slate-200 font-bold uppercase text-xs sm:text-sm">{t.penaltyTitle}</p>
+                <p className="text-slate-500 text-[10px] sm:text-xs text-center mt-1">{t.penaltyDesc}</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col space-y-3 sm:space-y-4">
+               <button 
+                onClick={() => setShowInstructions(true)}
+                className="w-full text-slate-400 hover:text-white font-bold uppercase text-xs sm:text-sm underline decoration-slate-600 underline-offset-4 mb-2"
+               >
+                 {t.howToPlay}
+               </button>
+               
+               <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+                  <button 
+                    onClick={() => startGame(1)}
+                    className="flex-1 bg-gradient-to-br from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400 text-white font-black uppercase tracking-widest py-4 rounded-xl transition-all transform hover:-translate-y-1 shadow-[0_5px_20px_rgba(37,99,235,0.4)] flex items-center justify-center text-sm sm:text-base border border-blue-400/30"
+                  >
+                    <User className="mr-2" size={20}/> {t.btn1Player}
+                  </button>
+                  
+                  <button 
+                    onClick={() => startGame(2)}
+                    className="flex-1 bg-gradient-to-br from-purple-700 to-purple-500 hover:from-purple-600 hover:to-purple-400 text-white font-black uppercase tracking-widest py-4 rounded-xl transition-all transform hover:-translate-y-1 shadow-[0_5px_20px_rgba(168,85,247,0.4)] flex items-center justify-center text-sm sm:text-base border border-purple-400/30"
+                  >
+                    <Users className="mr-2" size={20}/> {t.btn2Players}
+                  </button>
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (gameState === 'playing' || gameState === 'feedback') {
+    const question = currentQuestions[currentQIndex];
+    const timerColor = timeLeft > 10 ? 'bg-emerald-500' : timeLeft > 5 ? 'bg-yellow-500' : 'bg-rose-600 shadow-[0_0_15px_rgba(225,29,72,0.8)]';
+    
+    return (
+      <div className={`min-h-dvh h-dvh w-full flex flex-col bg-slate-950 text-slate-200 font-sans transition-transform duration-75 overflow-hidden relative ${shake ? 'translate-x-[-15px] border-l-8 border-rose-500' : ''}`}>
+        {renderTopNav()}
+        {renderGameHeader()}
+        {renderFloatingText()}
+        
+        {/* Timer Bar */}
+        <div className="w-full h-1.5 sm:h-2 bg-slate-900 shrink-0 relative">
+          <div 
+            className={`absolute top-0 left-0 h-full transition-all ease-linear ${timerColor}`}
+            style={{ width: `${(timeLeft / 15) * 100}%`, transitionDuration: '1s' }}
+          />
+        </div>
+
+        {/* Main Game Area */}
+        <div className="flex-1 overflow-y-auto flex flex-col items-center p-3 sm:p-6 w-full">
+          <div className="max-w-4xl w-full flex flex-col justify-start">
+            
+            <div className="flex justify-between items-end mb-2 sm:mb-4 px-1 shrink-0 mt-2 sm:mt-0">
+              <span className="text-slate-500 font-black text-xs sm:text-sm tracking-widest uppercase">{t.questionNum} {currentQIndex + 1} / {currentQuestions.length}</span>
+              <div className={`flex items-center font-mono font-black bg-slate-900 px-3 py-1 rounded-full border-2 text-sm sm:text-base ${timeLeft <= 5 ? 'text-rose-500 border-rose-500 animate-pulse' : 'text-slate-300 border-slate-700'}`}>
+                <Timer size={16} className="mr-2" />
+                00:{timeLeft < 10 ? `0${timeLeft}` : timeLeft}
+              </div>
+            </div>
+
+            {/* Question Card */}
+            <div className="bg-slate-900 border border-slate-700 rounded-xl p-5 sm:p-8 mb-4 sm:mb-6 shadow-2xl shrink-0 relative overflow-hidden">
+              <div className={`absolute top-0 left-0 w-1.5 h-full ${activePlayer === 0 ? 'bg-blue-500' : 'bg-purple-500'}`}></div>
+              <h2 className="text-base sm:text-2xl font-bold text-white leading-snug">
+                {question.question}
+              </h2>
+            </div>
+
+            {/* Options */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 shrink-0">
+              {question.options.map((option, index) => {
+                let btnStyle = "bg-slate-900 border-slate-700 hover:bg-slate-800 hover:border-slate-500 text-slate-300 hover:text-white";
+                
+                if (gameState === 'feedback') {
+                  if (index === question.correctIndex) {
+                    btnStyle = "bg-emerald-900/40 border-emerald-500 text-emerald-100 shadow-[0_0_20px_rgba(16,185,129,0.4)] transform scale-[1.02] z-10";
+                  } else if (index === selectedAnswer) {
+                    btnStyle = "bg-rose-900/40 border-rose-500 text-rose-100 transform scale-[0.98]";
+                  } else {
+                    btnStyle = "bg-slate-950 border-slate-800/50 text-slate-600 opacity-40 grayscale";
+                  }
+                }
+
+                return (
+                  <button
+                    key={index}
+                    disabled={gameState === 'feedback'}
+                    onClick={() => handleAnswer(index)}
+                    className={`text-left p-4 sm:p-6 rounded-xl border-2 transition-all duration-200 text-sm sm:text-lg font-semibold shadow-sm ${btnStyle}`}
+                  >
+                    {option}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Feedback */}
+            {gameState === 'feedback' && (
+              <div className={`mt-4 sm:mt-6 p-4 sm:p-6 rounded-xl border-2 shrink-0 shadow-2xl ${isCorrect ? 'bg-emerald-950/80 border-emerald-500/50' : 'bg-rose-950/80 border-rose-500/50'} backdrop-blur-md animate-fade-in`}>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center">
+                  <div className="mr-0 sm:mr-6 mb-3 sm:mb-0 shrink-0 hidden sm:block">
+                    {isCorrect ? (
+                      <div className="bg-emerald-500/20 p-3 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.4)]"><TrendingUp className="text-emerald-400 w-8 h-8"/></div>
+                    ) : (
+                      <div className="bg-rose-500/20 p-3 rounded-full shadow-[0_0_20px_rgba(225,29,72,0.4)]"><AlertTriangle className="text-rose-400 w-8 h-8"/></div>
+                    )}
+                  </div>
+                  <div className="flex-1 w-full">
+                    <h3 className={`text-lg sm:text-2xl font-black mb-1 sm:mb-2 uppercase tracking-wide flex items-center ${isCorrect ? 'text-emerald-400' : 'text-rose-500'}`}>
+                      {!isCorrect && <AlertTriangle className="w-5 h-5 mr-2 sm:hidden inline-block" />}
+                      {isCorrect && <TrendingUp className="w-5 h-5 mr-2 sm:hidden inline-block" />}
+                      {isCorrect ? t.perfect : t.trap}
+                    </h3>
+                    <p className="text-slate-200 text-sm sm:text-base mb-4 sm:mb-5 leading-snug font-medium">{question.explanation}</p>
+                    <button
+                      onClick={nextQuestion}
+                      className="bg-white text-slate-950 hover:bg-slate-200 font-black uppercase tracking-widest py-3 px-8 rounded-xl transition-all transform hover:scale-105 flex items-center text-sm sm:text-base w-full sm:w-auto justify-center shadow-lg"
+                    >
+                      {t.btnContinue} <Zap size={20} className="ml-2"/>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div className="h-8 sm:h-12 shrink-0"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (gameState === 'gameover' || gameState === 'victory') {
+    const isVictory = gameState === 'victory';
+    const p1 = playersData[0];
+    const p2 = playersData[1];
+    
+    let winnerText = isVictory ? t.master : t.liquidated;
+    let isP1Winner = false;
+    let isP2Winner = false;
+    let isDraw = false;
+
+    if (gameMode === 2) {
+      if (p1.bankroll > p2.bankroll) { winnerText = t.p1Wins; isP1Winner = true; }
+      else if (p2.bankroll > p1.bankroll) { winnerText = t.p2Wins; isP2Winner = true; }
+      else { winnerText = t.draw; isDraw = true; }
+    }
+    
+    return (
+      <div className="min-h-dvh h-dvh w-full bg-slate-950 text-slate-200 font-sans flex flex-col overflow-hidden">
+        {renderTopNav()}
+        
+        <div className="flex-1 overflow-y-auto flex items-center justify-center p-4">
+          <div className={`max-w-3xl w-full bg-slate-900 border-2 rounded-3xl p-6 sm:p-10 text-center shadow-[0_0_60px_rgba(0,0,0,0.8)] relative z-10 ${isVictory || isP1Winner || isP2Winner ? 'border-emerald-500/30' : 'border-rose-500/30'}`}>
+            <div className="inline-block p-4 sm:p-6 rounded-full mb-4 sm:mb-6 bg-slate-950 border-4 shadow-inner">
+              {gameMode === 2 ? (
+                <Trophy className="text-yellow-400 w-12 h-12 sm:w-16 sm:h-16 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]" />
+              ) : isVictory ? (
+                <Brain className="text-emerald-400 w-12 h-12 sm:w-16 sm:h-16 drop-shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
+              ) : (
+                <TrendingDown className="text-rose-500 w-12 h-12 sm:w-16 sm:h-16 drop-shadow-[0_0_10px_rgba(225,29,72,0.8)]" />
+              )}
+            </div>
+            
+            <h1 className={`text-2xl sm:text-4xl font-black mb-4 uppercase tracking-widest ${isVictory || isP1Winner || isP2Winner ? 'text-emerald-400' : 'text-rose-500'}`}>
+              {winnerText}
+            </h1>
+            
+            {gameMode === 1 && (
+              <p className="text-slate-300 text-sm sm:text-base mb-6 sm:mb-8 px-2 leading-relaxed">
+                {isVictory ? t.winDesc : t.loseDesc}
+              </p>
+            )}
+
+            {/* Results Box */}
+            <div className={`bg-slate-950 rounded-2xl p-4 sm:p-6 border border-slate-800 mb-6 sm:mb-8 shadow-inner ${gameMode === 2 ? 'grid grid-cols-2 gap-4' : 'flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-12'}`}>
+              
+              {/* P1 Stats */}
+              <div className={`flex flex-col items-center justify-center ${gameMode === 2 && isP1Winner ? 'scale-110' : ''}`}>
+                <span className="text-slate-500 font-bold uppercase text-[10px] sm:text-xs mb-1 sm:mb-2">{gameMode === 2 ? 'P1 ' + t.finalBankroll : t.finalBankroll}</span>
+                <span className={`text-2xl sm:text-4xl font-black font-mono ${p1.bankroll > 10000 ? 'text-emerald-400' : p1.bankroll <= 0 ? 'text-rose-600' : 'text-slate-200'}`}>
+                  €{p1.bankroll.toLocaleString()}
+                </span>
+                <span className="text-xs sm:text-sm text-blue-500 font-bold mt-1">{p1.score} XP</span>
+              </div>
+
+              {/* P2 Stats */}
+              {gameMode === 2 && (
+                <div className={`flex flex-col items-center justify-center border-l border-slate-800 ${isP2Winner ? 'scale-110' : ''}`}>
+                  <span className="text-slate-500 font-bold uppercase text-[10px] sm:text-xs mb-1 sm:mb-2">P2 {t.finalBankroll}</span>
+                  <span className={`text-2xl sm:text-4xl font-black font-mono ${p2.bankroll > 10000 ? 'text-emerald-400' : p2.bankroll <= 0 ? 'text-rose-600' : 'text-slate-200'}`}>
+                    €{p2.bankroll.toLocaleString()}
+                  </span>
+                  <span className="text-xs sm:text-sm text-purple-500 font-bold mt-1">{p2.score} XP</span>
+                </div>
+              )}
+
+              {/* 1P Score (if mode 1) */}
+              {gameMode === 1 && (
+                <div className="flex flex-col items-center justify-center sm:border-l sm:border-slate-800 sm:pl-12">
+                  <span className="text-slate-500 font-bold uppercase text-[10px] sm:text-xs mb-1 sm:mb-2">{t.execScore}</span>
+                  <span className="text-2xl sm:text-4xl font-black text-blue-400">{p1.score.toLocaleString()}</span>
+                </div>
+              )}
+            </div>
+
+            <div className="bg-gradient-to-r from-blue-900/20 to-slate-900 border border-blue-500/30 p-4 sm:p-5 rounded-xl text-left mb-6 sm:mb-8 shadow-lg">
+              <h4 className="text-blue-400 font-black text-xs sm:text-sm uppercase mb-2 flex items-center tracking-widest">
+                <ShieldAlert size={16} className="mr-2 text-blue-500"/> {t.goldenRuleTitle}
+              </h4>
+              <p className="text-slate-200 italic text-xs sm:text-sm border-l-4 border-blue-500 pl-3">{t.goldenRule}</p>
+            </div>
+
+            <button 
+              onClick={() => setGameState('intro')}
+              className="w-full sm:w-auto px-10 py-3 sm:py-4 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-xl transition-all uppercase tracking-widest text-sm border-2 border-slate-600 hover:border-slate-400 transform hover:scale-105 shadow-xl mx-auto block"
+            >
+              {t.btnRetry}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+}
