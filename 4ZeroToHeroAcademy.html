@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#050a05">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title id="page-title">Room AI | Global Exchange Academy - Day 4</title>
+    <meta name="description" content="Interactive Academy for Betting Exchange. Day 4: Market Micro-Structure: The Hidden Cost of Execution.">
+
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&display=swap"></noscript>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050a05;
+            background-image: 
+                linear-gradient(to bottom, rgba(5, 10, 5, 0.96), rgba(10, 20, 10, 0.90)),
+                url('https://images.unsplash.com/photo-1518605368461-1e125222058c?auto=format,compress&fit=crop&w=1920&q=70&fm=webp');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-text-size-adjust: 100%;
+            text-rendering: optimizeLegibility;
+            overflow-x: hidden;
+            width: 100vw;
+        }
+
+        .glass-panel {
+            background: rgba(10, 15, 10, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(153, 232, 20, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transform: translateZ(0); 
+            will-change: transform, opacity;
+        }
+
+        .text-neon-green { color: #99E814; text-shadow: 0 0 12px rgba(153, 232, 20, 0.4); }
+        .bg-neon-green { background-color: #99E814; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.5); }
+        ::-webkit-scrollbar-thumb { background: #99E814; border-radius: 10px; }
+        .tg-scrollbar::-webkit-scrollbar { width: 4px; }
+        .tg-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .tg-scrollbar::-webkit-scrollbar-thumb { background: rgba(153,232,20,0.4); border-radius: 4px; }
+        .tg-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(153,232,20,0.8); }
+
+        @keyframes pulse-sub {
+            0% { color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); border-color: rgba(239, 68, 68, 0.6); background-color: rgba(20,5,5,0.9); }
+            50% { color: #99E814; box-shadow: 0 0 20px rgba(153, 232, 20, 0.3); border-color: rgba(153, 232, 20, 0.6); background-color: rgba(5,20,5,0.9); }
+            100% { color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); border-color: rgba(239, 68, 68, 0.6); background-color: rgba(20,5,5,0.9); }
+        }
+        .sub-warning { animation: pulse-sub 3s infinite ease-in-out; border: 1px solid; transition: all 0.3s ease; transform: translateZ(0); }
+
+        @keyframes joystickNeon {
+            0% { filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.5)); transform: scale(1) translateZ(0); }
+            50% { filter: drop-shadow(0 0 35px rgba(59, 130, 246, 1)); transform: scale(1.15) translateZ(0); }
+            100% { filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.5)); transform: scale(1) translateZ(0); }
+        }
+        .joystick-pulse { animation: joystickNeon 2.5s ease-in-out infinite; display: inline-block; cursor: pointer; will-change: transform, filter; }
+
+        @keyframes play-shadow-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(153, 232, 20, 0.6), 0 8px 32px rgba(0,0,0,0.5); }
+            70% { box-shadow: 0 0 0 20px rgba(153, 232, 20, 0), 0 8px 32px rgba(0,0,0,0.5); }
+            100% { box-shadow: 0 0 0 0 rgba(153, 232, 20, 0), 0 8px 32px rgba(0,0,0,0.5); }
+        }
+        .play-pulse { animation: play-shadow-pulse 2.5s infinite cubic-bezier(0.66, 0, 0, 1); transform: translateZ(0); }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translate3d(0, 15px, 0); }
+            to { opacity: 1; transform: translate3d(0, 0, 0); }
+        }
+        .animate-fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; will-change: transform, opacity; }
+
+        .premium-card {
+            background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+            border-radius: 24px;
+            position: relative;
+            transform: translateZ(0);
+            width: 100%;
+            box-sizing: border-box;
+            overflow: hidden; 
+        }
+        
+        .frame-gold {
+            border: 2px solid #c5a059;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(197, 160, 89, 0.15);
+        }
+        .wwtbam-question-box {
+            background: radial-gradient(ellipse at center, rgba(30, 41, 59, 0.95) 0%, rgba(2, 6, 23, 0.95) 100%);
+            border: 1px solid #d4af37;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7), inset 0 0 15px rgba(212,175,55,0.15);
+            position: relative;
+            width: 100%;
+        }
+
+        .frame-cyan {
+            border: 2px solid #00e5ff;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(0, 229, 255, 0.15);
+            background: linear-gradient(135deg, #041419 0%, #08222a 100%);
+        }
+
+        .frame-neon {
+            border: 2px solid #99E814;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(153, 232, 20, 0.15);
+            background: linear-gradient(135deg, #0a140f 0%, #112211 100%);
+        }
+
+        .frame-purple {
+            border: 2px solid #a855f7;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(168, 85, 247, 0.15);
+            background: linear-gradient(135deg, #13051a 0%, #260a33 100%);
+        }
+
+        .frame-blue {
+            border: 2px solid #3b82f6;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(59, 130, 246, 0.15);
+            background: linear-gradient(135deg, #05101a 0%, #0a2133 100%);
+        }
+
+        .wwtbam-btn {
+            background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+            border: 1px solid rgba(197, 160, 89, 0.5);
+            border-radius: 9999px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            min-height: 3.5rem;
+            word-wrap: break-word;
+        }
+        .wwtbam-btn:hover:not(:disabled) {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4), inset 0 0 10px rgba(212, 175, 55, 0.2);
+            transform: translateY(-1px);
+        }
+        .wwtbam-btn.correct {
+            background: linear-gradient(180deg, #064e3b 0%, #022c22 100%) !important;
+            border-color: #10b981 !important;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.3) !important;
+            color: #ffffff !important;
+        }
+        .wwtbam-btn.wrong {
+            background: linear-gradient(180deg, #7f1d1d 0%, #450a0a 100%) !important;
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.3) !important;
+            color: #ffffff !important;
+        }
+
+        .lang-flag {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border-radius: 6px;
+        }
+        .lang-flag.active {
+            opacity: 1;
+            transform: scale(1.15) translateY(-2px);
+            border-color: #99E814;
+            box-shadow: 0 6px 12px rgba(153, 232, 20, 0.3), 0 0 0 2px rgba(153, 232, 20, 0.5);
+            filter: grayscale(0%);
+            z-index: 10;
+        }
+        .lang-flag.inactive {
+            opacity: 0.6;
+            filter: grayscale(60%) contrast(1.2);
+            border-color: transparent;
+            transform: scale(1);
+        }
+        .lang-flag.inactive:hover {
+            opacity: 0.9;
+            filter: grayscale(20%);
+            transform: scale(1.05);
+        }
+        
+        .btn-hover-fix:hover span {
+            color: #050a05 !important;
+        }
+    </style>
+</head>
+<body class="text-gray-200 pb-12 selection:bg-[#99E814] selection:text-black antialiased relative w-full overflow-x-hidden">
+
+    <header class="sticky top-0 z-40 glass-panel border-b-0 border-t-0 border-x-0 border-b border-[#99E814]/20 px-3 sm:px-6 py-2 sm:py-3 flex justify-between items-center transform-gpu w-full">
+        <div class="flex items-center gap-2 md:gap-4 flex-shrink min-w-0">
+            <img src="logo-tondo.jpeg" alt="Logo" class="w-8 h-8 md:w-10 md:h-10 rounded-full shadow-[0_0_15px_rgba(153,232,20,0.3)] object-cover shrink-0 border border-[#99E814]/30" onerror="this.src='https://placehold.co/100x100/102010/99E814?text=BE'">
+            <h1 class="font-black text-[10px] sm:text-xs md:text-sm lg:text-base tracking-wider uppercase whitespace-nowrap overflow-hidden text-ellipsis" data-i18n-html="headerTitle">BETTING EXCHANGE <span class="text-neon-green">ROOM</span></h1>
+        </div>
+        
+        <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+            <div class="flex items-center bg-black/60 border border-gray-700 px-2.5 py-1.5 sm:px-3 rounded-full shadow-inner" id="xp-badge">
+                <span class="text-yellow-400 text-[10px] sm:text-xs mr-1.5">⚡</span>
+                <span id="xp-counter" class="font-mono font-bold text-[11px] sm:text-sm text-white tabular-nums">0 XP</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="w-full max-w-5xl mx-auto px-3 sm:px-6 mt-4 md:mt-8 space-y-6 md:space-y-10">
+
+        <div class="flex justify-center w-full px-4 mb-4 animate-fade-in-up">
+            <div class="flex items-center justify-center gap-3 sm:gap-5 bg-gradient-to-r from-gray-900/40 via-gray-900/80 to-gray-900/40 border border-[#99E814]/20 py-2.5 px-6 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md">
+                <button onclick="window.changeLang('en')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="en" aria-label="English">
+                    <img src="https://flagcdn.com/w40/gb.png" alt="EN" class="w-full h-full object-cover">
+                </button>
+                <button onclick="window.changeLang('es')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="es" aria-label="Español">
+                    <img src="https://flagcdn.com/w40/es.png" alt="ES" class="w-full h-full object-cover">
+                </button>
+                <button onclick="window.changeLang('pt')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="pt" aria-label="Português">
+                    <img src="https://flagcdn.com/w40/br.png" alt="PT" class="w-full h-full object-cover">
+                </button>
+                <button onclick="window.changeLang('it')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="it" aria-label="Italiano">
+                    <img src="https://flagcdn.com/w40/it.png" alt="IT" class="w-full h-full object-cover">
+                </button>
+            </div>
+        </div>
+
+        <div class="text-center space-y-2 md:space-y-3 px-2 animate-fade-in-up flex flex-col items-center">
+            <p class="text-[#99E814] font-black text-[10px] sm:text-xs md:text-sm tracking-[0.3em] uppercase drop-shadow-lg break-words text-center" data-i18n="moduleTitle">GIORNO 4/30</p>
+            <h2 class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tighter leading-tight break-words text-center w-full" data-i18n="lessonTitle">ZERO TO HERO academy</h2>
+            <p class="text-gray-400 max-w-2xl mx-auto text-xs sm:text-sm md:text-base font-bold leading-relaxed mt-2" data-i18n="lessonDesc">Microstruttura del Mercato: Il Costo Nascosto dell'Esecuzione.</p>
+        </div>
+
+        <section class="premium-card frame-cyan w-full p-3 sm:p-6 md:p-8" style="content-visibility: auto; contain-intrinsic-size: 500px;">
+            <div id="video-wrapper" class="relative w-full aspect-video bg-[#0a140f] rounded-xl md:rounded-2xl overflow-hidden border border-[#00e5ff]/30 shadow-xl ring-1 ring-white/5 transform-gpu">
+                <iframe id="main-video" class="absolute inset-0 w-full h-full z-20" src="https://www.youtube.com/embed/W6m8TVBvjAI?rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 mt-4 sm:mt-6 w-full max-w-4xl mx-auto">
+                <a id="btn-podcast" href="#" target="_blank" rel="noopener noreferrer" onclick="SoundEngine.click()" class="flex items-center justify-center p-3 sm:p-5 md:p-6 bg-gray-900/80 hover:bg-[#00e5ff]/10 hover:border-[#00e5ff]/50 border border-gray-700/50 rounded-xl md:rounded-2xl transition-all active:scale-95 group shadow-md text-center flex-row touch-manipulation transform-gpu min-h-[70px]">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 mr-3 text-[#00e5ff] group-hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.8)] group-hover:scale-110 transition-all duration-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                    <span class="font-black text-[11px] sm:text-xs md:text-sm tracking-widest uppercase text-[#00e5ff] break-words leading-tight" data-i18n="btnPodcast">ASCOLTA IL PODCAST</span>
+                </a>
+                <button onclick="openEbookModal()" class="flex items-center justify-center p-3 sm:p-5 md:p-6 bg-gray-900/80 hover:bg-[#ffb703]/10 hover:border-[#ffb703]/50 border border-gray-700/50 rounded-xl md:rounded-2xl transition-all active:scale-95 group shadow-md text-center flex-row touch-manipulation transform-gpu min-h-[70px]">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 mr-3 text-[#ffb703] group-hover:drop-shadow-[0_0_8px_rgba(255,183,3,0.8)] group-hover:scale-110 transition-all duration-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477-4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    <span class="font-black text-[11px] sm:text-xs md:text-sm tracking-widest uppercase text-[#ffb703] transition-colors break-words leading-tight" data-i18n="btnEbook">VISUALIZZA IL MANUALE</span>
+                </button>
+            </div>
+        </section>
+
+        <section class="premium-card frame-gold w-full p-4 sm:p-6 md:p-10 h-fit" id="quiz-section">
+            <div id="quiz-container" class="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center">
+                <div class="w-full flex flex-wrap justify-between items-center mb-6 sm:mb-8 px-2 gap-2">
+                    <div class="text-[#d4af37] text-[10px] sm:text-xs font-black uppercase tracking-widest bg-[#d4af37]/10 px-3 py-1 rounded-full border border-[#d4af37]/40 whitespace-nowrap shadow-inner" id="quiz-progress-text">Domanda 1 di 5</div>
+                    <div class="flex gap-1.5 shrink-0" id="quiz-dots"></div>
+                </div>
+                <div class="wwtbam-question-box px-4 sm:px-6 py-8 sm:py-10 rounded-xl text-center mb-8 sm:mb-10 w-full">
+                    <p id="quiz-question-text" class="text-[15px] sm:text-lg md:text-xl text-white font-black leading-relaxed drop-shadow-md break-words"></p>
+                </div>
+                <div id="quiz-options-container" class="space-y-3 sm:space-y-4 w-full"></div>
+            </div>
+            
+            <div id="quiz-feedback" class="hidden w-full max-w-2xl mx-auto p-6 sm:p-8 md:p-10 rounded-xl md:rounded-2xl text-center shadow-2xl mt-8 transition-all duration-500 transform-gpu relative overflow-hidden flex justify-center items-center">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
+                <div id="quiz-feedback-icon" class="text-6xl sm:text-8xl relative z-10 drop-shadow-lg flex items-center justify-center">✅</div>
+                <p id="quiz-feedback-text" class="hidden"></p>
+            </div>
+
+            <div id="quiz-completed-screen" class="hidden flex-col items-center justify-center py-10 md:py-16 text-center transition-all duration-500 w-full">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-[#d4af37]/10 rounded-full flex items-center justify-center mb-6 border-2 border-[#d4af37] shadow-[0_0_30px_rgba(212,175,55,0.4)] shrink-0">
+                    <span class="text-4xl sm:text-5xl drop-shadow-lg">🏆</span>
+                </div>
+                <h4 class="text-[#d4af37] font-black text-xl sm:text-2xl md:text-3xl uppercase tracking-widest mb-3 drop-shadow-md break-words w-full" data-i18n="quizCompletedTitle">Check-Point Superato!</h4>
+                <p class="text-gray-200 text-sm md:text-base font-medium mb-10 max-w-md mx-auto px-4 break-words" data-i18n="quizCompletedDesc">Hai sbloccato 500 XP. Ora domini le dinamiche di liquidità.</p>
+                <button onclick="resetQuiz()" class="wwtbam-btn px-6 sm:px-10 py-3 sm:py-4 text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-[0.2em] text-[#d4af37] hover:text-white flex items-center justify-center gap-2 sm:gap-3 group max-w-full">
+                    <span class="group-hover:-rotate-180 transition-transform duration-500 text-base sm:text-lg shrink-0">🔄</span> 
+                    <span data-i18n="btnRetryQuiz" class="truncate">Ripeti il test</span>
+                </button>
+            </div>
+        </section>
+
+        <section class="premium-card frame-neon w-full p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center relative overflow-hidden" style="content-visibility: auto;">
+            <div class="absolute inset-0 bg-gray-600 opacity-[0.02] blur-3xl pointer-events-none"></div>
+            <div class="w-full max-w-4xl mx-auto flex justify-start items-center mb-3 md:mb-5 relative z-10">
+                <div class="bg-gray-900 text-[#99E814] border border-[#99E814]/30 text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest break-words" data-i18n="demoBadge">DEMO INTERATTIVA</div>
+            </div>
+            <a href="Demo-4Day.html" target="_blank" class="demo-link block group relative w-full max-w-4xl mx-auto rounded-xl sm:rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl border border-[#99E814]/30 hover:border-[#99E814] transition-all duration-700 cursor-pointer bg-[#050a05] transform-gpu hover:-translate-y-1" onclick="SoundEngine.click()">
+                <div class="relative w-full overflow-hidden" style="aspect-ratio: 16/9;">
+                    <img src="demo-tick.jpeg" onerror="this.src='https://placehold.co/1280x720/102010/99E814?text=SIMULATOR'" alt="Demo Simulator" class="absolute inset-0 w-full h-full object-cover object-top z-0 transition-transform duration-1000 group-hover:scale-105 opacity-100 grayscale-[0.8] mix-blend-lighten">
+                    <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-[#0a140f]/90 z-10 transition-opacity duration-700 opacity-80 group-hover:opacity-90 pointer-events-none"></div>
+                    <div class="absolute inset-0 flex items-center justify-center z-20 pointer-events-none px-2">
+                        <div class="play-pulse px-4 py-3 sm:px-8 sm:py-4 bg-[#99E814] border border-[#99E814] rounded-lg sm:rounded-xl flex items-center justify-center shadow-[0_0_30px_rgba(153,232,20,0.5)] transform group-hover:scale-105 transition-all duration-500 ease-out group-hover:bg-[#b3ff33] group-hover:shadow-[0_0_40px_rgba(153,232,20,0.7)] pointer-events-auto gap-2 sm:gap-3 backdrop-blur-sm max-w-[90%]">
+                            <svg class="w-4 h-4 sm:w-6 sm:h-6 text-[#050a05] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                            <span class="text-[#050a05] font-black text-[10px] sm:text-sm md:text-base tracking-[0.1em] sm:tracking-[0.2em] uppercase truncate" data-i18n="startSimulator">Avvia Simulatore</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </section>
+        
+        <section class="premium-card frame-purple w-full p-5 sm:p-8 relative overflow-hidden transform-gpu" style="content-visibility: auto;">
+            <p class="text-[9px] sm:text-[11px] md:text-xs text-[#a855f7] font-black mb-2 sm:mb-4 tracking-[0.2em] uppercase text-center md:text-left break-words" data-i18n="finLabel">PILLOLA FINANZIARIA</p>
+            <p class="text-xs sm:text-base md:text-lg text-gray-300 font-medium italic leading-relaxed text-center md:text-left break-words w-full">"<span data-i18n="finQuote">Il trader amatoriale scommette sulla 'miglior quota visibile'. Il professionista valuta lo scenario di esecuzione peggiore prima di premere il grilletto.</span>"</p>
+        </section>
+
+        <section class="premium-card frame-blue w-full p-6 sm:p-10 flex flex-col items-center justify-center relative transform-gpu">
+            <div class="text-center space-y-3 mb-6 px-4 animate-fade-in-up relative z-10 w-full">
+                <h4 class="text-[#3b82f6] font-black text-lg sm:text-xl md:text-2xl tracking-[0.2em] uppercase drop-shadow-[0_0_15px_rgba(59,130,246,0.5)] w-full break-words" data-i18n="penaltiesTitle">GIOCO EDUCATIVO</h4>
+                <p class="text-gray-300 text-xs sm:text-sm md:text-base font-medium max-w-lg mx-auto leading-relaxed w-full break-words" data-i18n="penaltiesDesc">Monopolizza il tabellone.</p>
+            </div>
+            <a href="Game-4Day.html" target="_blank" rel="noopener noreferrer" class="hover:scale-110 transition-transform duration-500 touch-manipulation joystick-pulse transform-gpu shrink-0 relative z-10 mt-4 group" title="Play Game" onclick="SoundEngine.click()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" class="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 drop-shadow-[0_0_20px_rgba(59,130,246,0.5)] group-hover:drop-shadow-[0_0_35px_rgba(255,82,123,0.8)] transition-all duration-500">
+                    <defs>
+                        <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="3" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                    </defs>
+                    <!-- Background / Outer Edge -->
+                    <rect x="4" y="4" width="112" height="112" rx="12" fill="#0a140f" stroke="#3b82f6" stroke-width="2" />
+                    <rect x="10" y="10" width="100" height="100" rx="8" fill="none" stroke="#ffffff" stroke-width="0.5" stroke-opacity="0.2" />
+                    
+                    <!-- Board Squares -->
+                    <!-- Top Row -->
+                    <rect x="10" y="10" width="22" height="22" rx="4" fill="#00a8ff" stroke="#050a05" stroke-width="2" />
+                    <rect x="34" y="10" width="24" height="22" rx="2" fill="#ff527b" stroke="#050a05" stroke-width="2" />
+                    <rect x="60" y="10" width="24" height="22" rx="2" fill="#00a8ff" stroke="#050a05" stroke-width="2" />
+                    <rect x="86" y="10" width="24" height="22" rx="4" fill="#ff527b" stroke="#050a05" stroke-width="2" />
+                    
+                    <!-- Bottom Row -->
+                    <rect x="10" y="88" width="22" height="22" rx="4" fill="#ff527b" stroke="#050a05" stroke-width="2" />
+                    <rect x="34" y="88" width="24" height="22" rx="2" fill="#00a8ff" stroke="#050a05" stroke-width="2" />
+                    <rect x="60" y="88" width="24" height="22" rx="2" fill="#ff527b" stroke="#050a05" stroke-width="2" />
+                    <rect x="86" y="88" width="24" height="22" rx="4" fill="#00a8ff" stroke="#050a05" stroke-width="2" />
+                    
+                    <!-- Left Column (Middle) -->
+                    <rect x="10" y="34" width="22" height="24" rx="2" fill="#00a8ff" stroke="#050a05" stroke-width="2" />
+                    <rect x="10" y="60" width="22" height="24" rx="2" fill="#ff527b" stroke="#050a05" stroke-width="2" />
+                    
+                    <!-- Right Column (Middle) -->
+                    <rect x="86" y="34" width="24" height="24" rx="2" fill="#ff527b" stroke="#050a05" stroke-width="2" />
+                    <rect x="86" y="60" width="24" height="24" rx="2" fill="#00a8ff" stroke="#050a05" stroke-width="2" />
+                    
+                    <!-- Inner properties detail (small white strips) -->
+                    <rect x="12" y="12" width="18" height="6" fill="#fff" opacity="0.4" rx="1"/>
+                    <rect x="36" y="12" width="20" height="6" fill="#fff" opacity="0.4" rx="1"/>
+                    <rect x="62" y="12" width="20" height="6" fill="#fff" opacity="0.4" rx="1"/>
+                    <rect x="88" y="12" width="20" height="6" fill="#fff" opacity="0.4" rx="1"/>
+                    
+                    <rect x="12" y="102" width="18" height="6" fill="#fff" opacity="0.4" rx="1"/>
+                    <rect x="36" y="102" width="20" height="6" fill="#fff" opacity="0.4" rx="1"/>
+                    <rect x="62" y="102" width="20" height="6" fill="#fff" opacity="0.4" rx="1"/>
+                    <rect x="88" y="102" width="20" height="6" fill="#fff" opacity="0.4" rx="1"/>
+                    
+                    <rect x="24" y="36" width="6" height="20" fill="#fff" opacity="0.4" rx="1"/>
+                    <rect x="24" y="62" width="6" height="20" fill="#fff" opacity="0.4" rx="1"/>
+                    
+                    <rect x="88" y="36" width="6" height="20" fill="#fff" opacity="0.4" rx="1"/>
+                    <rect x="88" y="62" width="6" height="20" fill="#fff" opacity="0.4" rx="1"/>
+                    
+                    <!-- Center Play Button / Target -->
+                    <circle cx="60" cy="60" r="16" fill="none" stroke="#99E814" stroke-width="3" filter="url(#neon-glow)" class="group-hover:scale-110 origin-center transition-transform duration-300" />
+                    <path d="M55 52 L69 60 L55 68 Z" fill="#99E814" filter="url(#neon-glow)" class="group-hover:scale-110 origin-center transition-transform duration-300" />
+                </svg>
+                <div class="absolute inset-0 bg-[#3b82f6] rounded-full blur-[50px] opacity-20 -z-10 group-hover:bg-[#ff527b] transition-colors duration-500"></div>
+            </a>
+        </section>
+
+        <div class="flex flex-col justify-center items-center pt-8 pb-4 border-t border-gray-800/50 relative gap-4 w-full">
+            <div id="sub-warning-msg" class="hidden absolute inset-0 md:static sub-warning px-4 sm:px-8 py-3.5 sm:py-4 rounded-xl text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-center w-full items-center justify-center gap-2 z-20 break-words">
+                <span data-i18n="subNotActive">ABBONAMENTO NON ATTIVO! CONTATTA IL TUO REFERENTE</span>
+            </div>
+            
+            <a id="btn-next-lesson" href="https://affiliate-program-bettinge-exchange.vercel.app/SummaryZeroToHeroAcademy.html" onclick="SoundEngine.click()" class="bg-[#0a140f] text-[#99E814] border-2 border-[#99E814] font-black w-full max-w-md mx-auto justify-center px-6 sm:px-10 py-5 rounded-2xl hover:bg-[#99E814] hover:border-[#99E814] transition-all duration-300 text-xs sm:text-sm md:text-base uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(153,232,20,0.2)] hover:shadow-[0_0_40px_rgba(153,232,20,0.6)] touch-manipulation active:scale-95 flex items-center gap-3 z-10 transform-gpu group btn-hover-fix h-auto min-h-[4rem]">
+                <span data-i18n="navNextLesson" class="truncate transition-colors duration-300">PROSSIMA LEZIONE</span> 
+                <span class="text-xl sm:text-2xl group-hover:translate-x-2 group-hover:text-black transition-all duration-300 shrink-0">→</span>
+            </a>
+        </div>
+    </main>
+
+    <div id="ebook-modal" class="fixed inset-0 z-[100] hidden flex-col items-center justify-center bg-[#050a05]/95 backdrop-blur-md p-0 sm:p-4 md:p-6 opacity-0 transition-opacity duration-300">
+        <div class="bg-[#050a05] w-full max-w-4xl h-full sm:h-auto sm:max-h-[95vh] rounded-none sm:rounded-3xl border-0 sm:border border-gray-700 flex flex-col overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 relative modern-ebook" id="ebook-modal-content">
+            <div class="flex justify-between items-center p-4 md:p-6 border-b border-gray-800 bg-[#050a05] shrink-0 z-10 w-full">
+                <h3 class="text-[#99E814] font-black uppercase tracking-widest text-[11px] sm:text-sm md:text-base flex items-center gap-2 truncate">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#ffb703] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477-4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg> 
+                    <span class="text-[#ffb703] truncate" data-i18n="btnEbookTitle">MANUALE</span>
+                </h3>
+                <button onclick="closeEbookModal()" class="text-gray-400 hover:text-white text-3xl md:text-4xl leading-none px-3 py-1 rounded-lg active:scale-95 touch-manipulation transition-colors shrink-0">&times;</button>
+            </div>
+            <div class="flex-1 overflow-y-auto relative flex flex-col items-center tg-scrollbar bg-[#050a05] w-full">
+                <div class="w-full max-w-3xl p-5 sm:p-8 md:p-10 text-justify md:text-left break-words" id="ebook-content-container" data-i18n-html="ebookContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SoundEngine = {
+            ctx: null, unlocked: false,
+            init: function() { 
+                if(!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if(AudioContext) this.ctx = new AudioContext(); 
+                }
+                if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+                this.unlocked = true;
+            },
+            playTone: function(freq, type, duration, vol) {
+                if(!this.unlocked) this.init();
+                if(!this.ctx || this.ctx.state === 'suspended') return;
+                try {
+                    const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+                    osc.type = type; osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+                    osc.connect(gain); gain.connect(this.ctx.destination);
+                    osc.start(); osc.stop(this.ctx.currentTime + duration);
+                } catch(e) {}
+            },
+            click: function() { this.playTone(600, 'sine', 0.1, 0.1); },
+            cashout: function() { this.playTone(880, 'sine', 0.1, 0.1); setTimeout(() => this.playTone(1760, 'sine', 0.3, 0.15), 100); },
+            error: function() { this.playTone(150, 'sawtooth', 0.3, 0.1); }
+        };
+
+        function openEbookModal() {
+            SoundEngine.click();
+            const modal = document.getElementById('ebook-modal');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+            void modal.offsetWidth; 
+            modal.classList.remove('opacity-0'); modal.classList.add('opacity-100');
+            document.getElementById('ebook-modal-content').classList.remove('scale-95'); document.getElementById('ebook-modal-content').classList.add('scale-100');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeEbookModal() {
+            SoundEngine.click();
+            const modal = document.getElementById('ebook-modal');
+            modal.classList.remove('opacity-100'); modal.classList.add('opacity-0');
+            document.getElementById('ebook-modal-content').classList.remove('scale-100'); document.getElementById('ebook-modal-content').classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); document.body.style.overflow = ''; }, 300);
+        }
+
+        window.RoomApp = (function() {
+            const CONFIG = { STORAGE_KEY: 'bx_academy_demo_hd_v2_day4' }; 
+
+            const podcastUrls = {
+                it: "https://open.spotify.com/episode/5ZFzIYykryrN7PUR35g3oE?si=uI41uzJiRlOaq1i-hmo8rQ",
+                en: "https://open.spotify.com/episode/4NPVlaiEsk2V9JJHsximzY?si=TVLWRxhlTRGL0sJ9v2gllA",
+                es: "https://open.spotify.com/episode/6BXxJvueC5kUnmB70GXazE?si=no4FCD7oQtSXxhQoucA3AQ",
+                pt: "https://open.spotify.com/episode/6rlck5qpadvUglJlMo87ZJ?si=cv3tqKZXQKqawfLrBtQ_IA"
+            };
+
+            const ebookTemplate = (langDict) => `
+                <div class="space-y-8 text-gray-300 font-sans">
+                    <div class="text-center mb-8 border-b border-gray-800 pb-6">
+                        <h2 class="text-3xl md:text-4xl font-black text-[#99E814] tracking-widest uppercase drop-shadow-[0_0_15px_rgba(153,232,20,0.4)]">${langDict.ebTitle1}</h2>
+                        <h3 class="text-xl md:text-2xl font-bold text-white mt-3">${langDict.ebTitle2}</h3>
+                        <p class="text-[#ffb703] font-bold mt-2 uppercase tracking-wider text-sm bg-[#ffb703]/10 inline-block px-4 py-1.5 rounded-full border border-[#ffb703]/30">${langDict.ebTitle3}</p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 rounded-2xl border border-gray-700 shadow-lg relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-[#00e5ff] rounded-full blur-[80px] opacity-10 pointer-events-none"></div>
+                        <p class="leading-relaxed text-base md:text-lg relative z-10">${langDict.ebIntro}</p>
+                    </div>
+
+                    <div class="bg-[#3b82f6]/10 p-6 rounded-2xl border border-[#3b82f6]/40 text-center shadow-[0_0_30px_rgba(59,130,246,0.15)] transform-gpu hover:scale-[1.02] transition-transform duration-300">
+                        <p class="text-[#3b82f6] font-black mb-3 uppercase tracking-[0.2em] text-sm flex justify-center items-center gap-2"><span class="text-xl">📐</span> ${langDict.ebLawTitle}</p>
+                        <p class="text-white text-lg md:text-xl font-mono bg-black/40 py-3 px-4 rounded-xl border border-[#3b82f6]/20 inline-block shadow-inner">${langDict.ebLawText}</p>
+                    </div>
+
+                    <div class="flex items-center gap-4 mt-10 mb-6">
+                        <div class="h-px flex-1 bg-gradient-to-r from-transparent to-gray-700"></div>
+                        <h3 class="text-xl md:text-2xl font-black text-white uppercase tracking-widest">${langDict.ebDictTitle}</h3>
+                        <div class="h-px flex-1 bg-gradient-to-l from-transparent to-gray-700"></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="bg-gray-800/60 p-5 rounded-xl border-l-4 border-[#00e5ff] hover:bg-gray-800 transition-colors">
+                            <h4 class="font-black text-[#00e5ff] flex items-center gap-2 uppercase tracking-wider text-sm mb-2"><span class="text-lg">⏱️</span> ${langDict.ebMatchedTitle}</h4>
+                            <p class="text-sm md:text-base">${langDict.ebMatchedText}</p>
+                        </div>
+
+                        <div class="bg-gray-800/60 p-5 rounded-xl border-l-4 border-[#ff527b] hover:bg-gray-800 transition-colors">
+                            <h4 class="font-black text-[#ff527b] flex items-center gap-2 uppercase tracking-wider text-sm mb-2"><span class="text-lg">↔️</span> ${langDict.ebUnmatchedTitle}</h4>
+                            <p class="text-sm md:text-base">${langDict.ebUnmatchedText}</p>
+                        </div>
+
+                        <div class="bg-gray-800/60 p-5 rounded-xl border-l-4 border-[#a855f7] md:col-span-2 hover:bg-gray-800 transition-colors">
+                            <h4 class="font-black text-[#a855f7] flex items-center gap-2 uppercase tracking-wider text-sm mb-2"><span class="text-lg">🌊</span> ${langDict.ebGapsTitle}</h4>
+                            <p class="text-sm md:text-base">${langDict.ebGapsText}</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 p-6 rounded-2xl border border-[#ffb703]/30 shadow-[0_10px_30px_rgba(0,0,0,0.5)] mt-8">
+                        <h5 class="text-[#ffb703] font-black text-base md:text-lg mb-4 uppercase tracking-widest flex items-center gap-2"><span class="text-2xl">🧮</span> ${langDict.ebCaseStudyTitle}</h5>
+                        <div class="text-sm md:text-base text-gray-300 space-y-2 bg-black/50 p-4 sm:p-5 rounded-xl border border-gray-700 shadow-inner font-medium">
+                            ${langDict.ebRule1}
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-[#7f1d1d]/40 to-[#450a0a]/40 p-6 sm:p-8 rounded-2xl border border-red-500/50 relative overflow-hidden mt-8">
+                        <div class="absolute -right-4 -top-4 text-8xl opacity-10 pointer-events-none">⚠️</div>
+                        <h4 class="font-black text-red-500 flex items-center gap-2 uppercase tracking-widest mb-3 relative z-10"><span class="text-xl">⚠️</span> ${langDict.ebWarningTitle}</h4>
+                        <p class="relative z-10 leading-relaxed text-sm md:text-base">${langDict.ebWarningText}</p>
+                        <p class="text-sm md:text-base text-gray-300 mt-5 bg-black/60 p-4 rounded-xl border border-red-500/20 italic relative z-10">💡 <strong class="text-white">Azione del Giorno:</strong> ${langDict.ebRule2}</p>
+                    </div>
+
+                    <div class="bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-gray-900 p-8 rounded-3xl border border-[#99E814]/30 text-center mt-10 relative overflow-hidden shadow-[0_0_40px_rgba(153,232,20,0.1)]">
+                        <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 pointer-events-none"></div>
+                        <p class="text-lg md:text-xl text-gray-300 italic relative z-10 font-medium">"${langDict.ebQuote1}"</p>
+                        <div class="w-16 h-1 bg-[#99E814] mx-auto my-5 rounded-full relative z-10"></div>
+                        <p class="text-xl md:text-2xl font-black text-white relative z-10 drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">"${langDict.ebQuote2}"</p>
+                    </div>
+                </div>
+            `;
+
+            const dict = {
+                it: {
+                    pageTitle: "Room AI | Global Exchange Academy - Giorno 4",
+                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
+                    moduleTitle: "GIORNO 4/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Microstruttura del Mercato: Il Costo Nascosto dell'Esecuzione.",
+                    finLabel: "PILLOLA FINANZIARIA", finQuote: "Il dilettante scommette sulla 'miglior quota visibile'. Il professionista valuta lo scenario di esecuzione peggiore prima di premere il grilletto.",
+                    demoBadge: "DEMO INTERATTIVA", startSimulator: "AVVIA SIMULATORE",
+                    penaltiesTitle: "GIOCO EDUCATIVO", penaltiesDesc: "Monopolizza il tabellone.",
+                    quizProgress: "Domanda {step} di 5",
+                    btnPodcast: "ASCOLTA IL PODCAST", btnEbook: "VISUALIZZA IL MANUALE", btnEbookTitle: "MANUALE", btnRetryQuiz: "Ripeti il test",
+                    navNextLesson: "PROSSIMA LEZIONE",
+                    subNotActive: "ABBONAMENTO NON ATTIVO! CONTATTA IL TUO REFERENTE",
+                    quizCompletedTitle: "Check-Point Superato!", quizCompletedDesc: "Hai sbloccato 500 XP. Ora domini le dinamiche di esecuzione.",
+                    videoUrl: "https://www.youtube.com/embed/W6m8TVBvjAI?rel=0&modestbranding=1",
+                    
+                    ebTitle1: "Giorno 4", ebTitle2: "Microstruttura del Mercato", ebTitle3: "Il Costo Nascosto dell'Esecuzione",
+                    ebIntro: "Il divario tra un dilettante e un professionista non riguarda solo la capacità di previsione: riguarda la gestione matematica dell'esecuzione. Mentre il principiante si concentra esclusivamente sulla previsione delle quote, il professionista bilancia costantemente tre variabili critiche: Quote, Volumi e Costi di Transazione. Nel Betting Exchange, le commissioni sono la tua spesa operativa standard. Lo <strong>slippage (slittamento)</strong>, tuttavia, è il 'killer silenzioso'. È la deviazione tra la quota target e il prezzo effettivo di esecuzione, causata da una profondità di mercato insufficiente. Se lo ignori, stai perdendo capitale senza nemmeno saperlo.",
+                    ebLawTitle: "FORMULA DEL PROFITTO REALE NETTO",
+                    ebLawText: "Profitto Netto = (Rendimento Lordo - Costo Slippage) × (1 - Commissioni)",
+                    ebDictTitle: "GLOSSARIO TECNICO",
+                    ebMatchedTitle: "Tick",
+                    ebMatchedText: "L'incremento minimo di prezzo sulla Scala (Ladder).",
+                    ebUnmatchedTitle: "Spread",
+                    ebUnmatchedText: "Il divario (gap) tra le migliori offerte disponibili di Punta (Back) e Banca (Lay).",
+                    ebGapsTitle: "Market Depth (Profondità di Mercato)",
+                    ebGapsText: "Il volume effettivo di capitale disponibile ad ogni specifico livello di prezzo.",
+                    ebCaseStudyTitle: "Caso Studio: Il Costo dell'Illiquidità",
+                    ebRule1: `
+                        <div class="grid grid-cols-[80px_1fr] gap-2 mb-3 items-start">
+                            <span class="text-gray-400">Mercato:</span> <span class="text-white font-bold">Milan vs Roma | Under 2.5</span>
+                            <span class="text-gray-400">Azione:</span> <span class="text-white">Stake 500€ a quota target @1.80</span>
+                            <span class="text-gray-400 mt-1">Realtà:</span> <span class="text-[#ffb703] mt-1">Solo 100€ disponibili a @1.80. Sei costretto ad accettare @1.78 per i restanti 400€.</span>
+                        </div>
+                        <hr class="border-gray-700 my-4">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-gray-300 mb-2 gap-1">
+                            <span>Esecuzione Ponderata:</span>
+                            <span class="font-mono text-white text-sm sm:text-base">(100×1.80) + (400×1.78) = 892€</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-red-400 font-bold bg-red-900/30 p-2 sm:p-3 rounded-lg gap-1">
+                            <span>Costo di Slippage:</span>
+                            <span class="font-mono text-sm sm:text-base">900€ (atteso) - 892€ = 8€ persi</span>
+                        </div>
+                    `,
+                    ebWarningTitle: "La Trappola dell'Illiquidità",
+                    ebWarningText: "In mercati a bassa liquidità (es. leghe minori), fare trading con volumi elevati è un azzardo operativo. Entrare in un trade è facile; uscirne in un order book sottile con uno spread ampio (5-6 tick) distruggerà sistematicamente il tuo vantaggio statistico.",
+                    ebRule2: "Apri la vista Ladder. Confronta un mercato ad alta liquidità con uno a bassa liquidità. Simula mentalmente un ordine di 1.000€: calcola di quanti tick si sposta il prezzo affinché venga abbinato interamente. Questa deviazione è il tuo Costo di Inefficienza.",
+                    ebQuote1: "Lo Spread è la tassa sull'impazienza; lo Slippage è la multa per ignorare la profondità del mercato.",
+                    ebQuote2: "Se il book manca di profondità, l'opportunità non esiste. Proteggi il capitale: rispetta la matematica.",
+
+                    quizData: [
+                        { q: "Cosa bilancia costantemente un professionista secondo la lezione?", opts: ["Quote, Volumi e Costi di Transazione", "Fortuna, Squadre e Meteo", "Bankroll, Spread e Cash Out", "Tick, Durata del match e Risultato"], correct: 0 },
+                        { q: "Qual è considerato il 'killer silenzioso' nel Betting Exchange?", opts: ["Lo Slippage (Slittamento)", "Le Commissioni", "I ban dell'Exchange", "L'alta liquidità"], correct: 0 },
+                        { q: "Cosa indica il termine 'Tick'?", opts: ["L'incremento minimo di prezzo sul ladder", "Il divario tra Punta e Banca", "Il volume effettivo di capitale", "La percentuale di commissione"], correct: 0 },
+                        { q: "Cosa succede se provi ad uscire da un trade in un mercato illiquido con uno spread ampio?", opts: ["Distrugge il tuo vantaggio causando Slippage", "Ottieni quote migliori del previsto", "L'Exchange sospende il tuo account", "Ti garantisce un profitto netto"], correct: 0 },
+                        { q: "Secondo il mindset professionale, quando NON esiste un'opportunità?", opts: ["Se il book manca di profondità di mercato", "Se la squadra è fortemente favorita", "Se la quota è superiore a 2.00", "Se la partita non è in TV"], correct: 0 }
+                    ]
+                },
+                en: {
+                    pageTitle: "Room AI | Global Exchange Academy - Day 4",
+                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
+                    moduleTitle: "DAY 4/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Market Micro-Structure: The Hidden Cost of Execution.",
+                    finLabel: "FINANCIAL PILL", finQuote: "The amateur bets on 'best visible odds.' The professional evaluates the worst-case execution scenario before pulling the trigger.",
+                    demoBadge: "INTERACTIVE DEMO", startSimulator: "START SIMULATOR",
+                    penaltiesTitle: "EDUCATIONAL GAME", penaltiesDesc: "Monopolize the board.",
+                    quizProgress: "Question {step} of 5",
+                    btnPodcast: "LISTEN TO PODCAST", btnEbook: "VIEW MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Retry Quiz",
+                    navNextLesson: "NEXT LESSON",
+                    subNotActive: "SUBSCRIPTION INACTIVE! CONTACT YOUR REFERENT",
+                    quizCompletedTitle: "Checkpoint Passed!", quizCompletedDesc: "You unlocked 500 XP. You now master execution dynamics.",
+                    videoUrl: "https://www.youtube.com/embed/_5ulfTotC1Y?rel=0&modestbranding=1",
+                    
+                    ebTitle1: "Day 4", ebTitle2: "Market Micro-Structure", ebTitle3: "The Hidden Cost of Execution",
+                    ebIntro: "The gap between an amateur and a professional isn't just about forecasting ability—it’s about the mathematical management of execution. While the novice focuses exclusively on their odds prediction, the pro constantly balances three critical variables: Odds, Volume, and Transaction Cost. In the Betting Exchange, commissions are your standard operating expense. <strong>Slippage</strong>, however, is the 'silent killer.' It is the deviation between your target odds and the actual execution price, caused by insufficient market depth. If you ignore it, you are bleeding equity without even knowing it.",
+                    ebLawTitle: "FORMULA FOR NET REAL PROFIT",
+                    ebLawText: "Net Profit = (Gross Return - Slippage Cost) × (1 - Commission)",
+                    ebDictTitle: "TECHNICAL GLOSSARY",
+                    ebMatchedTitle: "Tick",
+                    ebMatchedText: "The minimum price increment on the Ladder.",
+                    ebUnmatchedTitle: "Spread",
+                    ebUnmatchedText: "The gap between the best available Back and Lay offers.",
+                    ebGapsTitle: "Market Depth",
+                    ebGapsText: "The actual volume of capital available at each specific price level.",
+                    ebCaseStudyTitle: "Case Study: The Cost of Illiquidity",
+                    ebRule1: `
+                        <div class="grid grid-cols-[80px_1fr] gap-2 mb-3 items-start">
+                            <span class="text-gray-400">Market:</span> <span class="text-white font-bold">Milan vs Roma | Under 2.5</span>
+                            <span class="text-gray-400">Action:</span> <span class="text-white">€500 Stake @1.80 target odds</span>
+                            <span class="text-gray-400 mt-1">Reality:</span> <span class="text-[#ffb703] mt-1">Only €100 available at @1.80. You are forced to accept @1.78 for the remaining €400.</span>
+                        </div>
+                        <hr class="border-gray-700 my-4">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-gray-300 mb-2 gap-1">
+                            <span>Weighted Execution:</span>
+                            <span class="font-mono text-white text-sm sm:text-base">(100×1.80) + (400×1.78) = €892</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-red-400 font-bold bg-red-900/30 p-2 sm:p-3 rounded-lg gap-1">
+                            <span>Slippage Cost:</span>
+                            <span class="font-mono text-sm sm:text-base">€900 (expected) - €892 = €8 lost</span>
+                        </div>
+                    `,
+                    ebWarningTitle: "The Illiquidity Trap",
+                    ebWarningText: "In low-liquidity markets (e.g., lower-tier leagues), trading with heavy volume is an operational hazard. Entering a trade is easy; exiting into a thin order book with a wide spread (5-6 ticks) will systematically destroy your statistical edge.",
+                    ebRule2: "Open the Ladder view. Compare a high-liquidity market with a low-liquidity one. Mentally simulate a €1,000 order: calculate how many ticks the price shifts to get fully matched. That deviation is your Cost of Inefficiency.",
+                    ebQuote1: "Spread is the tax on impatience; Slippage is the fine for ignoring market depth.",
+                    ebQuote2: "If the book lacks depth, the opportunity does not exist. Protect your capital: respect the math.",
+
+                    quizData: [
+                        { q: "What does a professional constantly balance according to the lesson?", opts: ["Odds, Volume, and Transaction Cost", "Luck, Teams, and Weather", "Bankroll, Spread, and Cash Out", "Tick, Match length, and Score"], correct: 0 },
+                        { q: "What is the 'silent killer' in the Betting Exchange?", opts: ["Slippage", "Commissions", "Exchange bans", "High liquidity"], correct: 0 },
+                        { q: "What does the term 'Tick' mean?", opts: ["The minimum price increment on the ladder", "The gap between Back and Lay", "The actual volume of capital available", "The commission rate"], correct: 0 },
+                        { q: "What happens if you try to exit a trade in a low-liquidity market with a wide spread?", opts: ["It destroys your edge and causes Slippage", "You get better odds than expected", "The Exchange suspends your account", "It guarantees a net profit"], correct: 0 },
+                        { q: "According to the professional mindset, when does an opportunity NOT exist?", opts: ["If the book lacks market depth", "If the team is a heavy favorite", "If the odds are over 2.00", "If the match is not broadcast on TV"], correct: 0 }
+                    ]
+                },
+                es: {
+                    pageTitle: "Room AI | Global Exchange Academy - Día 4",
+                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
+                    moduleTitle: "DÍA 4/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Microestructura del Mercado: El Costo Oculto de la Ejecución.",
+                    finLabel: "PÍLDORA FINANCIERA", finQuote: "El aficionado apuesta a la 'mejor cuota visible'. El profesional evalúa el peor escenario de ejecución antes de apretar el gatillo.",
+                    demoBadge: "DEMO INTERACTIVA", startSimulator: "INICIAR SIMULADOR",
+                    penaltiesTitle: "JUEGO EDUCATIVO", penaltiesDesc: "Monopoliza el tablero.",
+                    quizProgress: "Pregunta {step} de 5",
+                    btnPodcast: "ESCUCHAR PODCAST", btnEbook: "VER MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Repetir Prueba",
+                    navNextLesson: "PRÓXIMA LECCIÓN",
+                    subNotActive: "¡SUSCRIPCIÓN INACTIVA! CONTACTA A TU REFERENTE",
+                    quizCompletedTitle: "¡Punto de control superado!", quizCompletedDesc: "Has desbloqueado 500 XP. Ahora dominas las dinámicas de ejecución.",
+                    videoUrl: "https://www.youtube.com/embed/b8d2EHShHd8?rel=0&modestbranding=1",
+                    
+                    ebTitle1: "Día 4", ebTitle2: "Microestructura del Mercado", ebTitle3: "El Costo Oculto de la Ejecución",
+                    ebIntro: "La brecha entre un aficionado y un profesional no se trata solo de la capacidad de predicción: se trata de la gestión matemática de la ejecución. Mientras el novato se enfoca exclusivamente en su predicción, el profesional equilibra constantemente tres variables críticas: Cuotas, Volúmenes y Costos de Transacción. En el Betting Exchange, las comisiones son un gasto operativo estándar. El <strong>Slippage (deslizamiento)</strong>, sin embargo, es el 'asesino silencioso'. Es la desviación entre tu cuota objetivo y el precio real de ejecución, causada por una falta de profundidad en el mercado. Si lo ignoras, estás perdiendo capital sin saberlo.",
+                    ebLawTitle: "FÓRMULA DEL BENEFICIO REAL NETO",
+                    ebLawText: "Beneficio Neto = (Rendimiento Bruto - Costo Slippage) × (1 - Comisión)",
+                    ebDictTitle: "GLOSARIO TÉCNICO",
+                    ebMatchedTitle: "Tick",
+                    ebMatchedText: "El incremento mínimo de precio en la Escalera (Ladder).",
+                    ebUnmatchedTitle: "Spread",
+                    ebUnmatchedText: "La diferencia (gap) entre las mejores ofertas disponibles de Punta (Back) y Banca (Lay).",
+                    ebGapsTitle: "Profundidad de Mercado",
+                    ebGapsText: "El volumen real de capital disponible en cada nivel de precio específico.",
+                    ebCaseStudyTitle: "Caso de Estudio: El Costo de la Iliquidez",
+                    ebRule1: `
+                        <div class="grid grid-cols-[80px_1fr] gap-2 mb-3 items-start">
+                            <span class="text-gray-400">Mercado:</span> <span class="text-white font-bold">Milan vs Roma | Menos 2.5</span>
+                            <span class="text-gray-400">Acción:</span> <span class="text-white">Stake 500€ a cuota @1.80</span>
+                            <span class="text-gray-400 mt-1">Realidad:</span> <span class="text-[#ffb703] mt-1">Solo 100€ disponibles a @1.80. Estás obligado a aceptar @1.78 por los 400€ restantes.</span>
+                        </div>
+                        <hr class="border-gray-700 my-4">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-gray-300 mb-2 gap-1">
+                            <span>Ejecución Ponderada:</span>
+                            <span class="font-mono text-white text-sm sm:text-base">(100×1.80) + (400×1.78) = 892€</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-red-400 font-bold bg-red-900/30 p-2 sm:p-3 rounded-lg gap-1">
+                            <span>Costo de Slippage:</span>
+                            <span class="font-mono text-sm sm:text-base">900€ (esperado) - 892€ = 8€ perdidos</span>
+                        </div>
+                    `,
+                    ebWarningTitle: "La Trampa de la Iliquidez",
+                    ebWarningText: "En mercados de baja liquidez, operar con mucho volumen es un riesgo operativo. Entrar en un trade es fácil; salir en un mercado con poco dinero y un spread amplio (5-6 ticks) destruirá sistemáticamente tu ventaja estadística.",
+                    ebRule2: "Abre la vista Ladder. Compara un mercado de alta liquidez con uno de baja. Simula mentalmente una orden de 1.000€: calcula cuántos ticks se mueve el precio para que tu orden se iguale. Esa desviación es tu Costo de Ineficiencia.",
+                    ebQuote1: "El Spread es el impuesto a la impaciencia; el Slippage es la multa por ignorar la profundidad del mercado.",
+                    ebQuote2: "Si el mercado carece de profundidad, la oportunidad no existe. Protege tu capital: respeta las matemáticas.",
+
+                    quizData: [
+                        { q: "¿Qué equilibra constantemente un profesional según la lección?", opts: ["Cuotas, Volúmenes y Costos de Transacción", "Suerte, Equipos y Clima", "Bankroll, Spread y Cash Out", "Tick, Duración del partido y Resultado"], correct: 0 },
+                        { q: "¿Cuál es el 'asesino silencioso' en el Betting Exchange?", opts: ["El Slippage (Deslizamiento)", "Las Comisiones", "Los bloqueos del Exchange", "La alta liquidez"], correct: 0 },
+                        { q: "¿Qué significa el término 'Tick'?", opts: ["El incremento mínimo de precio en la escalera", "La diferencia entre Back y Lay", "El volumen real de capital", "El porcentaje de comisión"], correct: 0 },
+                        { q: "¿Qué sucede si intentas salir de un trade en un mercado ilíquido con un spread amplio?", opts: ["Destruye tu ventaja y causa Slippage", "Obtienes cuotas mejores de lo esperado", "El Exchange suspende tu cuenta", "Te garantiza un beneficio neto"], correct: 0 },
+                        { q: "Según la mentalidad profesional, ¿cuándo NO existe una oportunidad?", opts: ["Si el mercado carece de profundidad", "Si el equipo es muy favorito", "Si la cuota es superior a 2.00", "Si el partido no se transmite por TV"], correct: 0 }
+                    ]
+                },
+                pt: {
+                    pageTitle: "Room AI | Global Exchange Academy - Dia 4",
+                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
+                    moduleTitle: "DIA 4/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Microestrutura do Mercado: O Custo Oculto da Execução.",
+                    finLabel: "PÍLULA FINANCEIRA", finQuote: "O amador aposta na 'melhor odd visível'. O profissional avalia o pior cenário de execução antes de puxar o gatilho.",
+                    demoBadge: "DEMO INTERATIVA", startSimulator: "INICIAR SIMULADOR",
+                    penaltiesTitle: "JOGO EDUCATIVO", penaltiesDesc: "Monopolize o tabuleiro.",
+                    quizProgress: "Pergunta {step} de 5",
+                    btnPodcast: "OUVIR PODCAST", btnEbook: "VER MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Repetir Teste",
+                    navNextLesson: "PRÓXIMA LIÇÃO",
+                    subNotActive: "ASSINATURA INATIVA! CONTATE SEU REFERENTE",
+                    quizCompletedTitle: "Checkpoint Concluído!", quizCompletedDesc: "Você desbloqueou 500 XP. Agora você domina as dinâmicas de execução.",
+                    videoUrl: "https://www.youtube.com/embed/HY1BBIgetIw?rel=0&modestbranding=1",
+                    
+                    ebTitle1: "Dia 4", ebTitle2: "Microestrutura do Mercado", ebTitle3: "O Custo Oculto da Execução",
+                    ebIntro: "A lacuna entre um amador e um profissional não se trata apenas de capacidade de previsão — trata-se da gestão matemática da execução. Enquanto o novato se concentra exclusivamente em sua previsão de odds, o profissional equilibra constantemente três variáveis: Odds, Volume e Custo de Transação. Na Betting Exchange, as comissões são despesas operacionais padrão. O <strong>Slippage (deslizamento)</strong>, no entanto, é o 'assassino silencioso'. É o desvio entre a odd alvo e o preço real de execução, causado por falta de profundidade de mercado. Se você ignorar isso, estará perdendo capital sem perceber.",
+                    ebLawTitle: "FÓRMULA DE LUCRO REAL LÍQUIDO",
+                    ebLawText: "Lucro Líquido = (Retorno Bruto - Custo Slippage) × (1 - Comissão)",
+                    ebDictTitle: "GLOSSÁRIO TÉCNICO",
+                    ebMatchedTitle: "Tick",
+                    ebMatchedText: "O incremento mínimo de preço na Escada (Ladder).",
+                    ebUnmatchedTitle: "Spread",
+                    ebUnmatchedText: "O espaço (gap) entre as melhores ofertas disponíveis de Punta (Back) e Banca (Lay).",
+                    ebGapsTitle: "Profundidade do Mercado",
+                    ebGapsText: "O volume real de capital disponível em cada nível de preço específico.",
+                    ebCaseStudyTitle: "Estudo de Caso: O Custo da Iliquidez",
+                    ebRule1: `
+                        <div class="grid grid-cols-[80px_1fr] gap-2 mb-3 items-start">
+                            <span class="text-gray-400">Mercado:</span> <span class="text-white font-bold">Milan vs Roma | Under 2.5</span>
+                            <span class="text-gray-400">Ação:</span> <span class="text-white">Stake 500€ a odd @1.80</span>
+                            <span class="text-gray-400 mt-1">Realidade:</span> <span class="text-[#ffb703] mt-1">Apenas 100€ disponíveis a @1.80. Você é forçado a aceitar @1.78 pelos 400€ restantes.</span>
+                        </div>
+                        <hr class="border-gray-700 my-4">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-gray-300 mb-2 gap-1">
+                            <span>Execução Ponderada:</span>
+                            <span class="font-mono text-white text-sm sm:text-base">(100×1.80) + (400×1.78) = 892€</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-red-400 font-bold bg-red-900/30 p-2 sm:p-3 rounded-lg gap-1">
+                            <span>Custo de Slippage:</span>
+                            <span class="font-mono text-sm sm:text-base">900€ (esperado) - 892€ = 8€ perdidos</span>
+                        </div>
+                    `,
+                    ebWarningTitle: "A Armadilha da Iliquidez",
+                    ebWarningText: "Em mercados de baixa liquidez, negociar com muito volume é um risco. Entrar é fácil; sair num book vazio com um spread amplo (5-6 ticks) destruirá sistematicamente a sua vantagem estatística.",
+                    ebRule2: "Abra a vista Ladder. Compare um mercado de alta liquidez com um de baixa liquidez. Simule mentalmente uma ordem de 1.000€ e calcule quantos ticks o preço se move. Esse desvio é o seu Custo de Ineficiência.",
+                    ebQuote1: "O Spread é o imposto sobre a impaciência; o Slippage é a multa por ignorar a profundidade do mercado.",
+                    ebQuote2: "Se o mercado carece de profundidade, a oportunidade não existe. Proteja o seu capital: respeite a matemática.",
+
+                    quizData: [
+                        { q: "O que um profissional equilibra constantemente segundo a lição?", opts: ["Odds, Volume e Custo de Transação", "Sorte, Times e Clima", "Bankroll, Spread e Cash Out", "Tick, Duração da partida e Placar"], correct: 0 },
+                        { q: "Qual é o 'assassino silencioso' na Betting Exchange?", opts: ["O Slippage (Deslizamento)", "As Comissões", "Os bloqueios da Exchange", "A alta liquidez"], correct: 0 },
+                        { q: "O que significa o termo 'Tick'?", opts: ["O incremento mínimo de preço na escada", "A diferença entre Back e Lay", "O volume real de capital", "A taxa de comissão"], correct: 0 },
+                        { q: "O que acontece ao tentar sair de um trade num mercado ilíquido com um spread amplo?", opts: ["Destrói a sua vantagem e causa Slippage", "Obtém odds melhores do que o esperado", "A Exchange suspende a sua conta", "Garante um lucro líquido"], correct: 0 },
+                        { q: "Segundo a mentalidade profissional, quando uma oportunidade NÃO existe?", opts: ["Se o mercado não tiver profundidade", "Se o time for muito favorito", "Se a odd for maior que 2.00", "Se a partida não for transmitida na TV"], correct: 0 }
+                    ]
+                }
+            };
+
+            for (const lang in dict) {
+                dict[lang].ebookContent = ebookTemplate(dict[lang]);
+            }
+
+            let currentLang = 'it';
+            let currentQuizStep = 0;
+            let xpPoints = parseInt(localStorage.getItem(CONFIG.STORAGE_KEY + '_xp')) || 0;
+
+            function applyLang(lang) {
+                currentLang = lang;
+                const d = dict[lang];
+                
+                document.title = d.pageTitle;
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (d[key]) {
+                        if (key.startsWith('quizProgress')) {
+                            // Handled separately
+                        } else {
+                            el.textContent = d[key];
+                        }
+                    }
+                });
+                
+                document.querySelectorAll('[data-i18n-html]').forEach(el => {
+                    const key = el.getAttribute('data-i18n-html');
+                    if (d[key]) el.innerHTML = d[key];
+                });
+
+                document.querySelectorAll('.lang-flag').forEach(btn => {
+                    if (btn.getAttribute('data-lang') === lang) {
+                        btn.classList.add('active'); btn.classList.remove('inactive');
+                    } else {
+                        btn.classList.remove('active'); btn.classList.add('inactive');
+                    }
+                });
+
+                document.getElementById('btn-podcast').href = podcastUrls[lang] || podcastUrls['en'];
+                document.getElementById('main-video').src = d.videoUrl;
+
+                if (document.getElementById('quiz-container').style.display !== 'none') {
+                    loadQuiz();
+                }
+            }
+
+            function loadQuiz() {
+                const d = dict[currentLang];
+                const qData = d.quizData[currentQuizStep];
+                
+                document.getElementById('quiz-progress-text').textContent = d.quizProgress.replace('{step}', currentQuizStep + 1);
+                document.getElementById('quiz-question-text').textContent = qData.q;
+                
+                const optionsContainer = document.getElementById('quiz-options-container');
+                optionsContainer.innerHTML = '';
+                
+                const letters = ['A', 'B', 'C', 'D'];
+                qData.opts.forEach((opt, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'wwtbam-btn w-full text-left px-4 sm:px-6 py-3 sm:py-4 flex items-center group';
+                    btn.onclick = () => handleAnswer(index, btn);
+                    btn.innerHTML = `
+                        <span class="text-[#d4af37] font-black mr-3 sm:mr-4 text-base sm:text-lg shrink-0 w-6">${letters[index]}:</span>
+                        <span class="text-gray-200 font-bold text-[11px] sm:text-sm md:text-base group-hover:text-white transition-colors leading-tight">${opt}</span>
+                        <div class="absolute right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div class="w-2 h-2 rounded-full bg-[#d4af37] shadow-[0_0_8px_#d4af37]"></div>
+                        </div>
+                    `;
+                    optionsContainer.appendChild(btn);
+                });
+                
+                updateProgressDots();
+            }
+
+            function handleAnswer(selectedIndex, btnElement) {
+                const d = dict[currentLang];
+                const qData = d.quizData[currentQuizStep];
+                const isCorrect = selectedIndex === qData.correct;
+                
+                const allBtns = document.getElementById('quiz-options-container').querySelectorAll('button');
+                allBtns.forEach(b => b.disabled = true);
+                
+                if (isCorrect) {
+                    SoundEngine.cashout();
+                    btnElement.classList.add('correct');
+                    showFeedback(true);
+                    xpPoints += 100;
+                    updateXP();
+                    
+                    setTimeout(() => {
+                        currentQuizStep++;
+                        if (currentQuizStep < d.quizData.length) {
+                            loadQuiz();
+                        } else {
+                            showCompletedScreen();
+                        }
+                    }, 1500);
+                } else {
+                    SoundEngine.error();
+                    btnElement.classList.add('wrong');
+                    
+                    setTimeout(() => {
+                        allBtns[qData.correct].classList.add('correct');
+                    }, 500);
+                    
+                    showFeedback(false);
+                    
+                    setTimeout(() => {
+                        btnElement.classList.remove('wrong');
+                        allBtns[qData.correct].classList.remove('correct');
+                        allBtns.forEach(b => b.disabled = false);
+                        hideFeedback();
+                    }, 2000);
+                }
+            }
+
+            function updateProgressDots() {
+                const dotsContainer = document.getElementById('quiz-dots');
+                dotsContainer.innerHTML = '';
+                for (let i = 0; i < 5; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = `w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${i < currentQuizStep ? 'bg-[#10b981] shadow-[0_0_8px_#10b981]' : i === currentQuizStep ? 'bg-[#d4af37] shadow-[0_0_8px_#d4af37] animate-pulse' : 'bg-gray-700'}`;
+                    dotsContainer.appendChild(dot);
+                }
+            }
+
+            function showFeedback(isSuccess) {
+                const feedbackEl = document.getElementById('quiz-feedback');
+                const iconEl = document.getElementById('quiz-feedback-icon');
+                
+                feedbackEl.classList.remove('hidden');
+                
+                if (isSuccess) {
+                    feedbackEl.className = 'w-full max-w-2xl mx-auto p-6 sm:p-8 md:p-10 rounded-xl md:rounded-2xl text-center shadow-2xl mt-8 transition-all duration-500 transform-gpu relative overflow-hidden bg-gradient-to-br from-[#064e3b] to-[#022c22] border-2 border-[#10b981] flex justify-center items-center';
+                    iconEl.textContent = '✅';
+                } else {
+                    feedbackEl.className = 'w-full max-w-2xl mx-auto p-6 sm:p-8 md:p-10 rounded-xl md:rounded-2xl text-center shadow-2xl mt-8 transition-all duration-500 transform-gpu relative overflow-hidden bg-gradient-to-br from-[#7f1d1d] to-[#450a0a] border-2 border-[#ef4444] flex justify-center items-center';
+                    iconEl.textContent = '❌';
+                }
+            }
+
+            function hideFeedback() {
+                document.getElementById('quiz-feedback').classList.add('hidden');
+                document.getElementById('quiz-feedback').classList.remove('flex');
+            }
+
+            function showCompletedScreen() {
+                document.getElementById('quiz-container').style.display = 'none';
+                hideFeedback();
+                const completedScreen = document.getElementById('quiz-completed-screen');
+                completedScreen.classList.remove('hidden');
+                completedScreen.classList.add('flex');
+            }
+
+            function updateXP() {
+                document.getElementById('xp-counter').innerText = `${xpPoints} XP`;
+                localStorage.setItem(CONFIG.STORAGE_KEY + '_xp', xpPoints);
+                const badge = document.getElementById('xp-badge');
+                badge.classList.add('scale-110', 'bg-yellow-500/20');
+                setTimeout(() => badge.classList.remove('scale-110', 'bg-yellow-500/20'), 300);
+            }
+
+            window.changeLang = function(lang) {
+                SoundEngine.click();
+                applyLang(lang);
+            };
+
+            window.resetQuiz = function() {
+                SoundEngine.click();
+                currentQuizStep = 0;
+                document.getElementById('quiz-container').style.display = 'flex';
+                const completedScreen = document.getElementById('quiz-completed-screen');
+                completedScreen.classList.add('hidden');
+                completedScreen.classList.remove('flex');
+                loadQuiz();
+            };
+
+            // Init
+            window.addEventListener('DOMContentLoaded', () => {
+                const userLang = navigator.language || navigator.userLanguage;
+                let initLang = 'en';
+                if(userLang.startsWith('it')) initLang = 'it';
+                else if(userLang.startsWith('es')) initLang = 'es';
+                else if(userLang.startsWith('pt')) initLang = 'pt';
+                
+                updateXP();
+                applyLang(initLang);
+            });
+
+            return { dict };
+        })();
+    </script>
+</body>
+</html>
