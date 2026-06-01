@@ -55,20 +55,36 @@
             height: 100dvh;
         }
         
+        .panel { 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 0; /* CRITICAL FIX: prevents flex items from overflowing container */
+        }
+
         /* Desktop Layout */
         @media (min-width: 1024px) {
             body { padding: 2dvh 2vw; justify-content: center; align-items: center; background-image: radial-gradient(circle at top right, #e2e8f0 0%, #f1f5f9 100%);}
             #app-wrapper { flex-direction: row; gap: 20px; height: calc(100dvh - 4dvh); max-height: 950px; }
             .panel { background: var(--panel-bg); border-radius: 24px; box-shadow: 0 20px 40px -15px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.05); overflow: hidden; }
-            #left-pane { width: 38%; display: flex; flex-direction: column; }
-            #right-pane { width: 62%; display: flex; flex-direction: column; }
+            #left-pane { width: 38%; }
+            #right-pane { width: 62%; }
         }
         /* Mobile Layout */
         @media (max-width: 1023px) {
-            .panel { background: var(--panel-bg); display: flex; flex-direction: column; }
-            #left-pane { flex: 0 0 auto; max-height: 45dvh; z-index: 10; border-bottom: 1px solid #e2e8f0; box-shadow: 0 4px 12px -4px rgba(0,0,0,0.08); }
-            #right-pane { flex: 1 1 auto; overflow: hidden; } /* Let internal elements scroll */
-            #mentor-scroll-area { overflow-y: auto; }
+            html, body { position: fixed; top: 0; left: 0; right: 0; bottom: 0; } /* Lock viewport on iOS */
+            .panel { background: var(--panel-bg); }
+            #left-pane { 
+                height: 42dvh; 
+                flex: 0 0 42dvh; 
+                z-index: 10; 
+                border-bottom: 1px solid #e2e8f0; 
+                box-shadow: 0 4px 12px -4px rgba(0,0,0,0.08); 
+            }
+            #right-pane { 
+                height: 58dvh; 
+                flex: 1 1 58dvh; 
+            }
+            #mentor-scroll-area { overflow-y: auto; flex: 1 1 auto; min-height: 0; }
         }
 
         /* Order Book Styles */
@@ -270,7 +286,7 @@
         </header>
 
         <!-- MENTOR BOX (Scrollable on Mobile) -->
-        <div id="mentor-scroll-area" class="p-4 md:p-5 flex-grow flex flex-col relative bg-slate-50/50">
+        <div id="mentor-scroll-area" class="p-4 md:p-5 flex-grow flex flex-col relative bg-slate-50/50 min-h-0">
             <div class="absolute right-0 top-0 text-[100px] md:text-[120px] opacity-[0.02] pointer-events-none">👨‍🏫</div>
             
             <div class="flex items-center gap-3 mb-4 md:mb-5">
@@ -395,7 +411,7 @@
         </div>
 
         <!-- ORDER BOOK ROWS -->
-        <div id="order-book-container" class="flex flex-col flex-grow bg-slate-50/50 overflow-y-auto relative p-2 md:p-4 gap-1 pb-[30dvh] md:pb-4">
+        <div id="order-book-container" class="flex flex-col flex-grow bg-slate-50/50 overflow-y-auto relative p-2 md:p-4 gap-1 pb-6 md:pb-4 min-h-0">
             
             <div class="md:hidden bg-[var(--bf-pink-bg)] text-[#be123c] border border-pink-100 text-center py-1.5 text-[10px] font-black uppercase tracking-widest mt-1 rounded-t-lg shadow-sm" data-i18n="ob_lay">
                 Lettera / Banca (Lay)
