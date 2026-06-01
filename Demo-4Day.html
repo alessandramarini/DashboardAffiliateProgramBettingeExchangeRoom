@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#f8fafc">
-    <meta name="description" content="Betting Exchange Simulator - Market Micro-Structure & Slippage">
+    <meta name="description" content="Betting Exchange Simulator - Masterclass on Slippage and Market Depth">
     
     <title>Zero To Hero | Masterclass: Slippage</title>
 
@@ -21,54 +21,64 @@
             --bf-pink: #f29bb4; 
             --bf-pink-bg: #fdf0f4;
             --zth-green: #00a843;
-            --bg-light: #f8fafc; /* Slate 50 */
+            --bg-light: #f1f5f9;
             --panel-bg: #ffffff;
-            --text-main: #0f172a; /* Slate 900 */
+            --text-main: #0f172a;
         }
         
+        /* Reset & Base Setup for App-like feel */
         html, body {
-            background-color: var(--bg-light); color: var(--text-main); margin: 0; padding: 0; 
+            background-color: var(--bg-light); 
+            color: var(--text-main); 
+            margin: 0; padding: 0; 
             font-family: 'Inter', system-ui, sans-serif; 
             -webkit-font-smoothing: antialiased;
             -webkit-tap-highlight-color: transparent;
-            height: 100dvh; width: 100vw;
-            overflow: hidden;
+            height: 100dvh; /* Dynamic Viewport Height for mobile browsers */
+            width: 100vw;
+            overflow: hidden; /* Prevent body scroll */
+            overscroll-behavior: none;
         }
         
         body { 
             display: flex; flex-direction: column;
-            opacity: 0; transition: opacity 0.5s ease;
+            opacity: 0; transition: opacity 0.4s ease;
         }
         body.ready { opacity: 1; }
         
         .font-mono-nums { font-family: 'Roboto Mono', monospace; font-variant-numeric: tabular-nums; }
         
-        /* Layout */
+        /* Layout Structure */
         #app-wrapper {
-            display: flex; flex-direction: column; width: 100%; max-width: 1400px; margin: 0 auto;
-            height: 100%; overflow: hidden;
+            display: flex; flex-direction: column; 
+            width: 100%; max-width: 1536px; margin: 0 auto;
+            height: 100dvh;
         }
         
+        /* Desktop Layout */
         @media (min-width: 1024px) {
-            body { padding: 3vh 2vw; justify-content: center; align-items: center;}
-            #app-wrapper { flex-direction: row; gap: 24px; height: calc(100dvh - 6vh); max-height: 900px; }
-            .panel { background: var(--panel-bg); border-radius: 20px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.05); overflow: hidden; }
-            #left-pane { width: 35%; display: flex; flex-direction: column; }
-            #right-pane { width: 65%; display: flex; flex-direction: column; border-left: 1px solid #e2e8f0; }
+            body { padding: 2dvh 2vw; justify-content: center; align-items: center; background-image: radial-gradient(circle at top right, #e2e8f0 0%, #f1f5f9 100%);}
+            #app-wrapper { flex-direction: row; gap: 20px; height: calc(100dvh - 4dvh); max-height: 950px; }
+            .panel { background: var(--panel-bg); border-radius: 24px; box-shadow: 0 20px 40px -15px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.05); overflow: hidden; }
+            #left-pane { width: 38%; display: flex; flex-direction: column; }
+            #right-pane { width: 62%; display: flex; flex-direction: column; }
         }
+        /* Mobile Layout */
         @media (max-width: 1023px) {
-            .panel { background: var(--panel-bg); border-radius: 0; border-bottom: 1px solid #e2e8f0; }
-            #left-pane { flex-shrink: 0; z-index: 10; display: flex; flex-direction: column; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-            #right-pane { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; padding-bottom: 30px;}
+            .panel { background: var(--panel-bg); display: flex; flex-direction: column; }
+            #left-pane { flex: 0 0 auto; max-height: 45dvh; z-index: 10; border-bottom: 1px solid #e2e8f0; box-shadow: 0 4px 12px -4px rgba(0,0,0,0.08); }
+            #right-pane { flex: 1 1 auto; overflow: hidden; } /* Let internal elements scroll */
+            #mentor-scroll-area { overflow-y: auto; }
         }
 
         /* Order Book Styles */
-        .depth-row { display: grid; grid-template-columns: 1fr 70px 70px 1fr; border-bottom: 1px solid #f1f5f9; }
-        .depth-cell { padding: 12px 4px; display: flex; flex-direction: column; justify-content: center; align-items: center; border-left: 1px solid #f8fafc; border-right: 1px solid #f8fafc;}
+        .depth-cell { padding: 8px 4px; display: flex; flex-direction: column; justify-content: center; align-items: center; border-left: 1px solid #f8fafc; border-right: 1px solid #f8fafc;}
+        @media (min-width: 768px) { .depth-cell { padding: 12px 4px; } }
         
         .vol-bar-container { position: relative; width: 100%; height: 100%; display: flex; align-items: center; }
         .vol-bar { position: absolute; top: 4px; bottom: 4px; border-radius: 4px; z-index: 0; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .vol-text { position: relative; z-index: 1; font-size: 13px; font-weight: 700; color: #475569; }
+        .vol-text { position: relative; z-index: 1; font-size: 12px; font-weight: 700; color: #475569; }
+        @media (min-width: 768px) { .vol-text { font-size: 13px; } }
         
         .bg-back { background-color: var(--bf-blue-bg); color: #0369a1; cursor: pointer; transition: all 0.15s; }
         .bg-back:hover { background-color: #ccebfa; box-shadow: inset 0 0 0 1px #7dd3fc; }
@@ -78,17 +88,23 @@
         .bar-back { background-color: rgba(19, 170, 227, 0.15); right: 0; }
         .bar-lay { background-color: rgba(242, 155, 180, 0.25); left: 0; }
 
-        .price-text { font-size: 18px; font-weight: 900; line-height: 1; }
-        .price-text-sub { font-size: 10px; font-weight: 700; opacity: 0.7; margin-top: 2px; }
+        .price-text { font-size: 16px; font-weight: 900; line-height: 1; }
+        @media (min-width: 768px) { .price-text { font-size: 18px; } }
 
         /* Animations */
         @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(0, 168, 67, 0.5); } 100% { box-shadow: 0 0 0 10px rgba(0, 168, 67, 0); } }
         .pulse-active { animation: pulse-ring 1.5s infinite cubic-bezier(0.215, 0.61, 0.355, 1); border-color: var(--zth-green) !important; background-color: #f0fdf4 !important; }
         
-        @keyframes flashRed { 0% { background-color: rgba(239, 68, 68, 0.2); } 100% { background-color: transparent; } }
+        @keyframes flashRed { 0% { background-color: rgba(239, 68, 68, 0.3); } 100% { background-color: transparent; } }
         .consumed { animation: flashRed 0.8s ease-out; }
 
-        /* Pulsing Glow for target Modal Button */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-4px); }
+            40%, 80% { transform: translateX(4px); }
+        }
+        .shake-animation { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+
         @keyframes pulse-shadow {
             0% { box-shadow: 0 0 0 0 rgba(15, 23, 42, 0.6); }
             70% { box-shadow: 0 0 0 12px rgba(15, 23, 42, 0); }
@@ -97,22 +113,23 @@
         .pulse-button { animation: pulse-shadow 2s infinite; }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
         /* Modals & Flags */
-        .modal-overlay { transition: opacity 0.3s ease; backdrop-filter: blur(5px); }
-        .modal-content { transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); max-height: 95vh; display: flex; flex-direction: column;}
-        .modal-body { overflow-y: auto; flex-grow: 1; }
-        .active .modal-content { transform: scale(1); }
+        .modal-overlay { transition: opacity 0.3s ease; backdrop-filter: blur(8px); background-color: rgba(15, 23, 42, 0.7); }
+        .modal-content { transform: scale(0.95) translateY(10px); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); max-height: 90dvh; display: flex; flex-direction: column;}
+        .active .modal-content { transform: scale(1) translateY(0); }
+        .modal-body { overflow-y: auto; flex-grow: 1; overscroll-behavior: contain; }
         
-        .flag-hd { width: 26px; height: 18px; object-fit: cover; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
-        .lang-btn { display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 8px; border: 1px solid transparent; opacity: 0.5; transition: all 0.2s; cursor: pointer; background: white;}
-        .lang-btn:hover { opacity: 0.8; background: #f8fafc; border-color: #e2e8f0;}
-        .lang-btn.active { opacity: 1; border-color: #cbd5e1; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); font-weight: bold;}
+        /* Flags (HD Rectangular 3:2) */
+        .flag-hd { width: 24px; height: 16px; object-fit: cover; border-radius: 3px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .lang-btn { display: flex; align-items: center; justify-content: center; padding: 4px; border-radius: 6px; border: 2px solid transparent; opacity: 0.4; transition: all 0.2s; cursor: pointer; background: transparent;}
+        .lang-btn:hover { opacity: 0.8; background: rgba(0,0,0,0.05); }
+        .lang-btn.active { opacity: 1; border-color: #cbd5e1; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transform: scale(1.1);}
         
-        .step-dot { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; background: #e2e8f0; color: #64748b; transition: all 0.3s; }
+        .step-dot { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; background: #e2e8f0; color: #64748b; transition: all 0.3s; flex-shrink: 0; }
         .step-dot.active { background: var(--zth-green); color: white; box-shadow: 0 0 0 4px rgba(0,168,67,0.2); }
         .step-dot.done { background: #0f172a; color: white; }
     </style>
@@ -120,77 +137,80 @@
 <body>
 
 <!-- WIDGET RICEVUTA ESECUZIONE (BROKER REPORT) -->
-<div id="receipt-modal" class="modal-overlay fixed inset-0 z-[999999] bg-slate-900/60 opacity-0 pointer-events-none flex items-center justify-center p-4">
+<div id="receipt-modal" class="modal-overlay fixed inset-0 z-[999999] opacity-0 pointer-events-none flex items-center justify-center p-3 md:p-4">
     <div class="modal-content bg-white border border-slate-200 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col">
-        <div class="bg-slate-50 p-5 border-b border-slate-200 flex justify-between items-center shrink-0">
-            <h3 class="text-slate-900 font-black text-xl flex items-center gap-2">
+        
+        <div class="bg-slate-50 p-4 md:p-5 border-b border-slate-200 flex justify-between items-center shrink-0">
+            <h3 class="text-slate-900 font-black text-lg md:text-xl flex items-center gap-2">
                 🧾 <span data-i18n="rec_title">Broker Execution Report</span>
             </h3>
-            <div class="px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest bg-green-100 text-green-700 border border-green-200" data-i18n="rec_status">Settled</div>
+            <div class="px-2 py-1 rounded text-[9px] md:text-[10px] font-black uppercase tracking-widest bg-green-100 text-green-700 border border-green-200" data-i18n="rec_status">Settled</div>
         </div>
         
-        <div class="modal-body p-6 flex flex-col gap-5 text-slate-700 text-sm">
+        <div class="modal-body p-4 md:p-6 flex flex-col gap-4 text-slate-700 text-sm">
             
-            <div class="flex justify-between items-end border-b border-slate-100 pb-4">
+            <!-- Target Order -->
+            <div class="flex justify-between items-end border-b border-slate-100 pb-3">
                 <div class="flex flex-col">
                     <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1" data-i18n="rec_target">Ordine Inviato</span>
-                    <span class="text-slate-800 text-lg">Stake: <span id="r-req-vol" class="font-black text-slate-900">€0</span> <span class="text-slate-400 font-normal">@</span> <span id="r-req-odds" class="font-black text-blue-600">0.00</span></span>
+                    <span class="text-slate-800 text-base md:text-lg"><span data-i18n="rec_req">Stake:</span> <span id="r-req-vol" class="font-black text-slate-900">€0</span> <span class="text-slate-400 font-normal">@</span> <span id="r-req-odds" class="font-black text-blue-600">0.00</span></span>
                 </div>
                 <div class="text-right flex flex-col">
                     <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1" data-i18n="rec_action">Azione</span>
-                    <span id="r-action" class="font-black px-3 py-1 rounded text-xs shadow-sm border">BACK</span>
+                    <span id="r-action" class="font-black px-3 py-1 rounded text-xs shadow-sm border" data-i18n="act_back">BACK</span>
                 </div>
             </div>
 
+            <!-- Fills -->
             <div>
-                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2 block" data-i18n="rec_fill">Order Book Fills (Dettaglio Matching)</span>
-                <div id="r-fills" class="flex flex-col gap-1 bg-slate-50 border border-slate-200 p-3 rounded-lg font-mono-nums text-[14px]">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1.5 block" data-i18n="rec_fill">Order Book Fills (Dettaglio Matching)</span>
+                <div id="r-fills" class="flex flex-col gap-1 bg-slate-50 border border-slate-200 p-2.5 rounded-lg font-mono-nums text-[13px] md:text-[14px]">
                     <!-- Fills injected here -->
                 </div>
             </div>
 
             <!-- ANALISI MATEMATICA DELLO SLIPPAGE -->
-            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden">
-                <div class="absolute right-0 top-0 text-[100px] opacity-[0.03] pointer-events-none">🧮</div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden">
+                <div class="absolute right-0 top-0 text-[80px] md:text-[100px] opacity-[0.03] pointer-events-none">🧮</div>
                 
-                <div class="flex justify-between items-center mb-3">
-                    <span class="font-bold text-slate-600" data-i18n="rec_avg">Quota Media Ponderata:</span>
-                    <span id="r-avg-odds" class="text-xl font-black text-slate-900 font-mono-nums bg-slate-100 px-2 py-0.5 rounded">@ 0.00</span>
+                <div class="flex justify-between items-center mb-2 md:mb-3">
+                    <span class="font-bold text-[13px] md:text-sm text-slate-600" data-i18n="rec_avg">Quota Media Ponderata:</span>
+                    <span id="r-avg-odds" class="text-lg md:text-xl font-black text-slate-900 font-mono-nums bg-slate-100 px-2 py-0.5 rounded">@ 0.00</span>
                 </div>
                 
-                <div class="flex justify-between items-center mb-3 text-slate-500">
+                <div class="flex justify-between items-center mb-2 md:mb-3 text-[13px] md:text-sm text-slate-500">
                     <span class="font-medium" data-i18n="rec_gross">Ritorno Lordo (Gross Return):</span>
                     <span id="r-gross" class="text-base font-bold font-mono-nums">€ 0.00</span>
                 </div>
 
                 <!-- Spiegazione interattiva e visuale dello Slippage Cost -->
-                <div class="flex justify-between items-center border-t border-slate-200 pt-3 mb-1 mt-2 bg-red-50 -mx-5 px-5 py-2">
-                    <span class="font-bold text-red-600 flex items-center gap-1.5" data-i18n="rec_slip">
+                <div id="r-slip-container" class="flex justify-between items-center border-t border-slate-200 pt-2 mb-1 mt-2 bg-red-50 -mx-4 px-4 py-2">
+                    <span class="font-bold text-red-600 text-[13px] md:text-sm flex items-center gap-1.5" data-i18n="rec_slip">
                         Slippage Cost (Costo Inefficienza):
                     </span>
-                    <span id="r-slip" class="text-lg font-black text-red-600 font-mono-nums">- € 0.00</span>
+                    <span id="r-slip" class="text-base md:text-lg font-black text-red-600 font-mono-nums">- € 0.00</span>
                 </div>
 
                 <!-- BOX SCOMPOSIZIONE MATEMATICA COMPRENSIBILE -->
-                <div class="bg-red-50/50 rounded-xl p-3 border border-red-100 mb-3 text-[11px] leading-tight">
+                <div class="bg-red-50/60 rounded-xl p-3 border border-red-100 mb-2 md:mb-3 text-[10px] md:text-[11px] leading-tight">
                     <h4 class="font-black text-red-800 uppercase tracking-wider mb-2 flex items-center gap-1">
                         🔍 <span data-i18n="slip_explain_title">Come viene calcolato lo Slippage?</span>
                     </h4>
-                    <div class="flex flex-col gap-2 font-mono-nums text-slate-600">
+                    <div class="flex flex-col gap-1.5 md:gap-2 font-mono-nums text-slate-600">
                         <div class="flex justify-between items-center">
-                            <span class="font-medium" data-i18n="slip_explain_ideal">Ritorno Teorico Ideale (se tutto a @1.80):</span>
+                            <span class="font-medium text-slate-500" data-i18n="slip_explain_ideal">Ritorno Teorico Ideale (se tutto a @1.80):</span>
                             <span id="r-exp-ideal" class="font-bold text-slate-700">€ 0.00</span>
                         </div>
-                        <div class="flex justify-between items-center text-slate-400 text-[10px] -mt-1 border-b border-dashed border-slate-200 pb-1.5">
-                            <span>(Formula: Stake × Quota Desiderata)</span>
+                        <div class="flex justify-between items-center text-slate-400 text-[9px] md:text-[10px] border-b border-dashed border-slate-200 pb-1.5">
+                            <span data-i18n="slip_form_ideal">(Formula: Stake × Quota Desiderata)</span>
                             <span>€500 × 1.80</span>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <span class="font-medium" data-i18n="slip_explain_actual">Ritorno Reale Ottenuto (Scarsità Liquidità):</span>
+                        <div class="flex justify-between items-center pt-1">
+                            <span class="font-medium text-slate-700" data-i18n="slip_explain_actual">Ritorno Reale Ottenuto (Scarsità Liquidità):</span>
                             <span id="r-exp-real" class="font-bold text-slate-900">€ 0.00</span>
                         </div>
-                        <div class="flex justify-between items-center text-slate-400 text-[10px] -mt-1 border-b border-dashed border-slate-200 pb-1.5">
-                            <span>(Formula: €100 @1.80 + €400 @1.78)</span>
+                        <div class="flex justify-between items-center text-slate-400 text-[9px] md:text-[10px] border-b border-dashed border-slate-200 pb-1.5">
+                            <span data-i18n="slip_form_real">(Formula: Fills Reali)</span>
                             <span>€180.00 + €712.00</span>
                         </div>
                         <div class="flex justify-between items-center text-red-700 font-bold bg-red-100/50 -mx-3 -mb-3 p-2 rounded-b-xl">
@@ -200,22 +220,22 @@
                     </div>
                 </div>
                 
-                <div class="flex justify-between items-center text-xs text-slate-500 font-medium pt-1">
+                <div class="flex justify-between items-center text-[11px] md:text-xs text-slate-500 font-medium pt-2">
                     <span data-i18n="rec_comm">Commissioni Exchange (5%):</span>
                     <span id="r-comm" class="font-mono-nums">- € 0.00</span>
                 </div>
             </div>
 
             <div class="flex justify-between items-end mt-1 px-1">
-                <span class="text-sm font-black text-slate-800 uppercase tracking-widest"><span data-i18n="rec_net">Net Real Profit</span><br><span class="text-[10px] normal-case font-semibold text-slate-400" data-i18n="rec_net_sub">(Formula: Lordo - Slippage - Comm)</span></span>
-                <span id="r-net" class="text-3xl font-black text-[var(--zth-green)] font-mono-nums tracking-tighter">€ 0.00</span>
+                <span class="text-sm md:text-base font-black text-slate-800 uppercase tracking-widest leading-tight"><span data-i18n="rec_net">Net Real Profit</span><br><span class="text-[9px] md:text-[10px] normal-case font-semibold text-slate-400" data-i18n="rec_net_sub">(Formula: Lordo - Slippage - Comm)</span></span>
+                <span id="r-net" class="text-2xl md:text-3xl font-black text-[var(--zth-green)] font-mono-nums tracking-tighter">€ 0.00</span>
             </div>
 
         </div>
         
-        <div class="p-5 bg-slate-50 border-t border-slate-200 shrink-0">
-            <!-- Pulsante con animazione di pulsazione per estrema visibilità -->
-            <button onclick="App.nextTutorialStep()" class="w-full bg-slate-900 text-white font-black px-4 py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-md text-sm uppercase tracking-wider pulse-button" data-i18n="rec_btn">Ho Compreso la Matematica</button>
+        <div class="p-4 md:p-5 bg-slate-50 border-t border-slate-200 shrink-0">
+            <!-- Pulsante con animazione di pulsazione -->
+            <button onclick="App.nextTutorialStep()" class="w-full bg-slate-900 text-white font-black px-4 py-3.5 md:py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-md text-xs md:text-sm uppercase tracking-wider pulse-button" data-i18n="rec_btn">Ho Compreso la Matematica</button>
         </div>
     </div>
 </div>
@@ -223,25 +243,24 @@
 <div id="app-wrapper">
     
     <!-- PANNELLO SINISTRO: IL MAESTRO & TUTORIAL -->
-    <div id="left-pane" class="panel">
+    <div id="left-pane" class="panel bg-white">
         
-        <header class="bg-white p-4 md:p-5 border-b border-slate-200 flex justify-between items-center shrink-0">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-slate-900 flex items-center justify-center font-black text-lg md:text-xl text-white shadow-sm">Z</div>
+        <header class="bg-white p-3 md:p-5 border-b border-slate-200 flex justify-between items-center shrink-0 shadow-sm z-20 relative">
+            <div class="flex items-center gap-2.5 md:gap-3">
+                <div class="w-9 h-9 md:w-11 md:h-11 rounded-xl bg-slate-900 flex items-center justify-center font-black text-base md:text-xl text-white shadow-sm">Z</div>
                 <div class="flex flex-col">
-                    <span class="font-black text-[15px] md:text-[18px] tracking-tight leading-none text-slate-900">ZERO TO HERO</span>
-                    <span class="text-[9px] md:text-[10px] font-bold leading-none uppercase mt-1 text-slate-500 tracking-widest">Masterclass • Day 4</span>
+                    <span class="font-black text-[13px] md:text-[16px] tracking-tight leading-none text-slate-900" data-i18n="app_title">ZERO TO HERO</span>
+                    <span class="text-[8px] md:text-[9px] font-bold leading-none uppercase mt-1 text-slate-500 tracking-widest" data-i18n="app_day">Masterclass • Slippage</span>
                 </div>
             </div>
             
-            <!-- Azioni in Header: Reset Rapido e Selezione Lingua -->
-            <div class="flex items-center gap-2">
-                <button onclick="App.restart()" class="flex items-center gap-1 px-2.5 py-1.5 bg-slate-100 hover:bg-red-50 border border-slate-200 hover:border-red-200 rounded-xl text-slate-500 hover:text-red-600 transition-all font-bold text-xs shadow-sm">
-                    <span>🔄</span>
-                    <span class="hidden sm:inline" data-i18n="btn_restart">Ricomincia</span>
+            <!-- Azioni in Header: Selezione Lingua (Ordine: EN, ES, PT, IT) & Reset -->
+            <div class="flex items-center gap-1.5 md:gap-2">
+                <button onclick="App.restart()" title="Restart" class="flex items-center justify-center w-8 h-8 bg-slate-100 hover:bg-red-50 border border-slate-200 hover:border-red-200 rounded-lg text-slate-500 hover:text-red-600 transition-all shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                 </button>
                 
-                <div class="flex gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
+                <div class="flex gap-0.5 bg-slate-100/80 p-1 rounded-lg border border-slate-200">
                     <button class="lang-btn" onclick="App.setLang('en')" id="lang-en"><img src="https://flagcdn.com/w40/gb.png" class="flag-hd" alt="EN"></button>
                     <button class="lang-btn" onclick="App.setLang('es')" id="lang-es"><img src="https://flagcdn.com/w40/es.png" class="flag-hd" alt="ES"></button>
                     <button class="lang-btn" onclick="App.setLang('pt')" id="lang-pt"><img src="https://flagcdn.com/w40/pt.png" class="flag-hd" alt="PT"></button>
@@ -250,146 +269,147 @@
             </div>
         </header>
 
-        <!-- MENTOR BOX -->
-        <div class="p-5 flex-grow flex flex-col relative bg-slate-50 overflow-y-auto">
-            <div class="absolute right-0 top-0 text-[120px] opacity-[0.02] pointer-events-none">👨‍🏫</div>
+        <!-- MENTOR BOX (Scrollable on Mobile) -->
+        <div id="mentor-scroll-area" class="p-4 md:p-5 flex-grow flex flex-col relative bg-slate-50/50">
+            <div class="absolute right-0 top-0 text-[100px] md:text-[120px] opacity-[0.02] pointer-events-none">👨‍🏫</div>
             
-            <div class="flex items-center gap-3 mb-5">
-                <div class="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-sm text-2xl z-10">👨‍🏫</div>
+            <div class="flex items-center gap-3 mb-4 md:mb-5">
+                <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-sm text-xl md:text-2xl z-10">👨‍🏫</div>
                 <div>
-                    <h3 class="text-xs font-black text-slate-800 uppercase tracking-widest" data-i18n="mentor_name">Il Maestro</h3>
-                    <p class="text-[11px] text-slate-500 font-semibold" data-i18n="mentor_role">Tutorial Interattivo</p>
+                    <h3 class="text-[11px] md:text-xs font-black text-slate-800 uppercase tracking-widest" data-i18n="mentor_name">Il Maestro</h3>
+                    <p class="text-[10px] md:text-[11px] text-slate-500 font-semibold" data-i18n="mentor_role">Tutorial Interattivo</p>
                 </div>
             </div>
             
-            <div class="bg-white border border-slate-200 rounded-xl p-5 text-sm text-slate-700 leading-relaxed shadow-sm mb-6 relative">
-                <div class="absolute -left-2 top-5 w-4 h-4 bg-white border-l border-t border-slate-200 rotate-[-45deg]"></div>
-                <p id="mentor-txt" class="font-medium">Caricamento lezione...</p>
+            <div class="bg-white border border-slate-200 rounded-xl p-4 md:p-5 text-[13px] md:text-sm text-slate-700 leading-relaxed shadow-sm mb-4 md:mb-6 relative">
+                <div class="absolute -left-1.5 top-4 w-3 h-3 bg-white border-l border-t border-slate-200 rotate-[-45deg]"></div>
+                <div id="mentor-txt" class="font-medium">Caricamento lezione...</div>
             </div>
 
             <!-- TUTORIAL STEPS -->
-            <div class="flex flex-col gap-4">
-                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-200 pb-2" data-i18n="steps_title">Task della Lezione (Case Study)</span>
+            <div class="flex flex-col gap-3 md:gap-4 pb-2 md:pb-0">
+                <span class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-200 pb-1.5 md:pb-2" data-i18n="steps_title">Task della Lezione (Case Study)</span>
                 
                 <div class="flex items-center gap-3 opacity-50 transition-opacity" id="step-1">
                     <div class="step-dot" id="dot-1">1</div>
-                    <span class="text-sm font-bold text-slate-700" data-i18n="step_1">Seleziona 5% di Bankroll (€500)</span>
+                    <span class="text-[12px] md:text-sm font-bold text-slate-700" data-i18n="step_1">Seleziona 5% di Bankroll (€500)</span>
                 </div>
                 
                 <div class="flex items-center gap-3 opacity-50 transition-opacity" id="step-2">
                     <div class="step-dot" id="dot-2">2</div>
-                    <span class="text-sm font-bold text-slate-700" data-i18n="step_2">Seleziona "Milan vs Roma"</span>
+                    <span class="text-[12px] md:text-sm font-bold text-slate-700" data-i18n="step_2">Seleziona Mercato "Bassa Liq."</span>
                 </div>
                 
                 <div class="flex items-center gap-3 opacity-50 transition-opacity" id="step-3">
                     <div class="step-dot" id="dot-3">3</div>
-                    <span class="text-sm font-bold text-slate-700"><span data-i18n="step_3">Punta (BACK) cliccando la quota</span> <span class="text-blue-600 font-black">@1.80</span></span>
+                    <span class="text-[12px] md:text-sm font-bold text-slate-700"><span data-i18n="step_3">Punta (BACK) la quota</span> <span class="text-blue-600 font-black bg-blue-50 px-1 rounded">@1.80</span></span>
                 </div>
                 
                 <div class="flex items-center gap-3 opacity-50 transition-opacity" id="step-4">
                     <div class="step-dot" id="dot-4">4</div>
-                    <span class="text-sm font-bold text-slate-700" data-i18n="step_4">Analizza il Costo dell'Inefficienza</span>
+                    <span class="text-[12px] md:text-sm font-bold text-slate-700" data-i18n="step_4">Analizza il Costo dello Slippage</span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- PANNELLO DESTRO: ORDER BOOK E TRADING -->
-    <div id="right-pane" class="panel bg-white relative flex flex-col">
+    <div id="right-pane" class="panel bg-white relative flex flex-col border-t lg:border-t-0 lg:border-l border-slate-200">
         
         <!-- TRADING CONSOLE HEADER (BANKROLL & STAKE) -->
-        <div class="bg-slate-50 flex flex-col md:flex-row justify-between items-start md:items-center px-5 py-4 border-b border-slate-200 shrink-0 gap-4">
+        <div class="bg-white flex flex-col md:flex-row justify-between items-start md:items-center px-4 md:px-5 py-3 md:py-4 border-b border-slate-200 shrink-0 gap-3 md:gap-4 shadow-sm z-10">
             
             <div class="flex flex-col w-full md:w-auto">
-                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 flex justify-between">
+                <span class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 flex justify-between">
                     <span data-i18n="trd_stake">Money Management (Stake)</span>
-                    <span class="md:hidden">Bankroll: €10,000</span>
+                    <span class="md:hidden" data-i18n="trd_equity_mob">BR: €10,000</span>
                 </span>
                 <div class="flex gap-2 w-full">
-                    <button onclick="Trade.setStakePct(1)" id="btn-pct-1" class="flex-1 md:flex-none px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-100 transition-all font-mono-nums">1%</button>
-                    <button onclick="Trade.setStakePct(2)" id="btn-pct-2" class="flex-1 md:flex-none px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-100 transition-all font-mono-nums">2%</button>
-                    <button onclick="Trade.setStakePct(5)" id="btn-pct-5" class="flex-1 md:flex-none px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-100 transition-all font-mono-nums">5%</button>
-                    <button onclick="Trade.setStakePct(10)" id="btn-pct-10" class="flex-1 md:flex-none px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-100 transition-all font-mono-nums">10%</button>
+                    <button onclick="Trade.setStakePct(1)" id="btn-pct-1" class="flex-1 md:flex-none px-2 py-1.5 md:px-3 md:py-2 bg-white border border-slate-300 rounded-lg text-[11px] md:text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all font-mono-nums">1%</button>
+                    <button onclick="Trade.setStakePct(2)" id="btn-pct-2" class="flex-1 md:flex-none px-2 py-1.5 md:px-3 md:py-2 bg-white border border-slate-300 rounded-lg text-[11px] md:text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all font-mono-nums">2%</button>
+                    <button onclick="Trade.setStakePct(5)" id="btn-pct-5" class="flex-1 md:flex-none px-2 py-1.5 md:px-3 md:py-2 bg-white border border-slate-300 rounded-lg text-[11px] md:text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all font-mono-nums">5%</button>
+                    <button onclick="Trade.setStakePct(10)" id="btn-pct-10" class="flex-1 md:flex-none px-2 py-1.5 md:px-3 md:py-2 bg-white border border-slate-300 rounded-lg text-[11px] md:text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all font-mono-nums">10%</button>
                 </div>
             </div>
             
-            <div class="flex gap-6 items-center w-full md:w-auto justify-between md:justify-end border-t border-slate-200 md:border-0 pt-3 md:pt-0 mt-1 md:mt-0">
+            <div class="flex gap-4 md:gap-6 items-center w-full md:w-auto justify-between md:justify-end">
                 <div class="flex flex-col items-start md:items-end hidden md:flex">
                     <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5" data-i18n="trd_equity">Bankroll</span>
-                    <span class="font-mono-nums font-black text-xl text-slate-800 tracking-tight">€ 10,000</span>
+                    <span class="font-mono-nums font-black text-lg md:text-xl text-slate-800 tracking-tight">€10,000</span>
                 </div>
                 <div class="h-8 w-px bg-slate-200 hidden md:block"></div>
                 <div class="flex flex-col items-start md:items-end">
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5" data-i18n="trd_stake_val">Stake Attuale</span>
-                    <span id="val-stake" class="font-mono-nums font-black text-xl text-blue-600 tracking-tight">€ 0.00</span>
+                    <span class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5" data-i18n="trd_stake_val">Stake Attuale</span>
+                    <span id="val-stake" class="font-mono-nums font-black text-base md:text-xl text-blue-600 tracking-tight">€ 0</span>
                 </div>
                 <div class="flex flex-col items-end">
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5" data-i18n="trd_liab">Rischio (Liability)</span>
-                    <span id="val-liab" class="font-mono-nums font-black text-xl text-red-500 tracking-tight">€ 0.00</span>
+                    <span class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5" data-i18n="trd_liab">Rischio (Liab.)</span>
+                    <span id="val-liab" class="font-mono-nums font-black text-base md:text-xl text-red-500 tracking-tight">€ 0</span>
                 </div>
             </div>
         </div>
 
         <!-- MARKET SELECTOR (TABS) -->
-        <div class="flex bg-slate-100 border-b border-slate-200 p-2 gap-2 shrink-0 overflow-x-auto">
-            <button onclick="App.switchMarket('high')" id="btn-mkt-high" class="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-lg border border-transparent text-slate-500 hover:bg-slate-200 transition-all font-bold text-sm">
-                <span class="w-2 h-2 rounded-full bg-slate-400" id="dot-mkt-high"></span>
-                <span data-i18n="mkt1_title">Champions League (Alta Liquidità)</span>
+        <div class="flex bg-slate-50 border-b border-slate-200 p-2 gap-1 md:gap-2 shrink-0 overflow-x-auto snap-x hide-scroll">
+            <button onclick="App.switchMarket('high')" id="btn-mkt-high" class="flex-1 md:flex-none snap-start flex items-center justify-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 md:py-2.5 rounded-lg border border-transparent text-slate-500 hover:bg-slate-200 transition-all font-bold text-[11px] md:text-sm whitespace-nowrap">
+                <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-slate-400" id="dot-mkt-high"></span>
+                <span data-i18n="mkt1_tab">Champions (Alta Liq.)</span>
             </button>
-            <button onclick="App.switchMarket('low')" id="btn-mkt-low" class="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-lg border border-transparent text-slate-500 hover:bg-slate-200 transition-all font-bold text-sm">
-                <span class="w-2 h-2 rounded-full bg-slate-400" id="dot-mkt-low"></span>
-                <span data-i18n="mkt2_title">Milan vs Roma (Bassa Liquidità)</span>
+            <button onclick="App.switchMarket('low')" id="btn-mkt-low" class="flex-1 md:flex-none snap-start flex items-center justify-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 md:py-2.5 rounded-lg border border-transparent text-slate-500 hover:bg-slate-200 transition-all font-bold text-[11px] md:text-sm whitespace-nowrap">
+                <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-slate-400" id="dot-mkt-low"></span>
+                <span data-i18n="mkt2_tab">Milan vs Roma (Bassa Liq.)</span>
             </button>
         </div>
 
         <!-- MARKET TITLE BAR -->
-        <div class="bg-white px-5 py-4 flex flex-col md:flex-row md:justify-between items-start md:items-center border-b border-slate-200 shrink-0 gap-2">
-            <div>
-                <h2 id="mkt-title" class="font-black text-slate-900 tracking-tight text-lg">Seleziona un Mercato</h2>
-                <p id="mkt-sub" class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">-</p>
+        <div class="bg-white px-4 md:px-5 py-2.5 md:py-3 flex flex-row justify-between items-center border-b border-slate-200 shrink-0">
+            <div class="flex flex-col">
+                <h2 id="mkt-title" class="font-black text-slate-900 tracking-tight text-sm md:text-base leading-tight">Mercato</h2>
+                <p id="mkt-sub" class="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">-</p>
             </div>
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-100 px-3 py-1 rounded-md border border-slate-200" data-i18n="ob_title">Depth (Ladder)</span>
+            <span class="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-100 px-2 py-1 rounded border border-slate-200" data-i18n="ob_title">Depth</span>
         </div>
 
         <!-- ORDER BOOK HEADERS -->
-        <div class="grid grid-cols-1 md:grid-cols-2 bg-slate-50 border-b border-slate-200 shrink-0">
+        <div class="grid grid-cols-1 md:grid-cols-2 bg-slate-50 border-b border-slate-200 shrink-0 z-10 shadow-sm">
             <!-- Back Side -->
             <div class="flex flex-col border-b md:border-b-0 md:border-r border-slate-200">
-                <div class="bg-[var(--bf-blue-bg)] text-[#0369a1] text-center py-2 text-[11px] font-black uppercase tracking-widest border-b border-blue-100" data-i18n="ob_back">
+                <div class="bg-[var(--bf-blue-bg)] text-[#0369a1] text-center py-1.5 md:py-2 text-[10px] md:text-[11px] font-black uppercase tracking-widest border-b border-blue-100" data-i18n="ob_back">
                     Denaro / Punta (Back)
                 </div>
-                <div class="flex text-[10px] font-bold text-slate-500 uppercase tracking-widest py-1.5 px-4 bg-slate-100/50">
+                <div class="flex text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-widest py-1 md:py-1.5 px-3 md:px-4 bg-slate-100/50">
                     <div class="flex-grow" data-i18n="ob_vol">Volume Disp.</div>
-                    <div class="w-[60px] text-center" data-i18n="ob_odds">Quota</div>
+                    <div class="w-[50px] md:w-[60px] text-center" data-i18n="ob_odds">Quota</div>
                 </div>
             </div>
             <!-- Lay Side -->
             <div class="flex flex-col hidden md:flex">
-                <div class="bg-[var(--bf-pink-bg)] text-[#be123c] text-center py-2 text-[11px] font-black uppercase tracking-widest border-b border-pink-100" data-i18n="ob_lay">
+                <div class="bg-[var(--bf-pink-bg)] text-[#be123c] text-center py-1.5 md:py-2 text-[10px] md:text-[11px] font-black uppercase tracking-widest border-b border-pink-100" data-i18n="ob_lay">
                     Lettera / Banca (Lay)
                 </div>
-                <div class="flex text-[10px] font-bold text-slate-500 uppercase tracking-widest py-1.5 px-4 bg-slate-100/50">
-                    <div class="w-[60px] text-center" data-i18n="ob_odds">Quota</div>
+                <div class="flex text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-widest py-1 md:py-1.5 px-3 md:px-4 bg-slate-100/50">
+                    <div class="w-[50px] md:w-[60px] text-center" data-i18n="ob_odds">Quota</div>
                     <div class="flex-grow text-right" data-i18n="ob_vol">Volume Disp.</div>
                 </div>
             </div>
         </div>
 
         <!-- ORDER BOOK ROWS -->
-        <div id="order-book-container" class="flex flex-col flex-grow bg-slate-50 overflow-y-auto relative p-3 md:p-5 gap-1">
-            <div class="md:hidden bg-[var(--bf-pink-bg)] text-[#be123c] border border-pink-100 text-center py-2 text-[11px] font-black uppercase tracking-widest mt-2 rounded-t-lg shadow-sm" data-i18n="ob_lay">
+        <div id="order-book-container" class="flex flex-col flex-grow bg-slate-50/50 overflow-y-auto relative p-2 md:p-4 gap-1 pb-[30dvh] md:pb-4">
+            
+            <div class="md:hidden bg-[var(--bf-pink-bg)] text-[#be123c] border border-pink-100 text-center py-1.5 text-[10px] font-black uppercase tracking-widest mt-1 rounded-t-lg shadow-sm" data-i18n="ob_lay">
                 Lettera / Banca (Lay)
             </div>
             
-            <div id="depth-rows-wrapper" class="flex flex-col bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+            <div id="depth-rows-wrapper" class="flex flex-col bg-white rounded-lg md:rounded-xl border border-slate-200 overflow-hidden shadow-sm">
                 <!-- Rows injected here -->
             </div>
             
             <!-- Visual Spread Indicator -->
-            <div class="absolute left-1/2 top-[55%] md:top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center pointer-events-none hidden md:flex z-10">
-                <div class="h-8 md:h-12 w-px bg-slate-300 border-l border-white border-dashed"></div>
-                <div class="bg-white text-slate-500 text-[9px] font-black px-2.5 py-1 rounded-full border border-slate-200 uppercase tracking-widest my-1 shadow-sm">Spread</div>
-                <div class="h-8 md:h-12 w-px bg-slate-300 border-l border-white border-dashed"></div>
+            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center pointer-events-none hidden md:flex z-10">
+                <div class="h-6 md:h-10 w-px bg-slate-300 border-l border-white border-dashed"></div>
+                <div class="bg-white text-slate-500 text-[8px] md:text-[9px] font-black px-2 py-0.5 md:py-1 rounded-full border border-slate-200 uppercase tracking-widest my-0.5 md:my-1 shadow-sm" data-i18n="ob_spread">Spread</div>
+                <div class="h-6 md:h-10 w-px bg-slate-300 border-l border-white border-dashed"></div>
             </div>
         </div>
         
@@ -397,99 +417,111 @@
 </div>
 
 <script>
-// --- DICTIONARY ---
+// --- DICTIONARY (Fully Translated & Optimized for Mobile) ---
 const DICT = {
-    it: {
-        rec_title: "Broker Execution Report", rec_status: "Settled", rec_target: "Ordine Inviato",
-        rec_action: "Azione", rec_fill: "Order Book Fills (Dettaglio Matching)", rec_avg: "Quota Media Ponderata:", rec_gross: "Ritorno Lordo (Gross Return):",
-        rec_slip: "Slippage Cost (Costo Inefficienza):", rec_comm: "Commissioni Exchange (5%):", rec_net: "Net Real Profit", rec_net_sub: "(Formula: Lordo - Slippage - Comm)", rec_btn: "Ho Compreso la Matematica", rec_req: "Stake:", rec_match: "Abbinato",
-        mentor_name: "Il Maestro", mentor_role: "Tutorial Interattivo", steps_title: "Task della Lezione (Case Study)",
-        step_1: "Seleziona 5% di Bankroll (€500)", step_2: "Seleziona 'Milan vs Roma'", step_3: "Punta (BACK) cliccando la quota", step_4: "Analizza il Costo dell'Inefficienza",
-        trd_stake: "Money Management (Stake)", trd_equity: "Bankroll", trd_stake_val: "Stake Attuale", trd_liab: "Rischio (Liability)",
-        mkt1_title: "Champions League (Alta Liq.)", mkt2_title: "Milan vs Roma (Bassa Liq.)",
-        ob_title: "Depth (Ladder)", ob_back: "Denaro / Punta (Back)", ob_lay: "Lettera / Banca (Lay)", ob_vol: "Volume Disp.", ob_odds: "Quota",
-        app_title: "ZERO TO HERO", app_day: "Academy • Day 4",
-        btn_restart: "Ricomincia",
-        slip_explain_title: "Come viene calcolato lo Slippage?",
-        slip_explain_ideal: "Ritorno Teorico Ideale (se tutto a @1.80):",
-        slip_explain_actual: "Ritorno Reale Ottenuto (Scarsità Liquidità):",
-        slip_explain_diff: "Differenza Persa (Costo Slippage):",
-        restart_lesson_btn: "Ricomincia Lezione 🔄",
-        
-        txt_intro: "Benvenuto alla Lezione 4. Il divario tra un dilettante e un professionista è la <b>gestione matematica dell'esecuzione</b>.<br><br>Il tuo obiettivo oggi è comprendere lo <b>Slippage</b> (il Killer Silenzioso). Iniziamo: clicca sul tasto <b>5%</b> in alto per impostare il tuo Stake a €500 in base al tuo Bankroll.",
-        txt_step1: "Ottimo. Hai impostato €500 di Stake. La tua Liability (Rischio) per una giocata Punta (Back) è esattamente uguale allo Stake (€500).<br><br>Ora, seleziona il mercato a bassa liquidità: <b>Milan vs Roma</b>.",
-        txt_step2: "Benvenuto nel mercato illiquido. Lo Spread è ampio e i volumi sono scarsi.<br><br>🎯 <b>L'ESERCIZIO:</b> Invia a mercato il tuo ordine da €500 cliccando sulla quota Azzurra (Back) a <b>@1.80</b>. Osserva cosa succede quando la tua <i>size</i> supera la liquidità disponibile.",
-        txt_step3: "🚨 <b>SLIPPAGE MATEMATICO!</b><br>Hai inviato €500, ma a quota 1.80 c'erano solo €100. Il motore dell'Exchange è stato costretto a 'mangiare' la liquidità sottostante a 1.78 per completare l'ordine.<br><br>Hai pagato la <b>Tassa dell'Illiquidità</b>. Leggi con attenzione il report sulla destra (dove vedi il calcolo dello Slippage di €8.00) e clicca sul pulsante nero pulsante <b>'HO COMPRESO LA MATEMATICA'</b> in fondo alla ricevuta per completare la lezione.",
-        txt_done: "🎉 <b>Lezione Completata!</b><br>Hai toccato con mano come la scarsa profondità del mercato distrugga il tuo vantaggio matematico. Ricorda il Mantra: <i>'Lo Spread è la tassa sull'impazienza; lo Slippage è la multa per aver ignorato il Market Depth.'</i>"
-    },
     en: {
-        rec_title: "Broker Execution Report", rec_status: "Settled", rec_target: "Order Submitted",
-        rec_action: "Action", rec_fill: "Order Book Fills (Matching Details)", rec_avg: "Weighted Average Odds:", rec_gross: "Gross Return:",
-        rec_slip: "Slippage Cost (Inefficiency):", rec_comm: "Exchange Commission (5%):", rec_net: "Net Real Profit", rec_net_sub: "(Formula: Gross - Slippage - Comm)", rec_btn: "I Understand the Math", rec_req: "Stake:", rec_match: "Matched",
-        mentor_name: "The Mentor", mentor_role: "Interactive Tutorial", steps_title: "Lesson Tasks (Case Study)",
-        step_1: "Select 5% Bankroll (€500)", step_2: "Select 'Milan vs Roma'", step_3: "Back by clicking the odds", step_4: "Analyze the Cost of Inefficiency",
-        trd_stake: "Money Management (Stake)", trd_equity: "Bankroll", trd_stake_val: "Current Stake", trd_liab: "Risk (Liability)",
-        mkt1_title: "Champions League (High Liq.)", mkt2_title: "Milan vs Roma (Low Liq.)",
-        ob_title: "Depth (Ladder)", ob_back: "Bid / Back", ob_lay: "Ask / Lay", ob_vol: "Available Vol.", ob_odds: "Odds",
-        app_title: "ZERO TO HERO", app_day: "Academy • Day 4",
+        rec_title: "Execution Report", rec_status: "Settled", rec_target: "Order Sent",
+        rec_action: "Action", rec_fill: "Order Book Fills", rec_avg: "Avg. Matched Odds:", rec_gross: "Gross Return:",
+        rec_slip: "Slippage Cost:", rec_comm: "Exchange Comm. (5%):", rec_net: "Net Real Profit", rec_net_sub: "(Gross - Slippage - Comm)", rec_btn: "I Understand the Math", rec_req: "Stake:", rec_match: "Matched",
+        act_back: "BACK", act_lay: "LAY",
+        mentor_name: "The Mentor", mentor_role: "Interactive Tutorial", steps_title: "Lesson Checklist",
+        step_1: "Select 5% Bankroll (€500)", step_2: "Select 'Low Liq.' Market", step_3: "Back the odds", step_4: "Analyze Slippage Cost",
+        trd_stake: "Stake Mgmt", trd_equity: "Bankroll", trd_equity_mob: "BR: €10,000", trd_stake_val: "Current Stake", trd_liab: "Liability",
+        mkt1_title: "Champions League", mkt1_tab: "Champions (High Liq.)", mkt2_title: "Milan vs Roma", mkt2_tab: "Milan v Roma (Low Liq.)",
+        ob_title: "Depth", ob_back: "Bid / Back", ob_lay: "Ask / Lay", ob_vol: "Volume", ob_odds: "Odds", ob_spread: "Spread",
+        app_title: "ZERO TO HERO", app_day: "Academy • Slippage",
         btn_restart: "Restart",
         slip_explain_title: "How is Slippage calculated?",
-        slip_explain_ideal: "Ideal Theoretical Return (if all @1.80):",
-        slip_explain_actual: "Actual Return Obtained (Due to low Liquidity):",
-        slip_explain_diff: "Difference Lost (Slippage Cost):",
+        slip_explain_ideal: "Ideal Return (if all @1.80):",
+        slip_form_ideal: "(Formula: Stake × Desired Odds)",
+        slip_explain_actual: "Actual Return (Due to low Liquidity):",
+        slip_form_real: "(Formula: Actual Fills)",
+        slip_explain_diff: "Value Lost (Slippage Cost):",
         restart_lesson_btn: "Restart Lesson 🔄",
         
-        txt_intro: "Welcome to Day 4. The gap between an amateur and a pro is the <b>mathematical management of execution</b>.<br><br>Your goal today is to understand <b>Slippage</b> (the Silent Killer). Let's start: click the <b>5%</b> button above to set your Stake to €500 based on your Bankroll.",
-        txt_step1: "Great. Stake set to €500. Your Liability (Risk) for a Back bet is exactly equal to the Stake (€500).<br><br>Now, select the low liquidity market: <b>Milan vs Roma</b>.",
-        txt_step2: "Welcome to the illiquid market. The Spread is wide and volumes are thin.<br><br>🎯 <b>THE DRILL:</b> Submit your €500 order by clicking the Blue (Back) odds at <b>@1.80</b>. Watch what happens when your size exceeds available liquidity.",
-        txt_step3: "🚨 <b>MATHEMATICAL SLIPPAGE!</b><br>You requested €500, but only €100 was available at 1.80. The Exchange engine was forced to 'eat' the underlying liquidity at 1.78 to fill your order.<br><br>You just paid the <b>Illiquidity Tax</b>. Read the report carefully on the right (see the €8.00 Slippage breakdown) and click the black <b>'I UNDERSTAND THE MATH'</b> button at the bottom of the receipt to finish.",
-        txt_done: "🎉 <b>Lesson Complete!</b><br>You experienced firsthand how poor market depth destroys your mathematical edge. Remember the Mantra: <i>'Spread is the tax on impatience; Slippage is the fine for ignoring Market Depth.'</i>"
+        txt_intro: "Welcome to the Masterclass. The gap between an amateur and a pro is <b>execution management</b>.<br><br>Your goal is to understand <b>Slippage</b> (the Silent Killer). Let's start: click <b>5%</b> above to set a €500 Stake.",
+        txt_step1: "Great. Stake is €500. Your Liability for a Back bet equals your Stake.<br><br>Now, tap on the low liquidity market: <b>Milan vs Roma</b>.",
+        txt_step2: "Notice the wide Spread and thin volumes here.<br><br>🎯 <b>THE DRILL:</b> Submit your €500 order by tapping the Blue (Back) odds at <b>@1.80</b>. Watch what happens.",
+        txt_step3: "🚨 <b>MATHEMATICAL SLIPPAGE!</b><br>You asked for €500, but only €100 was available at 1.80. The engine 'ate' the liquidity at 1.78 to fill your order.<br><br>You just paid the <b>Illiquidity Tax</b>. Analyze the red breakdown in the receipt, then tap the black button.",
+        txt_done: "🎉 <b>Lesson Complete!</b><br>You experienced how poor depth destroys your edge. Remember: <i>'Spread is the tax on impatience; Slippage is the fine for ignoring Market Depth.'</i>"
+    },
+    it: {
+        rec_title: "Execution Report", rec_status: "Settled", rec_target: "Ordine Inviato",
+        rec_action: "Azione", rec_fill: "Dettaglio Matching", rec_avg: "Quota Media:", rec_gross: "Ritorno Lordo:",
+        rec_slip: "Slippage Cost:", rec_comm: "Commissioni (5%):", rec_net: "Net Real Profit", rec_net_sub: "(Lordo - Slippage - Comm)", rec_btn: "Ho Compreso la Matematica", rec_req: "Stake:", rec_match: "Abbinato",
+        act_back: "PUNTA", act_lay: "BANCA",
+        mentor_name: "Il Maestro", mentor_role: "Tutorial Interattivo", steps_title: "Task della Lezione",
+        step_1: "Seleziona 5% Stake (€500)", step_2: "Seleziona Mercato 'Bassa Liq.'", step_3: "Punta (BACK) la quota", step_4: "Analizza il Costo Slippage",
+        trd_stake: "Gestione Stake", trd_equity: "Bankroll", trd_equity_mob: "BR: €10,000", trd_stake_val: "Stake Attuale", trd_liab: "Rischio (Liab)",
+        mkt1_title: "Champions League", mkt1_tab: "Champions (Alta Liq.)", mkt2_title: "Milan vs Roma", mkt2_tab: "Milan v Roma (Bassa Liq.)",
+        ob_title: "Depth", ob_back: "Denaro / Punta (Back)", ob_lay: "Lettera / Banca (Lay)", ob_vol: "Volume", ob_odds: "Quota", ob_spread: "Spread",
+        app_title: "ZERO TO HERO", app_day: "Masterclass • Slippage",
+        btn_restart: "Ricomincia",
+        slip_explain_title: "Come si calcola lo Slippage?",
+        slip_explain_ideal: "Ritorno Ideale (se tutto a @1.80):",
+        slip_form_ideal: "(Formula: Stake × Quota Desiderata)",
+        slip_explain_actual: "Ritorno Reale (Scarsa Liquidità):",
+        slip_form_real: "(Formula: Fills Reali)",
+        slip_explain_diff: "Valore Perso (Costo Slippage):",
+        restart_lesson_btn: "Ricomincia Lezione 🔄",
+        
+        txt_intro: "Benvenuto alla Masterclass. Il divario tra un dilettante e un pro è la <b>gestione dell'esecuzione</b>.<br><br>Oggi scoprirai lo <b>Slippage</b> (il Killer Silenzioso). Inizia cliccando <b>5%</b> in alto per impostare €500 di Stake.",
+        txt_step1: "Ottimo. Stake impostato. Il tuo Rischio per una giocata Punta è uguale allo Stake.<br><br>Ora, seleziona il mercato a bassa liquidità: <b>Milan vs Roma</b>.",
+        txt_step2: "Spread ampio e volumi scarsi.<br><br>🎯 <b>ESERCIZIO:</b> Invia l'ordine da €500 cliccando la quota Azzurra a <b>@1.80</b>. Osserva cosa succede alla liquidità.",
+        txt_step3: "🚨 <b>SLIPPAGE MATEMATICO!</b><br>Hai inviato €500, ma c'erano solo €100 a 1.80. L'Exchange ha 'mangiato' la liquidità a 1.78 per completare l'ordine.<br><br>Hai pagato la <b>Tassa dell'Illiquidità</b>. Leggi il calcolo rosso nella ricevuta, poi clicca il bottone nero.",
+        txt_done: "🎉 <b>Lezione Completata!</b><br>Hai toccato con mano come la scarsa liquidità distrugga il vantaggio. Ricorda: <i>'Lo Spread è la tassa sull'impazienza; lo Slippage è la multa per aver ignorato la Depth.'</i>"
     },
     es: {
         rec_title: "Reporte de Ejecución", rec_status: "Liquidado", rec_target: "Orden Enviada",
-        rec_action: "Acción", rec_fill: "Fills (Detalle de Matching)", rec_avg: "Cuota Media Ponderada:", rec_gross: "Retorno Bruto:",
-        rec_slip: "Costo de Slippage:", rec_comm: "Comisión Exchange (5%):", rec_net: "Beneficio Neto Real", rec_net_sub: "(Fórmula: Bruto - Slippage - Com)", rec_btn: "Entiendo las Matemáticas", rec_req: "Stake:", rec_match: "Igualado",
-        mentor_name: "El Maestro", mentor_role: "Tutorial Interactivo", steps_title: "Tareas (Caso de Estudio)",
-        step_1: "Selecciona 5% del Bankroll (€500)", step_2: "Selecciona 'Milan vs Roma'", step_3: "Apuesta (BACK) haciendo clic en", step_4: "Analiza el Costo de Ineficiencia",
-        trd_stake: "Gestión Monetaria (Stake)", trd_equity: "Bankroll", trd_stake_val: "Stake Actual", trd_liab: "Riesgo (Liability)",
-        mkt1_title: "Champions League (Alta Liq.)", mkt2_title: "Milan vs Roma (Baja Liq.)",
-        ob_title: "Depth (Ladder)", ob_back: "Punta (Back)", ob_lay: "Banca (Lay)", ob_vol: "Vol. Disp.", ob_odds: "Cuota",
-        app_title: "ZERO TO HERO", app_day: "Academy • Day 4",
+        rec_action: "Acción", rec_fill: "Detalle de Matching", rec_avg: "Cuota Media:", rec_gross: "Retorno Bruto:",
+        rec_slip: "Costo Slippage:", rec_comm: "Comisiones (5%):", rec_net: "Beneficio Neto", rec_net_sub: "(Bruto - Slippage - Com)", rec_btn: "Entiendo las Matemáticas", rec_req: "Stake:", rec_match: "Igualado",
+        act_back: "PUNTA", act_lay: "BANCA",
+        mentor_name: "El Maestro", mentor_role: "Tutorial Interactivo", steps_title: "Tareas de la Lección",
+        step_1: "Selecciona 5% Stake (€500)", step_2: "Selecciona Mercado 'Baja Liq.'", step_3: "Apuesta (BACK) la cuota", step_4: "Analiza el Costo Slippage",
+        trd_stake: "Gestión Stake", trd_equity: "Bankroll", trd_equity_mob: "BR: €10,000", trd_stake_val: "Stake Actual", trd_liab: "Riesgo (Liab)",
+        mkt1_title: "Champions League", mkt1_tab: "Champions (Alta Liq.)", mkt2_title: "Milan vs Roma", mkt2_tab: "Milan v Roma (Baja Liq.)",
+        ob_title: "Depth", ob_back: "Punta (Back)", ob_lay: "Banca (Lay)", ob_vol: "Volumen", ob_odds: "Cuota", ob_spread: "Spread",
+        app_title: "ZERO TO HERO", app_day: "Masterclass • Slippage",
         btn_restart: "Reiniciar",
         slip_explain_title: "¿Cómo se calcula el Slippage?",
-        slip_explain_ideal: "Retorno Teórico Ideal (si todo a @1.80):",
-        slip_explain_actual: "Retorno Real Obtenido (Escasa liquidez):",
-        slip_explain_diff: "Diferencia Perdida (Costo Slippage):",
+        slip_explain_ideal: "Retorno Ideal (si todo a @1.80):",
+        slip_form_ideal: "(Fórmula: Stake × Cuota Deseada)",
+        slip_explain_actual: "Retorno Real (Escasa Liquidez):",
+        slip_form_real: "(Fórmula: Fills Reales)",
+        slip_explain_diff: "Valor Perdido (Costo Slippage):",
         restart_lesson_btn: "Reiniciar Lección 🔄",
         
-        txt_intro: "Bienvenido a la Lección 4. La brecha entre un aficionado y un pro es la <b>gestión matemática de la ejecución</b>.<br><br>Tu objetivo hoy es entender el <b>Slippage</b> (el Asesino Silencioso). Empecemos: haz clic en el botón <b>5%</b> arriba para fijar tu Stake en €500 basado en tu Bankroll.",
-        txt_step1: "Genial. Stake fijado en €500. Tu Riesgo (Liability) para una apuesta Back es exactamente igual al Stake (€500).<br><br>Ahora, selecciona el mercado de baja liquidez: <b>Milan vs Roma</b>.",
-        txt_step2: "Bienvenido al mercado ilíquido. El Spread es amplio y los volúmenes escasos.<br><br>🎯 <b>EL EJERCICIO:</b> Envía tu orden de €500 haciendo clic en la cuota Azul (Back) a <b>@1.80</b>. Mira qué pasa cuando tu tamaño supera la liquidez.",
-        txt_step3: "🚨 <b>¡SLIPPAGE MATEMÁTICO!</b><br>Pediste €500, pero solo había €100 a 1.80. El motor del Exchange se vio obligado a 'comer' la liquidez subyacente a 1.78 para completar la orden.<br><br>Acabas de pagar el <b>Impuesto de Iliquidez</b>. Revisa el informe en la derecha y haz clic en el botón negro <b>'ENTIENDO LAS MATEMÁTICAS'</b> abajo en el recibo para finalizar.",
-        txt_done: "🎉 <b>¡Lección Completada!</b><br>Has visto de primera mano cómo la poca profundidad del mercado destruye tu ventaja. Recuerda el Mantra: <i>'El Spread es el impuesto a la impaciencia; el Slippage es la multa por ignorar el Market Depth.'</i>"
+        txt_intro: "Bienvenido a la Masterclass. La diferencia entre un novato y un pro es la <b>gestión de ejecución</b>.<br><br>Hoy descubrirás el <b>Slippage</b> (el Asesino Silencioso). Empieza clicando <b>5%</b> arriba para fijar €500 de Stake.",
+        txt_step1: "Genial. Stake fijado. Tu Riesgo para una apuesta Back es igual al Stake.<br><br>Ahora, selecciona el mercado de baja liquidez: <b>Milan vs Roma</b>.",
+        txt_step2: "Spread amplio y volúmenes escasos.<br><br>🎯 <b>EJERCICIO:</b> Envía la orden de €500 haciendo clic en la cuota Azul a <b>@1.80</b>. Observa la liquidez.",
+        txt_step3: "🚨 <b>¡SLIPPAGE MATEMÁTICO!</b><br>Pediste €500, pero solo había €100 a 1.80. El Exchange 'comió' la liquidez a 1.78 para completar la orden.<br><br>Pagaste el <b>Impuesto de Iliquidez</b>. Lee el cálculo rojo en el recibo, luego clica el botón negro.",
+        txt_done: "🎉 <b>¡Lección Completada!</b><br>Has visto cómo la baja liquidez destruye tu ventaja. Recuerda: <i>'El Spread es el impuesto a la impaciencia; el Slippage es la multa por ignorar el Depth.'</i>"
     },
     pt: {
         rec_title: "Relatório de Execução", rec_status: "Liquidado", rec_target: "Ordem Enviada",
-        rec_action: "Ação", rec_fill: "Fills (Detalhes de Matching)", rec_avg: "Odd Média Ponderada:", rec_gross: "Retorno Bruto:",
-        rec_slip: "Custo de Slippage:", rec_comm: "Comissão Exchange (5%):", rec_net: "Lucro Líquido Real", rec_net_sub: "(Fórmula: Bruto - Slippage - Com)", rec_btn: "Compreendi a Matemática", rec_req: "Stake:", rec_match: "Corresp.",
-        mentor_name: "O Mestre", mentor_role: "Tutorial Interativo", steps_title: "Tarefas (Caso de Estudo)",
-        step_1: "Seleciona 5% da Banca (€500)", step_2: "Seleciona 'Milan vs Roma'", step_3: "Aposta (BACK) clicando na odd", step_4: "Analisa o Custo da Ineficiência",
-        trd_stake: "Gestão de Banca (Stake)", trd_equity: "Banca", trd_stake_val: "Stake Atual", trd_liab: "Risco (Liability)",
-        mkt1_title: "Champions League (Alta Liq.)", mkt2_title: "Milan vs Roma (Baixa Liq.)",
-        ob_title: "Depth (Ladder)", ob_back: "Punta (Back)", ob_lay: "Banca (Lay)", ob_vol: "Vol. Disp.", ob_odds: "Odd",
-        app_title: "ZERO TO HERO", app_day: "Academy • Day 4",
+        rec_action: "Ação", rec_fill: "Detalhes de Matching", rec_avg: "Odd Média:", rec_gross: "Retorno Bruto:",
+        rec_slip: "Custo Slippage:", rec_comm: "Comissões (5%):", rec_net: "Lucro Líquido", rec_net_sub: "(Bruto - Slippage - Com)", rec_btn: "Compreendi a Matemática", rec_req: "Stake:", rec_match: "Corresp.",
+        act_back: "PUNTA", act_lay: "BANCA",
+        mentor_name: "O Mestre", mentor_role: "Tutorial Interativo", steps_title: "Tarefas da Lição",
+        step_1: "Seleciona 5% Stake (€500)", step_2: "Seleciona Mercado 'Baixa Liq.'", step_3: "Aposta (BACK) a odd", step_4: "Analisa o Custo Slippage",
+        trd_stake: "Gestão Stake", trd_equity: "Banca", trd_equity_mob: "Banca: €10,000", trd_stake_val: "Stake Atual", trd_liab: "Risco (Liab)",
+        mkt1_title: "Champions League", mkt1_tab: "Champions (Alta Liq.)", mkt2_title: "Milan vs Roma", mkt2_tab: "Milan v Roma (Baixa Liq.)",
+        ob_title: "Depth", ob_back: "Punta (Back)", ob_lay: "Banca (Lay)", ob_vol: "Volume", ob_odds: "Odd", ob_spread: "Spread",
+        app_title: "ZERO TO HERO", app_day: "Masterclass • Slippage",
         btn_restart: "Reiniciar",
-        slip_explain_title: "Como é calculado o Slippage?",
-        slip_explain_ideal: "Retorno Teórico Ideal (se tudo a @1.80):",
-        slip_explain_actual: "Retorno Real Obtido (Falta de liquidez):",
-        slip_explain_diff: "Diferença Perdida (Custo Slippage):",
+        slip_explain_title: "Como se calcula o Slippage?",
+        slip_explain_ideal: "Retorno Ideal (se tudo a @1.80):",
+        slip_form_ideal: "(Fórmula: Stake × Odd Desejada)",
+        slip_explain_actual: "Retorno Real (Pouca Liquidez):",
+        slip_form_real: "(Fórmula: Fills Reais)",
+        slip_explain_diff: "Valor Perdido (Custo Slippage):",
         restart_lesson_btn: "Reiniciar Lição 🔄",
         
-        txt_intro: "Bem-vindo à Lição 4. O fosso entre um amador e um profissional é a <b>gestão matemática da execução</b>.<br><br>O teu objetivo hoje é entender o <b>Slippage</b> (o Assassino Silencioso). Vamos começar: clica no botão <b>5%</b> acima para definir a tua Stake em €500 com base na tua Banca.",
-        txt_step1: "Excelente. Stake definida em €500. A tua Liability (Risco) para uma aposta Back é exatamente igual à Stake (€500).<br><br>Agora, seleciona o mercado de baixa liquidez: <b>Milan vs Roma</b>.",
-        txt_step2: "Bem-vindo ao mercado ilíquido. O Spread é largo e os volumes são fracos.<br><br>🎯 <b>O EXERCÍCIO:</b> Envia a tua ordem de €500 clicando na odd Azul (Back) a <b>@1.80</b>. Observa o que acontece quando o teu tamanho excede a liquidez.",
-        txt_step3: "🚨 <b>SLIPPAGE MATEMÁTICO!</b><br>Pediste €500, mas só havia €100 a 1.80. O motor do Exchange foi forçado a 'comer' a liquidez subjacente a 1.78 para completar a ordem.<br><br>Acabaste de pagar o <b>Imposto da Iliquidez</b>. Analisa o relatório à direita e clica no botão preto <b>'COMPREENDI A MATEMÁTICA'</b> no final do recibo para terminar.",
-        txt_done: "🎉 <b>Lição Concluída!</b><br>Sentiste na pele como a falta de profundidade do mercado destrói a tua vantagem. Lembra-te do Mantra: <i>'O Spread é o imposto sobre a impaciência; o Slippage é a multa por ignorar o Market Depth.'</i>"
+        txt_intro: "Bem-vindo à Masterclass. O fosso entre um amador e um pro é a <b>gestão da execução</b>.<br><br>Hoje descobrirás o <b>Slippage</b> (o Assassino Silencioso). Começa clicando <b>5%</b> acima para definir €500 de Stake.",
+        txt_step1: "Excelente. Stake definida. O teu Risco para uma aposta Back é igual à Stake.<br><br>Agora, seleciona o mercado de baixa liquidez: <b>Milan vs Roma</b>.",
+        txt_step2: "Spread largo e volumes fracos.<br><br>🎯 <b>EXERCÍCIO:</b> Envia a ordem de €500 clicando na odd Azul a <b>@1.80</b>. Observa a liquidez.",
+        txt_step3: "🚨 <b>SLIPPAGE MATEMÁTICO!</b><br>Pediste €500, mas só havia €100 a 1.80. O Exchange 'comeu' a liquidez a 1.78 para completar a ordem.<br><br>Pagaste o <b>Imposto da Iliquidez</b>. Lê o cálculo vermelho no recibo, depois clica no botão preto.",
+        txt_done: "🎉 <b>Lição Concluída!</b><br>Sentiste como a falta de liquidez destrói a vantagem. Lembra-te: <i>'O Spread é o imposto sobre a impaciência; o Slippage é a multa por ignorar a Depth.'</i>"
     }
 };
 
@@ -510,9 +542,9 @@ const MarketsData = {
         sub: 'Under 2.5 Goals',
         book: {
             back: [ 
-                { p: 1.80, v: 100 },  // Exact case study numbers
-                { p: 1.79, v: 0 },    // Empty level to show spread drop explicitly
-                { p: 1.78, v: 400 }   // The rest of the liquidity
+                { p: 1.80, v: 100 },
+                { p: 1.79, v: 0 },
+                { p: 1.78, v: 400 }
             ],
             lay: [ { p: 1.85, v: 50 }, { p: 1.88, v: 150 }, { p: 1.95, v: 500 } ]
         }
@@ -521,14 +553,13 @@ const MarketsData = {
 
 // --- STATE ---
 let AppState = {
-    lang: 'it',
+    lang: 'en',
     bankroll: 10000,
     stakePct: 0,
     stakeEur: 0,
     currentMarket: 'high',
     bookClone: null,
-    tutorialStep: 0, // 0: Start, 1: Stake selected, 2: Market selected, 3: Trade executed, 4: Done
-    targetCellId: '' // the ID of the DOM element to highlight
+    tutorialStep: 0 
 };
 
 // --- APP LOGIC ---
@@ -537,6 +568,9 @@ const App = {
         this.detectLanguage();
         this.resetMarket('high');
         this.updateTutorial();
+        
+        // Remove ready class delay to feel instant
+        document.body.classList.add('ready');
     },
     
     detectLanguage() {
@@ -560,31 +594,38 @@ const App = {
         const dict = DICT[AppState.lang];
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
-            if (dict[key]) el.innerHTML = dict[key];
+            if (dict[key]) {
+                if(el.tagName === 'INPUT' && el.type === 'button') el.value = dict[key];
+                else el.innerHTML = dict[key];
+            }
         });
         
-        // Re-apply dynamic titles
+        // Dynamic dynamic elements
         document.getElementById('mkt-title').innerText = this.t(MarketsData[AppState.currentMarket].titleKey);
-        document.getElementById('mkt-sub').innerText = MarketsData[AppState.currentMarket].sub;
+        
+        // Force re-render of orderbook to catch "Matched" translations if receipt is open
+        if(document.getElementById('receipt-modal').classList.contains('active')) {
+            // Receipt texts update is handled statically via data-i18n, except dynamic fills
+            // We just let the user re-trigger or accept it. 
+        }
     },
     
-    t(key, vars = {}) {
-        let txt = DICT[AppState.lang][key] || key;
-        for (const [k, v] of Object.entries(vars)) txt = txt.replace(`{${k}}`, v);
-        return txt;
-    },
+    t(key) { return DICT[AppState.lang][key] || key; },
 
     resetMarket(marketId) {
         AppState.currentMarket = marketId;
         const data = MarketsData[marketId];
         AppState.bookClone = JSON.parse(JSON.stringify(data.book));
         
-        // Update Tabs UI
-        document.getElementById('btn-mkt-high').className = `flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all font-bold text-sm ${marketId === 'high' ? 'bg-white border-slate-200 text-slate-800 shadow-sm' : 'border-transparent text-slate-500 hover:bg-slate-200'}`;
-        document.getElementById('dot-mkt-high').className = `w-2 h-2 rounded-full ${marketId === 'high' ? 'bg-green-500' : 'bg-slate-300'}`;
+        // UI Tabs
+        const btnHigh = document.getElementById('btn-mkt-high');
+        const btnLow = document.getElementById('btn-mkt-low');
         
-        document.getElementById('btn-mkt-low').className = `flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all font-bold text-sm ${marketId === 'low' ? 'bg-white border-slate-200 text-slate-800 shadow-sm' : 'border-transparent text-slate-500 hover:bg-slate-200'}`;
-        document.getElementById('dot-mkt-low').className = `w-2 h-2 rounded-full ${marketId === 'low' ? 'bg-red-500' : 'bg-slate-300'}`;
+        btnHigh.className = `flex-1 md:flex-none snap-start flex items-center justify-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 md:py-2.5 rounded-lg border transition-all font-bold text-[11px] md:text-sm whitespace-nowrap ${marketId === 'high' ? 'bg-white border-slate-200 text-slate-800 shadow-sm' : 'border-transparent text-slate-500 hover:bg-slate-200'}`;
+        document.getElementById('dot-mkt-high').className = `w-1.5 h-1.5 md:w-2 md:h-2 rounded-full ${marketId === 'high' ? 'bg-green-500' : 'bg-slate-300'}`;
+        
+        btnLow.className = `flex-1 md:flex-none snap-start flex items-center justify-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 md:py-2.5 rounded-lg border transition-all font-bold text-[11px] md:text-sm whitespace-nowrap ${marketId === 'low' ? 'bg-white border-slate-200 text-slate-800 shadow-sm' : 'border-transparent text-slate-500 hover:bg-slate-200'}`;
+        document.getElementById('dot-mkt-low').className = `w-1.5 h-1.5 md:w-2 md:h-2 rounded-full ${marketId === 'low' ? 'bg-red-500' : 'bg-slate-300'}`;
         
         document.getElementById('mkt-title').innerText = this.t(data.titleKey);
         document.getElementById('mkt-sub').innerText = data.sub;
@@ -594,10 +635,9 @@ const App = {
 
     switchMarket(marketId) {
         if(AppState.tutorialStep === 1 && marketId === 'low') {
-            AppState.tutorialStep = 2; // Advance tutorial
+            AppState.tutorialStep = 2; 
             this.updateTutorial();
         } else if (AppState.tutorialStep < 4) {
-            // Prevent changing during critical path unless it's the required step
             if(AppState.tutorialStep === 2 && marketId === 'high') return; 
         }
         this.resetMarket(marketId);
@@ -618,18 +658,17 @@ const App = {
             const b = book.back[i] || {p: 0, v: 0};
             const l = book.lay[i] || {p: 0, v: 0};
             
-            const bWidth = b.v > 0 ? Math.max(5, (b.v / maxVol) * 100) : 0;
-            const lWidth = l.v > 0 ? Math.max(5, (l.v / maxVol) * 100) : 0;
+            const bWidth = b.v > 0 ? Math.max(3, (b.v / maxVol) * 100) : 0;
+            const lWidth = l.v > 0 ? Math.max(3, (l.v / maxVol) * 100) : 0;
             
-            // Build IDs for highlighting
             const bId = `row-back-${i}`;
             const lId = `row-lay-${i}`;
 
             const rowHTML = `
                 <div class="flex flex-col md:grid md:grid-cols-2 border-b border-slate-100 last:border-0 relative">
                     <!-- Back Side -->
-                    <div class="grid grid-cols-[1fr_60px] md:grid-cols-[1fr_70px] border-b md:border-b-0 md:border-r border-slate-100">
-                        <div class="vol-bar-container px-3 justify-end group">
+                    <div class="grid grid-cols-[1fr_50px] md:grid-cols-[1fr_70px] border-b md:border-b-0 md:border-r border-slate-100">
+                        <div class="vol-bar-container px-2 md:px-3 justify-end group">
                             <div class="vol-bar bar-back" style="width: ${bWidth}%"></div>
                             <span class="vol-text font-mono-nums ${b.v === 0 ? 'opacity-30' : ''}">€${formatK(b.v)}</span>
                         </div>
@@ -638,11 +677,11 @@ const App = {
                         </div>
                     </div>
                     <!-- Lay Side -->
-                    <div class="grid grid-cols-[60px_1fr] md:grid-cols-[70px_1fr]">
+                    <div class="grid grid-cols-[50px_1fr] md:grid-cols-[70px_1fr]">
                         <div id="${lId}" onclick="Trade.execute('lay', ${i})" class="depth-cell bg-lay ${l.p === 0 ? 'opacity-0 pointer-events-none' : ''}">
                             <span class="price-text">${l.p.toFixed(2)}</span>
                         </div>
-                        <div class="vol-bar-container px-3 justify-start group">
+                        <div class="vol-bar-container px-2 md:px-3 justify-start group">
                             <div class="vol-bar bar-lay" style="width: ${lWidth}%"></div>
                             <span class="vol-text font-mono-nums ${l.v === 0 ? 'opacity-30' : ''}">€${formatK(l.v)}</span>
                         </div>
@@ -652,7 +691,6 @@ const App = {
             container.innerHTML += rowHTML;
         }
         
-        // Re-apply highlight if needed
         this.updateTutorialHighlights();
     },
 
@@ -661,6 +699,10 @@ const App = {
         this.updateTutorialText();
         this.updateTutorialUI();
         this.updateTutorialHighlights();
+        
+        // Scroll mentor area to top on mobile
+        const mentorArea = document.getElementById('mentor-scroll-area');
+        if(mentorArea) mentorArea.scrollTop = 0;
     },
     
     updateTutorialText() {
@@ -674,15 +716,13 @@ const App = {
         } else if (AppState.tutorialStep === 3) {
             txtBox.innerHTML = this.t('txt_step3');
         } else if (AppState.tutorialStep === 4) {
-            // Nel passo finale inseriamo un bel bottone verde all'interno del mentore per ricominciare la lezione
             txtBox.innerHTML = this.t('txt_done') + `
                 <div class="mt-4 border-t border-slate-100 pt-4">
                     <button onclick="App.restart()" class="w-full bg-[var(--zth-green)] text-white font-black px-4 py-3 rounded-xl hover:opacity-90 transition-all shadow-md text-xs uppercase tracking-wider flex items-center justify-center gap-2">
-                        <span>🔄</span> <span data-i18n="restart_lesson_btn">Ricomincia Lezione</span>
+                        <span>🔄</span> <span data-i18n="restart_lesson_btn">${this.t('restart_lesson_btn')}</span>
                     </button>
                 </div>
             `;
-            this.updateI18n();
         }
     },
 
@@ -692,7 +732,7 @@ const App = {
             const dotEl = document.getElementById(`dot-${i}`);
             if(!stepEl || !dotEl) continue;
             
-            stepEl.className = "flex items-center gap-3 transition-opacity";
+            stepEl.className = "flex items-center gap-2 md:gap-3 transition-opacity";
             dotEl.className = "step-dot";
             
             if (AppState.tutorialStep === (i-1)) {
@@ -711,7 +751,6 @@ const App = {
     },
 
     updateTutorialHighlights() {
-        // Clear old pulses
         document.querySelectorAll('.pulse-active').forEach(el => el.classList.remove('pulse-active'));
         
         if (AppState.tutorialStep === 0) {
@@ -719,7 +758,7 @@ const App = {
         } else if (AppState.tutorialStep === 1) {
             document.getElementById('btn-mkt-low').classList.add('pulse-active');
         } else if (AppState.tutorialStep === 2) {
-            const cell = document.getElementById('row-back-0'); // @1.80 on low market
+            const cell = document.getElementById('row-back-0'); 
             if(cell && AppState.currentMarket === 'low') cell.classList.add('pulse-active');
         }
     },
@@ -728,31 +767,35 @@ const App = {
         if (AppState.tutorialStep === 3) {
             AppState.tutorialStep = 4;
             document.getElementById('receipt-modal').classList.remove('active');
+            
+            // Remove shaking class if present to clean up
+            const slipContainer = document.getElementById('r-slip-container');
+            if(slipContainer) slipContainer.classList.remove('shake-animation');
+            
             this.updateTutorial();
         }
     },
 
-    // --- RESTART SYSTEM ---
     restart() {
         AppState.tutorialStep = 0;
         AppState.stakePct = 0;
         AppState.stakeEur = 0;
         AppState.currentMarket = 'high';
         
-        // Chiude la modale se aperta
         document.getElementById('receipt-modal').classList.remove('active');
+        const slipContainer = document.getElementById('r-slip-container');
+        if(slipContainer) slipContainer.classList.remove('shake-animation');
         
-        // Resetta la selezione degli stake pct
         [1, 2, 5, 10].forEach(p => {
             const btn = document.getElementById(`btn-pct-${p}`);
             if(btn) {
-                btn.className = "flex-1 md:flex-none px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-100 transition-all font-mono-nums";
+                btn.className = "flex-1 md:flex-none px-2 py-1.5 md:px-3 md:py-2 bg-white border border-slate-300 rounded-lg text-[11px] md:text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all font-mono-nums";
                 btn.classList.remove('pulse-active');
             }
         });
 
-        document.getElementById('val-stake').innerText = "€ 0.00";
-        document.getElementById('val-liab').innerText = "€ 0.00";
+        document.getElementById('val-stake').innerText = "€ 0";
+        document.getElementById('val-liab').innerText = "€ 0";
 
         this.resetMarket('high');
         this.updateTutorial();
@@ -765,7 +808,7 @@ const Trade = {
             AppState.tutorialStep = 1;
             App.updateTutorial();
         } else if (AppState.tutorialStep < 4 && pct !== 5) {
-            return; // Force 5% during tutorial
+            return; 
         }
 
         AppState.stakePct = pct;
@@ -775,22 +818,20 @@ const Trade = {
             const btn = document.getElementById(`btn-pct-${p}`);
             if(!btn) return;
             if (p === pct) {
-                btn.className = "flex-1 md:flex-none px-3 py-2 bg-[var(--bf-blue)] border border-blue-500 rounded-lg text-xs font-bold text-white shadow-md transition-all font-mono-nums";
+                btn.className = "flex-1 md:flex-none px-2 py-1.5 md:px-3 md:py-2 bg-[var(--bf-blue)] border border-blue-500 rounded-lg text-[11px] md:text-xs font-bold text-white shadow-md transition-all font-mono-nums";
             } else {
-                btn.className = "flex-1 md:flex-none px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-100 transition-all font-mono-nums";
+                btn.className = "flex-1 md:flex-none px-2 py-1.5 md:px-3 md:py-2 bg-white border border-slate-300 rounded-lg text-[11px] md:text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all font-mono-nums";
                 btn.classList.remove('pulse-active');
             }
         });
 
-        document.getElementById('val-stake').innerText = `€ ${AppState.stakeEur.toFixed(2)}`;
-        // For a Back bet (which the tutorial focuses on), Liability == Stake.
-        document.getElementById('val-liab').innerText = `€ ${AppState.stakeEur.toFixed(2)}`;
+        document.getElementById('val-stake').innerText = `€ ${AppState.stakeEur}`;
+        document.getElementById('val-liab').innerText = `€ ${AppState.stakeEur}`;
     },
 
     execute(side, targetLevelIndex) {
         if (AppState.stakeEur === 0) return;
         
-        // Enforce tutorial path
         if (AppState.tutorialStep === 2) {
             if (AppState.currentMarket !== 'low' || side !== 'back' || targetLevelIndex !== 0) return;
         } else if (AppState.tutorialStep < 4) {
@@ -805,17 +846,16 @@ const Trade = {
         let totalReturnIfWin = 0;
         let matchedDetails = [];
         
-        // Match from top of book down to the requested level (index 0 to target)
         for (let i = 0; i <= targetLevelIndex || remainingStake > 0; i++) {
-            if (i >= book.length) break; // Out of liquidity
+            if (i >= book.length) break; 
             
             let level = book[i];
-            if (level.v === 0) continue; // Skip empty levels (like 1.79 in our setup)
+            if (level.v === 0) continue; 
             
             let volumeToTake = Math.min(remainingStake, level.v);
             
             remainingStake -= volumeToTake;
-            level.v -= volumeToTake; // Consume visual liquidity
+            level.v -= volumeToTake; 
             totalReturnIfWin += (volumeToTake * level.p);
             
             matchedDetails.push({ p: level.p, v: volumeToTake });
@@ -831,10 +871,9 @@ const Trade = {
         const actualStakeMatched = requestedStake - remainingStake;
         if (actualStakeMatched === 0) return;
 
-        // --- MATH: ZERO HALLUCINATIONS ---
         const avgOdds = totalReturnIfWin / actualStakeMatched;
         const expectedReturn = actualStakeMatched * targetOdds;
-        const slippage = expectedReturn - totalReturnIfWin; // Cost of Inefficiency
+        const slippage = expectedReturn - totalReturnIfWin; 
         
         const grossProfit = totalReturnIfWin - actualStakeMatched;
         const commission = grossProfit > 0 ? grossProfit * 0.05 : 0;
@@ -850,16 +889,16 @@ const Trade = {
     },
 
     showReceipt(side, reqStake, reqOdds, avgOdds, details, slippage, gross, comm, net, expectedReturn, totalReturnIfWin) {
-        document.getElementById('r-req-vol').innerText = `€${reqStake.toFixed(2)}`;
+        document.getElementById('r-req-vol').innerText = `€${reqStake}`;
         document.getElementById('r-req-odds').innerText = reqOdds.toFixed(2);
         
         const actionEl = document.getElementById('r-action');
         if (side === 'back') {
-            actionEl.innerText = "PUNTA (BACK)";
-            actionEl.className = "font-black px-2 py-0.5 rounded text-[11px] bg-[var(--bf-blue-bg)] text-[#0369a1] border border-blue-200";
+            actionEl.innerText = App.t('act_back');
+            actionEl.className = "font-black px-2 py-0.5 rounded text-[10px] md:text-[11px] bg-[var(--bf-blue-bg)] text-[#0369a1] border border-blue-200";
         } else {
-            actionEl.innerText = "BANCA (LAY)";
-            actionEl.className = "font-black px-2 py-0.5 rounded text-[11px] bg-[var(--bf-pink-bg)] text-[#be123c] border border-pink-200";
+            actionEl.innerText = App.t('act_lay');
+            actionEl.className = "font-black px-2 py-0.5 rounded text-[10px] md:text-[11px] bg-[var(--bf-pink-bg)] text-[#be123c] border border-pink-200";
         }
 
         const fillsContainer = document.getElementById('r-fills');
@@ -868,7 +907,7 @@ const Trade = {
         details.forEach(f => {
             fillsContainer.innerHTML += `
                 <div class="flex justify-between border-b border-slate-200 pb-1.5 pt-1.5 first:pt-0 last:border-0 last:pb-0">
-                    <span class="text-slate-500 font-medium">${matchTxt} €${f.v.toFixed(2)}</span>
+                    <span class="text-slate-500 font-medium">${matchTxt} €${f.v}</span>
                     <span class="text-slate-900 font-black">@ ${f.p.toFixed(2)}</span>
                 </div>
             `;
@@ -878,15 +917,21 @@ const Trade = {
         document.getElementById('r-gross').innerText = `€ ${gross.toFixed(2)}`;
         
         const slipEl = document.getElementById('r-slip');
+        const slipContainer = document.getElementById('r-slip-container');
+        
         slipEl.innerText = `- € ${slippage.toFixed(2)}`;
         if (slippage > 0.01) {
-            slipEl.className = "text-lg md:text-xl font-black text-red-600 font-mono-nums";
+            slipEl.className = "text-base md:text-lg font-black text-red-600 font-mono-nums";
+            // Add shake animation to make it memorable
+            slipContainer.classList.remove('shake-animation');
+            void slipContainer.offsetWidth; // Trigger reflow
+            slipContainer.classList.add('shake-animation');
         } else {
             slipEl.className = "text-sm font-bold text-slate-500 font-mono-nums";
             slipEl.innerText = "0.00";
+            slipContainer.classList.remove('shake-animation');
         }
 
-        // AGGIORNA BOX DI SPIEGAZIONE DETTAGLIATA DELLO SLIPPAGE
         document.getElementById('r-exp-ideal').innerText = `€ ${expectedReturn.toFixed(2)}`;
         document.getElementById('r-exp-real').innerText = `€ ${totalReturnIfWin.toFixed(2)}`;
         document.getElementById('r-exp-diff').innerText = `- € ${slippage.toFixed(2)}`;
@@ -894,16 +939,12 @@ const Trade = {
         document.getElementById('r-comm').innerText = `- € ${comm.toFixed(2)}`;
         document.getElementById('r-net').innerText = `€ ${net.toFixed(2)}`;
 
-        // Mostra la modale
         document.getElementById('receipt-modal').classList.add('active');
     }
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-    requestAnimationFrame(() => {
-        document.body.classList.add('ready');
-        App.init(); 
-    });
+    App.init(); 
 });
 </script>
 </body>
