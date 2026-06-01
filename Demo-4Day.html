@@ -88,6 +88,14 @@
         @keyframes flashRed { 0% { background-color: rgba(239, 68, 68, 0.2); } 100% { background-color: transparent; } }
         .consumed { animation: flashRed 0.8s ease-out; }
 
+        /* Pulsing Glow for target Modal Button */
+        @keyframes pulse-shadow {
+            0% { box-shadow: 0 0 0 0 rgba(15, 23, 42, 0.6); }
+            70% { box-shadow: 0 0 0 12px rgba(15, 23, 42, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(15, 23, 42, 0); }
+        }
+        .pulse-button { animation: pulse-shadow 2s infinite; }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -141,6 +149,7 @@
                 </div>
             </div>
 
+            <!-- ANALISI MATEMATICA DELLO SLIPPAGE -->
             <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden">
                 <div class="absolute right-0 top-0 text-[100px] opacity-[0.03] pointer-events-none">🧮</div>
                 
@@ -154,14 +163,44 @@
                     <span id="r-gross" class="text-base font-bold font-mono-nums">€ 0.00</span>
                 </div>
 
-                <div class="flex justify-between items-center border-t border-slate-200 pt-3 mb-3 mt-2 bg-red-50 -mx-5 px-5 py-2">
+                <!-- Spiegazione interattiva e visuale dello Slippage Cost -->
+                <div class="flex justify-between items-center border-t border-slate-200 pt-3 mb-1 mt-2 bg-red-50 -mx-5 px-5 py-2">
                     <span class="font-bold text-red-600 flex items-center gap-1.5" data-i18n="rec_slip">
                         Slippage Cost (Costo Inefficienza):
                     </span>
                     <span id="r-slip" class="text-lg font-black text-red-600 font-mono-nums">- € 0.00</span>
                 </div>
+
+                <!-- BOX SCOMPOSIZIONE MATEMATICA COMPRENSIBILE -->
+                <div class="bg-red-50/50 rounded-xl p-3 border border-red-100 mb-3 text-[11px] leading-tight">
+                    <h4 class="font-black text-red-800 uppercase tracking-wider mb-2 flex items-center gap-1">
+                        🔍 <span data-i18n="slip_explain_title">Come viene calcolato lo Slippage?</span>
+                    </h4>
+                    <div class="flex flex-col gap-2 font-mono-nums text-slate-600">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium" data-i18n="slip_explain_ideal">Ritorno Teorico Ideale (se tutto a @1.80):</span>
+                            <span id="r-exp-ideal" class="font-bold text-slate-700">€ 0.00</span>
+                        </div>
+                        <div class="flex justify-between items-center text-slate-400 text-[10px] -mt-1 border-b border-dashed border-slate-200 pb-1.5">
+                            <span>(Formula: Stake × Quota Desiderata)</span>
+                            <span>€500 × 1.80</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium" data-i18n="slip_explain_actual">Ritorno Reale Ottenuto (Scarsità Liquidità):</span>
+                            <span id="r-exp-real" class="font-bold text-slate-900">€ 0.00</span>
+                        </div>
+                        <div class="flex justify-between items-center text-slate-400 text-[10px] -mt-1 border-b border-dashed border-slate-200 pb-1.5">
+                            <span>(Formula: €100 @1.80 + €400 @1.78)</span>
+                            <span>€180.00 + €712.00</span>
+                        </div>
+                        <div class="flex justify-between items-center text-red-700 font-bold bg-red-100/50 -mx-3 -mb-3 p-2 rounded-b-xl">
+                            <span data-i18n="slip_explain_diff">Differenza Persa (Costo Slippage):</span>
+                            <span id="r-exp-diff" class="font-black">- € 0.00</span>
+                        </div>
+                    </div>
+                </div>
                 
-                <div class="flex justify-between items-center text-xs text-slate-500 font-medium">
+                <div class="flex justify-between items-center text-xs text-slate-500 font-medium pt-1">
                     <span data-i18n="rec_comm">Commissioni Exchange (5%):</span>
                     <span id="r-comm" class="font-mono-nums">- € 0.00</span>
                 </div>
@@ -175,7 +214,8 @@
         </div>
         
         <div class="p-5 bg-slate-50 border-t border-slate-200 shrink-0">
-            <button onclick="App.nextTutorialStep()" class="w-full bg-slate-900 text-white font-black px-4 py-3.5 rounded-xl hover:bg-slate-800 transition-colors shadow-md text-sm uppercase tracking-wider" data-i18n="rec_btn">Ho Compreso la Matematica</button>
+            <!-- Pulsante con animazione di pulsazione per estrema visibilità -->
+            <button onclick="App.nextTutorialStep()" class="w-full bg-slate-900 text-white font-black px-4 py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-md text-sm uppercase tracking-wider pulse-button" data-i18n="rec_btn">Ho Compreso la Matematica</button>
         </div>
     </div>
 </div>
@@ -193,12 +233,20 @@
                     <span class="text-[9px] md:text-[10px] font-bold leading-none uppercase mt-1 text-slate-500 tracking-widest">Masterclass • Day 4</span>
                 </div>
             </div>
-            <!-- Language Selector -->
-            <div class="flex gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
-                <button class="lang-btn" onclick="App.setLang('en')" id="lang-en"><img src="https://flagcdn.com/w40/gb.png" class="flag-hd" alt="EN"></button>
-                <button class="lang-btn" onclick="App.setLang('es')" id="lang-es"><img src="https://flagcdn.com/w40/es.png" class="flag-hd" alt="ES"></button>
-                <button class="lang-btn" onclick="App.setLang('pt')" id="lang-pt"><img src="https://flagcdn.com/w40/pt.png" class="flag-hd" alt="PT"></button>
-                <button class="lang-btn active" onclick="App.setLang('it')" id="lang-it"><img src="https://flagcdn.com/w40/it.png" class="flag-hd" alt="IT"></button>
+            
+            <!-- Azioni in Header: Reset Rapido e Selezione Lingua -->
+            <div class="flex items-center gap-2">
+                <button onclick="App.restart()" class="flex items-center gap-1 px-2.5 py-1.5 bg-slate-100 hover:bg-red-50 border border-slate-200 hover:border-red-200 rounded-xl text-slate-500 hover:text-red-600 transition-all font-bold text-xs shadow-sm">
+                    <span>🔄</span>
+                    <span class="hidden sm:inline" data-i18n="btn_restart">Ricomincia</span>
+                </button>
+                
+                <div class="flex gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
+                    <button class="lang-btn" onclick="App.setLang('en')" id="lang-en"><img src="https://flagcdn.com/w40/gb.png" class="flag-hd" alt="EN"></button>
+                    <button class="lang-btn" onclick="App.setLang('es')" id="lang-es"><img src="https://flagcdn.com/w40/es.png" class="flag-hd" alt="ES"></button>
+                    <button class="lang-btn" onclick="App.setLang('pt')" id="lang-pt"><img src="https://flagcdn.com/w40/pt.png" class="flag-hd" alt="PT"></button>
+                    <button class="lang-btn active" onclick="App.setLang('it')" id="lang-it"><img src="https://flagcdn.com/w40/it.png" class="flag-hd" alt="IT"></button>
+                </div>
             </div>
         </header>
 
@@ -361,11 +409,17 @@ const DICT = {
         mkt1_title: "Champions League (Alta Liq.)", mkt2_title: "Milan vs Roma (Bassa Liq.)",
         ob_title: "Depth (Ladder)", ob_back: "Denaro / Punta (Back)", ob_lay: "Lettera / Banca (Lay)", ob_vol: "Volume Disp.", ob_odds: "Quota",
         app_title: "ZERO TO HERO", app_day: "Academy • Day 4",
+        btn_restart: "Ricomincia",
+        slip_explain_title: "Come viene calcolato lo Slippage?",
+        slip_explain_ideal: "Ritorno Teorico Ideale (se tutto a @1.80):",
+        slip_explain_actual: "Ritorno Reale Ottenuto (Scarsità Liquidità):",
+        slip_explain_diff: "Differenza Persa (Costo Slippage):",
+        restart_lesson_btn: "Ricomincia Lezione 🔄",
         
         txt_intro: "Benvenuto alla Lezione 4. Il divario tra un dilettante e un professionista è la <b>gestione matematica dell'esecuzione</b>.<br><br>Il tuo obiettivo oggi è comprendere lo <b>Slippage</b> (il Killer Silenzioso). Iniziamo: clicca sul tasto <b>5%</b> in alto per impostare il tuo Stake a €500 in base al tuo Bankroll.",
         txt_step1: "Ottimo. Hai impostato €500 di Stake. La tua Liability (Rischio) per una giocata Punta (Back) è esattamente uguale allo Stake (€500).<br><br>Ora, seleziona il mercato a bassa liquidità: <b>Milan vs Roma</b>.",
         txt_step2: "Benvenuto nel mercato illiquido. Lo Spread è ampio e i volumi sono scarsi.<br><br>🎯 <b>L'ESERCIZIO:</b> Invia a mercato il tuo ordine da €500 cliccando sulla quota Azzurra (Back) a <b>@1.80</b>. Osserva cosa succede quando la tua <i>size</i> supera la liquidità disponibile.",
-        txt_step3: "🚨 <b>SLIPPAGE MATEMATICO!</b><br>Hai inviato €500, ma a quota 1.80 c'erano solo €100. Il motore dell'Exchange è stato costretto a 'mangiare' la liquidità sottostante a 1.78 per completare l'ordine.<br><br>Hai pagato la <b>Tassa dell'Illiquidità</b>. Leggi attentamente il report, poi clicca sul bottone per completare la lezione.",
+        txt_step3: "🚨 <b>SLIPPAGE MATEMATICO!</b><br>Hai inviato €500, ma a quota 1.80 c'erano solo €100. Il motore dell'Exchange è stato costretto a 'mangiare' la liquidità sottostante a 1.78 per completare l'ordine.<br><br>Hai pagato la <b>Tassa dell'Illiquidità</b>. Leggi con attenzione il report sulla destra (dove vedi il calcolo dello Slippage di €8.00) e clicca sul pulsante nero pulsante <b>'HO COMPRESO LA MATEMATICA'</b> in fondo alla ricevuta per completare la lezione.",
         txt_done: "🎉 <b>Lezione Completata!</b><br>Hai toccato con mano come la scarsa profondità del mercato distrugga il tuo vantaggio matematico. Ricorda il Mantra: <i>'Lo Spread è la tassa sull'impazienza; lo Slippage è la multa per aver ignorato il Market Depth.'</i>"
     },
     en: {
@@ -378,11 +432,17 @@ const DICT = {
         mkt1_title: "Champions League (High Liq.)", mkt2_title: "Milan vs Roma (Low Liq.)",
         ob_title: "Depth (Ladder)", ob_back: "Bid / Back", ob_lay: "Ask / Lay", ob_vol: "Available Vol.", ob_odds: "Odds",
         app_title: "ZERO TO HERO", app_day: "Academy • Day 4",
+        btn_restart: "Restart",
+        slip_explain_title: "How is Slippage calculated?",
+        slip_explain_ideal: "Ideal Theoretical Return (if all @1.80):",
+        slip_explain_actual: "Actual Return Obtained (Due to low Liquidity):",
+        slip_explain_diff: "Difference Lost (Slippage Cost):",
+        restart_lesson_btn: "Restart Lesson 🔄",
         
         txt_intro: "Welcome to Day 4. The gap between an amateur and a pro is the <b>mathematical management of execution</b>.<br><br>Your goal today is to understand <b>Slippage</b> (the Silent Killer). Let's start: click the <b>5%</b> button above to set your Stake to €500 based on your Bankroll.",
         txt_step1: "Great. Stake set to €500. Your Liability (Risk) for a Back bet is exactly equal to the Stake (€500).<br><br>Now, select the low liquidity market: <b>Milan vs Roma</b>.",
         txt_step2: "Welcome to the illiquid market. The Spread is wide and volumes are thin.<br><br>🎯 <b>THE DRILL:</b> Submit your €500 order by clicking the Blue (Back) odds at <b>@1.80</b>. Watch what happens when your size exceeds available liquidity.",
-        txt_step3: "🚨 <b>MATHEMATICAL SLIPPAGE!</b><br>You requested €500, but only €100 was available at 1.80. The Exchange engine was forced to 'eat' the underlying liquidity at 1.78 to fill your order.<br><br>You just paid the <b>Illiquidity Tax</b>. Read the report carefully, then click the button to finish.",
+        txt_step3: "🚨 <b>MATHEMATICAL SLIPPAGE!</b><br>You requested €500, but only €100 was available at 1.80. The Exchange engine was forced to 'eat' the underlying liquidity at 1.78 to fill your order.<br><br>You just paid the <b>Illiquidity Tax</b>. Read the report carefully on the right (see the €8.00 Slippage breakdown) and click the black <b>'I UNDERSTAND THE MATH'</b> button at the bottom of the receipt to finish.",
         txt_done: "🎉 <b>Lesson Complete!</b><br>You experienced firsthand how poor market depth destroys your mathematical edge. Remember the Mantra: <i>'Spread is the tax on impatience; Slippage is the fine for ignoring Market Depth.'</i>"
     },
     es: {
@@ -395,11 +455,17 @@ const DICT = {
         mkt1_title: "Champions League (Alta Liq.)", mkt2_title: "Milan vs Roma (Baja Liq.)",
         ob_title: "Depth (Ladder)", ob_back: "Punta (Back)", ob_lay: "Banca (Lay)", ob_vol: "Vol. Disp.", ob_odds: "Cuota",
         app_title: "ZERO TO HERO", app_day: "Academy • Day 4",
+        btn_restart: "Reiniciar",
+        slip_explain_title: "¿Cómo se calcula el Slippage?",
+        slip_explain_ideal: "Retorno Teórico Ideal (si todo a @1.80):",
+        slip_explain_actual: "Retorno Real Obtenido (Escasa liquidez):",
+        slip_explain_diff: "Diferencia Perdida (Costo Slippage):",
+        restart_lesson_btn: "Reiniciar Lección 🔄",
         
         txt_intro: "Bienvenido a la Lección 4. La brecha entre un aficionado y un pro es la <b>gestión matemática de la ejecución</b>.<br><br>Tu objetivo hoy es entender el <b>Slippage</b> (el Asesino Silencioso). Empecemos: haz clic en el botón <b>5%</b> arriba para fijar tu Stake en €500 basado en tu Bankroll.",
         txt_step1: "Genial. Stake fijado en €500. Tu Riesgo (Liability) para una apuesta Back es exactamente igual al Stake (€500).<br><br>Ahora, selecciona el mercado de baja liquidez: <b>Milan vs Roma</b>.",
         txt_step2: "Bienvenido al mercado ilíquido. El Spread es amplio y los volúmenes escasos.<br><br>🎯 <b>EL EJERCICIO:</b> Envía tu orden de €500 haciendo clic en la cuota Azul (Back) a <b>@1.80</b>. Mira qué pasa cuando tu tamaño supera la liquidez.",
-        txt_step3: "🚨 <b>¡SLIPPAGE MATEMÁTICO!</b><br>Pediste €500, pero solo había €100 a 1.80. El motor del Exchange se vio obligado a 'comer' la liquidez subyacente a 1.78 para completar la orden.<br><br>Acabas de pagar el <b>Impuesto de Iliquidez</b>. Lee el reporte atentamente y haz clic en el botón para finalizar.",
+        txt_step3: "🚨 <b>¡SLIPPAGE MATEMÁTICO!</b><br>Pediste €500, pero solo había €100 a 1.80. El motor del Exchange se vio obligado a 'comer' la liquidez subyacente a 1.78 para completar la orden.<br><br>Acabas de pagar el <b>Impuesto de Iliquidez</b>. Revisa el informe en la derecha y haz clic en el botón negro <b>'ENTIENDO LAS MATEMÁTICAS'</b> abajo en el recibo para finalizar.",
         txt_done: "🎉 <b>¡Lección Completada!</b><br>Has visto de primera mano cómo la poca profundidad del mercado destruye tu ventaja. Recuerda el Mantra: <i>'El Spread es el impuesto a la impaciencia; el Slippage es la multa por ignorar el Market Depth.'</i>"
     },
     pt: {
@@ -412,11 +478,17 @@ const DICT = {
         mkt1_title: "Champions League (Alta Liq.)", mkt2_title: "Milan vs Roma (Baixa Liq.)",
         ob_title: "Depth (Ladder)", ob_back: "Punta (Back)", ob_lay: "Banca (Lay)", ob_vol: "Vol. Disp.", ob_odds: "Odd",
         app_title: "ZERO TO HERO", app_day: "Academy • Day 4",
+        btn_restart: "Reiniciar",
+        slip_explain_title: "Como é calculado o Slippage?",
+        slip_explain_ideal: "Retorno Teórico Ideal (se tudo a @1.80):",
+        slip_explain_actual: "Retorno Real Obtido (Falta de liquidez):",
+        slip_explain_diff: "Diferença Perdida (Custo Slippage):",
+        restart_lesson_btn: "Reiniciar Lição 🔄",
         
         txt_intro: "Bem-vindo à Lição 4. O fosso entre um amador e um profissional é a <b>gestão matemática da execução</b>.<br><br>O teu objetivo hoje é entender o <b>Slippage</b> (o Assassino Silencioso). Vamos começar: clica no botão <b>5%</b> acima para definir a tua Stake em €500 com base na tua Banca.",
         txt_step1: "Excelente. Stake definida em €500. A tua Liability (Risco) para uma aposta Back é exatamente igual à Stake (€500).<br><br>Agora, seleciona o mercado de baixa liquidez: <b>Milan vs Roma</b>.",
         txt_step2: "Bem-vindo ao mercado ilíquido. O Spread é largo e os volumes são fracos.<br><br>🎯 <b>O EXERCÍCIO:</b> Envia a tua ordem de €500 clicando na odd Azul (Back) a <b>@1.80</b>. Observa o que acontece quando o teu tamanho excede a liquidez.",
-        txt_step3: "🚨 <b>SLIPPAGE MATEMÁTICO!</b><br>Pediste €500, mas só havia €100 a 1.80. O motor do Exchange foi forçado a 'comer' a liquidez subjacente a 1.78 para completar a ordem.<br><br>Acabaste de pagar o <b>Imposto da Iliquidez</b>. Lê o relatório com atenção e clica no botão para terminar.",
+        txt_step3: "🚨 <b>SLIPPAGE MATEMÁTICO!</b><br>Pediste €500, mas só havia €100 a 1.80. O motor do Exchange foi forçado a 'comer' a liquidez subjacente a 1.78 para completar a ordem.<br><br>Acabaste de pagar o <b>Imposto da Iliquidez</b>. Analisa o relatório à direita e clica no botão preto <b>'COMPREENDI A MATEMÁTICA'</b> no final do recibo para terminar.",
         txt_done: "🎉 <b>Lição Concluída!</b><br>Sentiste na pele como a falta de profundidade do mercado destrói a tua vantagem. Lembra-te do Mantra: <i>'O Spread é o imposto sobre a impaciência; o Slippage é a multa por ignorar o Market Depth.'</i>"
     }
 };
@@ -593,11 +665,25 @@ const App = {
     
     updateTutorialText() {
         const txtBox = document.getElementById('mentor-txt');
-        if (AppState.tutorialStep === 0) txtBox.innerHTML = this.t('txt_intro');
-        else if (AppState.tutorialStep === 1) txtBox.innerHTML = this.t('txt_step1');
-        else if (AppState.tutorialStep === 2) txtBox.innerHTML = this.t('txt_step2');
-        else if (AppState.tutorialStep === 3) txtBox.innerHTML = this.t('txt_step3');
-        else if (AppState.tutorialStep === 4) txtBox.innerHTML = this.t('txt_done');
+        if (AppState.tutorialStep === 0) {
+            txtBox.innerHTML = this.t('txt_intro');
+        } else if (AppState.tutorialStep === 1) {
+            txtBox.innerHTML = this.t('txt_step1');
+        } else if (AppState.tutorialStep === 2) {
+            txtBox.innerHTML = this.t('txt_step2');
+        } else if (AppState.tutorialStep === 3) {
+            txtBox.innerHTML = this.t('txt_step3');
+        } else if (AppState.tutorialStep === 4) {
+            // Nel passo finale inseriamo un bel bottone verde all'interno del mentore per ricominciare la lezione
+            txtBox.innerHTML = this.t('txt_done') + `
+                <div class="mt-4 border-t border-slate-100 pt-4">
+                    <button onclick="App.restart()" class="w-full bg-[var(--zth-green)] text-white font-black px-4 py-3 rounded-xl hover:opacity-90 transition-all shadow-md text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                        <span>🔄</span> <span data-i18n="restart_lesson_btn">Ricomincia Lezione</span>
+                    </button>
+                </div>
+            `;
+            this.updateI18n();
+        }
     },
 
     updateTutorialUI() {
@@ -612,12 +698,14 @@ const App = {
             if (AppState.tutorialStep === (i-1)) {
                 stepEl.classList.add('opacity-100');
                 dotEl.classList.add('active');
+                dotEl.innerHTML = i;
             } else if (AppState.tutorialStep >= i) {
                 stepEl.classList.add('opacity-100');
                 dotEl.classList.add('done');
                 dotEl.innerHTML = '✓';
             } else {
                 stepEl.classList.add('opacity-40');
+                dotEl.innerHTML = i;
             }
         }
     },
@@ -642,6 +730,32 @@ const App = {
             document.getElementById('receipt-modal').classList.remove('active');
             this.updateTutorial();
         }
+    },
+
+    // --- RESTART SYSTEM ---
+    restart() {
+        AppState.tutorialStep = 0;
+        AppState.stakePct = 0;
+        AppState.stakeEur = 0;
+        AppState.currentMarket = 'high';
+        
+        // Chiude la modale se aperta
+        document.getElementById('receipt-modal').classList.remove('active');
+        
+        // Resetta la selezione degli stake pct
+        [1, 2, 5, 10].forEach(p => {
+            const btn = document.getElementById(`btn-pct-${p}`);
+            if(btn) {
+                btn.className = "flex-1 md:flex-none px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-100 transition-all font-mono-nums";
+                btn.classList.remove('pulse-active');
+            }
+        });
+
+        document.getElementById('val-stake').innerText = "€ 0.00";
+        document.getElementById('val-liab').innerText = "€ 0.00";
+
+        this.resetMarket('high');
+        this.updateTutorial();
     }
 };
 
@@ -692,8 +806,6 @@ const Trade = {
         let matchedDetails = [];
         
         // Match from top of book down to the requested level (index 0 to target)
-        // In a real exchange, Back orders eat Lay liquidity starting from best available (lowest odds).
-        // Since the prompt's math strictly says 100 @ 1.80 + 400 @ 1.78, we iterate down.
         for (let i = 0; i <= targetLevelIndex || remainingStake > 0; i++) {
             if (i >= book.length) break; // Out of liquidity
             
@@ -719,7 +831,7 @@ const Trade = {
         const actualStakeMatched = requestedStake - remainingStake;
         if (actualStakeMatched === 0) return;
 
-        // --- MATH: ZERO HALLUCINATIONS (Exact as prompt formulas) ---
+        // --- MATH: ZERO HALLUCINATIONS ---
         const avgOdds = totalReturnIfWin / actualStakeMatched;
         const expectedReturn = actualStakeMatched * targetOdds;
         const slippage = expectedReturn - totalReturnIfWin; // Cost of Inefficiency
@@ -728,7 +840,7 @@ const Trade = {
         const commission = grossProfit > 0 ? grossProfit * 0.05 : 0;
         const netProfit = grossProfit - commission;
 
-        this.showReceipt(side, requestedStake, targetOdds, avgOdds, matchedDetails, slippage, grossProfit, commission, netProfit);
+        this.showReceipt(side, requestedStake, targetOdds, avgOdds, matchedDetails, slippage, grossProfit, commission, netProfit, expectedReturn, totalReturnIfWin);
         App.renderBook();
         
         if (AppState.tutorialStep === 2) {
@@ -737,7 +849,7 @@ const Trade = {
         }
     },
 
-    showReceipt(side, reqStake, reqOdds, avgOdds, details, slippage, gross, comm, net) {
+    showReceipt(side, reqStake, reqOdds, avgOdds, details, slippage, gross, comm, net, expectedReturn, totalReturnIfWin) {
         document.getElementById('r-req-vol').innerText = `€${reqStake.toFixed(2)}`;
         document.getElementById('r-req-odds').innerText = reqOdds.toFixed(2);
         
@@ -774,9 +886,15 @@ const Trade = {
             slipEl.innerText = "0.00";
         }
 
+        // AGGIORNA BOX DI SPIEGAZIONE DETTAGLIATA DELLO SLIPPAGE
+        document.getElementById('r-exp-ideal').innerText = `€ ${expectedReturn.toFixed(2)}`;
+        document.getElementById('r-exp-real').innerText = `€ ${totalReturnIfWin.toFixed(2)}`;
+        document.getElementById('r-exp-diff').innerText = `- € ${slippage.toFixed(2)}`;
+
         document.getElementById('r-comm').innerText = `- € ${comm.toFixed(2)}`;
         document.getElementById('r-net').innerText = `€ ${net.toFixed(2)}`;
 
+        // Mostra la modale
         document.getElementById('receipt-modal').classList.add('active');
     }
 };
