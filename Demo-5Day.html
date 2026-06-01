@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#f1f5f9">
+    <meta name="description" content="Betting Exchange Simulator - Cash Out vs Green Up">
+    
+    <title>Zero To Hero | Masterclass: Hedging</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Roboto+Mono:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root { 
+            --bf-blue: #13aae3; 
+            --bf-blue-bg: #e6f5fc;
+            --bf-pink: #f29bb4; 
+            --bf-pink-bg: #fdf0f4;
+            --zth-green: #00a843;
+            --bg-light: #f1f5f9;
+            --panel-bg: #ffffff;
+            --text-main: #0f172a;
+            --broker-yellow: #facc15;
+        }
+        
+        /* Reset & Base Setup */
+        html, body {
+            background-color: var(--bg-light); 
+            color: var(--text-main); 
+            margin: 0; padding: 0; 
+            font-family: 'Inter', system-ui, sans-serif; 
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw; height: 100dvh;
+            overflow: hidden;
+            overscroll-behavior: none;
+        }
+        
+        body { 
+            display: flex; flex-direction: column;
+            opacity: 0; transition: opacity 0.4s ease;
+        }
+        body.ready { opacity: 1; }
+        
+        .font-mono-nums { font-family: 'Roboto Mono', monospace; font-variant-numeric: tabular-nums; }
+        
+        /* Layout Structure */
+        #app-wrapper {
+            display: flex; flex-direction: column; 
+            width: 100%; height: 100%; max-width: 1536px; margin: 0 auto;
+        }
+        
+        /* Desktop Layout */
+        @media (min-width: 1024px) {
+            body { padding: 2dvh 2vw; justify-content: center; align-items: center; background-image: radial-gradient(circle at top right, #e2e8f0 0%, #f1f5f9 100%);}
+            #app-wrapper { flex-direction: row; gap: 20px; height: calc(100dvh - 4dvh); max-height: 950px; }
+            .panel { background: var(--panel-bg); border-radius: 24px; box-shadow: 0 20px 40px -15px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.05); overflow: hidden; display: flex; flex-direction: column; min-height: 0;}
+            #left-pane { width: 38%; }
+            #right-pane { width: 62%; border-left: 1px solid #e2e8f0; }
+        }
+        
+        /* Mobile Layout */
+        @media (max-width: 1023px) {
+            .panel { background: var(--panel-bg); display: flex; flex-direction: column; }
+            #left-pane { 
+                flex: 0 0 auto; 
+                max-height: 38%; 
+                z-index: 10; 
+                border-bottom: 1px solid #e2e8f0; 
+                box-shadow: 0 4px 12px -4px rgba(0,0,0,0.08);
+                display: flex; flex-direction: column; min-height: 0;
+            }
+            #mentor-scroll-area { overflow-y: auto; flex: 1 1 auto; min-height: 0; padding: 12px; }
+            #right-pane { flex: 1 1 0; min-height: 0; background: #f8fafc; }
+            #trading-dashboard { overflow-y: auto; flex: 1 1 auto; min-height: 0; padding: 12px; padding-bottom: 24px; display: flex; flex-direction: column; gap: 12px; }
+            
+            /* Native Bottom Sheet Style for Receipt */
+            #receipt-modal { align-items: flex-end; padding: 0; }
+            #receipt-modal .modal-content {
+                border-radius: 24px 24px 0 0; margin-bottom: 0;
+                transform: translateY(100%); max-height: 92dvh;
+            }
+            #receipt-modal.active .modal-content { transform: translateY(0); }
+        }
+
+        /* Animations */
+        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(0, 168, 67, 0.5); } 100% { box-shadow: 0 0 0 10px rgba(0, 168, 67, 0); } }
+        .pulse-active { animation: pulse-ring 1.5s infinite cubic-bezier(0.215, 0.61, 0.355, 1); border-color: var(--zth-green) !important; background-color: #f0fdf4 !important; }
+        
+        @keyframes pulse-yellow { 0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.6); } 100% { box-shadow: 0 0 0 15px rgba(250, 204, 21, 0); } }
+        .pulse-cashout { animation: pulse-yellow 1.5s infinite; }
+
+        @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0 rgba(19, 170, 227, 0.6); } 100% { box-shadow: 0 0 0 15px rgba(19, 170, 227, 0); } }
+        .pulse-goal { animation: pulse-blue 1.5s infinite; }
+
+        @keyframes slideInDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .slide-in { animation: slideInDown 0.4s ease-out forwards; }
+
+        /* Custom Elements */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        .modal-overlay { transition: opacity 0.3s ease; backdrop-filter: blur(8px); background-color: rgba(15, 23, 42, 0.7); }
+        .modal-content { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); width: 100%; display: flex; flex-direction: column;}
+        @media (min-width: 1024px) {
+            .modal-content { transform: scale(0.95) translateY(10px); max-height: 90dvh; }
+            .active .modal-content { transform: scale(1) translateY(0); }
+        }
+        .modal-body { overflow-y: auto; flex-grow: 1; overscroll-behavior: contain; }
+        
+        /* HD Flags */
+        .flag-hd { width: 24px; height: 16px; object-fit: cover; border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.25); display: block;}
+        .lang-btn { display: flex; align-items: center; justify-content: center; padding: 4px; border-radius: 6px; border: 2px solid transparent; opacity: 0.5; transition: all 0.2s; cursor: pointer; background: transparent;}
+        .lang-btn:hover { opacity: 0.9; background: rgba(0,0,0,0.05); }
+        .lang-btn.active { opacity: 1; border-color: #cbd5e1; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transform: scale(1.05);}
+        
+        .step-dot { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; background: #e2e8f0; color: #64748b; transition: all 0.3s; flex-shrink: 0; }
+        @media (min-width: 768px) { .step-dot { width: 22px; height: 22px; font-size: 11px; } }
+        .step-dot.active { background: var(--zth-green); color: white; box-shadow: 0 0 0 4px rgba(0,168,67,0.2); }
+        .step-dot.done { background: #0f172a; color: white; }
+
+        .odds-box { transition: all 0.3s; }
+        .odds-changed { background-color: #fef08a; transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+<!-- RECEIPT MODAL -->
+<div id="receipt-modal" class="modal-overlay fixed inset-0 z-[999999] opacity-0 pointer-events-none flex items-center justify-center p-3 md:p-4">
+    <div class="modal-content bg-white border border-slate-200 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+        
+        <div class="lg:hidden w-full flex justify-center pt-2 pb-1 bg-slate-50 shrink-0">
+            <div class="w-10 h-1 bg-slate-300 rounded-full"></div>
+        </div>
+        
+        <div class="bg-slate-50 p-3 md:p-5 border-b border-slate-200 flex justify-between items-center shrink-0">
+            <h3 class="text-slate-900 font-black text-base md:text-xl flex items-center gap-2">
+                🧾 <span data-i18n="rec_title">Trade Settled</span>
+            </h3>
+            <div id="r-badge" class="px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest bg-slate-200 text-slate-700 border border-slate-300">Exit Type</div>
+        </div>
+        
+        <div class="modal-body p-3 md:p-6 flex flex-col gap-3 md:gap-4 text-slate-700 text-sm">
+            
+            <div class="flex justify-between items-end border-b border-slate-100 pb-3">
+                <div class="flex flex-col">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1" data-i18n="rec_hedge">Hedge Order</span>
+                    <span class="text-slate-800 text-sm md:text-lg"><span data-i18n="act_lay">LAY</span>: <span id="r-hedge-stake" class="font-black text-slate-900">€0</span> <span class="text-slate-400 font-normal">@</span> <span id="r-hedge-odds" class="font-black text-pink-600">0.00</span></span>
+                </div>
+                <div class="text-right flex flex-col">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1" data-i18n="rec_type">Method</span>
+                    <span id="r-method" class="font-black px-2 py-1 rounded text-xs shadow-sm border bg-slate-100">MANUAL</span>
+                </div>
+            </div>
+
+            <div id="r-math-box" class="bg-white p-3 md:p-4 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden">
+                <div class="absolute right-0 top-0 text-[80px] opacity-[0.03] pointer-events-none">🧮</div>
+                
+                <div class="flex justify-between items-center mb-2 text-sm text-slate-600">
+                    <span class="font-bold text-[11px] md:text-sm" data-i18n="rec_gross">Gross Profit Locked:</span>
+                    <span id="r-gross" class="text-base md:text-lg font-black text-slate-900 font-mono-nums bg-slate-100 px-2 py-0.5 rounded">€ 0.00</span>
+                </div>
+
+                <div id="r-tax-container" class="flex justify-between items-center border-t border-slate-200 pt-2 mb-2 mt-2 px-3 py-2 rounded-lg">
+                    <span id="r-tax-label" class="font-bold text-[11px] md:text-[12px] flex items-center gap-1" data-i18n="rec_tax_label">Convenience Tax:</span>
+                    <span id="r-tax-val" class="text-sm md:text-base font-black font-mono-nums">- € 0.00</span>
+                </div>
+
+                <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 text-[10px] md:text-[11px] leading-tight">
+                    <h4 class="font-black text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1" data-i18n="rec_calc_title">Calculations</h4>
+                    <div class="flex flex-col gap-1.5 font-mono-nums text-slate-600">
+                        <div class="flex justify-between">
+                            <span data-i18n="rec_ideal">Ideal Green Up (Gross):</span>
+                            <span class="font-bold">€ 1000.00</span>
+                        </div>
+                        <div class="flex justify-between text-slate-400 text-[8px] md:text-[9px] border-b border-dashed border-slate-200 pb-1.5">
+                            <span data-i18n="rec_formula">(1000 × 3.00) / 1.50 = €2000 Lay Stake</span>
+                        </div>
+                        <div class="flex justify-between pt-1">
+                            <span data-i18n="rec_achieved">Actual Gross Achieved:</span>
+                            <span id="r-achieved" class="font-bold text-slate-900">€ 0.00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center text-[10px] md:text-xs text-slate-500 font-medium pt-2">
+                    <span data-i18n="rec_comm">Exchange Comm. (5%):</span>
+                    <span id="r-comm" class="font-mono-nums">- € 0.00</span>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-end mt-1 px-1">
+                <span class="text-sm md:text-base font-black text-slate-800 uppercase tracking-widest leading-tight"><span data-i18n="rec_net">Net Profit</span><br><span class="text-[9px] md:text-[10px] normal-case font-semibold text-slate-400" data-i18n="rec_net_sub">Added to Bankroll</span></span>
+                <span id="r-net" class="text-2xl md:text-3xl font-black text-[var(--zth-green)] font-mono-nums tracking-tighter">€ 0.00</span>
+            </div>
+        </div>
+        
+        <div class="p-3 md:p-5 bg-slate-50 border-t border-slate-200 shrink-0">
+            <button onclick="App.closeReceipt()" class="w-full bg-slate-900 text-white font-black px-4 py-3 md:py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-md text-xs md:text-sm uppercase tracking-wider" id="btn-cont-lesson" data-i18n="rec_btn_cont">Continue Lesson</button>
+        </div>
+    </div>
+</div>
+
+<div id="app-wrapper">
+    
+    <!-- LEFT PANEL: MENTOR & TUTORIAL -->
+    <div id="left-pane" class="panel bg-white">
+        
+        <header class="bg-white p-2 md:p-4 border-b border-slate-200 flex justify-between items-center shrink-0 shadow-sm z-20 relative">
+            <div class="flex items-center gap-2 md:gap-3">
+                <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-slate-900 flex items-center justify-center font-black text-base md:text-xl text-white shadow-sm">Z</div>
+                <div class="flex flex-col">
+                    <span class="font-black text-[11px] md:text-[15px] tracking-tight leading-none text-slate-900" data-i18n="app_title">ZERO TO HERO</span>
+                    <span class="text-[7px] md:text-[9px] font-bold leading-none uppercase mt-1 text-slate-500 tracking-widest" data-i18n="app_day">Day 5/30 • Hedging</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-1 md:gap-2">
+                <button onclick="App.restart()" title="Restart" class="flex items-center justify-center w-7 h-7 md:w-8 md:h-8 bg-slate-100 hover:bg-red-50 border border-slate-200 hover:border-red-200 rounded-lg text-slate-500 hover:text-red-600 transition-all shadow-sm">
+                    <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                </button>
+                <div class="flex gap-0.5 bg-slate-100/80 p-1 rounded-lg border border-slate-200">
+                    <button class="lang-btn" onclick="App.setLang('en')" id="lang-en"><img src="https://flagcdn.com/w40/gb.png" class="flag-hd" alt="EN"></button>
+                    <button class="lang-btn" onclick="App.setLang('es')" id="lang-es"><img src="https://flagcdn.com/w40/es.png" class="flag-hd" alt="ES"></button>
+                    <button class="lang-btn" onclick="App.setLang('pt')" id="lang-pt"><img src="https://flagcdn.com/w40/pt.png" class="flag-hd" alt="PT"></button>
+                    <button class="lang-btn active" onclick="App.setLang('it')" id="lang-it"><img src="https://flagcdn.com/w40/it.png" class="flag-hd" alt="IT"></button>
+                </div>
+            </div>
+        </header>
+
+        <div id="mentor-scroll-area" class="flex-grow flex flex-col relative bg-slate-50/50">
+            <div class="absolute right-0 top-0 text-[60px] md:text-[80px] opacity-[0.02] pointer-events-none">👨‍🏫</div>
+            
+            <div class="flex items-center gap-2 md:gap-3 mb-2 md:mb-5">
+                <div class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-sm text-lg md:text-2xl z-10">👨‍🏫</div>
+                <div class="flex-grow flex justify-between items-center">
+                    <div>
+                        <h3 class="text-[9px] md:text-xs font-black text-slate-800 uppercase tracking-widest" data-i18n="mentor_name">The Mentor</h3>
+                        <p class="text-[8px] md:text-[11px] text-slate-500 font-semibold" data-i18n="mentor_role">Interactive Tutorial</p>
+                    </div>
+                    <div id="mobile-step-badge" class="lg:hidden bg-blue-100 text-blue-700 font-black text-[8px] px-2 py-0.5 rounded uppercase tracking-wider shadow-sm">STEP 1/4</div>
+                </div>
+            </div>
+            
+            <div class="bg-white border border-slate-200 rounded-xl p-3 md:p-5 text-[11px] md:text-sm text-slate-700 leading-relaxed shadow-sm mb-2 md:mb-6 relative shrink-0">
+                <div class="absolute -left-1.5 top-3 md:top-4 w-3 h-3 bg-white border-l border-t border-slate-200 rotate-[-45deg]"></div>
+                <div id="mentor-txt" class="font-medium">Loading lesson...</div>
+            </div>
+
+            <!-- TUTORIAL STEPS (Hidden on Mobile) -->
+            <div class="hidden lg:flex flex-col gap-3 md:gap-4 pb-2 mt-2">
+                <span class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-200 pb-2" data-i18n="steps_title">Lesson Checklist</span>
+                
+                <div class="flex items-center gap-3 opacity-50 transition-opacity" id="step-1">
+                    <div class="step-dot" id="dot-1">1</div>
+                    <span class="text-[12px] md:text-sm font-bold text-slate-700" data-i18n="step_1">Review Open Position</span>
+                </div>
+                
+                <div class="flex items-center gap-3 opacity-50 transition-opacity" id="step-2">
+                    <div class="step-dot" id="dot-2">2</div>
+                    <span class="text-[12px] md:text-sm font-bold text-slate-700" data-i18n="step_2">Simulate Goal (Market Move)</span>
+                </div>
+                
+                <div class="flex items-center gap-3 opacity-50 transition-opacity" id="step-3">
+                    <div class="step-dot" id="dot-3">3</div>
+                    <span class="text-[12px] md:text-sm font-bold text-slate-700" data-i18n="step_3">Test the "Cash Out" Trap</span>
+                </div>
+                
+                <div class="flex items-center gap-3 opacity-50 transition-opacity" id="step-4">
+                    <div class="step-dot" id="dot-4">4</div>
+                    <span class="text-[12px] md:text-sm font-bold text-slate-700" data-i18n="step_4">Execute Perfect Green Up</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL: TRADING DASHBOARD -->
+    <div id="right-pane" class="panel bg-slate-100/50 relative flex flex-col border-t lg:border-t-0 lg:border-l border-slate-200">
+        
+        <!-- HEADER (BANKROLL) -->
+        <div class="bg-white flex justify-between items-center px-3 py-2 md:px-4 md:py-4 border-b border-slate-200 shrink-0 shadow-sm z-10">
+            <div class="flex flex-col">
+                <h2 class="font-black text-slate-900 tracking-tight text-[12px] md:text-base leading-tight" data-i18n="dash_title">Trading Dashboard</h2>
+                <p class="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5" data-i18n="dash_sub">Real Madrid vs Barcelona</p>
+            </div>
+            <div class="flex flex-col items-end bg-slate-50 px-2 py-1 md:px-3 md:py-1.5 rounded-lg border border-slate-200">
+                <span class="text-[7px] md:text-[9px] font-black text-slate-400 uppercase tracking-widest" data-i18n="dash_bankroll">Bankroll</span>
+                <span id="val-bankroll" class="font-mono-nums font-black text-xs md:text-lg text-slate-800 tracking-tight">€10,000</span>
+            </div>
+        </div>
+
+        <div id="trading-dashboard">
+            
+            <!-- MODULE 1: OPEN POSITION -->
+            <div class="bg-white rounded-xl border border-green-200 shadow-sm overflow-hidden relative shrink-0">
+                <div class="absolute top-0 left-0 w-1 md:w-1.5 h-full bg-[var(--zth-green)]"></div>
+                <div class="px-3 py-1.5 md:px-4 md:py-2 bg-green-50/50 border-b border-green-100 flex justify-between items-center">
+                    <span class="text-[9px] md:text-[10px] font-black text-green-700 uppercase tracking-widest flex items-center gap-1.5">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span data-i18n="pos_active">Active Position</span>
+                    </span>
+                    <span class="text-[8px] md:text-[10px] font-bold text-slate-500" data-i18n="pos_market">Match Odds</span>
+                </div>
+                <div class="p-3 md:p-4 flex flex-col md:flex-row justify-between gap-3 md:gap-4">
+                    <div>
+                        <h3 class="font-black text-sm md:text-lg text-slate-900 leading-tight" data-i18n="pos_team">Real Madrid</h3>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="px-1.5 py-0.5 bg-[var(--bf-blue-bg)] text-[#0369a1] text-[9px] md:text-[10px] font-black rounded border border-blue-200 uppercase" data-i18n="act_back">BACK</span>
+                            <span class="font-mono-nums font-bold text-[11px] md:text-sm text-slate-700" data-i18n="pos_stake">Stake: €1000 @ 3.00</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 md:gap-6 bg-slate-50 p-2 md:p-3 rounded-lg border border-slate-100">
+                        <div class="flex flex-col">
+                            <span class="text-[8px] md:text-[9px] text-slate-400 font-bold uppercase tracking-wider" data-i18n="pos_liab">Liability</span>
+                            <span class="font-mono-nums font-black text-red-500 text-xs md:text-base">-€1000</span>
+                        </div>
+                        <div class="w-px bg-slate-200"></div>
+                        <div class="flex flex-col">
+                            <span class="text-[8px] md:text-[9px] text-slate-400 font-bold uppercase tracking-wider" data-i18n="pos_pot">Pot. Profit</span>
+                            <span class="font-mono-nums font-black text-[var(--zth-green)] text-xs md:text-base">+€2000</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODULE 2: LIVE MARKET -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col shrink-0">
+                <div class="px-3 py-1.5 md:px-4 md:py-2 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                    <span class="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> <span data-i18n="mkt_live">Live Market</span>
+                    </span>
+                    <span id="mkt-status" class="text-[9px] md:text-[10px] font-bold text-slate-500" data-i18n="mkt_score_0">0-0 (30')</span>
+                </div>
+                
+                <div class="p-3 md:p-4 flex flex-col items-center justify-center gap-3 md:gap-4 py-4 md:py-6">
+                    
+                    <div id="action-trigger-zone" class="w-full flex justify-center mb-1 md:mb-2 transition-all">
+                        <button id="btn-goal" onclick="Trade.simulateGoal()" class="bg-[#0369a1] hover:bg-[#0284c7] text-white font-black px-4 py-2.5 md:px-6 md:py-3 rounded-xl shadow-lg transform transition-all hover:scale-105 active:scale-95 text-xs md:text-sm uppercase tracking-widest flex items-center gap-2 pulse-goal">
+                            ⚽ <span data-i18n="btn_goal">Real Madrid Scores!</span>
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-3 md:gap-4 w-full justify-center">
+                        <div class="flex flex-col items-center w-20 md:w-32">
+                            <span class="text-[9px] md:text-[10px] font-bold text-[#0369a1] uppercase mb-1" data-i18n="ob_back">Back</span>
+                            <div id="odds-back" class="odds-box w-full bg-[var(--bf-blue-bg)] border border-blue-200 rounded-lg py-2 md:py-3 flex justify-center items-center font-mono-nums font-black text-xl md:text-3xl text-slate-800 shadow-sm">
+                                3.00
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col items-center w-20 md:w-32">
+                            <span class="text-[9px] md:text-[10px] font-bold text-[#be123c] uppercase mb-1" data-i18n="ob_lay">Lay</span>
+                            <div id="odds-lay" class="odds-box w-full bg-[var(--bf-pink-bg)] border border-pink-200 rounded-lg py-2 md:py-3 flex justify-center items-center font-mono-nums font-black text-xl md:text-3xl text-slate-800 shadow-sm">
+                                3.05
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODULE 3: HEDGING OPTIONS -->
+            <div id="hedging-zone" class="hidden flex-col md:flex-row gap-3 md:gap-4 mt-1 shrink-0">
+                
+                <div class="flex-1 bg-white rounded-xl border-2 border-yellow-300 shadow-md p-3 md:p-4 flex flex-col justify-between slide-in" style="animation-delay: 0.1s;">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1.5 md:mb-2">
+                            <span class="text-base md:text-xl">⚠️</span>
+                            <h4 class="font-black text-slate-800 text-[11px] md:text-sm uppercase tracking-widest" data-i18n="hedge_trap_title">The Broker's Trap</h4>
+                        </div>
+                        <p class="text-[10px] md:text-[11px] text-slate-500 mb-3 md:mb-4 leading-relaxed" data-i18n="hedge_trap_desc">Automated 1-click exit. Fast, but crosses the spread to guarantee execution, charging a hidden tax.</p>
+                    </div>
+                    <button id="btn-cashout" onclick="Trade.executeCashOut()" class="w-full bg-[var(--broker-yellow)] hover:bg-yellow-500 text-slate-900 font-black px-3 py-3 md:px-4 md:py-4 rounded-xl shadow-md transition-all text-xs md:text-sm uppercase tracking-wider flex flex-col items-center justify-center pulse-cashout border border-yellow-500">
+                        <span data-i18n="btn_cashout">CASH OUT</span>
+                        <span class="font-mono-nums text-base md:text-lg mt-0.5">€960.00</span>
+                    </button>
+                </div>
+
+                <div class="flex-1 bg-slate-900 rounded-xl border border-slate-700 shadow-md p-3 md:p-4 flex flex-col justify-between text-white slide-in opacity-50 transition-opacity" id="green-up-card" style="animation-delay: 0.2s;">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1.5 md:mb-2">
+                            <span class="text-base md:text-xl">🧮</span>
+                            <h4 class="font-black text-white text-[11px] md:text-sm uppercase tracking-widest" data-i18n="hedge_pro_title">The Pro Green Up</h4>
+                        </div>
+                        <p class="text-[10px] md:text-[11px] text-slate-400 mb-2 md:mb-3 leading-relaxed" data-i18n="hedge_pro_desc">Manual exact calculation. You dictate the price and keep 100% of the equity.</p>
+                        
+                        <div class="bg-slate-800 p-2 md:p-2.5 rounded-lg border border-slate-700 mb-3 md:mb-4 font-mono-nums text-[9px] md:text-[10px]">
+                            <div class="flex justify-between text-slate-400 mb-1">
+                                <span data-i18n="form_formula">Formula: (Stake × Odds) / Lay</span>
+                                <span>(1000 × 3) / 1.50</span>
+                            </div>
+                            <div class="flex justify-between items-center border-t border-slate-700 pt-1.5 mt-1">
+                                <span class="font-bold text-slate-300" data-i18n="form_req">Required Lay Stake:</span>
+                                <span class="font-black text-[var(--bf-pink)] text-xs md:text-sm">€2000</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="btn-greenup" onclick="Trade.executeGreenUp()" class="w-full bg-slate-800 text-slate-500 cursor-not-allowed font-black px-2 py-2.5 md:px-4 md:py-3.5 rounded-xl transition-all text-[10px] md:text-xs uppercase tracking-wider flex items-center justify-center gap-2 border border-slate-700">
+                        <span class="px-1.5 py-0.5 bg-[var(--bf-pink)] text-[#be123c] text-[9px] md:text-[10px] rounded" data-i18n="act_lay">LAY</span> 
+                        <span data-i18n="btn_lay_gu">€2000 @ 1.50</span>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+// --- DICTIONARY ---
+const DICT = {
+    en: {
+        app_title: "ZERO TO HERO", app_day: "Day 5/30 • Hedging",
+        dash_sub: "Real Madrid vs Barcelona", pos_market: "Match Odds", pos_team: "Real Madrid", pos_stake: "Stake: €1000 @ 3.00",
+        mentor_name: "The Mentor", mentor_role: "Interactive Tutorial", steps_title: "Lesson Checklist",
+        step_1: "Review Open Position", step_2: "Simulate Market Move", step_3: "Test the 'Cash Out' Trap", step_4: "Execute Perfect Green Up",
+        dash_title: "Trading Dashboard", dash_bankroll: "Bankroll",
+        pos_active: "Active Position", act_back: "BACK", act_lay: "LAY", pos_liab: "Liability", pos_pot: "Pot. Profit",
+        mkt_live: "Live Market", ob_back: "Back", ob_lay: "Lay", btn_goal: "Real Madrid Scores!",
+        mkt_score_0: "0-0 (30')", mkt_score_1: "1-0 (31')", mkt_ft: "FT 1-0", trade_success: "TRADE COMPLETED SUCCESSFULLY",
+        hedge_trap_title: "The Broker's Trap", hedge_trap_desc: "Automated 1-click exit. Fast, but crosses the spread to guarantee execution, charging a hidden tax.", btn_cashout: "CASH OUT",
+        hedge_pro_title: "The Pro Green Up", hedge_pro_desc: "Manual exact calculation. You dictate the price and keep 100% of the equity.", form_formula: "Formula: (Stake × Odds) / Lay", form_req: "Required Lay Stake:", btn_lay_gu: "€2000 @ 1.50",
+        rec_title: "Trade Settled", rec_hedge: "Hedge Order", rec_type: "Method", rec_gross: "Gross Profit Locked:",
+        rec_calc_title: "Calculations", rec_ideal: "Ideal Green Up (Gross):", rec_formula: "(1000 × 3.00) / 1.50 = €2000 Lay Stake", rec_achieved: "Actual Gross Achieved:",
+        rec_comm: "Exchange Comm. (5%):", rec_net: "Net Profit", rec_net_sub: "Added to Bankroll", rec_btn_cont: "Continue Lesson", rec_btn_finish: "Restart Simulation",
+        rec_method_man: "MANUAL", rec_method_auto: "AUTO (ALGO)", rec_sweep: "Market Sweep", rec_unknown: "Unknown", rec_tax_label: "Convenience Tax:",
+        
+        txt_step1: "Welcome to Day 5. The gap between amateur and pro is <b>how you exit</b>.<br><br>Look below: You backed Real Madrid pre-match. €1000 @ 3.00. The match has started.<br><br>Click the blue <b>'Real Madrid Scores'</b> button to see the market react.",
+        txt_step2: "⚽ <b>GOAL!</b> The odds crashed from 3.00 to 1.50.<br><br>You are in massive profit. The broker knows you are emotional and offers you a shiny yellow button. <br><br>Click <b>CASH OUT</b> to see what they are offering.",
+        txt_step3: "🚨 <b>THE CONVENIENCE TAX!</b><br>You just paid the broker €40 to do the math for you. They executed your exit at a worse price than the visible 1.50 to guarantee a fill.<br><br>Amateurs click buttons. Pros use math. Let's rewind. Click <b>Continue Lesson</b>.",
+        txt_step4: "We rewound the market.<br><br>Now look at the dark <b>Green Up</b> panel. The formula is: <i>(Initial Stake x Initial Odds) / Current Lay Odds</i>. <br>Our exact stake is €2000.<br><br>Click the <b>LAY €2000 @ 1.50</b> button.",
+        txt_done: "🎉 <b>Masterclass Complete!</b><br><br>By manually calculating your Green Up and placing a limit order, you retained 100% of your equity (€1000 gross).<br><br><i>'The Cash Out button is a tax on mathematical ignorance; Green Up is the precision tool of the trader.'</i>"
+    },
+    es: {
+        app_title: "ZERO TO HERO", app_day: "Día 5/30 • Hedging",
+        dash_sub: "Real Madrid vs Barcelona", pos_market: "Cuotas de Partido", pos_team: "Real Madrid", pos_stake: "Stake: €1000 @ 3.00",
+        mentor_name: "El Maestro", mentor_role: "Tutorial Interactivo", steps_title: "Tareas de la Lección",
+        step_1: "Analiza Posición Abierta", step_2: "Simula Evento (Gol)", step_3: "Prueba la trampa 'Cash Out'", step_4: "Ejecuta Green Up Perfecto",
+        dash_title: "Dashboard de Trading", dash_bankroll: "Bankroll",
+        pos_active: "Posición Activa", act_back: "PUNTA", act_lay: "BANCA", pos_liab: "Riesgo", pos_pot: "Beneficio Pot.",
+        mkt_live: "Mercado en Vivo", ob_back: "Punta", ob_lay: "Banca", btn_goal: "¡Gol Real Madrid!",
+        mkt_score_0: "0-0 (30')", mkt_score_1: "1-0 (31')", mkt_ft: "FIN 1-0", trade_success: "TRADE COMPLETADO CON ÉXITO",
+        hedge_trap_title: "La Trampa del Broker", hedge_trap_desc: "Salida automática. Rápida, pero cruza el spread para garantizar ejecución, cobrando un impuesto oculto.", btn_cashout: "CASH OUT",
+        hedge_pro_title: "El Green Up Pro", hedge_pro_desc: "Cálculo exacto manual. Tú dictas el precio y mantienes el 100% del equity.", form_formula: "Fórmula: (Stake × Cuota) / Lay", form_req: "Stake Banca Requerido:", btn_lay_gu: "€2000 @ 1.50",
+        rec_title: "Trade Concluido", rec_hedge: "Orden de Cobertura", rec_type: "Método", rec_gross: "Beneficio Bruto Asegurado:",
+        rec_calc_title: "Cálculos", rec_ideal: "Green Up Ideal (Bruto):", rec_formula: "(1000 × 3.00) / 1.50 = €2000 Stake Banca", rec_achieved: "Bruto Real Obtenido:",
+        rec_comm: "Comisiones Ex. (5%):", rec_net: "Beneficio Neto", rec_net_sub: "Añadido al Bankroll", rec_btn_cont: "Continuar Lección", rec_btn_finish: "Reiniciar Simulación",
+        rec_method_man: "MANUAL", rec_method_auto: "AUTO (ALGO)", rec_sweep: "Market Sweep", rec_unknown: "Desconocido", rec_tax_label: "Impuesto de Comodidad:",
+        
+        txt_step1: "Bienvenido al Día 5. La diferencia entre novato y pro es <b>cómo gestionas la salida</b>.<br><br>Mira abajo: Apostaste al Real Madrid pre-match. €1000 @ 3.00. El partido ha empezado.<br><br>Clica el botón azul <b>'¡Gol Real Madrid!'</b> para simular el evento.",
+        txt_step2: "⚽ <b>¡GOL!</b> La cuota se desplomó de 3.00 a 1.50.<br><br>Estás en gran beneficio. El broker sabe que eres emocional y te ofrece un botón amarillo. <br><br>Clica <b>CASH OUT</b> para ver qué ofrecen.",
+        txt_step3: "🚨 <b>¡EL IMPUESTO A LA COMODIDAD!</b><br>Acabas de pagar €40 al broker para que haga los cálculos. Ejecutaron la salida a un peor precio para garantizar emparejamiento.<br><br>Los novatos clican botones. Los pros usan matemáticas. Rebobinemos. Clica <b>Continuar Lección</b>.",
+        txt_step4: "Hemos rebobinado el mercado.<br><br>Ahora mira el panel oscuro <b>Green Up</b>. La fórmula es: <i>(Stake Inicial x Cuota Inicial) / Cuota Lay Actual</i>. <br>Nuestro stake exacto es €2000.<br><br>Clica el botón <b>BANCA €2000 @ 1.50</b>.",
+        txt_done: "🎉 <b>¡Masterclass Completada!</b><br><br>Al calcular manualmente el Green Up, mantuviste el 100% de tu equity (€1000 brutos).<br><br><i>'El botón Cash Out es un impuesto a la ignorancia matemática; el Green Up es la herramienta de precisión del trader.'</i>"
+    },
+    pt: {
+        app_title: "ZERO TO HERO", app_day: "Dia 5/30 • Hedging",
+        dash_sub: "Real Madrid vs Barcelona", pos_market: "Probabilidades", pos_team: "Real Madrid", pos_stake: "Stake: €1000 @ 3.00",
+        mentor_name: "O Mestre", mentor_role: "Tutorial Interativo", steps_title: "Tarefas da Lição",
+        step_1: "Analisa Posição Aberta", step_2: "Simula Evento (Golo)", step_3: "Testa a armadilha 'Cash Out'", step_4: "Executa Green Up Perfeito",
+        dash_title: "Dashboard de Trading", dash_bankroll: "Banca",
+        pos_active: "Posição Ativa", act_back: "PUNTA", act_lay: "BANCA", pos_liab: "Risco", pos_pot: "Lucro Pot.",
+        mkt_live: "Mercado em Direto", ob_back: "Punta", ob_lay: "Banca", btn_goal: "Golo Real Madrid!",
+        mkt_score_0: "0-0 (30')", mkt_score_1: "1-0 (31')", mkt_ft: "TR 1-0", trade_success: "TRADE CONCLUÍDO COM SUCESSO",
+        hedge_trap_title: "A Armadilha do Broker", hedge_trap_desc: "Saída automática. Rápida, mas cruza o spread para garantir execução, cobrando um imposto oculto.", btn_cashout: "CASH OUT",
+        hedge_pro_title: "O Green Up Pro", hedge_pro_desc: "Cálculo exato manual. Tu ditas o preço e manténs 100% do equity.", form_formula: "Fórmula: (Stake × Odd) / Lay", form_req: "Stake Banca Exigida:", btn_lay_gu: "€2000 @ 1.50",
+        rec_title: "Trade Concluído", rec_hedge: "Ordem de Cobertura", rec_type: "Método", rec_gross: "Lucro Bruto Assegurado:",
+        rec_calc_title: "Cálculos", rec_ideal: "Green Up Ideal (Bruto):", rec_formula: "(1000 × 3.00) / 1.50 = €2000 Stake Banca", rec_achieved: "Bruto Real Obtido:",
+        rec_comm: "Comissões Ex. (5%):", rec_net: "Lucro Líquido", rec_net_sub: "Adicionado à Banca", rec_btn_cont: "Continuar Lição", rec_btn_finish: "Reiniciar Simulação",
+        rec_method_man: "MANUAL", rec_method_auto: "AUTO (ALGO)", rec_sweep: "Market Sweep", rec_unknown: "Desconhecido", rec_tax_label: "Imposto de Comodidade:",
+        
+        txt_step1: "Bem-vindo ao Dia 5. A diferença entre amador e pro é <b>como geres a saída</b>.<br><br>Olha abaixo: Apostaste no Real Madrid pré-jogo. €1000 @ 3.00. O jogo começou.<br><br>Clica no botão azul <b>'Golo Real Madrid'</b> para simular o evento.",
+        txt_step2: "⚽ <b>GOLO!</b> A odd caiu de 3.00 para 1.50.<br><br>Estás com grande lucro. O broker sabe que és emocional e oferece um botão amarelo. <br><br>Clica <b>CASH OUT</b> para ver o que oferecem.",
+        txt_step3: "🚨 <b>O IMPOSTO DA COMODIDADE!</b><br>Acabaste de pagar €40 ao broker para ele fazer as contas. Executaram a saída a um preço pior para garantir correspondência.<br><br>Os amadores clicam em botões. Os pros usam matemática. Vamos rebobinar. Clica <b>Continuar Lição</b>.",
+        txt_step4: "Rebobinámos o mercado.<br><br>Agora olha para o painel escuro <b>Green Up</b>. A fórmula é: <i>(Stake Inicial x Odd Inicial) / Odd Lay Atual</i>. <br>A nossa stake exata é €2000.<br><br>Clica no botão <b>BANCA €2000 @ 1.50</b>.",
+        txt_done: "🎉 <b>Masterclass Concluída!</b><br><br>Ao calcular manualmente o Green Up, mantiveste 100% do teu equity (€1000 brutos).<br><br><i>'O botão Cash Out é um imposto sobre a ignorância matemática; o Green Up é a ferramenta de precisão do trader.'</i>"
+    },
+    it: {
+        app_title: "ZERO TO HERO", app_day: "Giorno 5/30 • Hedging",
+        dash_sub: "Real Madrid vs Barcellona", pos_market: "Esito Finale", pos_team: "Real Madrid", pos_stake: "Stake: €1000 @ 3.00",
+        mentor_name: "Il Maestro", mentor_role: "Tutorial Interattivo", steps_title: "Task della Lezione",
+        step_1: "Analizza Posizione Aperta", step_2: "Simula Evento (Gol)", step_3: "Testa la trappola 'Cash Out'", step_4: "Esegui il Green Up Perfetto",
+        dash_title: "Dashboard di Trading", dash_bankroll: "Bankroll",
+        pos_active: "Posizione Attiva", act_back: "PUNTA", act_lay: "BANCA", pos_liab: "Rischio", pos_pot: "Profitto Pot.",
+        mkt_live: "Mercato Live", ob_back: "Punta", ob_lay: "Banca", btn_goal: "Gol Real Madrid!",
+        mkt_score_0: "0-0 (30')", mkt_score_1: "1-0 (31')", mkt_ft: "FIN 1-0", trade_success: "TRADE COMPLETATO CON SUCCESSO",
+        hedge_trap_title: "La Trappola del Broker", hedge_trap_desc: "Uscita automatica. Veloce, ma incrocia lo spread per garantire l'esecuzione, addebitando una tassa occulta.", btn_cashout: "CASH OUT",
+        hedge_pro_title: "Il Green Up da Pro", hedge_pro_desc: "Calcolo esatto manuale. Detti tu il prezzo e mantieni il 100% dell'equity.", form_formula: "Formula: (Stake × Quota) / Lay", form_req: "Stake Banca Richiesto:", btn_lay_gu: "€2000 @ 1.50",
+        rec_title: "Trade Concluso", rec_hedge: "Ordine di Copertura", rec_type: "Metodo", rec_gross: "Profitto Lordo Assicurato:",
+        rec_calc_title: "Calcoli", rec_ideal: "Green Up Ideale (Lordo):", rec_formula: "(1000 × 3.00) / 1.50 = €2000 Stake Banca", rec_achieved: "Lordo Reale Ottenuto:",
+        rec_comm: "Commissioni Ex. (5%):", rec_net: "Profitto Netto", rec_net_sub: "Aggiunto al Bankroll", rec_btn_cont: "Continua Lezione", rec_btn_finish: "Riavvia Simulazione",
+        rec_method_man: "MANUALE", rec_method_auto: "AUTO (ALGO)", rec_sweep: "Market Sweep", rec_unknown: "Sconosciuto", rec_tax_label: "Tassa di Comodità:",
+        
+        txt_step1: "Benvenuto al Giorno 5. La differenza tra amatore e pro è <b>come gestisci l'uscita</b>.<br><br>Guarda in basso: Hai puntato sul Real Madrid pre-match. €1000 @ 3.00. La partita è iniziata.<br><br>Clicca il bottone blu <b>'Gol Real Madrid'</b> per simulare l'evento.",
+        txt_step2: "⚽ <b>GOL!</b> La quota è crollata da 3.00 a 1.50.<br><br>Sei in forte profitto. Il broker sa che sei emotivo e ti offre un bel bottone giallo. <br><br>Clicca <b>CASH OUT</b> per vedere quanto ti offrono.",
+        txt_step3: "🚨 <b>LA TASSA SULLA COMODITÀ!</b><br>Hai appena pagato €40 al broker per fargli fare i calcoli. Hanno eseguito l'uscita a un prezzo peggiore pur di garantirti l'abbinamento.<br><br>I dilettanti cliccano bottoni. I pro usano la matematica. Riavvolgiamo. Clicca <b>Continua Lezione</b>.",
+        txt_step4: "Abbiamo riavvolto il mercato.<br><br>Ora guarda il pannello scuro <b>Green Up</b>. La formula è: <i>(Stake Iniziale x Quota Iniziale) / Quota Lay Attuale</i>. <br>Il nostro stake esatto è €2000.<br><br>Clicca il bottone <b>BANCA €2000 @ 1.50</b>.",
+        txt_done: "🎉 <b>Masterclass Completata!</b><br><br>Calcolando manualmente il Green Up e piazzando un ordine limite, hai mantenuto il 100% dell'equity (€1000 lordi).<br><br><i>'Il bottone Cash Out è una tassa sull'ignoranza matematica; il Green Up è lo strumento di precisione del trader.'</i>"
+    }
+};
+
+// --- STATE ---
+let AppState = {
+    lang: 'en',
+    bankroll: 10000,
+    tutorialStep: 1, // 1: Intro, 2: Post-Goal, 3: CashOut Done, 4: GreenUp Done
+    marketOdds: { back: 3.00, lay: 3.05 },
+    math: {
+        initialStake: 1000,
+        initialOdds: 3.00,
+        postGoalLay: 1.50,
+        cashoutOffer: 960,
+        idealGreenUpStake: 2000, // (1000*3)/1.5
+        idealGross: 1000
+    }
+};
+
+// --- APP LOGIC ---
+const App = {
+    init() {
+        this.detectLanguage();
+        this.updateTutorial();
+        document.body.classList.add('ready');
+    },
+    
+    detectLanguage() {
+        let userLang = navigator.language || navigator.userLanguage;
+        let shortLang = userLang.split('-')[0].toLowerCase();
+        let supported = ['en', 'es', 'pt', 'it'];
+        this.setLang(supported.includes(shortLang) ? shortLang : 'en');
+    },
+
+    setLang(code) {
+        AppState.lang = code;
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        const btnHead = document.getElementById(`lang-${code}`);
+        if(btnHead) btnHead.classList.add('active');
+        
+        this.updateI18n();
+        this.updateTutorialText();
+        this.updateDynamicStateTexts();
+    },
+
+    updateI18n() {
+        const dict = DICT[AppState.lang];
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (dict[key]) {
+                if(el.tagName === 'INPUT' && el.type === 'button') el.value = dict[key];
+                else el.innerHTML = dict[key];
+            }
+        });
+    },
+
+    updateDynamicStateTexts() {
+        // Updates texts that change based on current step
+        const mktStatus = document.getElementById('mkt-status');
+        const actionZone = document.getElementById('action-trigger-zone');
+        
+        if (AppState.tutorialStep === 1) {
+            if(mktStatus) mktStatus.innerText = this.t('mkt_score_0');
+        } else if (AppState.tutorialStep === 2 || AppState.tutorialStep === 3) {
+            if(mktStatus) mktStatus.innerText = this.t('mkt_score_1');
+        } else if (AppState.tutorialStep === 4) {
+            if(mktStatus) mktStatus.innerText = this.t('mkt_ft');
+            if(actionZone && actionZone.innerHTML.includes('TRADE COMP')) {
+                actionZone.innerHTML = `<div class="text-center font-black text-[var(--zth-green)] text-[12px] md:text-xl">${this.t('trade_success')}</div>`;
+            }
+        }
+        
+        // Receipt buttons
+        const btnCont = document.getElementById('btn-cont-lesson');
+        if (btnCont && document.getElementById('receipt-modal').classList.contains('active')) {
+            if(AppState.tutorialStep === 2) btnCont.innerText = this.t('rec_btn_cont');
+            else if(AppState.tutorialStep === 3) btnCont.innerText = this.t('rec_btn_finish');
+        }
+    },
+    
+    t(key) { return DICT[AppState.lang][key] || key; },
+
+    updateTutorial() {
+        this.updateTutorialText();
+        this.updateTutorialUI();
+        this.updateDynamicStateTexts();
+    },
+    
+    updateTutorialText() {
+        const txtBox = document.getElementById('mentor-txt');
+        if (AppState.tutorialStep === 1) {
+            txtBox.innerHTML = this.t('txt_step1');
+        } else if (AppState.tutorialStep === 2) {
+            txtBox.innerHTML = this.t('txt_step2');
+        } else if (AppState.tutorialStep === 3) {
+            txtBox.innerHTML = this.t('txt_step3');
+        } else if (AppState.tutorialStep === 4) {
+            txtBox.innerHTML = this.t('txt_done');
+        }
+    },
+
+    updateTutorialUI() {
+        // Steps
+        for(let i=1; i<=4; i++) {
+            const stepEl = document.getElementById(`step-${i}`);
+            const dotEl = document.getElementById(`dot-${i}`);
+            if(!stepEl || !dotEl) continue;
+            
+            stepEl.className = "flex items-center gap-3 transition-opacity";
+            dotEl.className = "step-dot";
+            
+            if (AppState.tutorialStep === i) {
+                stepEl.classList.add('opacity-100');
+                dotEl.classList.add('active');
+                dotEl.innerHTML = i;
+            } else if (AppState.tutorialStep > i) {
+                stepEl.classList.add('opacity-100');
+                dotEl.classList.add('done');
+                dotEl.innerHTML = '✓';
+            } else {
+                stepEl.classList.add('opacity-40');
+                dotEl.innerHTML = i;
+            }
+        }
+        
+        // Mobile Badge
+        const mobileBadge = document.getElementById('mobile-step-badge');
+        if(mobileBadge) {
+            mobileBadge.innerText = `STEP ${AppState.tutorialStep}/4`;
+            if(AppState.tutorialStep === 4) {
+                mobileBadge.classList.replace('bg-blue-100', 'bg-green-100');
+                mobileBadge.classList.replace('text-blue-700', 'text-green-700');
+                mobileBadge.innerText = `COMPLETED`; // Hardcoded short text for badge is ok, or can translate
+            } else {
+                mobileBadge.classList.replace('bg-green-100', 'bg-blue-100');
+                mobileBadge.classList.replace('text-green-700', 'text-blue-700');
+            }
+        }
+
+        // Action UI States
+        if(AppState.tutorialStep === 1) {
+            document.getElementById('action-trigger-zone').style.display = 'flex';
+            document.getElementById('hedging-zone').style.display = 'none';
+        } else if (AppState.tutorialStep === 2) {
+            document.getElementById('action-trigger-zone').style.display = 'none';
+            document.getElementById('hedging-zone').style.display = 'flex';
+            document.getElementById('green-up-card').classList.add('opacity-50');
+            
+            const btnGU = document.getElementById('btn-greenup');
+            btnGU.classList.add('cursor-not-allowed', 'text-slate-500', 'bg-slate-800');
+            btnGU.classList.remove('hover:bg-slate-700', 'text-white', 'pulse-active');
+            
+            document.getElementById('btn-cashout').classList.add('pulse-cashout');
+        } else if (AppState.tutorialStep === 3) {
+            document.getElementById('btn-cashout').classList.remove('pulse-cashout');
+            document.getElementById('btn-cashout').classList.add('opacity-50', 'cursor-not-allowed');
+            
+            document.getElementById('green-up-card').classList.remove('opacity-50');
+            const btnGU = document.getElementById('btn-greenup');
+            btnGU.classList.remove('cursor-not-allowed', 'text-slate-500', 'bg-slate-800');
+            btnGU.classList.add('hover:bg-slate-700', 'text-white', 'pulse-active', 'bg-slate-800', 'border-slate-500');
+        } else if (AppState.tutorialStep === 4) {
+            document.getElementById('hedging-zone').style.display = 'none';
+            document.getElementById('action-trigger-zone').style.display = 'flex';
+            document.getElementById('action-trigger-zone').innerHTML = `<div class="text-center font-black text-[var(--zth-green)] text-[12px] md:text-xl">${this.t('trade_success')}</div>`;
+            document.getElementById('mkt-status').innerText = this.t('mkt_ft');
+            document.getElementById('val-bankroll').innerText = `€10,950`;
+            document.getElementById('val-bankroll').classList.add('text-[var(--zth-green)]');
+        }
+    },
+
+    closeReceipt() {
+        document.getElementById('receipt-modal').classList.remove('active');
+        if (AppState.tutorialStep === 2) {
+            AppState.tutorialStep = 3;
+            this.updateTutorial();
+        } else if (AppState.tutorialStep === 3) {
+            AppState.tutorialStep = 4;
+            this.updateTutorial();
+        }
+    },
+
+    restart() {
+        AppState.tutorialStep = 1;
+        document.getElementById('action-trigger-zone').innerHTML = `
+            <button id="btn-goal" onclick="Trade.simulateGoal()" class="bg-[#0369a1] hover:bg-[#0284c7] text-white font-black px-4 py-2.5 md:px-6 md:py-3 rounded-xl shadow-lg transform transition-all hover:scale-105 active:scale-95 text-xs md:text-sm uppercase tracking-widest flex items-center gap-2 pulse-goal">
+                ⚽ <span data-i18n="btn_goal">${this.t('btn_goal')}</span>
+            </button>
+        `;
+        document.getElementById('odds-back').innerText = "3.00";
+        document.getElementById('odds-lay').innerText = "3.05";
+        document.getElementById('mkt-status').innerText = this.t('mkt_score_0');
+        document.getElementById('mkt-status').classList.remove('text-red-500');
+        document.getElementById('val-bankroll').innerText = `€10,000`;
+        document.getElementById('val-bankroll').classList.remove('text-[var(--zth-green)]');
+        
+        document.getElementById('btn-cashout').classList.remove('opacity-50', 'cursor-not-allowed');
+        
+        this.updateTutorial();
+    }
+};
+
+const Trade = {
+    simulateGoal() {
+        if(AppState.tutorialStep !== 1) return;
+        
+        const b = document.getElementById('odds-back');
+        const l = document.getElementById('odds-lay');
+        
+        b.classList.add('odds-changed');
+        l.classList.add('odds-changed');
+        
+        b.innerText = "1.49";
+        l.innerText = "1.50";
+        document.getElementById('mkt-status').innerText = App.t('mkt_score_1');
+        document.getElementById('mkt-status').classList.add('text-red-500');
+        
+        setTimeout(() => {
+            b.classList.remove('odds-changed');
+            l.classList.remove('odds-changed');
+        }, 500);
+
+        AppState.tutorialStep = 2;
+        App.updateTutorial();
+    },
+
+    executeCashOut() {
+        if(AppState.tutorialStep !== 2) return;
+        
+        const gross = AppState.math.cashoutOffer;
+        const comm = gross * 0.05;
+        const net = gross - comm;
+        const tax = AppState.math.idealGross - gross;
+
+        this.showReceipt("CASH OUT", gross, comm, net, true, tax);
+    },
+
+    executeGreenUp() {
+        if(AppState.tutorialStep !== 3) return;
+        
+        const gross = AppState.math.idealGross;
+        const comm = gross * 0.05;
+        const net = gross - comm;
+
+        this.showReceipt("GREEN UP", gross, comm, net, false, 0);
+    },
+
+    showReceipt(type, gross, comm, net, isTrap, taxAmount) {
+        const badge = document.getElementById('r-badge');
+        badge.innerText = type;
+        
+        if(isTrap) {
+            badge.className = "px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest bg-yellow-100 text-yellow-700 border border-yellow-300";
+            document.getElementById('r-method').innerText = App.t('rec_method_auto');
+            document.getElementById('r-method').className = "font-black px-2 py-1 rounded text-xs shadow-sm border bg-yellow-50 text-yellow-700 border-yellow-200";
+            
+            document.getElementById('r-hedge-stake').innerText = App.t('rec_unknown');
+            document.getElementById('r-hedge-odds').innerText = App.t('rec_sweep');
+            document.getElementById('r-hedge-odds').className = "font-bold text-slate-500 text-xs";
+            
+            document.getElementById('r-tax-container').classList.remove('hidden');
+            document.getElementById('r-tax-container').className = "flex justify-between items-center border-t border-slate-200 pt-2 mb-2 mt-2 px-3 py-2 rounded-lg bg-red-50 text-red-700 border border-red-100";
+            document.getElementById('r-tax-val').innerText = `- € ${taxAmount.toFixed(2)}`;
+            
+            document.getElementById('r-math-box').className = "bg-white p-3 md:p-4 rounded-xl border-2 border-yellow-300 shadow-sm relative overflow-hidden";
+            
+            document.getElementById('btn-cont-lesson').innerText = App.t('rec_btn_cont');
+        } else {
+            badge.className = "px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest bg-green-100 text-green-700 border border-green-300";
+            document.getElementById('r-method').innerText = App.t('rec_method_man');
+            document.getElementById('r-method').className = "font-black px-2 py-1 rounded text-xs shadow-sm border bg-green-50 text-green-700 border-green-200";
+            
+            document.getElementById('r-hedge-stake').innerText = `€${AppState.math.idealGreenUpStake}`;
+            document.getElementById('r-hedge-odds').innerText = AppState.math.postGoalLay.toFixed(2);
+            document.getElementById('r-hedge-odds').className = "font-black text-[var(--bf-pink)]";
+
+            document.getElementById('r-tax-container').classList.add('hidden');
+            
+            document.getElementById('r-math-box').className = "bg-white p-3 md:p-4 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden";
+            
+            document.getElementById('btn-cont-lesson').innerText = App.t('rec_btn_finish');
+        }
+
+        document.getElementById('r-gross').innerText = `€ ${gross.toFixed(2)}`;
+        document.getElementById('r-achieved').innerText = `€ ${gross.toFixed(2)}`;
+        document.getElementById('r-achieved').className = isTrap ? "font-bold text-red-600" : "font-bold text-green-600";
+        document.getElementById('r-comm').innerText = `- € ${comm.toFixed(2)}`;
+        document.getElementById('r-net').innerText = `€ ${net.toFixed(2)}`;
+
+        document.getElementById('receipt-modal').classList.add('active');
+    }
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+    App.init(); 
+});
+</script>
+</body>
+</html>
