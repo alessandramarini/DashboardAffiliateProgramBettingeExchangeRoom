@@ -106,7 +106,10 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
+        /* MODAL FIX: Added opacity and pointer events transition for overlay */
         .modal-overlay { transition: opacity 0.3s ease; backdrop-filter: blur(8px); background-color: rgba(15, 23, 42, 0.7); }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
         .modal-content { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); width: 100%; display: flex; flex-direction: column;}
         @media (min-width: 1024px) {
             .modal-content { transform: scale(0.95) translateY(10px); max-height: 90dvh; }
@@ -401,7 +404,7 @@
                         </div>
                     </div>
                     
-                    <button id="btn-greenup" onclick="Trade.executeGreenUp()" class="w-full bg-slate-800 text-slate-500 cursor-not-allowed font-black px-2 py-2.5 md:px-4 md:py-3.5 rounded-xl transition-all text-[10px] md:text-xs uppercase tracking-wider flex items-center justify-center gap-2 border border-slate-700">
+                    <button id="btn-greenup" disabled onclick="Trade.executeGreenUp()" class="w-full bg-slate-800 text-slate-500 cursor-not-allowed font-black px-2 py-2.5 md:px-4 md:py-3.5 rounded-xl transition-all text-[10px] md:text-xs uppercase tracking-wider flex items-center justify-center gap-2 border border-slate-700">
                         <span class="px-1.5 py-0.5 bg-[var(--bf-pink)] text-[#be123c] text-[9px] md:text-[10px] rounded" data-i18n="act_lay">LAY</span> 
                         <span data-i18n="btn_lay_gu">€2000 @ 1.50</span>
                     </button>
@@ -508,7 +511,7 @@ const DICT = {
 
 // --- STATE ---
 let AppState = {
-    lang: 'en',
+    lang: 'it', // Defaulting to IT as requested context
     bankroll: 10000,
     tutorialStep: 1, // 1: Intro, 2: Post-Goal, 3: CashOut Done, 4: GreenUp Done
     marketOdds: { back: 3.00, lay: 3.05 },
@@ -516,7 +519,7 @@ let AppState = {
         initialStake: 1000,
         initialOdds: 3.00,
         postGoalLay: 1.50,
-        cashoutOffer: 960,
+        cashoutOffer: 960, // Realistic: True Green Up is 1000 gross. Cash out takes a margin.
         idealGreenUpStake: 2000, // (1000*3)/1.5
         idealGross: 1000
     }
@@ -534,7 +537,8 @@ const App = {
         let userLang = navigator.language || navigator.userLanguage;
         let shortLang = userLang.split('-')[0].toLowerCase();
         let supported = ['en', 'es', 'pt', 'it'];
-        this.setLang(supported.includes(shortLang) ? shortLang : 'en');
+        // If system language is supported, use it. Otherwise default to Italian for this specific prompt's context.
+        this.setLang(supported.includes(shortLang) ? shortLang : 'it');
     },
 
     setLang(code) {
@@ -560,7 +564,6 @@ const App = {
     },
 
     updateDynamicStateTexts() {
-        // Updates texts that change based on current step
         const mktStatus = document.getElementById('mkt-status');
         const actionZone = document.getElementById('action-trigger-zone');
         
@@ -575,7 +578,6 @@ const App = {
             }
         }
         
-        // Receipt buttons
         const btnCont = document.getElementById('btn-cont-lesson');
         if (btnCont && document.getElementById('receipt-modal').classList.contains('active')) {
             if(AppState.tutorialStep === 2) btnCont.innerText = this.t('rec_btn_cont');
@@ -605,7 +607,7 @@ const App = {
     },
 
     updateTutorialUI() {
-        // Steps
+        // Steps Visuals
         for(let i=1; i<=4; i++) {
             const stepEl = document.getElementById(`step-${i}`);
             const dotEl = document.getElementById(`dot-${i}`);
@@ -635,41 +637,57 @@ const App = {
             if(AppState.tutorialStep === 4) {
                 mobileBadge.classList.replace('bg-blue-100', 'bg-green-100');
                 mobileBadge.classList.replace('text-blue-700', 'text-green-700');
-                mobileBadge.innerText = `COMPLETED`; // Hardcoded short text for badge is ok, or can translate
+                mobileBadge.innerText = `COMPLETED`;
             } else {
                 mobileBadge.classList.replace('bg-green-100', 'bg-blue-100');
                 mobileBadge.classList.replace('text-green-700', 'text-blue-700');
             }
         }
 
-        // Action UI States
+        // Action UI States Management
+        const btnCashout = document.getElementById('btn-cashout');
+        const btnGU = document.getElementById('btn-greenup');
+        const guCard = document.getElementById('green-up-card');
+
         if(AppState.tutorialStep === 1) {
             document.getElementById('action-trigger-zone').style.display = 'flex';
             document.getElementById('hedging-zone').style.display = 'none';
-        } else if (AppState.tutorialStep === 2) {
+        } 
+        else if (AppState.tutorialStep === 2) {
             document.getElementById('action-trigger-zone').style.display = 'none';
             document.getElementById('hedging-zone').style.display = 'flex';
-            document.getElementById('green-up-card').classList.add('opacity-50');
             
-            const btnGU = document.getElementById('btn-greenup');
-            btnGU.classList.add('cursor-not-allowed', 'text-slate-500', 'bg-slate-800');
-            btnGU.classList.remove('hover:bg-slate-700', 'text-white', 'pulse-active');
+            // Activate Cash Out (Trap)
+            btnCashout.disabled = false;
+            btnCashout.classList.remove('opacity-50', 'cursor-not-allowed');
+            btnCashout.classList.add('pulse-cashout');
             
-            document.getElementById('btn-cashout').classList.add('pulse-cashout');
-        } else if (AppState.tutorialStep === 3) {
-            document.getElementById('btn-cashout').classList.remove('pulse-cashout');
-            document.getElementById('btn-cashout').classList.add('opacity-50', 'cursor-not-allowed');
+            // Disable Green Up
+            guCard.classList.add('opacity-50');
+            btnGU.disabled = true;
+            btnGU.classList.add('opacity-50', 'cursor-not-allowed', 'text-slate-500', 'bg-slate-800');
+            btnGU.classList.remove('pulse-active', 'hover:bg-slate-700', 'text-white', 'border-slate-500');
+        } 
+        else if (AppState.tutorialStep === 3) {
+            // Disable Cash Out
+            btnCashout.disabled = true;
+            btnCashout.classList.remove('pulse-cashout');
+            btnCashout.classList.add('opacity-50', 'cursor-not-allowed');
             
-            document.getElementById('green-up-card').classList.remove('opacity-50');
-            const btnGU = document.getElementById('btn-greenup');
-            btnGU.classList.remove('cursor-not-allowed', 'text-slate-500', 'bg-slate-800');
-            btnGU.classList.add('hover:bg-slate-700', 'text-white', 'pulse-active', 'bg-slate-800', 'border-slate-500');
-        } else if (AppState.tutorialStep === 4) {
+            // Activate Green Up
+            guCard.classList.remove('opacity-50');
+            btnGU.disabled = false;
+            btnGU.classList.remove('opacity-50', 'cursor-not-allowed', 'text-slate-500', 'bg-slate-800');
+            btnGU.classList.add('pulse-active', 'hover:bg-slate-700', 'text-white', 'bg-slate-800', 'border-slate-500');
+        } 
+        else if (AppState.tutorialStep === 4) {
             document.getElementById('hedging-zone').style.display = 'none';
             document.getElementById('action-trigger-zone').style.display = 'flex';
             document.getElementById('action-trigger-zone').innerHTML = `<div class="text-center font-black text-[var(--zth-green)] text-[12px] md:text-xl">${this.t('trade_success')}</div>`;
             document.getElementById('mkt-status').innerText = this.t('mkt_ft');
-            document.getElementById('val-bankroll').innerText = `€10,950`;
+            
+            const newBankroll = AppState.bankroll + (AppState.math.idealGross * 0.95);
+            document.getElementById('val-bankroll').innerText = `€${newBankroll.toLocaleString()}`;
             document.getElementById('val-bankroll').classList.add('text-[var(--zth-green)]');
         }
     },
@@ -696,10 +714,20 @@ const App = {
         document.getElementById('odds-lay').innerText = "3.05";
         document.getElementById('mkt-status').innerText = this.t('mkt_score_0');
         document.getElementById('mkt-status').classList.remove('text-red-500');
-        document.getElementById('val-bankroll').innerText = `€10,000`;
+        document.getElementById('val-bankroll').innerText = `€${AppState.bankroll.toLocaleString()}`;
         document.getElementById('val-bankroll').classList.remove('text-[var(--zth-green)]');
         
-        document.getElementById('btn-cashout').classList.remove('opacity-50', 'cursor-not-allowed');
+        // Hard reset of buttons
+        const btnCashout = document.getElementById('btn-cashout');
+        btnCashout.disabled = false;
+        btnCashout.classList.remove('opacity-50', 'cursor-not-allowed', 'pulse-cashout');
+
+        const btnGU = document.getElementById('btn-greenup');
+        btnGU.disabled = true;
+        btnGU.classList.add('opacity-50', 'cursor-not-allowed', 'text-slate-500', 'bg-slate-800');
+        btnGU.classList.remove('pulse-active', 'hover:bg-slate-700', 'text-white', 'border-slate-500');
+
+        document.getElementById('green-up-card').classList.add('opacity-50');
         
         this.updateTutorial();
     }
@@ -792,6 +820,7 @@ const Trade = {
         document.getElementById('r-comm').innerText = `- € ${comm.toFixed(2)}`;
         document.getElementById('r-net').innerText = `€ ${net.toFixed(2)}`;
 
+        // This combined with the CSS update ensures the modal becomes visible and clickable
         document.getElementById('receipt-modal').classList.add('active');
     }
 };
