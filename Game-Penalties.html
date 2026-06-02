@@ -129,10 +129,10 @@
         .hud-bar-wrapper {
             position: absolute; background: rgba(0,0,0,0.7); border: 2px solid rgba(255,255,255,0.3);
             border-radius: 999px; overflow: hidden; backdrop-filter: blur(5px); display: none;
-            z-index: 20;
+            z-index: 30;
         }
         .hud-bar-wrapper.active { border-color: var(--neon-green); box-shadow: 0 0 20px var(--neon-green-dim); }
-        .hud-h { top: 15vh; left: 50%; transform: translateX(-50%); width: 80%; max-width: 400px; height: clamp(20px, 4vh, 28px); }
+        .hud-h { top: 65vh; left: 50%; transform: translateX(-50%); width: 80%; max-width: 400px; height: clamp(20px, 4vh, 28px); }
         .hud-v { right: 5vw; top: 40%; transform: translateY(-50%); height: 40vh; max-height: 300px; width: clamp(20px, 4vw, 28px); }
         .hud-fill-h { height: 100%; width: 0%; background: linear-gradient(90deg, #16a34a, var(--neon-green), #ef4444); }
         .hud-fill-v { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: linear-gradient(0deg, #16a34a, var(--neon-green), #ef4444); }
@@ -825,9 +825,9 @@
             ctx.save(); 
             ctx.translate(x, y);
 
-            const size = Math.max(8, goalRect.w * 0.035);
+            // Portiere più piccolo e proporzionato
+            const size = Math.max(6, goalRect.w * 0.028); 
             let diveAngle = 0;
-            // Stretch is now clamped heavily to prevent Mr Fantastic arms
             let actualStretch = Math.min(stretch, 1.15); 
             let isDiving = stretch > 1.05;
 
@@ -843,7 +843,7 @@
 
             ctx.rotate(diveAngle);
 
-            const torsoW = size * 3.4; // Stronger torso
+            const torsoW = size * 3.4; 
             const torsoH = size * 4.0;
             const cy = isDiving ? 0 : size * 2;
 
@@ -853,67 +853,68 @@
             const skinColor = '#ffccaa';
             const shortColor = '#111';
 
-            // --- LEGS & CLEATS ---
-            ctx.lineWidth = size * 0.95;
-            ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+            // --- LEGS, SOCKS & CLEATS ---
             const legLen = size * 3.4;
-
-            // Left Leg
-            ctx.strokeStyle = skinColor;
-            ctx.beginPath();
-            ctx.moveTo(-torsoW * 0.3, cy + torsoH);
-            let lLx, lLy;
-            if (isDiving) {
-                lLx = -torsoW * 0.8; lLy = cy + torsoH + legLen * 0.7;
-            } else {
-                let bend = Math.abs(Math.sin(idleTime * 2)) * size * 0.5;
-                ctx.lineTo(-torsoW * 0.5, cy + torsoH + legLen * 0.5 - bend);
-                lLx = -torsoW * 0.6; lLy = cy + torsoH + legLen;
-            }
-            ctx.lineTo(lLx, lLy); ctx.stroke();
-
-            // Right Leg
-            ctx.beginPath();
-            ctx.moveTo(torsoW * 0.3, cy + torsoH);
-            let rLx, rLy;
-            if (isDiving) {
-                rLx = torsoW * 0.8; rLy = cy + torsoH + legLen * 0.9;
-            } else {
-                let bend = Math.abs(Math.cos(idleTime * 2)) * size * 0.5;
-                ctx.lineTo(torsoW * 0.5, cy + torsoH + legLen * 0.5 - bend);
-                rLx = torsoW * 0.6; rLy = cy + torsoH + legLen;
-            }
-            ctx.lineTo(rLx, rLy); ctx.stroke();
-
-            // HD Socks (Calzettoni con righe)
-            ctx.fillStyle = '#ffffff';
-            ctx.beginPath(); ctx.arc(lLx, lLy - size*0.6, size*0.5, 0, Math.PI*2); ctx.fill();
-            ctx.beginPath(); ctx.arc(rLx, rLy - size*0.6, size*0.5, 0, Math.PI*2); ctx.fill();
             
-            ctx.strokeStyle = '#d04a00'; ctx.lineWidth = 1.5;
-            ctx.beginPath(); ctx.moveTo(lLx-size*0.4, lLy-size*0.8); ctx.lineTo(lLx+size*0.4, lLy-size*0.8); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(rLx-size*0.4, rLy-size*0.8); ctx.lineTo(rLx+size*0.4, rLy-size*0.8); ctx.stroke();
+            // Helper per disegnare gamba, calza anatomica e scarpino
+            function drawLeg(startX, startY, kneeX, kneeY, ankleX, ankleY, dir) {
+                ctx.lineWidth = size * 0.9;
+                ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+                
+                // Coscia (Pelle)
+                ctx.strokeStyle = skinColor;
+                ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(kneeX, kneeY); ctx.stroke();
+                
+                // Polpaccio (Calzettone aderente)
+                ctx.strokeStyle = '#ffffff';
+                ctx.beginPath(); ctx.moveTo(kneeX, kneeY); ctx.lineTo(ankleX, ankleY); ctx.stroke();
+                
+                // Strisce sul calzettone
+                ctx.strokeStyle = '#d04a00'; ctx.lineWidth = size * 0.25;
+                let s1X = startX + (kneeX - startX)*0.2; let s1Y = startY + (kneeY - startY)*0.2; // Spostate più giù sul polpaccio
+                let s2X = startX + (kneeX - startX)*0.4; let s2Y = startY + (kneeY - startY)*0.4;
+                // Calcoliamo i punti sul segmento polpaccio
+                let calfs1X = kneeX + (ankleX - kneeX)*0.2; let calfs1Y = kneeY + (ankleY - kneeY)*0.2;
+                let calfs2X = kneeX + (ankleX - kneeX)*0.4; let calfs2Y = kneeY + (ankleY - kneeY)*0.4;
+                
+                ctx.beginPath(); ctx.moveTo(calfs1X - size*0.4, calfs1Y); ctx.lineTo(calfs1X + size*0.4, calfs1Y); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(calfs2X - size*0.4, calfs2Y); ctx.lineTo(calfs2X + size*0.4, calfs2Y); ctx.stroke();
 
-            // HD Cleats (Scarpini)
-            ctx.fillStyle = '#ccff00';
-            // Forma scarpa sx
-            ctx.beginPath();
-            ctx.ellipse(lLx + size*0.3, lLy + size*0.2, size*0.9, size*0.45, Math.PI/10, 0, Math.PI*2);
-            ctx.fill();
-            // Tacchetti sx
-            ctx.fillStyle = '#333';
-            ctx.beginPath(); ctx.arc(lLx - size*0.2, lLy + size*0.65, 1.5, 0, Math.PI*2); ctx.fill();
-            ctx.beginPath(); ctx.arc(lLx + size*0.6, lLy + size*0.6, 1.5, 0, Math.PI*2); ctx.fill();
+                // Scarpino sagomato
+                ctx.fillStyle = '#ccff00';
+                ctx.beginPath();
+                ctx.ellipse(ankleX + dir * size*0.3, ankleY + size*0.2, size*0.8, size*0.4, 0, 0, Math.PI*2);
+                ctx.fill();
+                
+                // Tacchetti
+                ctx.fillStyle = '#333';
+                ctx.beginPath(); ctx.arc(ankleX + dir * size*0.1, ankleY + size*0.5, size*0.15, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(ankleX + dir * size*0.6, ankleY + size*0.5, size*0.15, 0, Math.PI*2); ctx.fill();
+            }
 
-            // Forma scarpa dx
-            ctx.fillStyle = '#ccff00';
-            ctx.beginPath();
-            ctx.ellipse(rLx + size*0.3, rLy + size*0.2, size*0.9, size*0.45, -Math.PI/10, 0, Math.PI*2);
-            ctx.fill();
-            // Tacchetti dx
-            ctx.fillStyle = '#333';
-            ctx.beginPath(); ctx.arc(rLx - size*0.2, rLy + size*0.65, 1.5, 0, Math.PI*2); ctx.fill();
-            ctx.beginPath(); ctx.arc(rLx + size*0.6, rLy + size*0.6, 1.5, 0, Math.PI*2); ctx.fill();
+            let lKneeX, lKneeY, lLx, lLy;
+            let rKneeX, rKneeY, rLx, rLy;
+
+            if (isDiving) {
+                lKneeX = -torsoW * 0.6; lKneeY = cy + torsoH + legLen * 0.4;
+                lLx = -torsoW * 0.8; lLy = cy + torsoH + legLen * 0.8;
+                
+                rKneeX = torsoW * 0.6; rKneeY = cy + torsoH + legLen * 0.5;
+                rLx = torsoW * 0.8; rLy = cy + torsoH + legLen;
+            } else {
+                let bendL = Math.abs(Math.sin(idleTime * 2)) * size * 0.5;
+                let bendR = Math.abs(Math.cos(idleTime * 2)) * size * 0.5;
+                
+                lKneeX = -torsoW * 0.4; lKneeY = cy + torsoH + legLen * 0.5 - bendL;
+                lLx = -torsoW * 0.5; lLy = cy + torsoH + legLen;
+                
+                rKneeX = torsoW * 0.4; rKneeY = cy + torsoH + legLen * 0.5 - bendR;
+                rLx = torsoW * 0.5; rLy = cy + torsoH + legLen;
+            }
+
+            // Disegna le gambe
+            drawLeg(-torsoW * 0.3, cy + torsoH, lKneeX, lKneeY, lLx, lLy, -1);
+            drawLeg(torsoW * 0.3, cy + torsoH, rKneeX, rKneeY, rLx, rLy, 1);
 
             // Shorts with folds
             ctx.fillStyle = shortColor;
@@ -949,17 +950,17 @@
             // --- ARMS ---
             ctx.lineWidth = size * 0.85;
             ctx.strokeStyle = skinColor;
-            let armSpread = size * 2.2 * actualStretch; // Realistic spread max
+            let armSpread = size * 2.2 * actualStretch; 
 
             // Left Arm
             ctx.beginPath();
             ctx.moveTo(-torsoW/2, cy + size);
             let lGx, lGy;
             if(isDiving) {
-                lGx = -torsoW - armSpread; lGy = cy - size;
+                lGx = -torsoW/2 - armSpread; lGy = cy - size;
             } else {
-                ctx.lineTo(-torsoW - armSpread*0.5, cy + size*2);
-                lGx = -torsoW - armSpread*0.7; lGy = cy + size*3;
+                ctx.lineTo(-torsoW/2 - armSpread*0.3, cy + size*2);
+                lGx = -torsoW/2 - armSpread*0.6; lGy = cy + size*3;
             }
             ctx.lineTo(lGx, lGy); ctx.stroke();
 
@@ -968,10 +969,10 @@
             ctx.moveTo(torsoW/2, cy + size);
             let rGx, rGy;
             if(isDiving) {
-                rGx = torsoW + armSpread; rGy = cy - size;
+                rGx = torsoW/2 + armSpread; rGy = cy - size;
             } else {
-                ctx.lineTo(torsoW + armSpread*0.5, cy + size*2);
-                rGx = torsoW + armSpread*0.7; rGy = cy + size*3;
+                ctx.lineTo(torsoW/2 + armSpread*0.3, cy + size*2);
+                rGx = torsoW/2 + armSpread*0.6; rGy = cy + size*3;
             }
             ctx.lineTo(rGx, rGy); ctx.stroke();
 
@@ -1208,31 +1209,52 @@
             ballAnim.endX = rawTx; ballAnim.endY = rawTy;
             ballAnim.endScale = currentOutcome === 'miss' ? 0.15 : (currentOutcome === 'goal' ? 0.25 : 0.35);
             ballAnim.curveScale = (aimH - 50) * 1.5; 
+            
+            let bRad = Math.max(12, Math.min(w * 0.05, 30)) * ballAnim.endScale;
+            
+            // Forza il pallone a sbattere esattamente sul palo (Legno)
+            if (currentOutcome === 'post') {
+                let pThick = Math.max(4, goalRect.w * 0.012);
+                if (rawTy < goalRect.y + 10) { // Traversa
+                    ballAnim.endY = goalRect.y - bRad + pThick/2;
+                    ballAnim.endX = Math.max(goalRect.x, Math.min(goalRect.x + goalRect.w, rawTx));
+                } else if (rawTx < goalRect.cx) { // Palo Sinistro
+                    ballAnim.endX = goalRect.x - bRad + pThick/2;
+                    ballAnim.endY = Math.min(rawTy, goalRect.y + goalRect.h - bRad);
+                } else { // Palo Destro
+                    ballAnim.endX = goalRect.x + goalRect.w + bRad - pThick/2;
+                    ballAnim.endY = Math.min(rawTy, goalRect.y + goalRect.h - bRad);
+                }
+            }
 
             keeperAnim.startX = keeperAnim.x; keeperAnim.startY = keeperAnim.y;
             
-            // EXACT INVERSE KINEMATICS FOR PERFECT GLOVE INTERCEPT (Reduced stretch)
+            // EXACT INVERSE KINEMATICS FOR PERFECT GLOVE INTERCEPT
             if (currentOutcome === 'saved') {
                 let diveDir = ballAnim.endX > goalRect.cx ? 1 : -1;
-                let size = Math.max(8, goalRect.w * 0.035);
-                let torsoW = size * 3.4;
-                let saveStretchTarget = 1.15; // NO MR FANTASTIC: Realistic arm stretch
-                let armSpread = size * 2.2 * saveStretchTarget;
                 
-                let localGloveX = diveDir * (torsoW + armSpread);
+                // Variabili identiche a drawArticulatedKeeper
+                let size = Math.max(6, goalRect.w * 0.028); 
+                let torsoW = size * 3.4;
+                let saveStretchTarget = 1.15; 
+                let armSpread = size * 2.2 * saveStretchTarget;
+                let gSize = size * 1.35;
+                
+                // Posizione locale del guanto calcolata dal centro del petto
+                let localGloveX = diveDir * (torsoW/2 + armSpread + gSize * 0.4); 
                 let localGloveY = -size;
                 
                 let diveAngle = (Math.PI / 2.2) * diveDir * Math.min(1, (saveStretchTarget - 1) * 6.5);
-                
                 let cosA = Math.cos(diveAngle); let sinA = Math.sin(diveAngle);
                 
+                // Rotazione locale
                 let rotGloveX = localGloveX * cosA - localGloveY * sinA;
                 let rotGloveY = localGloveX * sinA + localGloveY * cosA;
                 
-                let ballRadius = Math.max(12, Math.min(w * 0.05, 30)) * ballAnim.endScale;
-                let hitOffsetX = diveDir * ballRadius * 0.8;
+                // Allineamento millimetrico sul bordo del pallone
+                let hitOffsetX = diveDir * bRad * 0.8; 
 
-                // Move entire body to reach ball
+                // Trasla l'intero portiere in modo che il guanto cada esattamente sul pallone
                 keeperAnim.endX = ballAnim.endX - hitOffsetX - rotGloveX;
                 keeperAnim.endY = ballAnim.endY - rotGloveY;
             } 
