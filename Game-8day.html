@@ -5,93 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Zero to Hero Academy | Day 8</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     
     <style>
         :root {
-            --neon-green: #00ff66;
-            --neon-green-dim: rgba(0, 255, 102, 0.2);
-            --neon-red: #ff0055;
-            --neon-blue: #00e5ff;
-            --dark-bg: #030712;
-            --glass-bg: rgba(17, 24, 39, 0.65);
+            --acid-green: #39ff14;
+            --acid-green-dim: rgba(57, 255, 20, 0.2);
+            --neon-red: #ff3366;
+            --neon-blue: #00d2ff;
+            --dark-bg: #0f172a; /* Slate 900 */
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --pitch-light: #22c55e;
+            --pitch-dark: #16a34a;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
-            /* 100dvh prevents issues with mobile browser address bars */
-            height: 100dvh;
+            height: 100dvh; /* Dynamic viewport for mobile precision */
             width: 100vw;
             overflow: hidden;
-            background-color: var(--dark-bg);
-            color: #ffffff;
-            touch-action: none;
-            perspective: 1000px;
+            background-color: var(--pitch-dark);
+            color: #0f172a;
+            touch-action: none; /* Prevents pull-to-refresh and swiping on mobile */
         }
 
-        .game-font { font-family: 'Orbitron', sans-serif; }
+        .mono-font { font-family: 'JetBrains Mono', monospace; }
 
-        /* Next-Gen Cyber-Pitch Background */
-        .cyber-grid {
+        .pitch-bg {
             position: absolute;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background-image: 
-                linear-gradient(var(--neon-green-dim) 1px, transparent 1px),
-                linear-gradient(90deg, var(--neon-green-dim) 1px, transparent 1px);
-            background-size: 50px 50px;
-            background-position: center bottom;
-            transform-origin: bottom center;
-            transform: perspective(600px) rotateX(60deg) translateY(100px) scale(2.5);
-            animation: gridMove 3s linear infinite;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                var(--pitch-light),
+                var(--pitch-light) 60px,
+                var(--pitch-dark) 60px,
+                var(--pitch-dark) 120px
+            );
+            background-size: 100% 120px;
+            animation: scrollPitch 2s linear infinite;
             z-index: 0;
-            opacity: 0.6;
-            pointer-events: none;
         }
-
-        .cyber-grid-overlay {
+        .pitch-lines {
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at center, transparent 0%, var(--dark-bg) 80%);
+            background-image: 
+                linear-gradient(to right, transparent calc(50% - 2px), rgba(255,255,255,0.4) calc(50% - 2px), rgba(255,255,255,0.4) calc(50% + 2px), transparent calc(50% + 2px)),
+                radial-gradient(circle at 50% 50%, transparent 80px, rgba(255,255,255,0.4) 80px, rgba(255,255,255,0.4) 84px, transparent 84px);
             z-index: 1;
             pointer-events: none;
         }
 
-        @keyframes gridMove {
-            0% { background-position-y: 0px; }
-            100% { background-position-y: 50px; }
+        @keyframes scrollPitch {
+            from { background-position-y: 0px; }
+            to { background-position-y: 120px; }
         }
 
-        /* Next-Gen Glassmorphism */
         .glass-panel {
             background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 102, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 255, 102, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+            border-bottom: 2px solid #e2e8f0;
         }
 
-        /* HUD Tutor Bubble */
+        .modal-panel {
+            background: #ffffff;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Tutor Bubble */
         .hud-bubble {
-            background: linear-gradient(135deg, rgba(0, 255, 102, 0.15), rgba(0, 0, 0, 0.9));
-            border-left: 3px solid var(--neon-green);
-            border-top: 1px solid rgba(0, 255, 102, 0.2);
-            border-bottom: 1px solid rgba(0, 255, 102, 0.2);
+            background: #ffffff;
+            border-left: 4px solid var(--acid-green);
             position: relative;
-            box-shadow: 0 0 15px rgba(0, 255, 102, 0.1);
-            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
         }
 
-        /* Avatar Container */
+        /* Professional Avatar Container */
         .avatar-container {
             position: relative;
             width: 60px; height: 60px;
             border-radius: 50%;
-            background: var(--dark-bg);
-            border: 2px solid var(--neon-green);
-            box-shadow: 0 0 15px rgba(0, 255, 102, 0.4), inset 0 0 10px rgba(0, 255, 102, 0.2);
+            background: #f8fafc;
+            border: 2px solid #cbd5e1;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             display: flex; align-items: center; justify-content: center;
             overflow: hidden;
             flex-shrink: 0;
@@ -100,123 +102,94 @@
             .avatar-container { width: 70px; height: 70px; }
         }
 
-        @keyframes scanline {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
-        }
-        .avatar-container::after {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to bottom, transparent, rgba(0,255,102,0.4), transparent);
-            animation: scanline 2.5s linear infinite;
-        }
-
-        /* Neon Buttons */
-        .neon-btn {
-            background: rgba(0, 0, 0, 0.5);
-            color: var(--neon-green);
-            border: 1px solid var(--neon-green);
-            box-shadow: 0 0 10px rgba(0, 255, 102, 0.2), inset 0 0 10px rgba(0, 255, 102, 0.1);
-            text-shadow: 0 0 5px var(--neon-green);
-            transition: all 0.2s ease;
+        .btn-primary {
+            background: #0f172a;
+            color: #ffffff;
+            border: 2px solid #1e293b;
+            box-shadow: 0 4px 0 #1e293b;
+            transition: all 0.1s;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
-        .neon-btn:hover, .neon-btn:active {
-            background: var(--neon-green);
-            color: #000;
-            box-shadow: 0 0 25px var(--neon-green), inset 0 0 10px rgba(255,255,255,0.5);
-            text-shadow: none;
-            transform: scale(0.98);
+        .btn-primary:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #1e293b;
         }
 
-        /* Canvas */
+        /* Canvas Container */
         #main-container {
             position: relative;
             flex: 1;
             width: 100%;
             overflow: hidden;
+            z-index: 10;
         }
         canvas {
-            display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 10;
+            display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0;
         }
-
-        /* Text Styles */
-        .text-glow-green { text-shadow: 0 0 10px var(--neon-green); }
-        .text-glow-red { text-shadow: 0 0 10px var(--neon-red); }
-        .text-glow-blue { text-shadow: 0 0 10px var(--neon-blue); }
-
-        /* Lesson Scrollbar */
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--neon-green); border-radius: 4px; }
-        .lesson-text h3 { color: var(--neon-green); font-family: 'Orbitron', sans-serif; font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.8rem; text-transform: uppercase; letter-spacing: 1px;}
-        .lesson-text p { margin-bottom: 1rem; color: #d1d5db; line-height: 1.6; }
-        .lesson-text strong { color: #fff; text-shadow: 0 0 5px rgba(255,255,255,0.4); }
 
         /* HD Flags */
         .flag-icon {
-            width: 28px; height: 20px; border-radius: 2px; cursor: pointer; transition: all 0.2s;
-            opacity: 0.4; filter: grayscale(80%); object-fit: cover;
-            border: 1px solid rgba(255,255,255,0.2);
+            width: 28px; height: 20px; border-radius: 3px; cursor: pointer; transition: all 0.2s;
+            opacity: 0.5; filter: grayscale(100%); object-fit: cover;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
-        .flag-icon:hover { opacity: 0.8; transform: translateY(-2px); }
-        .flag-active { opacity: 1; filter: grayscale(0%); box-shadow: 0 0 10px var(--neon-green); border: 1px solid var(--neon-green); transform: scale(1.1); }
+        .flag-icon:hover { opacity: 0.9; transform: translateY(-2px); }
+        .flag-active { opacity: 1; filter: grayscale(0%); box-shadow: 0 0 0 2px var(--acid-green); transform: scale(1.1); }
 
-        /* HUD Status Bars */
-        .hud-value-box {
-            background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 4px 10px;
-            font-family: 'Orbitron', sans-serif; display: flex; align-items: center; gap: 6px;
-        }
+        /* Lesson Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        
+        .lesson-text h2 { color: #0f172a; font-weight: 900; margin-bottom: 1rem; }
+        .lesson-text h3 { color: #16a34a; font-weight: 800; font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.8rem; text-transform: uppercase;}
+        .lesson-text p { margin-bottom: 1rem; color: #475569; line-height: 1.7; }
+        .lesson-text strong { color: #0f172a; font-weight: 800;}
 
-        /* Mobile Adjustments */
-        @media (max-width: 640px) {
-            .hud-value-box { padding: 4px 8px; }
-            header { padding: 0.75rem; }
-            .flag-icon { width: 24px; height: 18px; }
-        }
+        .legend-icon { width: 36px; height: 36px; object-fit: contain; }
     </style>
 </head>
 <body class="flex flex-col">
 
-    <div class="cyber-grid"></div>
-    <div class="cyber-grid-overlay"></div>
+    <div class="pitch-bg"></div>
+    <div class="pitch-lines"></div>
 
-    <header class="relative z-20 flex flex-wrap justify-between items-center p-3 md:p-4 glass-panel border-b border-green-500/50">
+    <header class="relative z-20 flex flex-wrap justify-between items-center p-3 md:p-4 glass-panel shrink-0">
         <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start mb-2 md:mb-0">
             <div class="flex items-center gap-3">
-                <div class="relative">
-                    <img src="logo-tondo.jpeg" onerror="this.src='https://placehold.co/100x100/00ff66/000000?text=Z2H'" alt="Zero to Hero" class="w-10 h-10 md:w-12 md:h-12 rounded-full border border-green-400">
-                    <div class="absolute inset-0 rounded-full shadow-[0_0_15px_#00ff66] animate-pulse pointer-events-none"></div>
-                </div>
+                <img src="logo-tondo.jpeg" onerror="this.src='https://placehold.co/100x100/16a34a/ffffff?text=Z2H'" alt="Zero to Hero" class="w-10 h-10 md:w-12 md:h-12 rounded-full border border-gray-200 shadow-sm">
                 <div>
-                    <h1 class="text-lg md:text-xl font-black tracking-widest text-white game-font"><span class="text-[#00ff66] text-glow-green">ZERO</span> TO HERO</h1>
-                    <p class="text-[10px] md:text-xs text-[#00ff66] uppercase tracking-widest font-semibold" data-i18n="academyDay8">Academy - Day 8/30</p>
+                    <h1 class="text-lg md:text-xl font-black tracking-tight text-slate-800"><span class="text-green-600">ZERO</span> TO HERO</h1>
+                    <p class="text-[10px] md:text-xs text-slate-500 uppercase font-bold" data-i18n="academyDay8">Academy - Day 8/30</p>
                 </div>
             </div>
             <!-- Mobile Theory Button -->
-            <button id="btn-lesson-mobile" class="md:hidden p-2 rounded border border-[#00e5ff] text-[#00e5ff] hover:bg-[#00e5ff] hover:text-black">
+            <button id="btn-lesson-mobile" class="md:hidden p-2 rounded-lg bg-slate-100 text-slate-700 border border-slate-300">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
             </button>
         </div>
         
-        <div class="flex gap-2 md:gap-3 items-center flex-wrap justify-between w-full md:w-auto">
-            <button id="btn-lesson" class="hidden md:flex items-center gap-2 px-4 py-2 rounded border border-[#00e5ff] text-[#00e5ff] hover:bg-[#00e5ff] hover:text-black font-bold transition-all duration-300 text-xs tracking-wider uppercase game-font shadow-[0_0_10px_rgba(0,229,255,0.2)]" data-i18n="theoryLesson8">
+        <div class="flex gap-3 items-center flex-wrap justify-between w-full md:w-auto">
+            <button id="btn-lesson" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-all text-sm border border-slate-300" data-i18n="theoryLesson8">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                 Teoria (Day 8)
             </button>
 
+            <!-- Stats -->
             <div class="flex gap-2">
-                <div class="hud-value-box text-[#00ff66]">
-                    <span class="text-[9px] md:text-[10px] opacity-70" data-i18n="pnl">PNL</span>
-                    <span class="text-sm md:text-lg text-glow-green"><span id="score-display">0</span>€</span>
+                <div class="bg-white border border-slate-200 rounded-lg px-3 py-1 flex items-center gap-2 shadow-sm">
+                    <span class="text-[10px] text-slate-400 font-bold" data-i18n="pnl">PNL</span>
+                    <span class="text-sm md:text-base font-black text-green-600"><span id="score-display">0</span>€</span>
                 </div>
-                <div class="hud-value-box text-[#ff0055]">
-                    <span class="text-[9px] md:text-[10px] opacity-70" data-i18n="lives">HP</span>
-                    <span class="text-sm md:text-lg text-glow-red" id="lives-display">3</span>
+                <div class="bg-white border border-slate-200 rounded-lg px-3 py-1 flex items-center gap-2 shadow-sm">
+                    <span class="text-[10px] text-slate-400 font-bold" data-i18n="lives">HP</span>
+                    <span class="text-sm md:text-base font-black text-rose-500" id="lives-display">3</span>
                 </div>
             </div>
 
-            <div class="flex gap-2 items-center bg-black/40 px-2 py-1.5 rounded border border-white/10">
+            <!-- Flags -->
+            <div class="flex gap-2 items-center bg-slate-100 p-1.5 rounded-lg border border-slate-200">
                 <img src="https://flagcdn.com/w40/gb.png" class="flag-icon" data-lang="en" alt="English">
                 <img src="https://flagcdn.com/w40/es.png" class="flag-icon" data-lang="es" alt="Español">
                 <img src="https://flagcdn.com/w40/pt.png" class="flag-icon" data-lang="pt" alt="Português">
@@ -225,60 +198,86 @@
         </div>
     </header>
 
-    <div id="tutor-container" class="relative z-20 mx-3 mt-3 flex items-start gap-3 transition-transform duration-300 w-full max-w-2xl mx-auto pointer-events-none">
-        <div class="avatar-container pointer-events-auto">
-            <!-- Cyber Mister SVG Avatar -->
-            <svg viewBox="0 0 100 100" class="w-full h-full p-1 opacity-90">
-                <path d="M50 10 C30 10, 20 25, 20 40 C20 55, 30 70, 40 80 L50 95 L60 80 C70 70, 80 55, 80 40 C80 25, 70 10, 50 10 Z" fill="#111827" stroke="#00ff66" stroke-width="2"/>
-                <path d="M25 35 Q50 50 75 35 L70 45 Q50 60 30 45 Z" fill="#00ff66" opacity="0.8"/>
-                <path d="M30 40 L70 40" stroke="#ffffff" stroke-width="1" opacity="0.5"/>
-                <circle cx="50" cy="70" r="4" fill="#00e5ff" opacity="0.7"/>
-                <path d="M50 75 L50 90 M40 80 L45 80 M60 80 L55 80" stroke="#00e5ff" stroke-width="2"/>
+    <div id="tutor-container" class="relative z-20 mx-3 mt-3 flex items-start gap-3 transition-transform duration-300 w-full max-w-2xl mx-auto pointer-events-none shrink-0">
+        <div class="avatar-container pointer-events-auto bg-slate-100">
+            <!-- Professional Analyst SVG -->
+            <svg viewBox="0 0 100 100" class="w-full h-full pt-2 opacity-90">
+                <!-- Background shadow -->
+                <circle cx="50" cy="50" r="48" fill="none" stroke="#cbd5e1" stroke-width="2"/>
+                <!-- Shoulders/Suit -->
+                <path d="M15 100 Q50 55 85 100 Z" fill="#1e293b"/>
+                <!-- Shirt -->
+                <path d="M35 100 L50 70 L65 100 Z" fill="#ffffff"/>
+                <!-- Tie -->
+                <path d="M48 70 L52 70 L55 100 L45 100 Z" fill="#3b82f6"/>
+                <!-- Head -->
+                <path d="M50 75 C30 75, 30 35, 50 35 C70 35, 70 75, 50 75 Z" fill="#cbd5e1"/>
+                <circle cx="50" cy="35" r="20" fill="#cbd5e1"/>
+                <!-- Glasses (Professional look) -->
+                <rect x="32" y="40" width="14" height="6" rx="1" fill="#0f172a"/>
+                <rect x="54" y="40" width="14" height="6" rx="1" fill="#0f172a"/>
+                <line x1="46" y1="43" x2="54" y2="43" stroke="#0f172a" stroke-width="2"/>
             </svg>
         </div>
-        <div class="hud-bubble p-3 text-xs md:text-sm font-medium flex-1 backdrop-blur-md pointer-events-auto">
-            <div class="text-[#00ff66] text-[9px] game-font mb-1 tracking-widest uppercase flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-[#00ff66] animate-pulse"></span>
-                <span data-i18n="incomingTransmission">Incoming Transmission_</span>
+        <div class="hud-bubble p-3 text-xs md:text-sm font-medium flex-1 pointer-events-auto">
+            <div class="text-slate-500 text-[10px] font-bold mb-1 tracking-widest uppercase flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-[#39ff14] animate-pulse"></span>
+                <span data-i18n="incomingTransmission">Analyst Desk</span>
             </div>
-            <p id="tutor-message" class="text-gray-200 leading-snug">...</p>
+            <p id="tutor-message" class="text-slate-800 leading-snug font-semibold">...</p>
         </div>
     </div>
 
-    <!-- MAIN CONTAINER PER IL CANVAS -->
     <main id="main-container">
         <canvas id="game-canvas"></canvas>
         
-        <!-- Main Menu Overlay -->
-        <div id="start-screen" class="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/80 backdrop-blur-md p-4">
-            <div class="glass-panel p-6 md:p-10 rounded-2xl max-w-lg text-center w-full relative overflow-y-auto max-h-full custom-scrollbar">
-                <h2 class="game-font text-2xl md:text-3xl text-transparent bg-clip-text bg-gradient-to-r from-[#00ff66] to-[#00e5ff] mb-1" data-i18n="marketMoverChallenge">ORDER FLOW</h2>
-                <h3 class="game-font text-lg md:text-xl text-white tracking-widest mb-6 text-glow-green" data-i18n="challengeText">CHALLENGE</h3>
+        <!-- Start Screen / Legend -->
+        <div id="start-screen" class="absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+            <div class="modal-panel p-6 md:p-8 rounded-2xl max-w-lg text-center w-full relative overflow-y-auto max-h-full custom-scrollbar">
+                <h2 class="text-2xl md:text-3xl font-black text-slate-800 mb-1 tracking-tight" data-i18n="marketMoverChallenge">ORDER FLOW CAMP</h2>
                 
-                <div class="text-left text-xs md:text-sm space-y-4 mb-8 text-gray-300 bg-black/50 p-4 rounded-xl border border-white/5">
-                    <p class="flex items-start gap-2" data-i18n="gameInstructions">
-                        <span class="text-base">🥅</span> 
-                        <span>Navigate your data-pod to intercept the correct market signals.</span>
+                <div class="text-left text-xs md:text-sm space-y-4 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200 mt-4">
+                    <p class="font-bold text-slate-700 text-center" data-i18n="gameInstructions">
+                        Drag your Catcher to intercept the real market signals.
                     </p>
-                    <div class="grid grid-cols-2 gap-3 pt-2">
+                    
+                    <div class="grid grid-cols-2 gap-4 pt-2">
+                        <!-- Targets -->
                         <div class="space-y-2">
-                            <h4 class="text-[#00ff66] game-font text-[10px] tracking-widest" data-i18n="targetsTitle">TARGETS</h4>
-                            <p class="flex items-center gap-1.5 bg-green-900/30 p-1.5 rounded border border-green-500/30">💰 <span class="font-bold text-white text-[10px]" data-i18n="itemSmartMoney">Smart Money</span></p>
-                            <p class="flex items-center gap-1.5 bg-green-900/30 p-1.5 rounded border border-green-500/30">📊 <span class="font-bold text-white text-[10px]" data-i18n="itemMatchedVol">Matched Vol</span></p>
+                            <h4 class="text-green-600 font-black text-[10px] tracking-widest text-center" data-i18n="targetsTitle">TARGETS</h4>
+                            <div class="flex flex-col gap-2">
+                                <div class="bg-white p-1.5 rounded-lg border border-green-200 flex items-center gap-2 shadow-sm">
+                                    <img id="leg-smart" class="legend-icon" src="" alt="Smart Money">
+                                    <span class="font-bold text-slate-700 text-[10px] md:text-xs leading-tight" data-i18n="itemSmartMoney">Smart Money</span>
+                                </div>
+                                <div class="bg-white p-1.5 rounded-lg border border-green-200 flex items-center gap-2 shadow-sm">
+                                    <img id="leg-vol" class="legend-icon" src="" alt="Matched Vol">
+                                    <span class="font-bold text-slate-700 text-[10px] md:text-xs leading-tight" data-i18n="itemMatchedVol">Matched Vol</span>
+                                </div>
+                            </div>
                         </div>
+                        <!-- Avoid -->
                         <div class="space-y-2">
-                            <h4 class="text-[#ff0055] game-font text-[10px] tracking-widest" data-i18n="avoidTitle">AVOID</h4>
-                            <p class="flex items-center gap-1.5 bg-red-900/30 p-1.5 rounded border border-red-500/30">📰 <span class="font-bold text-white text-[10px]" data-i18n="itemRumors">Fake News</span></p>
-                            <p class="flex items-center gap-1.5 bg-red-900/30 p-1.5 rounded border border-red-500/30">👻 <span class="font-bold text-white text-[10px]" data-i18n="itemSpoofing">Spoofing Trap</span></p>
+                            <h4 class="text-rose-500 font-black text-[10px] tracking-widest text-center" data-i18n="avoidTitle">AVOID</h4>
+                            <div class="flex flex-col gap-2">
+                                <div class="bg-white p-1.5 rounded-lg border border-rose-200 flex items-center gap-2 shadow-sm">
+                                    <img id="leg-news" class="legend-icon" src="" alt="Fake News">
+                                    <span class="font-bold text-slate-700 text-[10px] md:text-xs leading-tight" data-i18n="itemRumors">Fake News</span>
+                                </div>
+                                <div class="bg-white p-1.5 rounded-lg border border-rose-200 flex items-center gap-2 shadow-sm">
+                                    <img id="leg-spoof" class="legend-icon" src="" alt="Spoofing">
+                                    <span class="font-bold text-slate-700 text-[10px] md:text-xs leading-tight" data-i18n="itemSpoofing">Spoofing Trap</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="flex flex-col gap-3">
-                    <button id="btn-start" class="neon-btn w-full font-bold py-3 md:py-4 rounded-lg text-sm md:text-lg game-font" data-i18n="enterMarket">
+                    <button id="btn-start" class="btn-primary w-full font-black py-4 rounded-xl text-sm md:text-base" data-i18n="enterMarket">
                         INITIALIZE TRADING
                     </button>
-                    <button id="btn-read-theory-menu" class="md:hidden w-full text-[#00e5ff] hover:text-white font-semibold py-2 text-xs uppercase tracking-wider underline" data-i18n="readTheoryFirst">
+                    <button id="btn-read-theory-menu" class="md:hidden w-full text-slate-500 hover:text-slate-800 font-bold py-2 text-xs uppercase tracking-wider underline" data-i18n="readTheoryFirst">
                         Access Theory Databank
                     </button>
                 </div>
@@ -286,55 +285,79 @@
         </div>
 
         <!-- Game Over Screen -->
-        <div id="game-over-screen" class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/90 backdrop-blur-md p-4">
-            <div class="glass-panel p-8 rounded-2xl max-w-sm text-center border-t-2 border-[#ff0055] w-full relative">
-                <h2 class="game-font text-3xl text-[#ff0055] text-glow-red mb-2" data-i18n="rekt">LIQUIDATED</h2>
-                <div class="w-12 h-1 bg-[#ff0055] mx-auto mb-4 opacity-50"></div>
+        <div id="game-over-screen" class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
+            <div class="modal-panel p-8 rounded-2xl max-w-sm text-center w-full relative">
+                <h2 class="font-black text-3xl text-rose-500 mb-2" data-i18n="rekt">LIQUIDATED!</h2>
                 
-                <p class="mb-1 text-gray-300 text-sm md:text-base" data-i18n="gameOverText">Capital depleted. Final Profit:</p>
-                <p class="font-black text-[#00ff66] text-3xl md:text-4xl game-font mb-6 text-glow-green"><span id="final-score">0</span>€</p>
+                <p class="mb-1 text-slate-600 text-sm md:text-base font-bold" data-i18n="gameOverText">Capital depleted. Final Profit:</p>
+                <p class="font-black text-green-500 text-4xl mb-6"><span id="final-score">0</span>€</p>
                 
-                <div class="bg-black/50 p-3 rounded-lg mb-6 border border-white/5">
-                    <p id="game-over-reason" class="text-xs text-gray-400 italic">"Reason"</p>
+                <div class="bg-rose-50 p-3 rounded-lg mb-6 border border-rose-200">
+                    <p id="game-over-reason" class="text-xs text-rose-700 font-semibold italic">"Reason"</p>
                 </div>
                 
-                <button id="btn-restart" class="neon-btn w-full font-bold py-3 rounded-lg text-xs md:text-sm game-font" data-i18n="tryAgain">
+                <button id="btn-restart" class="btn-primary w-full font-black py-4 rounded-xl text-sm md:text-base" data-i18n="tryAgain">
                     REBOOT SYSTEM
                 </button>
             </div>
         </div>
     </main>
 
-    <div id="lesson-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-lg p-3 md:p-8">
-        <div class="glass-panel w-full max-w-4xl h-[95dvh] md:h-[85vh] rounded-xl flex flex-col shadow-2xl overflow-hidden border border-[#00e5ff]/30">
-            <div class="p-4 border-b border-[#00e5ff]/20 flex justify-between items-center bg-black/40">
-                <h2 class="font-bold text-sm md:text-lg text-[#00e5ff] game-font tracking-wider flex items-center gap-2" data-i18n="academyTitle">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+    <div id="lesson-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-3 md:p-8">
+        <div class="modal-panel w-full max-w-4xl h-[95dvh] md:h-[85vh] rounded-2xl flex flex-col shadow-2xl overflow-hidden">
+            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+                <h2 class="font-black text-sm md:text-lg text-slate-800 flex items-center gap-2" data-i18n="academyTitle">
+                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                     ACADEMY DATABANK | DAY 8
                 </h2>
-                <button id="btn-close-lesson" class="text-gray-400 hover:text-white transition-colors p-1.5 bg-white/5 rounded-lg hover:bg-[#ff0055]/20 hover:text-[#ff0055]">
+                <button id="btn-close-lesson" class="text-slate-400 hover:text-rose-500 transition-colors p-1.5 bg-white rounded-lg border border-slate-200 hover:bg-rose-50">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-            <div class="p-5 md:p-8 overflow-y-auto custom-scrollbar lesson-text text-gray-200 bg-gradient-to-b from-transparent to-black/50 text-sm md:text-base" id="lesson-content">
+            <div class="p-5 md:p-8 overflow-y-auto custom-scrollbar lesson-text bg-white text-sm md:text-base" id="lesson-content">
                 <!-- Content populated dynamically -->
             </div>
         </div>
     </div>
 
     <script>
-        // --- 1. LOCALIZATION DATA (EN, ES, PT, IT) ---
+        // HD SVGs designed to be clean, modern, and easily distinguishable
+        const SVG_ASSETS = {
+            // Gold hexagon/diamond shape
+            smartMoney: `data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><polygon points="50,5 95,28 95,72 50,95 5,72 5,28" fill="%23fbbf24" stroke="%23d97706" stroke-width="4"/><polygon points="50,15 85,33 85,67 50,85 15,67 15,33" fill="%23fcd34d"/><text x="50" y="65" font-family="Arial" font-size="45" font-weight="900" fill="%23b45309" text-anchor="middle">$</text></svg>`,
+            // Clean Candlestick/Bar chart
+            matchedVol: `data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="10" width="80" height="80" rx="15" fill="%23eff6ff" stroke="%233b82f6" stroke-width="4"/><rect x="25" y="50" width="12" height="30" fill="%2360a5fa" rx="2"/><rect x="44" y="30" width="12" height="50" fill="%233b82f6" rx="2"/><rect x="63" y="15" width="12" height="65" fill="%2310b981" rx="2"/><path d="M 25 45 L 50 25 L 75 10" fill="none" stroke="%232563eb" stroke-width="4" stroke-linecap="round"/></svg>`,
+            // Minimalist Newspaper with Alert
+            rumors: `data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="15" y="15" width="70" height="70" fill="%23ffffff" stroke="%23f43f5e" stroke-width="5" rx="5"/><line x1="25" y1="30" x2="75" y2="30" stroke="%23f43f5e" stroke-width="5" stroke-linecap="round"/><line x1="25" y1="45" x2="60" y2="45" stroke="%23f43f5e" stroke-width="5" stroke-linecap="round"/><line x1="25" y1="60" x2="70" y2="60" stroke="%23f43f5e" stroke-width="5" stroke-linecap="round"/><circle cx="85" cy="15" r="15" fill="%23e11d48"/><text x="85" y="22" font-family="Arial" font-size="20" font-weight="900" fill="%23ffffff" text-anchor="middle">!</text></svg>`,
+            // Theatrical/Ghost Mask representing Spoofing
+            spoofing: `data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M 50 10 C 20 10 10 30 10 50 C 10 75 30 90 50 90 C 70 90 90 75 90 50 C 90 30 80 10 50 10 Z" fill="%23f97316" stroke="%23c2410c" stroke-width="4"/><path d="M 30 45 Q 40 35 50 45 Q 60 35 70 45" fill="none" stroke="%23ffffff" stroke-width="6" stroke-linecap="round"/><rect x="25" y="45" width="15" height="5" fill="%23ffffff"/><rect x="60" y="45" width="15" height="5" fill="%23ffffff"/><path d="M 35 70 Q 50 60 65 70" fill="none" stroke="%23ffffff" stroke-width="6" stroke-linecap="round"/></svg>`
+        };
+
+        // Populate HTML Legend with SVGs
+        document.getElementById('leg-smart').src = SVG_ASSETS.smartMoney;
+        document.getElementById('leg-vol').src = SVG_ASSETS.matchedVol;
+        document.getElementById('leg-news').src = SVG_ASSETS.rumors;
+        document.getElementById('leg-spoof').src = SVG_ASSETS.spoofing;
+
+        // Preload Images for Canvas rendering
+        const images = {};
+        for(let key in SVG_ASSETS) {
+            let img = new Image();
+            img.src = SVG_ASSETS[key];
+            images[key] = img;
+        }
+
+        // --- STREAMING_CHUNK: Localization Data ---
         const translations = {
             en: {
                 academyDay8: "Academy - Day 8/30",
                 theoryLesson8: "Theory Bank",
-                incomingTransmission: "Incoming Transmission_",
+                incomingTransmission: "Analyst Desk",
                 pnl: "PROFIT",
                 lives: "SHIELD",
-                tutorIntro: "Hey rookie! Ready for lesson 8? Real pros don't watch news, they watch <strong>Volumes</strong>. Intercept the flow!",
-                marketMoverChallenge: "ORDER FLOW",
-                challengeText: "CHALLENGE",
-                gameInstructions: "Navigate your data-pod to intercept the correct market signals.",
+                tutorIntro: "Initialization complete. Real pros don't read news, they scan <strong>Volumes</strong>. Intercept the capital!",
+                marketMoverChallenge: "ORDER FLOW CAMP",
+                gameInstructions: "Drag your Catcher to intercept the real market signals.",
                 targetsTitle: "TARGETS",
                 avoidTitle: "AVOID",
                 itemSmartMoney: "Smart Money",
@@ -343,100 +366,97 @@
                 itemSpoofing: "Spoofing Trap",
                 enterMarket: "INITIALIZE TRADING",
                 readTheoryFirst: "Access Theory Databank",
-                rekt: "LIQUIDATED",
+                rekt: "LIQUIDATED!",
                 gameOverText: "Capital depleted. Final Profit:",
                 tryAgain: "REBOOT SYSTEM",
                 academyTitle: "ACADEMY DATABANK | DAY 8",
                 itemDescSmartMoney: "Target acquired: Smart Money flow detected.",
                 itemDescMatchedVol: "Target acquired: Verified Volume injected.",
-                itemDescRumors: "Warning! Invalid data packet (News). Shield damaged.",
-                itemDescSpoofing: "Trap Alert! Spoofing order hit. Shield damaged.",
-                tutorLevelUp: "Velocity increasing. Order book volatility spiking. Stay sharp!",
-                tutorMantra: "Track the Weight of Money (WOM). Follow the heavy capital.",
-                tutorGameOver: "Simulation failed. Return to the databank and study, rookie.",
-                lessonContent: `<h2 class="text-2xl md:text-3xl font-black text-white mb-4 uppercase game-font text-glow-blue">FLOW ANALYSIS: DECIPHERING MARKET MOVERS</h2><p class="text-gray-400 italic text-base md:text-lg border-l-4 border-[#00e5ff] pl-4">The gap between an amateur and a professional is measured by their ability to interpret the causes of a price movement.</p><p class="mt-4">The rookie reads sports newspapers, listens to pundits' opinions, and looks for narrative justifications for the odds. The professional knows that the market is a ruthless information-processing machine: they do not listen to words; they exclusively read capital flows (<strong>Order Flow</strong>).</p><p>On the Betting Exchange, "Market Movers" are not events, but large betting syndicates and quantitative funds with enough capital to alter the liquidity equilibrium. Following "Smart Money" means shifting your focus from predicting the sports outcome to analyzing the microstructure of the order book.</p><h3>⚖️ WEIGHT OF MONEY (WOM) FORMULA</h3><p>To quantify the directional pressure of capital on a specific price, professional trading software calculates the Weight of Money. It compares the unmatched liquidity waiting on the three best ticks for both Back and Lay sides.</p><div class="bg-black/60 p-4 md:p-6 rounded-xl font-mono text-sm md:text-lg text-[#00ff66] text-center my-6 border border-[#00ff66]/30 shadow-[0_0_15px_rgba(0,255,102,0.1)]">WOM_Back (%) = [ ΣV_Back / (ΣV_Back + ΣV_Lay) ] × 100</div><p>If the WOM tilts drastically to one side (e.g., > 70%), it indicates a severe liquidity imbalance and a potential imminent price movement.</p><h3>📚 TECHNICAL GLOSSARY:</h3><ul class="list-disc pl-6 space-y-3 mb-6 bg-white/5 p-4 md:p-6 rounded-xl border border-white/10"><li><strong class="text-[#00e5ff]">Market Mover:</strong> Institutional capital flow with sufficient volume to "eat" the available liquidity and move the price by several ticks.</li><li><strong class="text-[#00e5ff]">Weight of Money (WOM):</strong> A short-term predictive indicator showing where financial pressure is accumulating on the ladder.</li><li><strong class="text-[#00e5ff]">Spoofing:</strong> The injection of a massive order onto the ladder with zero intention of having it matched, done solely to manipulate the WOM and panic retail traders.</li><li><strong class="text-[#00e5ff]">Support/Resistance (Wall):</strong> A price level on the ladder where an anomalous amount of liquidity is positioned.</li></ul><h3>🕵️‍♂️ CASE STUDY: THE FOOTPRINT OF SMART MONEY</h3><div class="bg-black/40 p-4 md:p-5 rounded border-l-2 border-[#00ff66]"><p><strong>Market:</strong> AC Milan vs. Inter | Match Odds<br><strong>Action:</strong> Pre-Match analysis, 2 hours before kickoff.</p><p><strong>Reality:</strong> An unconfirmed rumor leaks regarding a slight warm-up injury to a key AC Milan striker. The retail public panics and starts laying the home team. The odds experience a rapid drift, rising from @2.60 to @2.72.</p><p><strong>Volume Analysis:</strong> At odds of @2.74, a €60,000 "wall" suddenly appears on the Back side. The price slams into this resistance and stalls completely.</p><p><strong>Interpretation:</strong> Retail traders are selling out of fear. However, a Market Mover—knowing that the single player's absence does not impact the total xG enough to justify odds of @2.74—is absorbing all the retail liquidity. This is "Smart Money" buying value.</p></div><h3>👻 THE SPOOFING TRAP</h3><p>Not all visible volume is real. An amateur trader sees a €30,000 wall on a single tick and immediately jumps into the market, assuming a Market Mover has arrived. A few seconds later, the order vanishes (cancelling) and the market aggressively moves against them. Institutional capital knows exactly how to mask its true intentions. Never trust unmatched volumes placed too far from the current price.</p><div class="mt-8 md:mt-12 p-6 md:p-8 bg-gradient-to-r from-[#004d2e] to-black border border-[#00ff66] rounded-2xl text-center shadow-[0_0_30px_rgba(0,255,102,0.2)]"><h3 class="text-[#00ff66] text-lg md:text-xl mt-0 tracking-widest">SYSTEM OVERRIDE: CORE MANTRA</h3><p class="text-xl md:text-3xl font-black text-white mt-4 game-font leading-loose text-shadow-glow">"News creates the opinions of the masses.<br><span class="text-[#00ff66]">Volume moves the market.</span>"</p></div>`
+                itemDescRumors: "Warning: Corrupted data (News). Shield damaged.",
+                itemDescSpoofing: "Alert: Ghost order (Spoofing). Shield damaged.",
+                tutorLevelUp: "System overclock. Book volatility increasing. Prepare.",
+                tutorMantra: "Analyze the Weight of Money (WOM). Follow the heavy capital.",
+                tutorGameOver: "Simulation failed. Your algorithm didn't filter the noise.",
+                lessonContent: `<h2>FLOW ANALYSIS: DECIPHERING MARKET MOVERS</h2><p>The gap between an amateur and a professional is measured by their ability to interpret the causes of a price movement.</p><p>The rookie reads sports newspapers, listens to pundits' opinions, and looks for narrative justifications for the odds. The professional knows that the market is a ruthless information-processing machine: they do not listen to words; they exclusively read capital flows (<strong>Order Flow</strong>).</p><p>On the Betting Exchange, "Market Movers" are not events, but large betting syndicates and quantitative funds with enough capital to alter the liquidity equilibrium. Following "Smart Money" means shifting your focus from predicting the sports outcome to analyzing the microstructure of the order book.</p><h3>⚖️ WEIGHT OF MONEY (WOM) FORMULA</h3><p>To quantify the directional pressure of capital on a specific price, professional trading software calculates the Weight of Money. It compares the unmatched liquidity waiting on the three best ticks for both Back and Lay sides.</p><div class="bg-slate-100 p-4 rounded-xl font-mono text-center my-6 border border-slate-300 text-slate-700 font-bold">WOM_Back (%) = [ ΣV_Back / (ΣV_Back + ΣV_Lay) ] × 100</div><p>If the WOM tilts drastically to one side (e.g., > 70%), it indicates a severe liquidity imbalance and a potential imminent price movement.</p><h3>📚 TECHNICAL GLOSSARY:</h3><ul class="list-disc pl-6 space-y-3 mb-6 bg-slate-50 p-5 rounded-xl border border-slate-200"><li><strong class="text-blue-600">Market Mover:</strong> Institutional capital flow with sufficient volume to "eat" the available liquidity and move the price by several ticks.</li><li><strong class="text-blue-600">Weight of Money (WOM):</strong> A short-term predictive indicator showing where financial pressure is accumulating on the ladder.</li><li><strong class="text-blue-600">Spoofing:</strong> The injection of a massive order onto the ladder with zero intention of having it matched, done solely to manipulate the WOM and panic retail traders.</li><li><strong class="text-blue-600">Support/Resistance (Wall):</strong> A price level on the ladder where an anomalous amount of liquidity is positioned.</li></ul><h3>🕵️‍♂️ CASE STUDY: THE FOOTPRINT OF SMART MONEY</h3><div class="bg-blue-50 p-4 rounded-xl border-l-4 border-blue-500 mb-6"><p><strong>Market:</strong> AC Milan vs. Inter | Match Odds<br><strong>Action:</strong> Pre-Match analysis, 2 hours before kickoff.</p><p><strong>Reality:</strong> An unconfirmed rumor leaks regarding a slight warm-up injury to a key AC Milan striker. The retail public panics and starts laying the home team. The odds experience a rapid drift, rising from @2.60 to @2.72.</p><p><strong>Volume Analysis:</strong> At odds of @2.74, a €60,000 "wall" suddenly appears on the Back side. The price slams into this resistance and stalls completely.</p><p><strong>Interpretation:</strong> Retail traders are selling out of fear. However, a Market Mover—knowing that the single player's absence does not impact the total xG enough to justify odds of @2.74—is absorbing all the retail liquidity. This is "Smart Money" buying value.</p></div><h3>👻 THE SPOOFING TRAP</h3><p>Not all visible volume is real. An amateur trader sees a €30,000 wall on a single tick and immediately jumps into the market, assuming a Market Mover has arrived. A few seconds later, the order vanishes (cancelling) and the market aggressively moves against them. Institutional capital knows exactly how to mask its true intentions. Never trust unmatched volumes placed too far from the current price.</p><div class="mt-8 p-6 bg-slate-800 rounded-xl text-center"><h3 class="text-green-400 mt-0 tracking-widest text-sm">CORE MANTRA</h3><p class="text-xl md:text-2xl font-black text-white mt-4 leading-relaxed">"News creates the opinions of the masses.<br>Volume moves the market."</p></div>`
             },
             es: {
                 academyDay8: "Academia - Día 8/30",
                 theoryLesson8: "Banco Teoría",
-                incomingTransmission: "Transmisión Entrante_",
+                incomingTransmission: "Mesa de Análisis",
                 pnl: "BENEFICIO",
                 lives: "ESCUDO",
-                tutorIntro: "¡Hola novato! ¿Listo para la lección 8? Los pros no miran noticias, miran <strong>Volúmenes</strong>. ¡Intercepta el flujo!",
-                marketMoverChallenge: "ORDER FLOW",
-                challengeText: "DESAFÍO",
-                gameInstructions: "Navega tu cápsula de datos para interceptar las señales correctas del mercado.",
+                tutorIntro: "Inicialización completa. Los verdaderos pros no leen noticias, escanean los <strong>Volúmenes</strong>. ¡Intercepta el capital!",
+                marketMoverChallenge: "ORDER FLOW CAMP",
+                gameInstructions: "Arrastra tu Recolector para interceptar las señales reales del mercado.",
                 targetsTitle: "OBJETIVOS",
                 avoidTitle: "EVITAR",
                 itemSmartMoney: "Smart Money",
                 itemMatchedVol: "Vol. Real",
                 itemRumors: "Fake News",
-                itemSpoofing: "Spoofing (Trampa)",
+                itemSpoofing: "Spoofing Trap",
                 enterMarket: "INICIAR TRADING",
                 readTheoryFirst: "Acceder Banco de Datos",
-                rekt: "LIQUIDADO",
+                rekt: "¡LIQUIDADO!",
                 gameOverText: "Capital agotado. Beneficio final:",
                 tryAgain: "REINICIAR SISTEMA",
                 academyTitle: "BANCO DE DATOS | DÍA 8",
-                itemDescSmartMoney: "Objetivo adquirido: Flujo de Dinero Inteligente.",
-                itemDescMatchedVol: "Objetivo adquirido: Volumen verificado inyectado.",
-                itemDescRumors: "¡Advertencia! Paquete inválido (Noticias). Escudo dañado.",
-                itemDescSpoofing: "¡Alerta! Orden falsa (Spoofing). Escudo dañado.",
-                tutorLevelUp: "Aumento de velocidad. Volatilidad en aumento. ¡Atento!",
-                tutorMantra: "Rastrea el Peso del Dinero (WOM). Sigue el capital pesado.",
-                tutorGameOver: "Simulación fallida. Vuelve al banco de datos, novato.",
-                lessonContent: `<h2 class="text-2xl md:text-3xl font-black text-white mb-4 uppercase game-font text-glow-blue">ANÁLISIS DE FLUJO: MARKET MOVERS</h2><p class="text-gray-400 italic text-base md:text-lg border-l-4 border-[#00e5ff] pl-4">La brecha entre aficionado y profesional se mide por su capacidad para interpretar las causas de un movimiento de precios.</p><p class="mt-4">El novato lee periódicos deportivos. El profesional sabe que el mercado es una máquina despiadada: lee exclusivamente flujos de capital (<strong>Flujo de Órdenes</strong>).</p><h3>⚖️ FÓRMULA PESO DEL DINERO (WOM)</h3><div class="bg-black/60 p-4 md:p-6 rounded-xl font-mono text-sm md:text-lg text-[#00ff66] text-center my-6 border border-[#00ff66]/30 shadow-[0_0_15px_rgba(0,255,102,0.1)]">WOM_Back (%) = [ ΣV_Back / (ΣV_Back + ΣV_Lay) ] × 100</div><p>Si el WOM se inclina drásticamente hacia un lado (> 70%), indica un desequilibrio de liquidez severo.</p><h3>📚 GLOSARIO TÉCNICO:</h3><ul class="list-disc pl-6 space-y-3 mb-6 bg-white/5 p-4 md:p-6 rounded-xl border border-white/10"><li><strong class="text-[#00e5ff]">Market Mover:</strong> Flujo de capital institucional con volumen suficiente para "comer" la liquidez.</li><li><strong class="text-[#00e5ff]">Spoofing:</strong> Inyección de una orden masiva con cero intención de que se iguale, para manipular.</li></ul><h3>👻 LA TRAMPA DE SPOOFING</h3><p>No todo el volumen visible es real. Nunca confíes en volúmenes no igualados colocados demasiado lejos del precio actual.</p><div class="mt-8 md:mt-12 p-6 md:p-8 bg-gradient-to-r from-[#004d2e] to-black border border-[#00ff66] rounded-2xl text-center shadow-[0_0_30px_rgba(0,255,102,0.2)]"><h3 class="text-[#00ff66] text-lg md:text-xl mt-0 tracking-widest">MANTRA DEL SISTEMA</h3><p class="text-xl md:text-3xl font-black text-white mt-4 game-font leading-loose text-shadow-glow">"Las noticias crean las opiniones.<br><span class="text-[#00ff66]">El volumen mueve el mercado.</span>"</p></div>`
+                itemDescSmartMoney: "Objetivo adquirido: Flujo de Smart Money.",
+                itemDescMatchedVol: "Objetivo adquirido: Volumen verificado.",
+                itemDescRumors: "Advertencia: Datos corruptos (Noticias). Escudo dañado.",
+                itemDescSpoofing: "Alerta: Orden fantasma (Spoofing). Escudo dañado.",
+                tutorLevelUp: "Overclock del sistema. Volatilidad en aumento. Prepárate.",
+                tutorMantra: "Analiza el Peso del Dinero (WOM). Sigue el capital pesado.",
+                tutorGameOver: "Simulación fallida. Tu algoritmo no filtró el ruido.",
+                lessonContent: `<h2>ANÁLISIS DE FLUJO: MARKET MOVERS</h2><p>La brecha entre aficionado y profesional se mide por su capacidad para interpretar las causas de un movimiento de precios.</p><p>El novato lee periódicos deportivos. El profesional sabe que el mercado es una máquina despiadada: lee exclusivamente flujos de capital (<strong>Flujo de Órdenes</strong>).</p><h3>⚖️ FÓRMULA PESO DEL DINERO (WOM)</h3><div class="bg-slate-100 p-4 rounded-xl font-mono text-center my-6 border border-slate-300 text-slate-700 font-bold">WOM_Back (%) = [ ΣV_Back / (ΣV_Back + ΣV_Lay) ] × 100</div><p>Si el WOM se inclina drásticamente hacia un lado (> 70%), indica un desequilibrio de liquidez severo.</p><h3>📚 GLOSARIO TÉCNICO:</h3><ul class="list-disc pl-6 space-y-3 mb-6 bg-slate-50 p-5 rounded-xl border border-slate-200"><li><strong class="text-blue-600">Market Mover:</strong> Flujo de capital institucional con volumen suficiente para "comer" la liquidez.</li><li><strong class="text-blue-600">Spoofing:</strong> Inyección de una orden masiva con cero intención de que se iguale, para manipular.</li></ul><h3>👻 LA TRAMPA DE SPOOFING</h3><p>No todo el volumen visible es real. Nunca confíes en volúmenes no igualados colocados demasiado lejos del precio actual.</p><div class="mt-8 p-6 bg-slate-800 rounded-xl text-center"><h3 class="text-green-400 mt-0 tracking-widest text-sm">MANTRA CENTRAL</h3><p class="text-xl md:text-2xl font-black text-white mt-4 leading-relaxed">"Las noticias crean las opiniones de las masas.<br>El volumen mueve el mercado."</p></div>`
             },
             pt: {
                 academyDay8: "Academia - Dia 8/30",
                 theoryLesson8: "Banco Teoria",
-                incomingTransmission: "Transmissão Recebida_",
+                incomingTransmission: "Mesa de Análise",
                 pnl: "LUCRO",
                 lives: "ESCUDO",
-                tutorIntro: "Ei novato! Pronto para a lição 8? Profissionais olham os <strong>Volumes</strong>. Intercepte o fluxo!",
-                marketMoverChallenge: "ORDER FLOW",
-                challengeText: "DESAFIO",
-                gameInstructions: "Navegue sua cápsula de dados para interceptar os sinais corretos.",
+                tutorIntro: "Inicialização concluída. Os verdadeiros profissionais não leem notícias, eles escaneiam <strong>Volumes</strong>. Intercepte o capital!",
+                marketMoverChallenge: "ORDER FLOW CAMP",
+                gameInstructions: "Arraste seu Coletor para interceptar os sinais reais do mercado.",
                 targetsTitle: "ALVOS",
                 avoidTitle: "EVITAR",
                 itemSmartMoney: "Smart Money",
                 itemMatchedVol: "Vol. Real",
                 itemRumors: "Fake News",
-                itemSpoofing: "Spoofing (Armadilha)",
+                itemSpoofing: "Spoofing Trap",
                 enterMarket: "INICIAR TRADING",
                 readTheoryFirst: "Acessar Banco de Dados",
-                rekt: "LIQUIDADO",
+                rekt: "LIQUIDADO!",
                 gameOverText: "Capital esgotado. Lucro final:",
                 tryAgain: "REINICIAR SISTEMA",
                 academyTitle: "BANCO DE DADOS | DIA 8",
-                itemDescSmartMoney: "Alvo adquirido: Fluxo de Smart Money detectado.",
+                itemDescSmartMoney: "Alvo adquirido: Fluxo de Smart Money.",
                 itemDescMatchedVol: "Alvo adquirido: Volume verificado injetado.",
-                itemDescRumors: "Aviso! Pacote de dados inválido. Escudo danificado.",
-                itemDescSpoofing: "Alerta! Ordem falsa de Spoofing. Escudo danificado.",
-                tutorLevelUp: "Aumento de velocidade. A volatilidade do livro aumenta.",
-                tutorMantra: "Rastreie o Peso do Dinheiro (WOM). Siga o capital pesado.",
-                tutorGameOver: "Simulação falhou. Retorne ao banco de dados, novato.",
-                lessonContent: `<h2 class="text-2xl md:text-3xl font-black text-white mb-4 uppercase game-font text-glow-blue">ANÁLISE DE FLUXO: MARKET MOVERS</h2><p class="text-gray-400 italic text-base md:text-lg border-l-4 border-[#00e5ff] pl-4">A lacuna entre um amador e um profissional é medida pela capacidade de interpretar as causas de um movimento.</p><p class="mt-4">O novato lê jornais. O profissional lê exclusivamente fluxos de capital (<strong>Fluxo de Ordens</strong>).</p><h3>⚖️ FÓRMULA PESO DO DINHEIRO (WOM)</h3><div class="bg-black/60 p-4 md:p-6 rounded-xl font-mono text-sm md:text-lg text-[#00ff66] text-center my-6 border border-[#00ff66]/30 shadow-[0_0_15px_rgba(0,255,102,0.1)]">WOM_Back (%) = [ ΣV_Back / (ΣV_Back + ΣV_Lay) ] × 100</div><h3>📚 GLOSSÁRIO TÉCNICO:</h3><ul class="list-disc pl-6 space-y-3 mb-6 bg-white/5 p-4 md:p-6 rounded-xl border border-white/10"><li><strong class="text-[#00e5ff]">Market Mover:</strong> Fluxo de capital institucional com volume suficiente para "comer" a liquidez.</li><li><strong class="text-[#00e5ff]">Spoofing:</strong> Injeção de uma ordem massiva com zero intenção de ser correspondida.</li></ul><div class="mt-8 md:mt-12 p-6 md:p-8 bg-gradient-to-r from-[#004d2e] to-black border border-[#00ff66] rounded-2xl text-center shadow-[0_0_30px_rgba(0,255,102,0.2)]"><h3 class="text-[#00ff66] text-lg md:text-xl mt-0 tracking-widest">MANTRA DO SISTEMA</h3><p class="text-xl md:text-3xl font-black text-white mt-4 game-font leading-loose text-shadow-glow">"Notícias criam opiniões.<br><span class="text-[#00ff66]">O volume move o mercado.</span>"</p></div>`
+                itemDescRumors: "Aviso: Dados corrompidos (Notícias). Escudo danificado.",
+                itemDescSpoofing: "Alerta: Ordem fantasma (Spoofing). Escudo danificado.",
+                tutorLevelUp: "Overclock do sistema. Volatilidade aumentando. Prepare-se.",
+                tutorMantra: "Analise o Peso do Dinheiro (WOM). Siga o capital pesado.",
+                tutorGameOver: "Simulação falhou. Seu algoritmo não filtrou o ruído.",
+                lessonContent: `<h2>ANÁLISE DE FLUXO: MARKET MOVERS</h2><p>A lacuna entre um amador e um profissional é medida pela capacidade de interpretar as causas de um movimento de preço.</p><p>O novato lê jornais. O profissional lê exclusivamente fluxos de capital (<strong>Fluxo de Ordens</strong>).</p><h3>⚖️ FÓRMULA PESO DO DINHEIRO (WOM)</h3><div class="bg-slate-100 p-4 rounded-xl font-mono text-center my-6 border border-slate-300 text-slate-700 font-bold">WOM_Back (%) = [ ΣV_Back / (ΣV_Back + ΣV_Lay) ] × 100</div><h3>📚 GLOSSÁRIO TÉCNICO:</h3><ul class="list-disc pl-6 space-y-3 mb-6 bg-slate-50 p-5 rounded-xl border border-slate-200"><li><strong class="text-blue-600">Market Mover:</strong> Fluxo de capital institucional com volume suficiente para "comer" a liquidez.</li><li><strong class="text-blue-600">Spoofing:</strong> Injeção de uma ordem massiva com zero intenção de ser correspondida.</li></ul><div class="mt-8 p-6 bg-slate-800 rounded-xl text-center"><h3 class="text-green-400 mt-0 tracking-widest text-sm">MANTRA CENTRAL</h3><p class="text-xl md:text-2xl font-black text-white mt-4 leading-relaxed">"Notícias criam as opiniões das massas.<br>O volume move o mercado."</p></div>`
             },
             it: {
                 academyDay8: "Academy - Day 8/30",
                 theoryLesson8: "Banca Teoria",
-                incomingTransmission: "Ricezione Dati_",
+                incomingTransmission: "Analyst Desk",
                 pnl: "PROFITTO",
                 lives: "SCUDO",
                 tutorIntro: "Inizializzazione completata. I veri pro non leggono le news, scansionano i <strong>Volumi</strong>. Intercetta i capitali!",
-                marketMoverChallenge: "ORDER FLOW",
-                challengeText: "CHALLENGE",
-                gameInstructions: "Pilota il tuo Data-Pod (trascinandolo) e intercetta i flussi di mercato corretti.",
+                marketMoverChallenge: "ORDER FLOW CAMP",
+                gameInstructions: "Trascina il tuo Collector per intercettare i veri segnali di mercato.",
                 targetsTitle: "TARGETS",
                 avoidTitle: "EVITA",
                 itemSmartMoney: "Smart Money",
-                itemMatchedVol: "Vol. Reali",
+                itemMatchedVol: "Volumi Reali",
                 itemRumors: "Fake News",
                 itemSpoofing: "Spoofing Trap",
                 enterMarket: "INIZIALIZZA TRADING",
                 readTheoryFirst: "Accedi Banca Dati",
-                rekt: "LIQUIDATO",
+                rekt: "LIQUIDATO!",
                 gameOverText: "Capitale azzerato. Profitto finale:",
                 tryAgain: "RIAVVIA SISTEMA",
                 academyTitle: "DATABANK ACADEMY | DAY 8",
@@ -446,8 +466,8 @@
                 itemDescSpoofing: "Allerta: Ordine fantasma (Spoofing). Scudo danneggiato.",
                 tutorLevelUp: "Overclock di sistema. Aumento volatilità del book. Preparati.",
                 tutorMantra: "Analizza il Weight of Money (WOM). Segui i capitali pesanti.",
-                tutorGameOver: "Simulazione fallita. Il tuo algoritmo non ha filtrato il rumore di fondo.",
-                lessonContent: `<h2 class="text-2xl md:text-3xl font-black text-white mb-4 uppercase game-font text-glow-blue">FLOW ANALYSIS: DECIPHERING MARKET MOVERS</h2><p class="text-gray-400 italic text-base md:text-lg border-l-4 border-[#00e5ff] pl-4">Il divario tra un dilettante e un professionista si misura dalla capacità di interpretare le cause di un movimento di prezzo.</p><p class="mt-4">Il principiante legge i giornali sportivi, ascolta le opinioni degli opinionisti e cerca giustificazioni narrative per le quote. Il professionista sa che il mercato è una spietata macchina mangia-informazioni: non ascolta le parole; legge esclusivamente i flussi di capitale (<strong>Order Flow</strong>).</p><p>Nel Betting Exchange, i "Market Movers" non sono eventi, ma grandi sindicati di scommesse e fondi quantitativi con abbastanza capitale da alterare l'equilibrio della liquidità. Seguire lo "Smart Money" significa spostare il focus dal prevedere il risultato sportivo all'analizzare la microstruttura del book (order book).</p><h3>⚖️ WEIGHT OF MONEY (WOM) FORMULA</h3><p>Per quantificare la pressione direzionale del capitale su un prezzo specifico, i software di trading professionale calcolano il Weight of Money. Confronta la liquidità non abbinata (unmatched) in attesa sui tre migliori tick sia per il lato Punta (Back) che Banca (Lay).</p><div class="bg-black/60 p-4 md:p-6 rounded-xl font-mono text-sm md:text-lg text-[#00ff66] text-center my-6 border border-[#00ff66]/30 shadow-[0_0_15px_rgba(0,255,102,0.1)]">WOM_Back (%) = [ ΣV_Back / (ΣV_Back + ΣV_Lay) ] × 100</div><p>Se il WOM pende drasticamente da una parte (es. > 70%), indica un grave squilibrio di liquidità e un potenziale movimento imminente del prezzo.</p><h3>📚 TECHNICAL GLOSSARY:</h3><ul class="list-disc pl-6 space-y-3 mb-6 bg-white/5 p-4 md:p-6 rounded-xl border border-white/10"><li><strong class="text-[#00e5ff]">Market Mover:</strong> Flusso di capitale istituzionale con volume sufficiente per "mangiare" la liquidità disponibile e spostare il prezzo.</li><li><strong class="text-[#00e5ff]">Weight of Money (WOM):</strong> Un indicatore predittivo a brevissimo termine che mostra dove si sta accumulando la pressione finanziaria sulla ladder.</li><li><strong class="text-[#00e5ff]">Spoofing:</strong> L'inserimento di un ordine massiccio sulla ladder con zero intenzione di farlo abbinare, fatto solo per manipolare il WOM.</li><li><strong class="text-[#00e5ff]">Support/Resistance (Wall):</strong> Un livello di prezzo sulla ladder dove è posizionata una quantità anomala di liquidità.</li></ul><h3>🕵️‍♂️ CASE STUDY: THE FOOTPRINT OF SMART MONEY</h3><div class="bg-black/40 p-4 md:p-5 rounded border-l-2 border-[#00ff66]"><p><strong>Mercato:</strong> AC Milan vs. Inter | Esito Finale<br><strong>Azione:</strong> Analisi Pre-Match, 2 ore prima del calcio d'inizio.</p><p><strong>Realtà:</strong> Trapela un rumor non confermato riguardante un infortunio. Il pubblico retail va nel panico e inizia a bancare la squadra di casa. La quota sale da @2.60 a @2.72.</p><p><strong>Analisi dei Volumi:</strong> A quota @2.74, appare improvvisamente un "muro" da €60.000 sul lato Punta (Back). Il prezzo sbatte contro questa resistenza e si ferma completamente.</p><p><strong>Interpretazione:</strong> I trader retail stanno vendendo per paura. Tuttavia, un Market Mover sta assorbendo tutta la liquidità retail sapendo che la quota reale è un'altra. Questo è "Smart Money" che compra valore.</p></div><h3>👻 THE SPOOFING TRAP</h3><p>Non tutto il volume visibile è reale. Un trader dilettante vede un muro da €30.000 su un singolo tick e salta subito nel mercato. Pochi secondi dopo, l'ordine svanisce (cancellazione) e il mercato si muove aggressivamente contro di lui. Mai fidarsi dei volumi non abbinati piazzati troppo lontani dal prezzo corrente.</p><div class="mt-8 md:mt-12 p-6 md:p-8 bg-gradient-to-r from-[#004d2e] to-black border border-[#00ff66] rounded-2xl text-center shadow-[0_0_30px_rgba(0,255,102,0.2)]"><h3 class="text-[#00ff66] text-lg md:text-xl mt-0 tracking-widest">SYSTEM OVERRIDE: CORE MANTRA</h3><p class="text-xl md:text-3xl font-black text-white mt-4 game-font leading-loose text-shadow-glow">"Le news creano le opinioni delle masse.<br><span class="text-[#00ff66]">I volumi muovono il mercato.</span>"</p></div>`
+                tutorGameOver: "Simulazione fallita. Il tuo algoritmo non ha filtrato il rumore.",
+                lessonContent: `<h2>FLOW ANALYSIS: DECIPHERING MARKET MOVERS</h2><p>Il divario tra un dilettante e un professionista si misura dalla capacità di interpretare le cause di un movimento di prezzo.</p><p>Il principiante legge i giornali sportivi, ascolta le opinioni degli opinionisti e cerca giustificazioni narrative per le quote. Il professionista sa che il mercato è una spietata macchina mangia-informazioni: non ascolta le parole; legge esclusivamente i flussi di capitale (<strong>Order Flow</strong>).</p><p>Nel Betting Exchange, i "Market Movers" non sono eventi, ma grandi sindicati di scommesse e fondi quantitativi con abbastanza capitale da alterare l'equilibrio della liquidità. Seguire lo "Smart Money" significa spostare il focus dal prevedere il risultato sportivo all'analizzare la microstruttura del book (order book).</p><h3>⚖️ WEIGHT OF MONEY (WOM) FORMULA</h3><p>Per quantificare la pressione direzionale del capitale su un prezzo specifico, i software di trading calcolano il Weight of Money. Confronta la liquidità non abbinata in attesa sui tre migliori tick sia per il lato Punta che Banca.</p><div class="bg-slate-100 p-4 rounded-xl font-mono text-center my-6 border border-slate-300 text-slate-700 font-bold">WOM_Back (%) = [ ΣV_Back / (ΣV_Back + ΣV_Lay) ] × 100</div><p>Se il WOM pende drasticamente da una parte (es. > 70%), indica un grave squilibrio di liquidità e un potenziale movimento imminente del prezzo.</p><h3>📚 TECHNICAL GLOSSARY:</h3><ul class="list-disc pl-6 space-y-3 mb-6 bg-slate-50 p-5 rounded-xl border border-slate-200"><li><strong class="text-blue-600">Market Mover:</strong> Flusso di capitale istituzionale con volume sufficiente per "mangiare" la liquidità disponibile e spostare il prezzo.</li><li><strong class="text-blue-600">Weight of Money (WOM):</strong> Un indicatore predittivo a brevissimo termine che mostra dove si sta accumulando la pressione finanziaria sulla ladder.</li><li><strong class="text-blue-600">Spoofing:</strong> L'inserimento di un ordine massiccio sulla ladder con zero intenzione di farlo abbinare, fatto solo per manipolare il WOM.</li><li><strong class="text-blue-600">Support/Resistance (Wall):</strong> Un livello di prezzo sulla ladder dove è posizionata una quantità anomala di liquidità.</li></ul><h3>🕵️‍♂️ CASE STUDY: THE FOOTPRINT OF SMART MONEY</h3><div class="bg-blue-50 p-4 rounded-xl border-l-4 border-blue-500 mb-6"><p><strong>Mercato:</strong> AC Milan vs. Inter | Esito Finale<br><strong>Azione:</strong> Analisi Pre-Match, 2 ore prima del calcio d'inizio.</p><p><strong>Realtà:</strong> Trapela un rumor non confermato riguardante un infortunio. Il pubblico retail va nel panico e inizia a bancare la squadra di casa. La quota sale da @2.60 a @2.72.</p><p><strong>Analisi dei Volumi:</strong> A quota @2.74, appare improvvisamente un "muro" da €60.000 sul lato Punta. Il prezzo sbatte contro questa resistenza e si ferma completamente.</p><p><strong>Interpretazione:</strong> I trader retail stanno vendendo per paura. Tuttavia, un Market Mover sta assorbendo tutta la liquidità retail sapendo che la quota reale è un'altra. Questo è "Smart Money" che compra valore.</p></div><h3>👻 THE SPOOFING TRAP</h3><p>Non tutto il volume visibile è reale. Un trader dilettante vede un muro da €30.000 su un singolo tick e salta subito nel mercato. Pochi secondi dopo, l'ordine svanisce (cancellazione) e il mercato si muove aggressivamente contro di lui. Mai fidarsi dei volumi non abbinati piazzati troppo lontani dal prezzo corrente.</p><div class="mt-8 p-6 bg-slate-800 rounded-xl text-center"><h3 class="text-green-400 mt-0 tracking-widest text-sm">CORE MANTRA</h3><p class="text-xl md:text-2xl font-black text-white mt-4 leading-relaxed">"Le news creano le opinioni delle masse.<br>I volumi muovono il mercato."</p></div>`
             }
         };
 
@@ -486,7 +506,7 @@
             }
         }
 
-        // --- 2. AUDIO ENGINE (Tone.js) ---
+        // --- STREAMING_CHUNK: Audio Engine Setup ---
         let synth, errorSynth;
         let audioInitialized = false;
 
@@ -517,13 +537,14 @@
             setTimeout(() => synth.triggerAttackRelease("Gb2", "16n"), 50);
         }
 
-        // --- 3. GAME ENGINE & CANVAS RENDERING ---
+        // --- STREAMING_CHUNK: Game Logic and Canvas Drawing ---
         const canvasContainer = document.getElementById('main-container');
         const canvas = document.getElementById('game-canvas');
         const ctx = canvas.getContext('2d');
         
         let GAME_WIDTH = 0;
         let GAME_HEIGHT = 0;
+        let dpr = window.devicePixelRatio || 1;
         
         const scoreDisplay = document.getElementById('score-display');
         const livesDisplay = document.getElementById('lives-display');
@@ -544,119 +565,95 @@
         let particles = [];
         let screenShake = 0;
 
-        function drawHexagon(x, y, radius, color, glow) {
-            ctx.save();
-            ctx.shadowBlur = glow ? 15 : 0;
-            ctx.shadowColor = color;
-            ctx.beginPath();
-            for (let i = 0; i < 6; i++) {
-                const angle_deg = 60 * i - 30;
-                const angle_rad = Math.PI / 180 * angle_deg;
-                const hx = x + radius * Math.cos(angle_rad);
-                const hy = y + radius * Math.sin(angle_rad);
-                if (i === 0) ctx.moveTo(hx, hy);
-                else ctx.lineTo(hx, hy);
-            }
-            ctx.closePath();
-            
-            let grad = ctx.createRadialGradient(x, y, 0, x, y, radius);
-            grad.addColorStop(0, '#ffffff');
-            grad.addColorStop(0.3, color);
-            grad.addColorStop(1, '#000000');
-            ctx.fillStyle = grad;
-            ctx.fill();
-            
-            ctx.lineWidth = 1.5;
-            ctx.strokeStyle = '#ffffff';
-            ctx.stroke();
-            ctx.restore();
-        }
-
+        // --- STREAMING_CHUNK: Player (Metallic Collector with Acid Green Glow) ---
         class Player {
             constructor() {
-                // Dimensione adattiva: max 120px, oppure il 25% dello schermo su mobile
-                this.width = Math.min(120, window.innerWidth * 0.28);
-                this.height = 45;
-                this.x = 0; // Aggiornato in resize()
-                this.y = 0; // Aggiornato in resize()
+                this.width = Math.min(140, window.innerWidth * 0.35);
+                this.height = 35;
+                this.x = 0; 
+                this.y = 0; 
                 this.targetX = this.x;
                 this.tilt = 0;
+                this.glowAmount = 0;
             }
 
             draw() {
                 ctx.save();
                 ctx.translate(this.x + this.width/2, this.y + this.height/2);
                 
+                // Tilt physics
                 let moveSpeed = this.targetX - (this.x + this.width/2);
                 this.tilt = moveSpeed * 0.08;
                 if(this.tilt > 15) this.tilt = 15;
                 if(this.tilt < -15) this.tilt = -15;
                 ctx.rotate(this.tilt * Math.PI / 180);
 
-                // Thrust Flames
-                let thrustH = 15 + Math.random() * 10;
+                // Fade glow over time
+                if(this.glowAmount > 0) this.glowAmount -= 0.1;
+
+                const acidGreen = '#39ff14';
+
+                // Main Chassis: White/Metallic Grey Gradient
+                const grad = ctx.createLinearGradient(0, -this.height/2, 0, this.height/2);
+                grad.addColorStop(0, '#ffffff'); // White top
+                grad.addColorStop(0.5, '#e2e8f0'); // Slate 200
+                grad.addColorStop(1, '#94a3b8'); // Slate 400
+
+                // Chassis Shadow
                 ctx.shadowBlur = 10;
-                ctx.shadowColor = '#00e5ff';
-                ctx.fillStyle = '#00e5ff';
+                ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                
+                ctx.fillStyle = grad;
                 ctx.beginPath();
-                ctx.moveTo(-this.width/3, 15); ctx.lineTo(-this.width/6, 15 + thrustH); ctx.lineTo(0, 15);
-                ctx.moveTo(0, 15); ctx.lineTo(this.width/6, 15 + thrustH); ctx.lineTo(this.width/3, 15);
+                ctx.roundRect(-this.width/2, -this.height/2, this.width, this.height, 8);
                 ctx.fill();
 
-                // Energy Shield Base (Curved top)
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = '#00ff66';
-                ctx.strokeStyle = '#00ff66';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(-this.width/2, 5);
-                ctx.quadraticCurveTo(0, -30, this.width/2, 5);
-                ctx.stroke();
-
-                // Inner Pod Chassis
+                // Inner dark panel
                 ctx.shadowBlur = 0;
-                ctx.fillStyle = '#111827';
+                ctx.fillStyle = '#0f172a';
                 ctx.beginPath();
-                ctx.moveTo(-this.width/2 + 5, 0);
-                ctx.lineTo(this.width/2 - 5, 0);
-                ctx.lineTo(this.width/2 - 15, 20);
-                ctx.lineTo(-this.width/2 + 15, 20);
-                ctx.closePath();
+                ctx.roundRect(-this.width/2 + 10, -this.height/2 + 5, this.width - 20, this.height - 10, 4);
                 ctx.fill();
-                ctx.strokeStyle = '#374151';
-                ctx.lineWidth = 2;
+
+                // Acid Green Electronics (Laser Net / Lines)
+                ctx.shadowBlur = 10 + (this.glowAmount * 15);
+                ctx.shadowColor = acidGreen;
+                ctx.strokeStyle = acidGreen;
+                ctx.lineWidth = 2 + (this.glowAmount * 2);
+                
+                // Horizontal laser line
+                ctx.beginPath();
+                ctx.moveTo(-this.width/2 + 15, 0);
+                ctx.lineTo(this.width/2 - 15, 0);
                 ctx.stroke();
 
-                // Glowing Core
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = '#00ff66';
-                ctx.fillStyle = '#00ff66';
+                // Thrusters / Cores
+                ctx.fillStyle = acidGreen;
                 ctx.beginPath();
-                ctx.arc(0, 10, 4 + Math.sin(frameCount * 0.2)*1.5, 0, Math.PI*2);
+                ctx.arc(-this.width/2 + 25, 0, 4 + Math.random(), 0, Math.PI*2);
+                ctx.arc(this.width/2 - 25, 0, 4 + Math.random(), 0, Math.PI*2);
                 ctx.fill();
 
                 ctx.restore();
             }
 
             update() {
-                // Movimento estremamente fluido (Lerp)
+                // Smooth Lerp
                 this.x += (this.targetX - (this.x + this.width/2)) * 0.25;
                 
-                // Manteniamo la navicella dentro i bordi del canvas
+                // Boundary Lock
                 if (this.x < 0) this.x = 0;
                 if (this.x + this.width > GAME_WIDTH) this.x = GAME_WIDTH - this.width;
                 
                 this.draw();
                 
-                if (frameCount % 3 === 0) {
+                // Acid green thruster trails when moving
+                if (Math.abs(this.targetX - (this.x + this.width/2)) > 5 && frameCount % 3 === 0) {
                     particles.push(new Particle(
-                        this.x + this.width/2 + (Math.random()*30-15), 
+                        this.x + this.width/2 + (Math.random()*40-20), 
                         this.y + this.height - 5, 
-                        '#00e5ff', 
-                        2, 
-                        0.1, 
-                        (Math.random() - 0.5), 
-                        (Math.random() * 2 + 2)
+                        '#39ff14', // Acid green trails
+                        2, 0.1, (Math.random() - 0.5), (Math.random() * 2 + 1)
                     ));
                 }
             }
@@ -665,12 +662,14 @@
         let player = null;
 
         function resize() {
-            // Il canvas prende la dimensione ESATTA del suo contenitore (main-container)
-            // in modo da non sbordare mai sotto o sopra.
+            // Adaptive sizing based on actual container bounds (prevents scrollbars)
             GAME_WIDTH = canvasContainer.clientWidth;
             GAME_HEIGHT = canvasContainer.clientHeight;
-            canvas.width = GAME_WIDTH;
-            canvas.height = GAME_HEIGHT;
+            
+            // Retina display support
+            canvas.width = GAME_WIDTH * dpr;
+            canvas.height = GAME_HEIGHT * dpr;
+            ctx.scale(dpr, dpr);
             
             if(!player) {
                 player = new Player();
@@ -678,24 +677,23 @@
                 player.targetX = player.x + player.width/2;
             }
             
-            // Adatta le proporzioni al resize e posiziona la nave in fondo
-            player.width = Math.min(120, GAME_WIDTH * 0.28);
-            player.y = GAME_HEIGHT - player.height - 20; 
+            player.width = Math.min(140, GAME_WIDTH * 0.35);
+            player.y = GAME_HEIGHT - player.height - 30; // Position slightly above bottom
         }
         
         window.addEventListener('resize', resize);
 
+        // --- STREAMING_CHUNK: Items Setup ---
         const ITEM_TYPES = [
-            { type: 'good', icon: '💰', color: '#00ff66', labelI18n: 'itemSmartMoney', points: 50, descI18n: "itemDescSmartMoney" },
-            { type: 'good', icon: '📊', color: '#00e5ff', labelI18n: 'itemMatchedVol', points: 25, descI18n: "itemDescMatchedVol" },
-            { type: 'bad', icon: '📰', color: '#ff0055', labelI18n: 'itemRumors', damage: 1, descI18n: "itemDescRumors" },
-            { type: 'bad', icon: '👻', color: '#ff6600', labelI18n: 'itemSpoofing', damage: 1, descI18n: "itemDescSpoofing" }
+            { type: 'good', key: 'smartMoney', labelI18n: 'itemSmartMoney', points: 50, descI18n: "itemDescSmartMoney", color: '#fbbf24' },
+            { type: 'good', key: 'matchedVol', labelI18n: 'itemMatchedVol', points: 25, descI18n: "itemDescMatchedVol", color: '#3b82f6' },
+            { type: 'bad', key: 'rumors', labelI18n: 'itemRumors', damage: 1, descI18n: "itemDescRumors", color: '#f43f5e' },
+            { type: 'bad', key: 'spoofing', labelI18n: 'itemSpoofing', damage: 1, descI18n: "itemDescSpoofing", color: '#f97316' }
         ];
 
         class FallingItem {
             constructor() {
-                // Adattiamo la grandezza dei token per schermi piccoli
-                this.radius = Math.min(22, GAME_WIDTH * 0.05 + 10);
+                this.radius = Math.max(18, Math.min(26, GAME_WIDTH * 0.05 + 8));
                 this.x = Math.random() * (GAME_WIDTH - this.radius*2) + this.radius;
                 this.y = -50;
                 
@@ -708,42 +706,41 @@
                 this.baseX = this.x;
                 this.swaySpeed = Math.random() * 0.03 + 0.02;
                 this.swayOffset = Math.random() * Math.PI * 2;
-                this.speed = gameSpeed + (Math.random() * 2.5);
+                this.speed = gameSpeed + (Math.random() * 2);
                 this.markedForDeletion = false;
-                this.rotation = 0;
             }
 
             draw() {
                 ctx.save();
                 ctx.translate(this.x, this.y);
-                this.rotation += 0.05;
-                ctx.rotate(this.rotation);
                 
-                drawHexagon(0, 0, this.radius, this.config.color, true);
+                // Draw SVG Image
+                if(images[this.config.key] && images[this.config.key].complete) {
+                    ctx.drawImage(images[this.config.key], -this.radius, -this.radius, this.radius*2, this.radius*2);
+                } else {
+                    // Fallback Circle
+                    ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI*2);
+                    ctx.fillStyle = this.config.color; ctx.fill();
+                }
                 
-                ctx.rotate(-this.rotation);
-                ctx.shadowBlur = 0;
-                ctx.font = `${this.radius}px Arial`;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(this.config.icon, 0, 2);
                 ctx.restore();
 
-                ctx.font = '9px Orbitron';
-                ctx.fillStyle = this.config.color;
+                // Draw Text Label below item
+                ctx.font = 'bold 10px Inter';
+                ctx.fillStyle = '#ffffff';
                 ctx.textAlign = 'center';
-                ctx.shadowBlur = 5;
-                ctx.shadowColor = this.config.color;
-                const label = translations[currentLang][this.config.labelI18n].toUpperCase();
+                ctx.shadowBlur = 4;
+                ctx.shadowColor = 'rgba(0,0,0,0.8)';
+                const label = translations[currentLang][this.config.labelI18n];
                 ctx.fillText(label, this.x, this.y + this.radius + 12);
+                ctx.shadowBlur = 0; // reset
             }
 
             update() {
                 this.y += this.speed;
-                // Oscillazione fluida
-                this.x = this.baseX + Math.sin(frameCount * this.swaySpeed + this.swayOffset) * 25;
+                this.x = this.baseX + Math.sin(frameCount * this.swaySpeed + this.swayOffset) * 20;
                 
-                // Collision Detection: verifico sovrapposizione tra cerchio(item) e rettangolo(player)
+                // Bounding Box Collision
                 if (this.y + this.radius > player.y && 
                     this.y - this.radius < player.y + player.height &&
                     this.x + this.radius > player.x && 
@@ -753,19 +750,16 @@
                     handleCollision(this.config);
                 }
                 
-                // Fuori dallo schermo
-                if (this.y > GAME_HEIGHT + 50) {
-                    this.markedForDeletion = true;
-                }
+                if (this.y > GAME_HEIGHT + 50) this.markedForDeletion = true;
+                
                 this.draw();
             }
         }
 
+        // --- STREAMING_CHUNK: Particles ---
         class Particle {
             constructor(x, y, color, sizeBase=5, decayRate=null, vx=null, vy=null) {
-                this.x = x;
-                this.y = y;
-                this.color = color;
+                this.x = x; this.y = y; this.color = color;
                 this.size = Math.random() * sizeBase + 1;
                 this.speedX = vx !== null ? vx : (Math.random() * 8 - 4);
                 this.speedY = vy !== null ? vy : (Math.random() * 8 - 4);
@@ -773,75 +767,51 @@
                 this.decay = decayRate || (Math.random() * 0.04 + 0.02);
             }
             update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                this.life -= this.decay;
+                this.x += this.speedX; this.y += this.speedY; this.life -= this.decay;
                 ctx.globalAlpha = Math.max(0, this.life);
-                ctx.shadowBlur = 8;
-                ctx.shadowColor = this.color;
                 ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-                ctx.fill();
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
                 ctx.globalAlpha = 1.0;
-                ctx.shadowBlur = 0;
             }
         }
 
         function createExplosion(x, y, color, count=15) {
-            for(let i=0; i<count; i++) {
-                particles.push(new Particle(x, y, color));
-            }
+            for(let i=0; i<count; i++) particles.push(new Particle(x, y, color));
         }
 
-        // --- SISTEMA DI INTERAZIONE PERFETTA ---
+        // --- STREAMING_CHUNK: Interactions & Loop ---
         function getPointerTarget(e) {
             const rect = canvas.getBoundingClientRect();
-            // Trova la X relativa al canvas sia da mouse che touch
             const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-            // Calcola la posizione precisa e compensa per centrare la navicella sotto il dito
             return clientX - rect.left;
         }
 
         function movePlayer(e) {
             if (!isPlaying || !player) return;
             let target = getPointerTarget(e);
-            
-            // Limitiamo il target ai bordi
             if(target < 0) target = 0;
             if(target > GAME_WIDTH) target = GAME_WIDTH;
-            
             player.targetX = target;
         }
 
-        // Bind degli eventi direttamente sul canvas
         canvas.addEventListener('mousemove', movePlayer);
-        // Passive: false permette il preventDefault() per bloccare lo scrolling della pagina durante il gioco
-        canvas.addEventListener('touchmove', (e) => { 
-            e.preventDefault(); 
-            movePlayer(e); 
-        }, {passive: false});
-        canvas.addEventListener('touchstart', (e) => {
-            // Un tocco per saltare direttamente nella posizione
-            movePlayer(e); 
-        }, {passive: true});
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); movePlayer(e); }, {passive: false});
+        canvas.addEventListener('touchstart', (e) => { movePlayer(e); }, {passive: true});
 
-
-        // --- LOGICA DI GIOCO ---
         function handleCollision(itemConfig) {
             const desc = translations[currentLang][itemConfig.descI18n];
             if (itemConfig.type === 'good') {
                 score += itemConfig.points;
                 scoreDisplay.innerText = score;
                 playCatchSound();
+                player.glowAmount = 1.0; // Flash acid green on catch
                 createExplosion(player.x + player.width/2, player.y, itemConfig.color, 12);
                 
                 if(Math.random() > 0.6) updateTutor(desc, 'positive');
                 
-                // Difficoltà incrementale
                 if (score > 0 && score % 250 === 0) {
-                    gameSpeed += 0.6;
-                    spawnRate = Math.max(20, spawnRate - 5); // limite minimo di frame tra uno spawn e l'altro
+                    gameSpeed += 0.5;
+                    spawnRate = Math.max(25, spawnRate - 5);
                     updateTutor(translations[currentLang].tutorLevelUp, 'neutral');
                 }
             } else {
@@ -851,14 +821,10 @@
                 createExplosion(player.x + player.width/2, player.y, itemConfig.color, 25);
                 updateTutor(desc, 'negative');
                 
-                // Effetto Flash & Shake
+                // Screen shake trigger
                 screenShake = 12;
-                document.body.style.backgroundColor = '#300';
-                setTimeout(() => document.body.style.backgroundColor = 'var(--dark-bg)', 100);
 
-                if (lives <= 0) {
-                    gameOver(desc);
-                }
+                if (lives <= 0) gameOver(desc);
             }
         }
 
@@ -866,24 +832,18 @@
             if(!tutorMessage) return;
             tutorMessage.innerHTML = text; 
             const bubble = tutorMessage.parentElement;
-            bubble.style.borderLeftColor = type === 'positive' ? '#00ff66' : 
-                                           type === 'negative' ? '#ff0055' : '#00e5ff';
             
-            bubble.style.transform = 'translateX(4px)';
-            setTimeout(() => bubble.style.transform = 'translateX(-4px)', 50);
-            setTimeout(() => bubble.style.transform = 'translateX(0)', 100);
+            bubble.style.borderLeftColor = type === 'positive' ? '#22c55e' : 
+                                           type === 'negative' ? '#f43f5e' : '#39ff14';
+            
+            bubble.style.transform = 'translateY(-4px)';
+            setTimeout(() => bubble.style.transform = 'translateY(0)', 150);
         }
 
         function resetGame() {
-            score = 0;
-            lives = 3;
-            gameSpeed = 3.5;
-            spawnRate = 60; // Su mobile potrebbe esserci calo di FPS, regoliamo logicamente lo spawn
-            items = [];
-            particles = [];
-            screenShake = 0;
-            scoreDisplay.innerText = score;
-            livesDisplay.innerText = lives;
+            score = 0; lives = 3; gameSpeed = 3.5; spawnRate = 60;
+            items = []; particles = []; screenShake = 0;
+            scoreDisplay.innerText = score; livesDisplay.innerText = lives;
             if(player) {
                 player.x = GAME_WIDTH / 2 - player.width / 2;
                 player.targetX = player.x + player.width / 2;
@@ -916,11 +876,8 @@
             ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
             
             ctx.save();
-            // Screen Shake Effect
             if (screenShake > 0) {
-                const dx = (Math.random() - 0.5) * screenShake;
-                const dy = (Math.random() - 0.5) * screenShake;
-                ctx.translate(dx, dy);
+                ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
                 screenShake *= 0.8;
                 if (screenShake < 0.5) screenShake = 0;
             }
@@ -936,21 +893,16 @@
             if(player) player.update();
             
             ctx.restore();
-            
             frameCount++;
             animationId = requestAnimationFrame(gameLoop);
         }
 
-        // --- 4. INITIALIZATION & EVENTS ---
+        // --- STREAMING_CHUNK: Bootstrapping ---
         document.getElementById('btn-start').addEventListener('click', startGame);
         document.getElementById('btn-restart').addEventListener('click', startGame);
         
         const lessonModal = document.getElementById('lesson-modal');
-        const openLessonBtns = [
-            document.getElementById('btn-lesson'), 
-            document.getElementById('btn-lesson-mobile'), 
-            document.getElementById('btn-read-theory-menu')
-        ];
+        const openLessonBtns = [document.getElementById('btn-lesson'), document.getElementById('btn-lesson-mobile'), document.getElementById('btn-read-theory-menu')];
         const closeLessonBtn = document.getElementById('btn-close-lesson');
 
         openLessonBtns.forEach(btn => {
@@ -958,20 +910,18 @@
         });
         closeLessonBtn.addEventListener('click', () => lessonModal.classList.add('hidden'));
 
-        // Bootstrap
         detectLanguage();
         setLanguage(currentLang);
         
-        // Setup the initial canvas dimensions correctly BEFORE starting
+        // Timeout to allow DOM/styles to paint before grabbing height
         setTimeout(() => {
             resize();
             if(player) player.draw();
-        }, 100);
+        }, 150);
 
         document.querySelectorAll('.flag-icon').forEach(flag => {
             flag.addEventListener('click', () => setLanguage(flag.getAttribute('data-lang')));
         });
-
     </script>
 </body>
 </html>
