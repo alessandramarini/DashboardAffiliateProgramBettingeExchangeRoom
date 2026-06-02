@@ -43,7 +43,7 @@
         
         body { 
             display: flex; flex-direction: column;
-            opacity: 0; transition: opacity 0.4s ease;
+            opacity: 0; transition: opacity 0.3s ease;
         }
         body.ready { opacity: 1; }
         
@@ -55,29 +55,33 @@
             width: 100%; height: 100%; max-width: 1536px; margin: 0 auto;
         }
         
-        /* Desktop Layout */
+        /* Desktop Layout (Landscape) */
         @media (min-width: 1024px) {
-            body { padding: 2dvh 2vw; justify-content: center; align-items: center; background-image: radial-gradient(circle at top right, #e2e8f0 0%, #f1f5f9 100%);}
-            #app-wrapper { flex-direction: row; gap: 20px; height: calc(100dvh - 4dvh); max-height: 950px; }
+            body { padding: clamp(10px, 2dvh, 30px) clamp(10px, 2vw, 40px); justify-content: center; align-items: center; background-image: radial-gradient(circle at top right, #e2e8f0 0%, #f1f5f9 100%);}
+            #app-wrapper { flex-direction: row; gap: 24px; height: calc(100dvh - 4dvh); max-height: 900px; }
             .panel { background: var(--panel-bg); border-radius: 24px; box-shadow: 0 20px 40px -15px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.05); overflow: hidden; display: flex; flex-direction: column; min-height: 0;}
             #left-pane { width: 38%; }
             #right-pane { width: 62%; border-left: 1px solid #e2e8f0; }
         }
         
-        /* Mobile Layout */
+        /* Mobile Layout (Portrait) */
         @media (max-width: 1023px) {
             .panel { background: var(--panel-bg); display: flex; flex-direction: column; }
             #left-pane { 
                 flex: 0 0 auto; 
-                max-height: 38%; 
+                max-height: 38dvh; /* Proportional split */
                 z-index: 10; 
                 border-bottom: 1px solid #e2e8f0; 
                 box-shadow: 0 4px 12px -4px rgba(0,0,0,0.08);
                 display: flex; flex-direction: column; min-height: 0;
             }
-            #mentor-scroll-area { overflow-y: auto; flex: 1 1 auto; min-height: 0; padding: 12px; }
-            #right-pane { flex: 1 1 0; min-height: 0; background: #f8fafc; }
-            #trading-dashboard { overflow-y: auto; flex: 1 1 auto; min-height: 0; padding: 12px; padding-bottom: 24px; display: flex; flex-direction: column; gap: 12px; }
+            #mentor-scroll-area { overflow-y: auto; flex: 1 1 auto; min-height: 0; padding: clamp(8px, 2vh, 16px); }
+            #right-pane { flex: 1 1 0; min-height: 0; background: #f8fafc; display: flex; flex-direction: column;}
+            #trading-dashboard { 
+                overflow-y: auto; flex: 1 1 auto; min-height: 0; 
+                padding: clamp(8px, 2vh, 16px); padding-bottom: 24px; 
+                display: flex; flex-direction: column; gap: clamp(8px, 1.5vh, 16px); 
+            }
             
             /* Native Bottom Sheet Style for Receipt */
             #receipt-modal { align-items: flex-end; padding: 0; }
@@ -98,16 +102,16 @@
         @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0 rgba(19, 170, 227, 0.6); } 100% { box-shadow: 0 0 0 15px rgba(19, 170, 227, 0); } }
         .pulse-goal { animation: pulse-blue 1.5s infinite; }
 
-        @keyframes slideInDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .slide-in { animation: slideInDown 0.4s ease-out forwards; }
+        @keyframes slideInDown { from { transform: translateY(-15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .slide-in { animation: slideInDown 0.3s ease-out forwards; }
 
         /* Custom Elements */
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
-        /* MODAL FIX: Added opacity and pointer events transition for overlay */
-        .modal-overlay { transition: opacity 0.3s ease; backdrop-filter: blur(8px); background-color: rgba(15, 23, 42, 0.7); }
+        /* Modal Settings */
+        .modal-overlay { transition: opacity 0.3s ease; backdrop-filter: blur(8px); background-color: rgba(15, 23, 42, 0.75); }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         
         .modal-content { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); width: 100%; display: flex; flex-direction: column;}
@@ -117,19 +121,25 @@
         }
         .modal-body { overflow-y: auto; flex-grow: 1; overscroll-behavior: contain; }
         
-        /* HD Flags */
-        .flag-hd { width: 24px; height: 16px; object-fit: cover; border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.25); display: block;}
-        .lang-btn { display: flex; align-items: center; justify-content: center; padding: 4px; border-radius: 6px; border: 2px solid transparent; opacity: 0.5; transition: all 0.2s; cursor: pointer; background: transparent;}
+        /* HD Flags (SVG optimized) */
+        .flag-wrapper { display: inline-flex; overflow: hidden; border-radius: 3px; box-shadow: 0 1px 3px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); }
+        .flag-hd { width: 22px; height: 15px; object-fit: cover; display: block; aspect-ratio: 22/15;}
+        
+        .lang-btn { display: flex; align-items: center; justify-content: center; padding: 4px; border-radius: 6px; border: 2px solid transparent; opacity: 0.4; transition: all 0.2s; cursor: pointer; background: transparent;}
         .lang-btn:hover { opacity: 0.9; background: rgba(0,0,0,0.05); }
         .lang-btn.active { opacity: 1; border-color: #cbd5e1; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transform: scale(1.05);}
         
-        .step-dot { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; background: #e2e8f0; color: #64748b; transition: all 0.3s; flex-shrink: 0; }
-        @media (min-width: 768px) { .step-dot { width: 22px; height: 22px; font-size: 11px; } }
+        .step-dot { width: clamp(16px, 2vw, 22px); height: clamp(16px, 2vw, 22px); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: clamp(9px, 1.2vw, 11px); font-weight: bold; background: #e2e8f0; color: #64748b; transition: all 0.3s; flex-shrink: 0; }
         .step-dot.active { background: var(--zth-green); color: white; box-shadow: 0 0 0 4px rgba(0,168,67,0.2); }
         .step-dot.done { background: #0f172a; color: white; }
 
-        .odds-box { transition: all 0.3s; }
-        .odds-changed { background-color: #fef08a; transform: scale(1.05); }
+        .odds-box { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .odds-changed { background-color: #fef08a; transform: scale(1.08); color: #854d0e; }
+        
+        /* Typography Clamp Adjustments */
+        .clamp-text-base { font-size: clamp(12px, 1.5vh, 16px); }
+        .clamp-text-sm { font-size: clamp(10px, 1.2vh, 14px); }
+        .clamp-text-xs { font-size: clamp(9px, 1vh, 12px); }
     </style>
 </head>
 <body>
@@ -149,15 +159,15 @@
             <div id="r-badge" class="px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest bg-slate-200 text-slate-700 border border-slate-300">Exit Type</div>
         </div>
         
-        <div class="modal-body p-3 md:p-6 flex flex-col gap-3 md:gap-4 text-slate-700 text-sm">
+        <div class="modal-body p-3 md:p-5 flex flex-col gap-3 md:gap-4 text-slate-700 text-sm">
             
-            <div class="flex justify-between items-end border-b border-slate-100 pb-3">
+            <div class="flex justify-between items-end border-b border-slate-100 pb-2 md:pb-3">
                 <div class="flex flex-col">
-                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1" data-i18n="rec_hedge">Hedge Order</span>
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5 md:mb-1" data-i18n="rec_hedge">Hedge Order</span>
                     <span class="text-slate-800 text-sm md:text-lg"><span data-i18n="act_lay">LAY</span>: <span id="r-hedge-stake" class="font-black text-slate-900">€0</span> <span class="text-slate-400 font-normal">@</span> <span id="r-hedge-odds" class="font-black text-pink-600">0.00</span></span>
                 </div>
                 <div class="text-right flex flex-col">
-                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1" data-i18n="rec_type">Method</span>
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5 md:mb-1" data-i18n="rec_type">Method</span>
                     <span id="r-method" class="font-black px-2 py-1 rounded text-xs shadow-sm border bg-slate-100">MANUAL</span>
                 </div>
             </div>
@@ -176,7 +186,7 @@
                 </div>
 
                 <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 text-[10px] md:text-[11px] leading-tight">
-                    <h4 class="font-black text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1" data-i18n="rec_calc_title">Calculations</h4>
+                    <h4 class="font-black text-slate-700 uppercase tracking-wider mb-1.5 md:mb-2 flex items-center gap-1" data-i18n="rec_calc_title">Calculations</h4>
                     <div class="flex flex-col gap-1.5 font-mono-nums text-slate-600">
                         <div class="flex justify-between">
                             <span data-i18n="rec_ideal">Ideal Green Up (Gross):</span>
@@ -204,7 +214,7 @@
             </div>
         </div>
         
-        <div class="p-3 md:p-5 bg-slate-50 border-t border-slate-200 shrink-0">
+        <div class="p-3 md:p-4 bg-slate-50 border-t border-slate-200 shrink-0">
             <button onclick="App.closeReceipt()" class="w-full bg-slate-900 text-white font-black px-4 py-3 md:py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-md text-xs md:text-sm uppercase tracking-wider" id="btn-cont-lesson" data-i18n="rec_btn_cont">Continue Lesson</button>
         </div>
     </div>
@@ -229,10 +239,11 @@
                     <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                 </button>
                 <div class="flex gap-0.5 bg-slate-100/80 p-1 rounded-lg border border-slate-200">
-                    <button class="lang-btn" onclick="App.setLang('en')" id="lang-en"><img src="https://flagcdn.com/w40/gb.png" class="flag-hd" alt="EN"></button>
-                    <button class="lang-btn" onclick="App.setLang('es')" id="lang-es"><img src="https://flagcdn.com/w40/es.png" class="flag-hd" alt="ES"></button>
-                    <button class="lang-btn" onclick="App.setLang('pt')" id="lang-pt"><img src="https://flagcdn.com/w40/pt.png" class="flag-hd" alt="PT"></button>
-                    <button class="lang-btn active" onclick="App.setLang('it')" id="lang-it"><img src="https://flagcdn.com/w40/it.png" class="flag-hd" alt="IT"></button>
+                    <!-- ORDER: EN, ES, PT, IT with SVG HD Flags -->
+                    <button class="lang-btn" onclick="App.setLang('en')" id="lang-en"><div class="flag-wrapper"><img src="https://flagcdn.com/gb.svg" class="flag-hd" alt="EN"></div></button>
+                    <button class="lang-btn" onclick="App.setLang('es')" id="lang-es"><div class="flag-wrapper"><img src="https://flagcdn.com/es.svg" class="flag-hd" alt="ES"></div></button>
+                    <button class="lang-btn" onclick="App.setLang('pt')" id="lang-pt"><div class="flag-wrapper"><img src="https://flagcdn.com/pt.svg" class="flag-hd" alt="PT"></div></button>
+                    <button class="lang-btn active" onclick="App.setLang('it')" id="lang-it"><div class="flag-wrapper"><img src="https://flagcdn.com/it.svg" class="flag-hd" alt="IT"></div></button>
                 </div>
             </div>
         </header>
@@ -251,45 +262,45 @@
                 </div>
             </div>
             
-            <div class="bg-white border border-slate-200 rounded-xl p-3 md:p-5 text-[11px] md:text-sm text-slate-700 leading-relaxed shadow-sm mb-2 md:mb-6 relative shrink-0">
+            <div class="bg-white border border-slate-200 rounded-xl p-3 md:p-5 clamp-text-sm text-slate-700 leading-relaxed shadow-sm mb-2 md:mb-6 relative shrink-0">
                 <div class="absolute -left-1.5 top-3 md:top-4 w-3 h-3 bg-white border-l border-t border-slate-200 rotate-[-45deg]"></div>
                 <div id="mentor-txt" class="font-medium">Loading lesson...</div>
             </div>
 
-            <!-- TUTORIAL STEPS (Hidden on Mobile) -->
+            <!-- TUTORIAL STEPS (Hidden on Mobile for Space) -->
             <div class="hidden lg:flex flex-col gap-3 md:gap-4 pb-2 mt-2">
                 <span class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-200 pb-2" data-i18n="steps_title">Lesson Checklist</span>
                 
                 <div class="flex items-center gap-3 opacity-50 transition-opacity" id="step-1">
                     <div class="step-dot" id="dot-1">1</div>
-                    <span class="text-[12px] md:text-sm font-bold text-slate-700" data-i18n="step_1">Review Open Position</span>
+                    <span class="clamp-text-sm font-bold text-slate-700" data-i18n="step_1">Review Open Position</span>
                 </div>
                 
                 <div class="flex items-center gap-3 opacity-50 transition-opacity" id="step-2">
                     <div class="step-dot" id="dot-2">2</div>
-                    <span class="text-[12px] md:text-sm font-bold text-slate-700" data-i18n="step_2">Simulate Goal (Market Move)</span>
+                    <span class="clamp-text-sm font-bold text-slate-700" data-i18n="step_2">Simulate Goal (Market Move)</span>
                 </div>
                 
                 <div class="flex items-center gap-3 opacity-50 transition-opacity" id="step-3">
                     <div class="step-dot" id="dot-3">3</div>
-                    <span class="text-[12px] md:text-sm font-bold text-slate-700" data-i18n="step_3">Test the "Cash Out" Trap</span>
+                    <span class="clamp-text-sm font-bold text-slate-700" data-i18n="step_3">Test the "Cash Out" Trap</span>
                 </div>
                 
                 <div class="flex items-center gap-3 opacity-50 transition-opacity" id="step-4">
                     <div class="step-dot" id="dot-4">4</div>
-                    <span class="text-[12px] md:text-sm font-bold text-slate-700" data-i18n="step_4">Execute Perfect Green Up</span>
+                    <span class="clamp-text-sm font-bold text-slate-700" data-i18n="step_4">Execute Perfect Green Up</span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- RIGHT PANEL: TRADING DASHBOARD -->
-    <div id="right-pane" class="panel bg-slate-100/50 relative flex flex-col border-t lg:border-t-0 lg:border-l border-slate-200">
+    <div id="right-pane" class="panel bg-slate-100/50 relative border-t lg:border-t-0 lg:border-l border-slate-200">
         
         <!-- HEADER (BANKROLL) -->
         <div class="bg-white flex justify-between items-center px-3 py-2 md:px-4 md:py-4 border-b border-slate-200 shrink-0 shadow-sm z-10">
             <div class="flex flex-col">
-                <h2 class="font-black text-slate-900 tracking-tight text-[12px] md:text-base leading-tight" data-i18n="dash_title">Trading Dashboard</h2>
+                <h2 class="font-black text-slate-900 tracking-tight clamp-text-base leading-tight" data-i18n="dash_title">Trading Dashboard</h2>
                 <p class="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5" data-i18n="dash_sub">Real Madrid vs Barcelona</p>
             </div>
             <div class="flex flex-col items-end bg-slate-50 px-2 py-1 md:px-3 md:py-1.5 rounded-lg border border-slate-200">
@@ -310,12 +321,12 @@
                     </span>
                     <span class="text-[8px] md:text-[10px] font-bold text-slate-500" data-i18n="pos_market">Match Odds</span>
                 </div>
-                <div class="p-3 md:p-4 flex flex-col md:flex-row justify-between gap-3 md:gap-4">
+                <div class="p-3 md:p-4 flex flex-col md:flex-row justify-between gap-2 md:gap-4">
                     <div>
-                        <h3 class="font-black text-sm md:text-lg text-slate-900 leading-tight" data-i18n="pos_team">Real Madrid</h3>
+                        <h3 class="font-black clamp-text-base text-slate-900 leading-tight" data-i18n="pos_team">Real Madrid</h3>
                         <div class="flex items-center gap-2 mt-1">
                             <span class="px-1.5 py-0.5 bg-[var(--bf-blue-bg)] text-[#0369a1] text-[9px] md:text-[10px] font-black rounded border border-blue-200 uppercase" data-i18n="act_back">BACK</span>
-                            <span class="font-mono-nums font-bold text-[11px] md:text-sm text-slate-700" data-i18n="pos_stake">Stake: €1000 @ 3.00</span>
+                            <span class="font-mono-nums font-bold clamp-text-xs text-slate-700" data-i18n="pos_stake">Stake: €1000 @ 3.00</span>
                         </div>
                     </div>
                     <div class="flex gap-3 md:gap-6 bg-slate-50 p-2 md:p-3 rounded-lg border border-slate-100">
@@ -341,10 +352,10 @@
                     <span id="mkt-status" class="text-[9px] md:text-[10px] font-bold text-slate-500" data-i18n="mkt_score_0">0-0 (30')</span>
                 </div>
                 
-                <div class="p-3 md:p-4 flex flex-col items-center justify-center gap-3 md:gap-4 py-4 md:py-6">
+                <div class="p-3 md:p-4 flex flex-col items-center justify-center gap-2 md:gap-4 py-3 md:py-6">
                     
                     <div id="action-trigger-zone" class="w-full flex justify-center mb-1 md:mb-2 transition-all">
-                        <button id="btn-goal" onclick="Trade.simulateGoal()" class="bg-[#0369a1] hover:bg-[#0284c7] text-white font-black px-4 py-2.5 md:px-6 md:py-3 rounded-xl shadow-lg transform transition-all hover:scale-105 active:scale-95 text-xs md:text-sm uppercase tracking-widest flex items-center gap-2 pulse-goal">
+                        <button id="btn-goal" onclick="Trade.simulateGoal()" class="bg-[#0369a1] hover:bg-[#0284c7] text-white font-black px-4 py-2.5 md:px-6 md:py-3 rounded-xl shadow-lg transform transition-all hover:scale-105 active:scale-95 clamp-text-sm uppercase tracking-widest flex items-center gap-2 pulse-goal">
                             ⚽ <span data-i18n="btn_goal">Real Madrid Scores!</span>
                         </button>
                     </div>
@@ -352,14 +363,14 @@
                     <div class="flex items-center gap-3 md:gap-4 w-full justify-center">
                         <div class="flex flex-col items-center w-20 md:w-32">
                             <span class="text-[9px] md:text-[10px] font-bold text-[#0369a1] uppercase mb-1" data-i18n="ob_back">Back</span>
-                            <div id="odds-back" class="odds-box w-full bg-[var(--bf-blue-bg)] border border-blue-200 rounded-lg py-2 md:py-3 flex justify-center items-center font-mono-nums font-black text-xl md:text-3xl text-slate-800 shadow-sm">
+                            <div id="odds-back" class="odds-box w-full bg-[var(--bf-blue-bg)] border border-blue-200 rounded-lg py-1.5 md:py-3 flex justify-center items-center font-mono-nums font-black text-lg md:text-3xl text-slate-800 shadow-sm">
                                 3.00
                             </div>
                         </div>
                         
                         <div class="flex flex-col items-center w-20 md:w-32">
                             <span class="text-[9px] md:text-[10px] font-bold text-[#be123c] uppercase mb-1" data-i18n="ob_lay">Lay</span>
-                            <div id="odds-lay" class="odds-box w-full bg-[var(--bf-pink-bg)] border border-pink-200 rounded-lg py-2 md:py-3 flex justify-center items-center font-mono-nums font-black text-xl md:text-3xl text-slate-800 shadow-sm">
+                            <div id="odds-lay" class="odds-box w-full bg-[var(--bf-pink-bg)] border border-pink-200 rounded-lg py-1.5 md:py-3 flex justify-center items-center font-mono-nums font-black text-lg md:text-3xl text-slate-800 shadow-sm">
                                 3.05
                             </div>
                         </div>
@@ -368,44 +379,44 @@
             </div>
 
             <!-- MODULE 3: HEDGING OPTIONS -->
-            <div id="hedging-zone" class="hidden flex-col md:flex-row gap-3 md:gap-4 mt-1 shrink-0">
+            <div id="hedging-zone" class="hidden flex-col md:flex-row gap-2 md:gap-4 mt-1 shrink-0">
                 
-                <div class="flex-1 bg-white rounded-xl border-2 border-yellow-300 shadow-md p-3 md:p-4 flex flex-col justify-between slide-in" style="animation-delay: 0.1s;">
+                <div class="flex-1 bg-white rounded-xl border-2 border-yellow-300 shadow-md p-2 md:p-4 flex flex-col justify-between slide-in" style="animation-delay: 0.1s;">
                     <div>
-                        <div class="flex items-center gap-2 mb-1.5 md:mb-2">
+                        <div class="flex items-center gap-2 mb-1 md:mb-2">
                             <span class="text-base md:text-xl">⚠️</span>
-                            <h4 class="font-black text-slate-800 text-[11px] md:text-sm uppercase tracking-widest" data-i18n="hedge_trap_title">The Broker's Trap</h4>
+                            <h4 class="font-black text-slate-800 text-[10px] md:text-sm uppercase tracking-widest" data-i18n="hedge_trap_title">The Broker's Trap</h4>
                         </div>
-                        <p class="text-[10px] md:text-[11px] text-slate-500 mb-3 md:mb-4 leading-relaxed" data-i18n="hedge_trap_desc">Automated 1-click exit. Fast, but crosses the spread to guarantee execution, charging a hidden tax.</p>
+                        <p class="text-[9px] md:text-[11px] text-slate-500 mb-2 md:mb-4 leading-relaxed" data-i18n="hedge_trap_desc">Automated 1-click exit. Fast, but crosses the spread to guarantee execution, charging a hidden tax.</p>
                     </div>
-                    <button id="btn-cashout" onclick="Trade.executeCashOut()" class="w-full bg-[var(--broker-yellow)] hover:bg-yellow-500 text-slate-900 font-black px-3 py-3 md:px-4 md:py-4 rounded-xl shadow-md transition-all text-xs md:text-sm uppercase tracking-wider flex flex-col items-center justify-center pulse-cashout border border-yellow-500">
+                    <button id="btn-cashout" onclick="Trade.executeCashOut()" class="w-full bg-[var(--broker-yellow)] hover:bg-yellow-500 text-slate-900 font-black px-2 py-2.5 md:px-4 md:py-4 rounded-xl shadow-md transition-all clamp-text-xs uppercase tracking-wider flex flex-col items-center justify-center pulse-cashout border border-yellow-500">
                         <span data-i18n="btn_cashout">CASH OUT</span>
-                        <span class="font-mono-nums text-base md:text-lg mt-0.5">€960.00</span>
+                        <span class="font-mono-nums text-sm md:text-lg mt-0.5">€960.00</span>
                     </button>
                 </div>
 
-                <div class="flex-1 bg-slate-900 rounded-xl border border-slate-700 shadow-md p-3 md:p-4 flex flex-col justify-between text-white slide-in opacity-50 transition-opacity" id="green-up-card" style="animation-delay: 0.2s;">
+                <div class="flex-1 bg-slate-900 rounded-xl border border-slate-700 shadow-md p-2 md:p-4 flex flex-col justify-between text-white slide-in opacity-50 transition-opacity" id="green-up-card" style="animation-delay: 0.2s;">
                     <div>
-                        <div class="flex items-center gap-2 mb-1.5 md:mb-2">
+                        <div class="flex items-center gap-2 mb-1 md:mb-2">
                             <span class="text-base md:text-xl">🧮</span>
-                            <h4 class="font-black text-white text-[11px] md:text-sm uppercase tracking-widest" data-i18n="hedge_pro_title">The Pro Green Up</h4>
+                            <h4 class="font-black text-white text-[10px] md:text-sm uppercase tracking-widest" data-i18n="hedge_pro_title">The Pro Green Up</h4>
                         </div>
-                        <p class="text-[10px] md:text-[11px] text-slate-400 mb-2 md:mb-3 leading-relaxed" data-i18n="hedge_pro_desc">Manual exact calculation. You dictate the price and keep 100% of the equity.</p>
+                        <p class="text-[9px] md:text-[11px] text-slate-400 mb-2 md:mb-3 leading-relaxed" data-i18n="hedge_pro_desc">Manual exact calculation. You dictate the price and keep 100% of the equity.</p>
                         
-                        <div class="bg-slate-800 p-2 md:p-2.5 rounded-lg border border-slate-700 mb-3 md:mb-4 font-mono-nums text-[9px] md:text-[10px]">
+                        <div class="bg-slate-800 p-2 md:p-2.5 rounded-lg border border-slate-700 mb-2 md:mb-4 font-mono-nums text-[8px] md:text-[10px]">
                             <div class="flex justify-between text-slate-400 mb-1">
                                 <span data-i18n="form_formula">Formula: (Stake × Odds) / Lay</span>
                                 <span>(1000 × 3) / 1.50</span>
                             </div>
                             <div class="flex justify-between items-center border-t border-slate-700 pt-1.5 mt-1">
                                 <span class="font-bold text-slate-300" data-i18n="form_req">Required Lay Stake:</span>
-                                <span class="font-black text-[var(--bf-pink)] text-xs md:text-sm">€2000</span>
+                                <span class="font-black text-[var(--bf-pink)] text-[10px] md:text-sm">€2000</span>
                             </div>
                         </div>
                     </div>
                     
-                    <button id="btn-greenup" disabled onclick="Trade.executeGreenUp()" class="w-full bg-slate-800 text-slate-500 cursor-not-allowed font-black px-2 py-2.5 md:px-4 md:py-3.5 rounded-xl transition-all text-[10px] md:text-xs uppercase tracking-wider flex items-center justify-center gap-2 border border-slate-700">
-                        <span class="px-1.5 py-0.5 bg-[var(--bf-pink)] text-[#be123c] text-[9px] md:text-[10px] rounded" data-i18n="act_lay">LAY</span> 
+                    <button id="btn-greenup" disabled onclick="Trade.executeGreenUp()" class="w-full bg-slate-800 text-slate-500 cursor-not-allowed font-black px-2 py-2 md:px-4 md:py-3.5 rounded-xl transition-all clamp-text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 md:gap-2 border border-slate-700">
+                        <span class="px-1.5 py-0.5 bg-[var(--bf-pink)] text-[#be123c] text-[8px] md:text-[10px] rounded" data-i18n="act_lay">LAY</span> 
                         <span data-i18n="btn_lay_gu">€2000 @ 1.50</span>
                     </button>
                 </div>
@@ -420,7 +431,7 @@
 // --- DICTIONARY ---
 const DICT = {
     en: {
-        app_title: "ZERO TO HERO", app_day: "Day 5/30 • Hedging",
+        app_title: "ZERO TO HERO", app_day: "Day 5/30 • Hedging", txt_step_badge: "STEP", txt_completed: "COMPLETED",
         dash_sub: "Real Madrid vs Barcelona", pos_market: "Match Odds", pos_team: "Real Madrid", pos_stake: "Stake: €1000 @ 3.00",
         mentor_name: "The Mentor", mentor_role: "Interactive Tutorial", steps_title: "Lesson Checklist",
         step_1: "Review Open Position", step_2: "Simulate Market Move", step_3: "Test the 'Cash Out' Trap", step_4: "Execute Perfect Green Up",
@@ -442,7 +453,7 @@ const DICT = {
         txt_done: "🎉 <b>Masterclass Complete!</b><br><br>By manually calculating your Green Up and placing a limit order, you retained 100% of your equity (€1000 gross).<br><br><i>'The Cash Out button is a tax on mathematical ignorance; Green Up is the precision tool of the trader.'</i>"
     },
     es: {
-        app_title: "ZERO TO HERO", app_day: "Día 5/30 • Hedging",
+        app_title: "ZERO TO HERO", app_day: "Día 5/30 • Hedging", txt_step_badge: "PASO", txt_completed: "COMPLETADO",
         dash_sub: "Real Madrid vs Barcelona", pos_market: "Cuotas de Partido", pos_team: "Real Madrid", pos_stake: "Stake: €1000 @ 3.00",
         mentor_name: "El Maestro", mentor_role: "Tutorial Interactivo", steps_title: "Tareas de la Lección",
         step_1: "Analiza Posición Abierta", step_2: "Simula Evento (Gol)", step_3: "Prueba la trampa 'Cash Out'", step_4: "Ejecuta Green Up Perfecto",
@@ -464,7 +475,7 @@ const DICT = {
         txt_done: "🎉 <b>¡Masterclass Completada!</b><br><br>Al calcular manualmente el Green Up, mantuviste el 100% de tu equity (€1000 brutos).<br><br><i>'El botón Cash Out es un impuesto a la ignorancia matemática; el Green Up es la herramienta de precisión del trader.'</i>"
     },
     pt: {
-        app_title: "ZERO TO HERO", app_day: "Dia 5/30 • Hedging",
+        app_title: "ZERO TO HERO", app_day: "Dia 5/30 • Hedging", txt_step_badge: "PASSO", txt_completed: "CONCLUÍDO",
         dash_sub: "Real Madrid vs Barcelona", pos_market: "Probabilidades", pos_team: "Real Madrid", pos_stake: "Stake: €1000 @ 3.00",
         mentor_name: "O Mestre", mentor_role: "Tutorial Interativo", steps_title: "Tarefas da Lição",
         step_1: "Analisa Posição Aberta", step_2: "Simula Evento (Golo)", step_3: "Testa a armadilha 'Cash Out'", step_4: "Executa Green Up Perfeito",
@@ -486,7 +497,7 @@ const DICT = {
         txt_done: "🎉 <b>Masterclass Concluída!</b><br><br>Ao calcular manualmente o Green Up, mantiveste 100% do teu equity (€1000 brutos).<br><br><i>'O botão Cash Out é um imposto sobre a ignorância matemática; o Green Up é a ferramenta de precisão do trader.'</i>"
     },
     it: {
-        app_title: "ZERO TO HERO", app_day: "Giorno 5/30 • Hedging",
+        app_title: "ZERO TO HERO", app_day: "Giorno 5/30 • Hedging", txt_step_badge: "STEP", txt_completed: "COMPLETATO",
         dash_sub: "Real Madrid vs Barcellona", pos_market: "Esito Finale", pos_team: "Real Madrid", pos_stake: "Stake: €1000 @ 3.00",
         mentor_name: "Il Maestro", mentor_role: "Tutorial Interattivo", steps_title: "Task della Lezione",
         step_1: "Analizza Posizione Aperta", step_2: "Simula Evento (Gol)", step_3: "Testa la trappola 'Cash Out'", step_4: "Esegui il Green Up Perfetto",
@@ -511,16 +522,16 @@ const DICT = {
 
 // --- STATE ---
 let AppState = {
-    lang: 'it', // Defaulting to IT as requested context
+    lang: 'en', // Will be overwritten by detection on load
     bankroll: 10000,
-    tutorialStep: 1, // 1: Intro, 2: Post-Goal, 3: CashOut Done, 4: GreenUp Done
+    tutorialStep: 1,
     marketOdds: { back: 3.00, lay: 3.05 },
     math: {
         initialStake: 1000,
         initialOdds: 3.00,
         postGoalLay: 1.50,
-        cashoutOffer: 960, // Realistic: True Green Up is 1000 gross. Cash out takes a margin.
-        idealGreenUpStake: 2000, // (1000*3)/1.5
+        cashoutOffer: 960, 
+        idealGreenUpStake: 2000, 
         idealGross: 1000
     }
 };
@@ -534,15 +545,17 @@ const App = {
     },
     
     detectLanguage() {
-        let userLang = navigator.language || navigator.userLanguage;
+        // Detect native device language, default to 'en' if not in [en, es, pt, it]
+        let userLang = navigator.language || navigator.userLanguage || "en";
         let shortLang = userLang.split('-')[0].toLowerCase();
         let supported = ['en', 'es', 'pt', 'it'];
-        // If system language is supported, use it. Otherwise default to Italian for this specific prompt's context.
-        this.setLang(supported.includes(shortLang) ? shortLang : 'it');
+        this.setLang(supported.includes(shortLang) ? shortLang : 'en');
     },
 
     setLang(code) {
         AppState.lang = code;
+        document.documentElement.lang = code;
+        
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
         const btnHead = document.getElementById(`lang-${code}`);
         if(btnHead) btnHead.classList.add('active');
@@ -574,7 +587,7 @@ const App = {
         } else if (AppState.tutorialStep === 4) {
             if(mktStatus) mktStatus.innerText = this.t('mkt_ft');
             if(actionZone && actionZone.innerHTML.includes('TRADE COMP')) {
-                actionZone.innerHTML = `<div class="text-center font-black text-[var(--zth-green)] text-[12px] md:text-xl">${this.t('trade_success')}</div>`;
+                actionZone.innerHTML = `<div class="text-center font-black text-[var(--zth-green)] clamp-text-base md:text-xl">${this.t('trade_success')}</div>`;
             }
         }
         
@@ -582,6 +595,16 @@ const App = {
         if (btnCont && document.getElementById('receipt-modal').classList.contains('active')) {
             if(AppState.tutorialStep === 2) btnCont.innerText = this.t('rec_btn_cont');
             else if(AppState.tutorialStep === 3) btnCont.innerText = this.t('rec_btn_finish');
+        }
+        
+        // Dynamically translate mobile badge
+        const mobileBadge = document.getElementById('mobile-step-badge');
+        if(mobileBadge) {
+            if(AppState.tutorialStep === 4) {
+                mobileBadge.innerText = this.t('txt_completed');
+            } else {
+                mobileBadge.innerText = `${this.t('txt_step_badge')} ${AppState.tutorialStep}/4`;
+            }
         }
     },
     
@@ -630,14 +653,12 @@ const App = {
             }
         }
         
-        // Mobile Badge
+        // Mobile Badge Visual Status
         const mobileBadge = document.getElementById('mobile-step-badge');
         if(mobileBadge) {
-            mobileBadge.innerText = `STEP ${AppState.tutorialStep}/4`;
             if(AppState.tutorialStep === 4) {
                 mobileBadge.classList.replace('bg-blue-100', 'bg-green-100');
                 mobileBadge.classList.replace('text-blue-700', 'text-green-700');
-                mobileBadge.innerText = `COMPLETED`;
             } else {
                 mobileBadge.classList.replace('bg-green-100', 'bg-blue-100');
                 mobileBadge.classList.replace('text-green-700', 'text-blue-700');
@@ -683,7 +704,7 @@ const App = {
         else if (AppState.tutorialStep === 4) {
             document.getElementById('hedging-zone').style.display = 'none';
             document.getElementById('action-trigger-zone').style.display = 'flex';
-            document.getElementById('action-trigger-zone').innerHTML = `<div class="text-center font-black text-[var(--zth-green)] text-[12px] md:text-xl">${this.t('trade_success')}</div>`;
+            document.getElementById('action-trigger-zone').innerHTML = `<div class="text-center font-black text-[var(--zth-green)] clamp-text-base md:text-xl">${this.t('trade_success')}</div>`;
             document.getElementById('mkt-status').innerText = this.t('mkt_ft');
             
             const newBankroll = AppState.bankroll + (AppState.math.idealGross * 0.95);
@@ -706,7 +727,7 @@ const App = {
     restart() {
         AppState.tutorialStep = 1;
         document.getElementById('action-trigger-zone').innerHTML = `
-            <button id="btn-goal" onclick="Trade.simulateGoal()" class="bg-[#0369a1] hover:bg-[#0284c7] text-white font-black px-4 py-2.5 md:px-6 md:py-3 rounded-xl shadow-lg transform transition-all hover:scale-105 active:scale-95 text-xs md:text-sm uppercase tracking-widest flex items-center gap-2 pulse-goal">
+            <button id="btn-goal" onclick="Trade.simulateGoal()" class="bg-[#0369a1] hover:bg-[#0284c7] text-white font-black px-4 py-2.5 md:px-6 md:py-3 rounded-xl shadow-lg transform transition-all hover:scale-105 active:scale-95 clamp-text-sm uppercase tracking-widest flex items-center gap-2 pulse-goal">
                 ⚽ <span data-i18n="btn_goal">${this.t('btn_goal')}</span>
             </button>
         `;
@@ -820,7 +841,6 @@ const Trade = {
         document.getElementById('r-comm').innerText = `- € ${comm.toFixed(2)}`;
         document.getElementById('r-net').innerText = `€ ${net.toFixed(2)}`;
 
-        // This combined with the CSS update ensures the modal becomes visible and clickable
         document.getElementById('receipt-modal').classList.add('active');
     }
 };
