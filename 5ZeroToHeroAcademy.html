@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -286,7 +285,7 @@
             <div class="w-full max-w-4xl mx-auto flex justify-start items-center mb-3 md:mb-5 relative z-10">
                 <div class="bg-gray-900 text-[#99E814] border border-[#99E814]/30 text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest break-words" data-i18n="demoBadge">DEMO INTERATTIVA</div>
             </div>
-            <a href="Demo-5day.html" target="_blank" class="demo-link block group relative w-full max-w-4xl mx-auto rounded-xl sm:rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl border border-[#99E814]/30 hover:border-[#99E814] transition-all duration-700 cursor-pointer bg-[#050a05] transform-gpu hover:-translate-y-1" onclick="SoundEngine.click()">
+            <a href="Demo-5Day.html" target="_blank" class="demo-link block group relative w-full max-w-4xl mx-auto rounded-xl sm:rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl border border-[#99E814]/30 hover:border-[#99E814] transition-all duration-700 cursor-pointer bg-[#050a05] transform-gpu hover:-translate-y-1" onclick="SoundEngine.click()">
                 <div class="relative w-full overflow-hidden" style="aspect-ratio: 16/9;">
                     <img src="Demo-5day.jpeg" onerror="this.src='https://placehold.co/1280x720/102010/99E814?text=IMMAGINE+NON+TROVATA'" alt="Demo Simulator" class="absolute inset-0 w-full h-full object-cover object-center z-0 transition-transform duration-1000 group-hover:scale-105">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#0a140f] via-black/10 to-transparent z-10 transition-opacity duration-700 opacity-60 group-hover:opacity-80 pointer-events-none"></div>
@@ -317,28 +316,46 @@
                             <feGaussianBlur stdDeviation="3" result="blur" />
                             <feComposite in="SourceGraphic" in2="blur" operator="over" />
                         </filter>
+                        <!-- Pacman Mask Shape for the Soccer Ball -->
+                        <clipPath id="pacmanShape">
+                            <path d="M 50 60 L 90 35 A 35 35 0 1 0 90 85 Z" />
+                        </clipPath>
                     </defs>
-                    <!-- Field -->
+                    
+                    <!-- Field Background -->
                     <rect x="4" y="4" width="112" height="112" rx="12" fill="#051a0a" stroke="#99E814" stroke-width="2" />
                     <rect x="10" y="10" width="100" height="100" rx="4" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.4" />
-                    <!-- Midline & Circle -->
+                    <!-- Midline & Center Circle -->
                     <line x1="60" y1="10" x2="60" y2="110" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.4" />
                     <circle cx="60" cy="60" r="16" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.4" />
                     <!-- Penalty areas -->
                     <rect x="10" y="35" width="16" height="50" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.4" />
                     <rect x="94" y="35" width="16" height="50" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.4" />
-                    <!-- Pac-Man Soccer Ball -->
+
+                    <!-- Pacman Soccer Ball with Clip Path -->
                     <g class="group-hover:scale-110 origin-center transition-transform duration-300" filter="url(#neon-glow)">
-                        <path d="M 50 60 L 76 45 A 30 30 0 1 0 76 75 Z" fill="#ffffff" />
-                        <!-- Soccer ball pentagons -->
-                        <polygon points="35,45 45,42 50,50 42,58 32,53" fill="#111"/>
-                        <polygon points="25,65 32,60 38,68 32,75 22,70" fill="#111"/>
-                        <polygon points="50,30 58,25 65,32 55,38" fill="#111"/>
-                        <polygon points="55,75 65,70 70,80 60,85" fill="#111"/>
+                        <!-- White background constrained to Pacman shape -->
+                        <circle cx="50" cy="60" r="35" fill="#ffffff" clip-path="url(#pacmanShape)"/>
+                        
+                        <!-- Pentagons and lines mapped to look like a soccer ball -->
+                        <g clip-path="url(#pacmanShape)" stroke="#111" stroke-width="2" stroke-linejoin="round">
+                            <!-- Center pentagon -->
+                            <polygon points="42,52 58,52 63,65 50,75 37,65" fill="#111" />
+                            <!-- Connecting seams -->
+                            <line x1="42" y1="52" x2="30" y2="40" />
+                            <line x1="58" y1="52" x2="70" y2="40" />
+                            <line x1="63" y1="65" x2="80" y2="68" />
+                            <line x1="50" y1="75" x2="50" y2="90" />
+                            <line x1="37" y1="65" x2="20" y2="68" />
+                            <!-- Outer half-pentagons -->
+                            <polygon points="30,40 38,28 25,20 15,30" fill="#111" />
+                            <polygon points="70,40 62,28 75,20 85,30" fill="#111" />
+                            <polygon points="20,68 25,80 15,90 5,78" fill="#111" />
+                        </g>
                     </g>
-                    <!-- Food dots -->
-                    <circle cx="90" cy="60" r="4" fill="#ffb703" filter="url(#neon-glow)" class="animate-pulse"/>
-                    <circle cx="104" cy="60" r="4" fill="#ffb703" filter="url(#neon-glow)" class="animate-pulse"/>
+                    <!-- Food dots ready to be eaten -->
+                    <circle cx="85" cy="60" r="4" fill="#ffb703" filter="url(#neon-glow)" class="animate-pulse"/>
+                    <circle cx="100" cy="60" r="4" fill="#ffb703" filter="url(#neon-glow)" class="animate-pulse"/>
                 </svg>
                 <div class="absolute inset-0 bg-[#3b82f6] rounded-full blur-[50px] opacity-20 -z-10 group-hover:bg-[#99E814] transition-colors duration-500"></div>
             </a>
@@ -923,5 +940,3 @@
     </script>
 </body>
 </html>
-
-```
