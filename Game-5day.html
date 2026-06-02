@@ -9,11 +9,11 @@
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;800;900&display=swap');
         
         :root { 
-            --bg-base: #020617; /* Slate 950 */
-            --bg-panel: #0f172a; /* Slate 900 */
-            --primary: #10b981;  /* Emerald 500 */
+            --bg-base: #020617; 
+            --bg-panel: #0f172a; 
+            --primary: #10b981;  
             --primary-glow: rgba(16, 185, 129, 0.4);
-            --accent: #38bdf8;   /* Light Blue */
+            --accent: #38bdf8;   
         }
         
         body, html {
@@ -22,9 +22,8 @@
             color: #f8fafc;
             margin: 0; padding: 0;
             width: 100%; height: 100dvh;
-            overflow: hidden; /* STRICT NO SCROLL */
+            overflow: hidden; 
             touch-action: none;
-            display: flex; flex-direction: column;
         }
 
         .mono-text { font-family: 'Share Tech Mono', monospace; }
@@ -39,17 +38,25 @@
         }
 
         .canvas-wrapper {
-            flex: 1; min-h: 0; width: 100%;
+            flex: 1; min-height: 0; width: 100%;
             display: flex; justify-content: center; align-items: center;
+            position: relative; padding: 4px;
+        }
+
+        #gameWrapper {
+            aspect-ratio: 21 / 23;
+            max-width: 100%;
+            max-height: 100%;
             position: relative;
-            padding: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
         canvas {
-            max-width: 100%; max-height: 100%;
-            aspect-ratio: 42 / 46;
-            background-color: #14532d; /* Fallback grass color */
-            border: 4px solid #f8fafc; /* White pitch boundary */
+            width: 100%; height: 100%;
+            background-color: #14532d; 
+            border: 4px solid #f8fafc; 
             border-radius: 8px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 20px rgba(255,255,255,0.2);
             image-rendering: pixelated;
@@ -89,7 +96,7 @@
         .hide-broken-img::before { content: "ZH"; font-size: 14px; font-weight: 900; color: #10b981; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: #0f172a; border-radius: 50%; }
     </style>
 </head>
-<body class="p-2 lg:p-4 gap-3 box-border">
+<body class="p-2 lg:p-4 gap-3 box-border flex flex-col h-[100dvh]">
 
     <header class="glass-panel rounded-xl p-3 flex justify-between items-center w-full flex-shrink-0 z-20 border-t-2 border-t-emerald-500/50">
         <div class="flex items-center gap-3">
@@ -104,10 +111,10 @@
         </div>
         
         <div class="flex gap-2 lg:gap-3 bg-slate-950 p-1.5 lg:p-2 rounded-lg border border-slate-700/80 shadow-inner">
-            <img src="https://flagcdn.com/w40/gb.png" class="lang-btn w-6 h-4 lg:w-7 lg:h-5 object-cover rounded-sm" onclick="setLang('en')" alt="EN">
-            <img src="https://flagcdn.com/w40/es.png" class="lang-btn w-6 h-4 lg:w-7 lg:h-5 object-cover rounded-sm" onclick="setLang('es')" alt="ES">
-            <img src="https://flagcdn.com/w40/pt.png" class="lang-btn w-6 h-4 lg:w-7 lg:h-5 object-cover rounded-sm" onclick="setLang('pt')" alt="PT">
-            <img src="https://flagcdn.com/w40/it.png" class="lang-btn w-6 h-4 lg:w-7 lg:h-5 object-cover rounded-sm" onclick="setLang('it')" alt="IT">
+            <img src="https://flagcdn.com/gb.svg" class="lang-btn w-7 h-5 lg:w-8 lg:h-6 object-cover rounded shadow-sm border border-slate-700/50" onclick="setLang('en')" alt="en">
+            <img src="https://flagcdn.com/es.svg" class="lang-btn w-7 h-5 lg:w-8 lg:h-6 object-cover rounded shadow-sm border border-slate-700/50" onclick="setLang('es')" alt="es">
+            <img src="https://flagcdn.com/pt.svg" class="lang-btn w-7 h-5 lg:w-8 lg:h-6 object-cover rounded shadow-sm border border-slate-700/50" onclick="setLang('pt')" alt="pt">
+            <img src="https://flagcdn.com/it.svg" class="lang-btn w-7 h-5 lg:w-8 lg:h-6 object-cover rounded shadow-sm border border-slate-700/50" onclick="setLang('it')" alt="it">
         </div>
     </header>
 
@@ -120,12 +127,11 @@
     <main class="flex-1 flex flex-col lg:flex-row gap-4 min-h-0 w-full relative z-10">
         
         <!-- PANEL: GAME -->
-        <section id="panelGame" class="flex-1 flex flex-col min-h-0 w-full h-full">
+        <section id="panelGame" class="flex-1 flex flex-col min-h-0 w-full h-full lg:w-3/5">
             
             <!-- Professional Coach Tutor HUD -->
             <div class="w-full flex justify-between items-end mb-2 px-1 flex-shrink-0 gap-2">
                 <div class="flex-1 glass-panel border border-accent/40 rounded-lg p-2 flex items-center overflow-hidden shadow-inner bg-slate-900/90">
-                    <!-- Tutor Icon -->
                     <svg class="w-5 h-5 text-accent mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
                     <div class="flex flex-col min-w-0">
                         <span class="text-[8px] lg:text-[10px] text-accent font-bold uppercase tracking-widest leading-none" id="t_coachLabel">ACADEMY COACH</span>
@@ -133,23 +139,22 @@
                     </div>
                 </div>
                 
-                <!-- Stats -->
                 <div class="text-right flex-shrink-0 bg-slate-900/80 px-3 py-1 rounded-lg border border-slate-700">
-                    <div class="text-sm lg:text-xl font-black text-slate-300 mono-text" id="t_profit">Equity: <span id="scoreDisplay" class="text-emerald-400">€0</span></div>
-                    <div class="text-[10px] lg:text-xs text-slate-500 font-bold mt-0.5 uppercase" id="t_lives">Accounts: <span id="livesDisplay" class="text-yellow-500">⭐⭐⭐</span></div>
+                    <div class="text-sm lg:text-xl font-black text-slate-300 mono-text"><span id="t_profitLbl">Equity: </span><span id="scoreDisplay" class="text-emerald-400">€0</span></div>
+                    <div class="text-[10px] lg:text-xs text-slate-500 font-bold mt-0.5 uppercase"><span id="t_livesLbl">Accounts: </span><span id="livesDisplay" class="text-yellow-500">⭐⭐⭐</span></div>
                 </div>
             </div>
 
             <!-- RESPONSIVE CANVAS -->
             <div class="canvas-wrapper">
-                <div class="relative w-full h-full flex justify-center items-center" id="gameWrapper">
+                <div id="gameWrapper">
                     <canvas id="gameCanvas" width="420" height="460"></canvas>
                     
                     <!-- OVERLAYS -->
                     <div id="startScreen" class="absolute inset-0 bg-slate-950/90 backdrop-blur-sm flex flex-col items-center justify-center rounded-xl z-10 p-6 text-center border border-slate-800">
                         <h2 class="text-3xl lg:text-5xl font-black mb-4 neon-text tracking-tighter" id="t_startTitle">THE MARKET PITCH</h2>
-                        <button id="startBtn" class="mt-4 px-8 py-4 bg-emerald-600 text-white font-black rounded-xl hover:bg-emerald-500 text-lg lg:text-xl shadow-[0_10px_20px_rgba(16,185,129,0.3)] transition-all transform hover:-translate-y-1 hover:scale-105 border-b-4 border-emerald-800 active:border-b-0 active:translate-y-0">
-                            ENTER PITCH
+                        <button id="btnStart" class="mt-4 px-8 py-4 bg-emerald-600 text-white font-black rounded-xl hover:bg-emerald-500 text-lg lg:text-xl shadow-[0_10px_20px_rgba(16,185,129,0.3)] transition-all transform hover:-translate-y-1 hover:scale-105 border-b-4 border-emerald-800 active:border-b-0 active:translate-y-0">
+                            <span id="t_btnStart">ENTER PITCH</span>
                         </button>
                         <p class="mt-6 text-[10px] lg:text-xs text-slate-400 font-medium mono-text bg-slate-900 px-4 py-2 rounded-full border border-slate-700" id="t_controls">🖥️ ARROWS/WASD | 📱 SWIPE TO ROLL</p>
                     </div>
@@ -159,10 +164,10 @@
                         <p class="text-sm lg:text-base font-medium text-slate-300 mt-2 mb-8 max-w-xs" id="t_gameOverDesc">You hit the Cash Out button and paid the broker's hidden tax.</p>
                         <div class="bg-black/50 px-6 py-3 rounded-lg mb-8 border border-red-500/30">
                             <p class="text-xs text-slate-400 mono-text uppercase" id="t_finalProfitLbl">Final Equity</p>
-                            <p class="text-3xl font-black text-white mono-text" id="t_finalProfitVal">€0</p>
+                            <p class="text-3xl font-black text-white mono-text" id="finalProfitVal">€0</p>
                         </div>
-                        <button id="restartBtn" class="px-8 py-4 bg-red-600 text-white font-black rounded-xl hover:bg-red-500 text-lg shadow-[0_10px_20px_rgba(239,68,68,0.3)] transition-all transform hover:-translate-y-1 border-b-4 border-red-800 active:border-b-0">
-                            RETRY
+                        <button id="btnRetry" class="px-8 py-4 bg-red-600 text-white font-black rounded-xl hover:bg-red-500 text-lg shadow-[0_10px_20px_rgba(239,68,68,0.3)] transition-all transform hover:-translate-y-1 border-b-4 border-red-800 active:border-b-0">
+                            <span id="t_btnRetry">RETRY</span>
                         </button>
                     </div>
                     
@@ -171,21 +176,22 @@
                         <p class="text-sm lg:text-base font-medium text-emerald-100 mt-2 mb-8" id="t_winDesc">Mathematical precision on the pitch.</p>
                         <div class="bg-black/50 px-6 py-3 rounded-lg mb-8 border border-emerald-500/30">
                             <p class="text-xs text-emerald-400 mono-text uppercase" id="t_totalExtractedLbl">Total Extracted</p>
-                            <p class="text-3xl font-black text-white mono-text" id="t_totalExtractedVal">€0</p>
+                            <p class="text-3xl font-black text-white mono-text" id="totalExtractedVal">€0</p>
                         </div>
-                        <button id="nextLevelBtn" class="px-8 py-4 bg-emerald-500 text-slate-900 font-black rounded-xl hover:bg-emerald-400 text-lg shadow-[0_10px_20px_rgba(16,185,129,0.3)] transition-all transform hover:-translate-y-1 border-b-4 border-emerald-700 active:border-b-0">
-                            NEXT MATCH
+                        <button id="btnNext" class="px-8 py-4 bg-emerald-500 text-slate-900 font-black rounded-xl hover:bg-emerald-400 text-lg shadow-[0_10px_20px_rgba(16,185,129,0.3)] transition-all transform hover:-translate-y-1 border-b-4 border-emerald-700 active:border-b-0">
+                            <span id="t_btnNext">NEXT MATCH</span>
                         </button>
                     </div>
                 </div>
             </div>
             
-            <div class="mt-1 text-[9px] text-slate-500 text-center lg:hidden font-medium mono-text tracking-wide" id="t_swipeInfo">
-                [ SWIPE SULL'AREA DI GIOCO PER ROTOLARE ]
+            <div class="mt-1 flex-shrink-0 text-[9px] text-slate-500 text-center lg:hidden font-medium mono-text tracking-wide" id="t_swipeInfo">
+                [ SWIPE INSIDE TO ROLL ]
             </div>
         </section>
 
-        <section id="panelAcademy" class="hidden lg:flex flex-1 glass-panel border border-slate-700 rounded-xl p-4 lg:p-6 flex-col min-h-0 shadow-2xl relative">
+        <!-- PANEL: ACADEMY -->
+        <section id="panelAcademy" class="hidden lg:flex flex-1 glass-panel border border-slate-700 rounded-xl p-4 lg:p-6 flex-col min-h-0 shadow-2xl relative lg:w-2/5">
             <div class="border-b border-slate-700/80 pb-3 mb-4 flex-shrink-0 flex items-center justify-between">
                 <h2 class="text-lg lg:text-xl font-black text-white tracking-tight flex items-center gap-2">
                     <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
@@ -194,7 +200,7 @@
                 <span class="px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded text-[9px] font-bold mono-text border border-emerald-500/20" id="t_moduleBadge">MODULE: HEDGING</span>
             </div>
             
-            <div class="custom-scroll pr-3 flex-1 space-y-4 lg:space-y-6 text-sm text-slate-300">
+            <div class="custom-scroll pr-3 flex-1 min-h-0 space-y-4 lg:space-y-6 text-sm text-slate-300">
                 
                 <div class="bg-slate-800/50 p-4 rounded-xl border-l-4 border-l-emerald-500 hover:bg-slate-800 transition-colors">
                     <h3 class="text-emerald-400 font-bold mb-2 text-base uppercase tracking-wide" id="t_sec1Title">CASH OUT VS. GREEN UP</h3>
@@ -232,7 +238,7 @@
         const i18n = {
             en: {
                 subtitle: "Trader vs Algorithms", tabGame: "PITCH", tabAcademy: "ACADEMY",
-                coachLabel: "ACADEMY COACH", profit: "Equity: ", lives: "Accounts: ", 
+                coachLabel: "ACADEMY COACH", profitLbl: "Equity: ", livesLbl: "Accounts: ", 
                 startTitle: "THE MARKET PITCH", btnStart: "ENTER PITCH", controls: "🖥️ ARROWS/WASD | 📱 SWIPE TO ROLL", swipeInfo: "[ SWIPE INSIDE TO ROLL ]",
                 gameOverDesc: "You hit the Cash Out button and paid the broker's hidden tax. Read the Academy!", finalProfitLbl: "Final Equity", btnRetry: "RETRY",
                 winDesc: "Mathematical precision on the pitch.", totalExtractedLbl: "Total Extracted", btnNext: "NEXT MATCH",
@@ -240,15 +246,15 @@
                 sec1Title: "CASH OUT VS. GREEN UP", sec1Desc: "The difference between a novice and a pro is how they extract capital. Novices panic and hit 'Cash Out'. Pros use math: the Green Up.",
                 sec2Title: "GREEN UP FORMULA", formula1: "Lay Stake", formula2: "Back Stake × Init Odds", formula3: "Current Lay Odds", formulaNote: "Zero hallucinations: pure math to spread risk evenly.",
                 sec3Title: "THE HIDDEN TAX", sec3Desc: "The broker's Cash Out button crosses the spread, giving a sub-optimal price (convenience tax). Losing 3-5% per trade will destroy your long-term ROI.",
-                // New contextual tutor messages
                 tutStart: "Welcome to the pitch! Gather Equity and avoid the Cash Out tax.", 
                 tutGhost: "Watch out! Those red boards force a Cash Out.", 
                 tutPower: "Software Active! The book is exposed. Execute the Green Up!", 
-                tutEat: "Perfect Green Up! You balanced the trade and eliminated risk."
+                tutEat: "Perfect Green Up! You balanced the trade and eliminated risk.",
+                liquidated: "- LIQUIDATED -", cashOut1: "CASH", cashOut2: "OUT", greenUp1: "GREEN", greenUp2: "UP", powerUpGu: "GU"
             },
             es: {
                 subtitle: "Trader vs Algoritmos", tabGame: "CAMPO", tabAcademy: "ACADEMIA",
-                coachLabel: "COACH ACADEMIA", profit: "Capital: ", lives: "Cuentas: ", 
+                coachLabel: "COACH ACADEMIA", profitLbl: "Capital: ", livesLbl: "Cuentas: ", 
                 startTitle: "EL CAMPO DE MERCADO", btnStart: "ENTRAR AL CAMPO", controls: "🖥️ FLECHAS/WASD | 📱 DESLIZAR", swipeInfo: "[ DESLIZA PARA RODAR ]",
                 gameOverDesc: "Pulsaste Cash Out y pagaste el impuesto oculto del bróker. ¡Lee la Academia!", finalProfitLbl: "Capital Final", btnRetry: "REINTENTAR",
                 winDesc: "Precisión matemática en el campo.", totalExtractedLbl: "Total Extraído", btnNext: "SIGUIENTE PARTIDO",
@@ -259,13 +265,14 @@
                 tutStart: "¡Bienvenido al campo! Recoge Capital y evita el impuesto del Cash Out.", 
                 tutGhost: "¡Cuidado! Esos carteles rojos fuerzan el Cash Out.", 
                 tutPower: "¡Software Activo! El libro está expuesto. ¡Ejecuta el Green Up!", 
-                tutEat: "¡Green Up Perfecto! Equilibraste el trade eliminando el riesgo."
+                tutEat: "¡Green Up Perfecto! Equilibraste el trade eliminando el riesgo.",
+                liquidated: "- LIQUIDADO -", cashOut1: "CERRAR", cashOut2: "TRADE", greenUp1: "GREEN", greenUp2: "UP", powerUpGu: "GU"
             },
             pt: {
                 subtitle: "Trader vs Algoritmos", tabGame: "CAMPO", tabAcademy: "ACADEMIA",
-                coachLabel: "COACH ACADEMIA", profit: "Capital: ", lives: "Contas: ", 
+                coachLabel: "COACH ACADEMIA", profitLbl: "Capital: ", livesLbl: "Contas: ", 
                 startTitle: "O CAMPO DE MERCADO", btnStart: "ENTRAR NO CAMPO", controls: "🖥️ SETAS/WASD | 📱 DESLIZAR", swipeInfo: "[ DESLIZE PARA ROLAR ]",
-                gameOverDesc: "Você clicou no Cash Out e pagou a taxa oculta da corretora. Leia a Academia!", finalProfitLbl: "Capital Final", btnRetry: "TENTAR NOVAMENTE",
+                gameOverDesc: "Você clicou no Cash Out e pagou a taxa oculta da corretora. Leia a Academia!", finalProfitLbl: "Capital Final", btnRetry: "TENTAR NOV.",
                 winDesc: "Precisão matemática no campo.", totalExtractedLbl: "Total Extraído", btnNext: "PRÓXIMO JOGO",
                 academyTitle: "TERMINAL DA ACADEMIA", moduleBadge: "MÓDULO: HEDGING",
                 sec1Title: "CASH OUT VS. GREEN UP", sec1Desc: "A diferença entre novato e pro é como extrair lucro. O novato entra em pânico e faz 'Cash Out'. O pro usa matemática: Green Up.",
@@ -274,22 +281,24 @@
                 tutStart: "Bem-vindo ao campo! Colete Equity e evite a taxa do Cash Out.", 
                 tutGhost: "Cuidado! Aquelas placas vermelhas forçam o Cash Out.", 
                 tutPower: "Software Ativo! O book está exposto. Execute o Green Up!", 
-                tutEat: "Green Up Perfeito! Você equilibrou o trade e eliminou o risco."
+                tutEat: "Green Up Perfeito! Você equilibrou o trade e eliminou o risco.",
+                liquidated: "- LIQUIDADO -", cashOut1: "CASH", cashOut2: "OUT", greenUp1: "GREEN", greenUp2: "UP", powerUpGu: "GU"
             },
             it: {
                 subtitle: "Trader vs Algoritmi", tabGame: "CAMPO", tabAcademy: "ACCADEMIA",
-                coachLabel: "COACH ACCADEMIA", profit: "Equity: ", lives: "Conti: ", 
+                coachLabel: "COACH ACCADEMIA", profitLbl: "Equity: ", livesLbl: "Conti: ", 
                 startTitle: "IL CAMPO DI MERCATO", btnStart: "ENTRA IN CAMPO", controls: "🖥️ FRECCE/WASD | 📱 SCORRI", swipeInfo: "[ SCORRI PER ROTOLARE ]",
                 gameOverDesc: "Hai premuto Cash Out pagando la tassa occulta del broker. Leggi l'Academy!", finalProfitLbl: "Equity Finale", btnRetry: "RIPROVA",
                 winDesc: "Precisione matematica in campo.", totalExtractedLbl: "Totale Estratto", btnNext: "PROSSIMO MATCH",
                 academyTitle: "TERMINALE ACCADEMIA", moduleBadge: "MODULO: COPERTURA",
-                sec1Title: "CASH OUT VS. GREEN UP", sec1Desc: "La differenza tra un principiante e un professionista non è solo l'ingresso a mercato, ma come si estrae il capitale. Il novellino preme 'Cash Out'. Il pro usa la matematica: il Green Up.",
+                sec1Title: "CASH OUT VS. GREEN UP", sec1Desc: "La differenza tra un principiante e un professionista non è solo l'ingresso, ma come si estrae il capitale. Il novellino preme 'Cash Out'. Il pro usa la matematica: il Green Up.",
                 sec2Title: "FORMULA GREEN UP", formula1: "Puntata Banca", formula2: "Puntata Iniziale × Quota", formula3: "Quota Banca Attuale", formulaNote: "Zero allucinazioni: matematica pura per spalmare il rischio.",
                 sec3Title: "LA TASSA NASCOSTA", sec3Desc: "Il Cash Out del broker spazza il book incrociando lo spread, dandoti un prezzo sub-ottimale. Perdere il 3-5% ad ogni operazione distruggerà il tuo ROI nel lungo termine.",
                 tutStart: "Benvenuto in campo! Raccogli Equity ed evita la tassa del Cash Out.", 
                 tutGhost: "Attento! Quei cartelloni rossi forzano il Cash Out.", 
                 tutPower: "Software Attivo! Il book è esposto. Esegui il Green Up!", 
-                tutEat: "Green Up Perfetto! Hai bilanciato il trade azzerando il rischio."
+                tutEat: "Green Up Perfetto! Hai bilanciato il trade azzerando il rischio.",
+                liquidated: "- LIQUIDATO -", cashOut1: "CASH", cashOut2: "OUT", greenUp1: "GREEN", greenUp2: "UP", powerUpGu: "GU"
             }
         };
 
@@ -309,16 +318,17 @@
             });
             
             const t = i18n[lang];
-            const el = id => { const e = document.getElementById(id); if (e) e.innerText = t[id] || e.innerText; };
-            
-            ['t_subtitle', 't_tabGame', 't_tabAcademy', 't_coachLabel', 't_startTitle', 'btnStart', 't_controls', 't_swipeInfo',
-             't_gameOverDesc', 't_finalProfitLbl', 'btnRetry', 't_winDesc', 't_totalExtractedLbl', 'btnNext',
-             't_academyTitle', 't_moduleBadge', 't_sec1Title', 't_sec1Desc', 't_sec2Title', 't_formula1', 
-             't_formula2', 't_formula3', 't_formulaNote', 't_sec3Title', 't_sec3Desc'
-            ].forEach(el);
+            const mapKeys = [
+                'subtitle', 'tabGame', 'tabAcademy', 'coachLabel', 'startTitle', 'btnStart', 'controls', 'swipeInfo',
+                'gameOverDesc', 'finalProfitLbl', 'btnRetry', 'winDesc', 'totalExtractedLbl', 'btnNext',
+                'academyTitle', 'moduleBadge', 'sec1Title', 'sec1Desc', 'sec2Title', 'formula1',
+                'formula2', 'formula3', 'formulaNote', 'sec3Title', 'sec3Desc', 'profitLbl', 'livesLbl'
+            ];
 
-            document.getElementById('t_profit').childNodes[0].nodeValue = t.profit;
-            document.getElementById('t_lives').childNodes[0].nodeValue = t.lives;
+            mapKeys.forEach(k => {
+                const el = document.getElementById('t_' + k);
+                if(el) el.innerText = t[k];
+            });
             
             updateScoreDisplays();
             triggerTutor('tutStart', '#38bdf8');
@@ -371,7 +381,7 @@
             }
         }
 
-        // --- 4. GAME ENGINE (Football Theme) ---
+        // --- 4. GAME ENGINE (Discrete Precise Grid Movement) ---
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const TS = 20; const ROWS = 23; const COLS = 21;
@@ -409,28 +419,48 @@
             constructor() { this.rst(); }
             rst() {
                 this.x = 10*TS+TS/2; this.y = 16*TS+TS/2; this.vx=0; this.vy=0; this.nx=0; this.ny=0;
-                this.spd = 2.5; this.r = TS/2-2; this.rollAng = 0;
+                this.spd = 2; this.r = TS/2-2; this.rollAng = 0;
             }
             upd() {
-                if (this.can(this.x, this.y, this.nx, this.ny)) {
-                    if (this.vx!==0 && this.ny!==0) this.x = Math.floor(this.x/TS)*TS+TS/2;
-                    if (this.vy!==0 && this.nx!==0) this.y = Math.floor(this.y/TS)*TS+TS/2;
-                    this.vx=this.nx; this.vy=this.ny;
+                // Allow immediate 180 degree turns
+                if ((this.vx !== 0 && this.nx === -this.vx) || (this.vy !== 0 && this.ny === -this.vy)) {
+                    this.vx = this.nx; this.vy = this.ny;
                 }
-                if (this.can(this.x, this.y, this.vx, this.vy)) { 
-                    this.x+=this.vx*this.spd; this.y+=this.vy*this.spd; 
-                    if(this.vx!==0 || this.vy!==0) this.rollAng += 0.2; // Roll physics
+
+                // Perfect center alignment check for intersections
+                const atCenter = (this.x - TS/2) % TS === 0 && (this.y - TS/2) % TS === 0;
+                if (atCenter) {
+                    const cx = this.x; const cy = this.y;
+                    if (this.canMove(cx, cy, this.nx, this.ny)) {
+                        this.vx = this.nx; this.vy = this.ny;
+                    }
+                    if (!this.canMove(cx, cy, this.vx, this.vy)) {
+                        this.vx = 0; this.vy = 0;
+                    }
                 }
-                if (this.x < -TS) this.x = canvas.width+TS; if (this.x > canvas.width+TS) this.x = -TS;
+                
+                this.x += this.vx * this.spd; 
+                this.y += this.vy * this.spd; 
+                if(this.vx !== 0 || this.vy !== 0) this.rollAng += 0.2; 
+                
+                // Tunnel warp
+                if (this.x < -TS/2) this.x = canvas.width + TS/2; 
+                if (this.x > canvas.width + TS/2) this.x = -TS/2;
+                
                 this.chk();
             }
-            can(cx, cy, vx, vy) {
-                if(!vx && !vy) return false;
-                const nX=cx+vx*this.spd, nY=cy+vy*this.spd, l=nX-this.r, r=nX+this.r, t=nY-this.r, b=nY+this.r;
-                return ![gT(l,t), gT(r,t), gT(l,b), gT(r,b)].includes(1) && ![gT(l,t), gT(r,t), gT(l,b), gT(r,b)].includes(4);
+            canMove(cx, cy, vx, vy) {
+                if (vx === 0 && vy === 0) return false;
+                const r = Math.floor(cy / TS) + vy;
+                const c = Math.floor(cx / TS) + vx;
+                if (r >= 0 && r < ROWS && c >= 0 && c < COLS) {
+                    return map[r][c] !== 1 && map[r][c] !== 4; // Not wall, not ghost gate
+                }
+                if (r === 10 && (c < 0 || c >= COLS)) return true; // Tunnel
+                return false;
             }
             chk() {
-                const c=Math.floor(this.x/TS), r=Math.floor(this.y/TS);
+                const c = Math.floor(this.x/TS), r = Math.floor(this.y/TS);
                 if(r>=0 && r<ROWS && c>=0 && c<COLS) {
                     if(map[r][c]===2) { map[r][c]=0; addSc(10); pSnd('d'); chkWin(); }
                     else if(map[r][c]===3) { map[r][c]=0; addSc(50); pSnd('p'); actPower(); chkWin(); triggerTutor('tutPower', '#34d399'); }
@@ -438,12 +468,10 @@
             }
             drw() {
                 ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rollAng);
-                
                 // Football Base
                 ctx.beginPath(); ctx.arc(0,0,this.r, 0, Math.PI*2);
                 ctx.fillStyle='#ffffff'; ctx.fill();
                 ctx.lineWidth=1; ctx.strokeStyle='#000'; ctx.stroke();
-                
                 // Football Patches
                 ctx.fillStyle='#1e293b';
                 ctx.beginPath(); ctx.arc(0,0,this.r*0.4, 0, Math.PI*2); ctx.fill();
@@ -458,73 +486,97 @@
         }
 
         class Enemy {
-            constructor(x,y,d) { this.sx=x*TS+TS/2; this.sy=y*TS+TS/2; this.del=d; this.rst(); }
-            rst() { this.x=this.sx; this.y=this.sy; this.vx=0; this.vy=-1; this.spd=1.5; this.sc=false; this.st=0; this.dt=this.del; this.dd=false; }
+            constructor(c,r,d) { this.sx=c*TS+TS/2; this.sy=r*TS+TS/2; this.del=d; this.rst(); }
+            rst() { 
+                this.x = this.sx; this.y = this.sy; 
+                this.vx = 0; this.vy = -1; 
+                this.spd = 2; this.sc = false; this.st = 0; this.dt = this.del; this.dd = false; 
+            }
             upd() {
                 if(this.dt>0){ this.dt--; return; }
-                if(this.sc){ this.st--; this.spd=1.0; if(this.st<=0){ this.sc=false; this.spd=1.5; } }
+                
+                let currentSpd = this.spd;
+                if(this.sc){ 
+                    this.st--; currentSpd = 1; 
+                    if(this.st<=0){ this.sc=false; } 
+                }
                 if(this.dd){ this.rst(); this.dt=80; return; }
                 
-                const c=this.x/TS, r=this.y/TS;
-                if(Number.isInteger(c-0.5) && Number.isInteger(r-0.5)) {
-                    const dirs = [{vx:0,vy:-1},{vx:1,vy:0},{vx:0,vy:1},{vx:-1,vy:0}].filter(d => !(d.vx===-this.vx && d.vy===-this.vy) && this.can(d.vx,d.vy));
-                    if(dirs.length>0) {
-                        if(!this.sc && Math.random()>0.3) {
+                const atCenter = (this.x - TS/2) % TS === 0 && (this.y - TS/2) % TS === 0;
+                
+                if (atCenter) {
+                    const r = Math.floor(this.y / TS);
+                    const c = Math.floor(this.x / TS);
+                    
+                    const dirs = [{vx:0,vy:-1},{vx:1,vy:0},{vx:0,vy:1},{vx:-1,vy:0}]
+                        .filter(d => !(d.vx === -this.vx && d.vy === -this.vy) && this.canMove(r + d.vy, c + d.vx));
+                    
+                    if(dirs.length > 0) {
+                        if(!this.sc && Math.random() > 0.3) {
                             let bd=dirs[0], md=Infinity;
-                            for(let d of dirs) { let dist=Math.hypot((this.x+d.vx*TS)-p1.x, (this.y+d.vy*TS)-p1.y); if(dist<md){ md=dist; bd=d; } }
+                            for(let d of dirs) { 
+                                let dist=Math.hypot((c+d.vx)*TS+TS/2 - p1.x, (r+d.vy)*TS+TS/2 - p1.y); 
+                                if(dist<md){ md=dist; bd=d; } 
+                            }
                             this.vx=bd.vx; this.vy=bd.vy;
                         } else {
-                            let ch = dirs[Math.floor(Math.random()*dirs.length)]; this.vx=ch.vx; this.vy=ch.vy;
+                            let ch = dirs[Math.floor(Math.random()*dirs.length)]; 
+                            this.vx=ch.vx; this.vy=ch.vy;
                         }
-                    } else { this.vx*=-1; this.vy*=-1; }
+                    } else { 
+                        this.vx*=-1; this.vy*=-1; 
+                    }
                 }
-                this.x+=this.vx*this.spd; this.y+=this.vy*this.spd;
-                if(this.x<-TS) this.x=canvas.width+TS; if(this.x>canvas.width+TS) this.x=-TS;
+                
+                this.x += this.vx * currentSpd; 
+                this.y += this.vy * currentSpd;
+                
+                if(this.x < -TS/2) this.x = canvas.width + TS/2; 
+                if(this.x > canvas.width + TS/2) this.x = -TS/2;
                 
                 if(!seenGhost && Math.hypot(this.x-p1.x, this.y-p1.y) < TS*4 && !this.sc) {
                     seenGhost = true; triggerTutor('tutGhost', '#ef4444');
                 }
                 this.chk();
             }
-            can(vx,vy){ return gT(this.x+vx*TS, this.y+vy*TS) !== 1; }
+            canMove(r, c) { 
+                if (r >= 0 && r < ROWS && c >= 0 && c < COLS) return map[r][c] !== 1;
+                if (r === 10 && (c < 0 || c >= COLS)) return true;
+                return false; 
+            }
             chk() {
                 if(Math.hypot(this.x-p1.x, this.y-p1.y) < TS-4) {
                     if(this.sc && !this.dd) {
                         this.dd=true; addSc(250); pSnd('e'); mkTxt("+€250", this.x, this.y-10, '#10b981');
-                        triggerTutor('tutEat', '#10b981'); // Tutor explains Green Up
+                        triggerTutor('tutEat', '#10b981'); 
                     } else if(!this.sc && !this.dd) { kill(); }
                 }
             }
             drw() {
                 if(this.dd) return;
                 ctx.save(); ctx.translate(this.x, this.y);
-                
                 let w = TS-4; let h = TS-6;
-                
                 // Pole
                 ctx.fillStyle='#94a3b8'; ctx.fillRect(-1.5, 0, 3, TS/2);
-                
                 // Billboard Base
                 let isBlink = this.sc && this.st<150 && Math.floor(Date.now()/150)%2===0;
                 ctx.fillStyle = this.sc ? (isBlink ? '#f8fafc' : '#10b981') : '#ef4444';
                 ctx.fillRect(-w/2, -h, w, h);
                 ctx.strokeStyle='#ffffff'; ctx.lineWidth=1; ctx.strokeRect(-w/2, -h, w, h);
-                
                 // Text
                 ctx.fillStyle = this.sc && isBlink ? '#0f172a' : '#ffffff';
                 ctx.font = 'bold 8px monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
-                if(this.sc) {
-                    ctx.fillText("GREEN", 0, -h+5); ctx.fillText("UP", 0, -h+11);
-                } else {
-                    ctx.fillText("CASH", 0, -h+5); ctx.fillText("OUT", 0, -h+11);
-                }
+                
+                const txt1 = this.sc ? i18n[currentLang].greenUp1 : i18n[currentLang].cashOut1;
+                const txt2 = this.sc ? i18n[currentLang].greenUp2 : i18n[currentLang].cashOut2;
+                ctx.fillText(txt1, 0, -h+5); 
+                ctx.fillText(txt2, 0, -h+11);
                 
                 ctx.restore();
             }
         }
 
         let p1=new Player(), enms=[];
-        function gT(x,y) { const c=Math.floor(x/TS), r=Math.floor(y/TS); return (r>=0&&r<ROWS&&c>=0&&c<COLS) ? map[r][c] : 1; }
         
         function initLvl() {
             map = JSON.parse(JSON.stringify(mapData)); p1.rst();
@@ -539,7 +591,7 @@
         }
         
         function actPower() { 
-            enms.forEach(e=>{ if(!e.dd){ e.sc=true; e.st=600; e.vx*=-1; e.vy*=-1; }}); // 600 frames = 10s plenty of time
+            enms.forEach(e=>{ if(!e.dd){ e.sc=true; e.st=600; e.vx*=-1; e.vy*=-1; }}); 
         }
         function mkTxt(t,x,y,c) { texts.push({t,x,y,c,l:60}); }
 
@@ -557,22 +609,19 @@
                 for(let c=0;c<COLS;c++) {
                     let t=map[r][c], x=c*TS, y=r*TS;
                     if(t===1){ 
-                        // Pitch Lines (Walls)
                         ctx.fillStyle='rgba(255,255,255,0.8)'; 
                         ctx.fillRect(x+2,y+2,TS-4,TS-4); 
                     }
                     else if(t===2){ 
-                        // Equity Coins
                         ctx.fillStyle='#fbbf24'; ctx.beginPath(); ctx.arc(x+TS/2,y+TS/2,2.5,0,Math.PI*2); ctx.fill(); 
                     }
                     else if(t===3){ 
-                        // Green Up Powerup (Software)
                         ctx.fillStyle='#10b981'; ctx.beginPath(); ctx.arc(x+TS/2,y+TS/2,5+Math.sin(Date.now()/150)*1.5,0,Math.PI*2); ctx.fill();
                         ctx.strokeStyle='#fff'; ctx.lineWidth=1; ctx.stroke();
-                        ctx.fillStyle='#fff'; ctx.font='bold 6px monospace'; ctx.textAlign='center'; ctx.fillText('GU', x+TS/2, y+TS/2+2);
+                        ctx.fillStyle='#fff'; ctx.font='bold 6px monospace'; ctx.textAlign='center'; 
+                        ctx.fillText(i18n[currentLang].powerUpGu, x+TS/2, y+TS/2+2);
                     }
                     else if(t===4){ 
-                        // Ghost Gate
                         ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.fillRect(x,y+TS/2-1,TS,2); 
                     }
                 }
@@ -590,11 +639,11 @@
         function kill() {
             lives--; updateScoreDisplays(); pSnd('x');
             const w = document.getElementById('gameWrapper'); w.classList.remove('shake'); void w.offsetWidth; w.classList.add('shake');
-            mkTxt("- LIQUIDATED -", p1.x, p1.y, '#ef4444');
+            mkTxt(i18n[currentLang].liquidated, p1.x, p1.y, '#ef4444');
             triggerTutor('gameOverDesc', '#ef4444');
             if(lives<=0) {
                 state='OVER'; 
-                document.getElementById('t_finalProfitVal').innerText = '€' + score;
+                document.getElementById('finalProfitVal').innerText = '€' + score;
                 document.getElementById('gameOverScreen').classList.remove('hidden');
             } else { p1.rst(); enms.forEach(e=>e.rst()); }
         }
@@ -602,7 +651,7 @@
         function chkWin() {
             if(map.flat().filter(t=>t===2||t===3).length === 0) {
                 state='WIN'; 
-                document.getElementById('t_totalExtractedVal').innerText = '€' + score;
+                document.getElementById('totalExtractedVal').innerText = '€' + score;
                 document.getElementById('winScreen').classList.remove('hidden');
             }
         }
@@ -644,9 +693,9 @@
             triggerTutor('tutStart', '#38bdf8');
         }
 
-        document.getElementById('startBtn').addEventListener('click', start);
-        document.getElementById('restartBtn').addEventListener('click', start);
-        document.getElementById('nextLevelBtn').addEventListener('click', start);
+        document.getElementById('btnStart').addEventListener('click', start);
+        document.getElementById('btnRetry').addEventListener('click', start);
+        document.getElementById('btnNext').addEventListener('click', start);
 
         initLang(); switchTab('game'); initLvl(); drawAll(); loop();
     </script>
