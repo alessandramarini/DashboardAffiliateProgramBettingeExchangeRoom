@@ -1,0 +1,927 @@
+```html
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#050a05">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title id="page-title">Room AI | Global Exchange Academy - Day 5</title>
+    <meta name="description" content="Interactive Academy for Betting Exchange. Day 5: Cash Out vs. Green Up - The Mathematics of Hedging.">
+
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&display=swap"></noscript>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050a05;
+            background-image: 
+                linear-gradient(to bottom, rgba(5, 10, 5, 0.96), rgba(10, 20, 10, 0.90)),
+                url('https://images.unsplash.com/photo-1518605368461-1e125222058c?auto=format,compress&fit=crop&w=1920&q=70&fm=webp');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-text-size-adjust: 100%;
+            text-rendering: optimizeLegibility;
+            overflow-x: hidden;
+            width: 100vw;
+        }
+
+        .glass-panel {
+            background: rgba(10, 15, 10, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(153, 232, 20, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transform: translateZ(0); 
+            will-change: transform, opacity;
+        }
+
+        .text-neon-green { color: #99E814; text-shadow: 0 0 12px rgba(153, 232, 20, 0.4); }
+        .bg-neon-green { background-color: #99E814; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.5); }
+        ::-webkit-scrollbar-thumb { background: #99E814; border-radius: 10px; }
+        .tg-scrollbar::-webkit-scrollbar { width: 4px; }
+        .tg-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .tg-scrollbar::-webkit-scrollbar-thumb { background: rgba(153,232,20,0.4); border-radius: 4px; }
+        .tg-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(153,232,20,0.8); }
+
+        @keyframes pulse-sub {
+            0% { color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); border-color: rgba(239, 68, 68, 0.6); background-color: rgba(20,5,5,0.9); }
+            50% { color: #99E814; box-shadow: 0 0 20px rgba(153, 232, 20, 0.3); border-color: rgba(153, 232, 20, 0.6); background-color: rgba(5,20,5,0.9); }
+            100% { color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); border-color: rgba(239, 68, 68, 0.6); background-color: rgba(20,5,5,0.9); }
+        }
+        .sub-warning { animation: pulse-sub 3s infinite ease-in-out; border: 1px solid; transition: all 0.3s ease; transform: translateZ(0); }
+
+        @keyframes joystickNeon {
+            0% { filter: drop-shadow(0 0 10px rgba(153, 232, 20, 0.5)); transform: scale(1) translateZ(0); }
+            50% { filter: drop-shadow(0 0 35px rgba(153, 232, 20, 1)); transform: scale(1.15) translateZ(0); }
+            100% { filter: drop-shadow(0 0 10px rgba(153, 232, 20, 0.5)); transform: scale(1) translateZ(0); }
+        }
+        .joystick-pulse { animation: joystickNeon 2.5s ease-in-out infinite; display: inline-block; cursor: pointer; will-change: transform, filter; }
+
+        @keyframes play-shadow-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(153, 232, 20, 0.6), 0 8px 32px rgba(0,0,0,0.5); }
+            70% { box-shadow: 0 0 0 20px rgba(153, 232, 20, 0), 0 8px 32px rgba(0,0,0,0.5); }
+            100% { box-shadow: 0 0 0 0 rgba(153, 232, 20, 0), 0 8px 32px rgba(0,0,0,0.5); }
+        }
+        .play-pulse { animation: play-shadow-pulse 2.5s infinite cubic-bezier(0.66, 0, 0, 1); transform: translateZ(0); }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translate3d(0, 15px, 0); }
+            to { opacity: 1; transform: translate3d(0, 0, 0); }
+        }
+        .animate-fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; will-change: transform, opacity; }
+
+        .premium-card {
+            background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+            border-radius: 24px;
+            position: relative;
+            transform: translateZ(0);
+            width: 100%;
+            box-sizing: border-box;
+            overflow: hidden; 
+        }
+        
+        .frame-gold {
+            border: 2px solid #c5a059;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(197, 160, 89, 0.15);
+        }
+        .wwtbam-question-box {
+            background: radial-gradient(ellipse at center, rgba(30, 41, 59, 0.95) 0%, rgba(2, 6, 23, 0.95) 100%);
+            border: 1px solid #d4af37;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7), inset 0 0 15px rgba(212,175,55,0.15);
+            position: relative;
+            width: 100%;
+        }
+
+        .frame-cyan {
+            border: 2px solid #00e5ff;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(0, 229, 255, 0.15);
+            background: linear-gradient(135deg, #041419 0%, #08222a 100%);
+        }
+
+        .frame-neon {
+            border: 2px solid #99E814;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(153, 232, 20, 0.15);
+            background: linear-gradient(135deg, #0a140f 0%, #112211 100%);
+        }
+
+        .frame-purple {
+            border: 2px solid #a855f7;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(168, 85, 247, 0.15);
+            background: linear-gradient(135deg, #13051a 0%, #260a33 100%);
+        }
+
+        .frame-blue {
+            border: 2px solid #3b82f6;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(59, 130, 246, 0.15);
+            background: linear-gradient(135deg, #05101a 0%, #0a2133 100%);
+        }
+
+        .wwtbam-btn {
+            background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+            border: 1px solid rgba(197, 160, 89, 0.5);
+            border-radius: 9999px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            min-height: 3.5rem;
+            word-wrap: break-word;
+        }
+        .wwtbam-btn:hover:not(:disabled) {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4), inset 0 0 10px rgba(212, 175, 55, 0.2);
+            transform: translateY(-1px);
+        }
+        .wwtbam-btn.correct {
+            background: linear-gradient(180deg, #064e3b 0%, #022c22 100%) !important;
+            border-color: #10b981 !important;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.3) !important;
+            color: #ffffff !important;
+        }
+        .wwtbam-btn.wrong {
+            background: linear-gradient(180deg, #7f1d1d 0%, #450a0a 100%) !important;
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.3) !important;
+            color: #ffffff !important;
+        }
+
+        .lang-flag {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border-radius: 6px;
+        }
+        .lang-flag.active {
+            opacity: 1;
+            transform: scale(1.15) translateY(-2px);
+            border-color: #99E814;
+            box-shadow: 0 6px 12px rgba(153, 232, 20, 0.3), 0 0 0 2px rgba(153, 232, 20, 0.5);
+            filter: grayscale(0%);
+            z-index: 10;
+        }
+        .lang-flag.inactive {
+            opacity: 0.6;
+            filter: grayscale(60%) contrast(1.2);
+            border-color: transparent;
+            transform: scale(1);
+        }
+        .lang-flag.inactive:hover {
+            opacity: 0.9;
+            filter: grayscale(20%);
+            transform: scale(1.05);
+        }
+        
+        .btn-hover-fix:hover span {
+            color: #050a05 !important;
+        }
+    </style>
+</head>
+<body class="text-gray-200 pb-12 selection:bg-[#99E814] selection:text-black antialiased relative w-full overflow-x-hidden">
+
+    <header class="sticky top-0 z-40 glass-panel border-b-0 border-t-0 border-x-0 border-b border-[#99E814]/20 px-3 sm:px-6 py-2 sm:py-3 flex justify-between items-center transform-gpu w-full">
+        <div class="flex items-center gap-2 md:gap-4 flex-shrink min-w-0">
+            <img src="logo-tondo.jpeg" alt="Logo" class="w-8 h-8 md:w-10 md:h-10 rounded-full shadow-[0_0_15px_rgba(153,232,20,0.3)] object-cover shrink-0 border border-[#99E814]/30" onerror="this.src='https://placehold.co/100x100/102010/99E814?text=BE'">
+            <h1 class="font-black text-[10px] sm:text-xs md:text-sm lg:text-base tracking-wider uppercase whitespace-nowrap overflow-hidden text-ellipsis" data-i18n-html="headerTitle">BETTING EXCHANGE <span class="text-neon-green">ROOM</span></h1>
+        </div>
+        
+        <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+            <div class="flex items-center bg-black/60 border border-gray-700 px-2.5 py-1.5 sm:px-3 rounded-full shadow-inner" id="xp-badge">
+                <span class="text-yellow-400 text-[10px] sm:text-xs mr-1.5">⚡</span>
+                <span id="xp-counter" class="font-mono font-bold text-[11px] sm:text-sm text-white tabular-nums">0 XP</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="w-full max-w-5xl mx-auto px-3 sm:px-6 mt-4 md:mt-8 space-y-6 md:space-y-10">
+
+        <div class="flex justify-center w-full px-4 mb-4 animate-fade-in-up">
+            <div class="flex items-center justify-center gap-3 sm:gap-5 bg-gradient-to-r from-gray-900/40 via-gray-900/80 to-gray-900/40 border border-[#99E814]/20 py-2.5 px-6 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md">
+                <button onclick="window.changeLang('en')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="en" aria-label="English">
+                    <img src="https://flagcdn.com/w40/gb.png" alt="EN" class="w-full h-full object-cover">
+                </button>
+                <button onclick="window.changeLang('es')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="es" aria-label="Español">
+                    <img src="https://flagcdn.com/w40/es.png" alt="ES" class="w-full h-full object-cover">
+                </button>
+                <button onclick="window.changeLang('pt')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="pt" aria-label="Português">
+                    <img src="https://flagcdn.com/w40/br.png" alt="PT" class="w-full h-full object-cover">
+                </button>
+                <button onclick="window.changeLang('it')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="it" aria-label="Italiano">
+                    <img src="https://flagcdn.com/w40/it.png" alt="IT" class="w-full h-full object-cover">
+                </button>
+            </div>
+        </div>
+
+        <div class="text-center space-y-2 md:space-y-3 px-2 animate-fade-in-up flex flex-col items-center">
+            <p class="text-[#99E814] font-black text-[10px] sm:text-xs md:text-sm tracking-[0.3em] uppercase drop-shadow-lg break-words text-center" data-i18n="moduleTitle">GIORNO 5/30</p>
+            <h2 class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tighter leading-tight break-words text-center w-full" data-i18n="lessonTitle">ZERO TO HERO academy</h2>
+            <p class="text-gray-400 max-w-2xl mx-auto text-xs sm:text-sm md:text-base font-bold leading-relaxed mt-2" data-i18n="lessonDesc">Cash Out vs. Green Up: La Matematica dell'Hedging.</p>
+        </div>
+
+        <section class="premium-card frame-cyan w-full p-3 sm:p-6 md:p-8" style="content-visibility: auto; contain-intrinsic-size: 500px;">
+            <div id="video-wrapper" class="relative w-full aspect-video bg-[#0a140f] rounded-xl md:rounded-2xl overflow-hidden border border-[#00e5ff]/30 shadow-xl ring-1 ring-white/5 transform-gpu">
+                <iframe id="main-video" class="absolute inset-0 w-full h-full z-20" src="https://www.youtube.com/embed/Hmai4gbc0IQ?rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 mt-4 sm:mt-6 w-full max-w-4xl mx-auto">
+                <a id="btn-podcast" href="#" target="_blank" rel="noopener noreferrer" onclick="SoundEngine.click()" class="flex items-center justify-center p-3 sm:p-5 md:p-6 bg-gray-900/80 hover:bg-[#00e5ff]/10 hover:border-[#00e5ff]/50 border border-gray-700/50 rounded-xl md:rounded-2xl transition-all active:scale-95 group shadow-md text-center flex-row touch-manipulation transform-gpu min-h-[70px]">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 mr-3 text-[#00e5ff] group-hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.8)] group-hover:scale-110 transition-all duration-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                    <span class="font-black text-[11px] sm:text-xs md:text-sm tracking-widest uppercase text-[#00e5ff] break-words leading-tight" data-i18n="btnPodcast">ASCOLTA IL PODCAST</span>
+                </a>
+                <button onclick="openEbookModal()" class="flex items-center justify-center p-3 sm:p-5 md:p-6 bg-gray-900/80 hover:bg-[#ffb703]/10 hover:border-[#ffb703]/50 border border-gray-700/50 rounded-xl md:rounded-2xl transition-all active:scale-95 group shadow-md text-center flex-row touch-manipulation transform-gpu min-h-[70px]">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 mr-3 text-[#ffb703] group-hover:drop-shadow-[0_0_8px_rgba(255,183,3,0.8)] group-hover:scale-110 transition-all duration-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477-4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    <span class="font-black text-[11px] sm:text-xs md:text-sm tracking-widest uppercase text-[#ffb703] transition-colors break-words leading-tight" data-i18n="btnEbook">VISUALIZZA IL MANUALE</span>
+                </button>
+            </div>
+        </section>
+
+        <section class="premium-card frame-gold w-full p-4 sm:p-6 md:p-10 h-fit" id="quiz-section">
+            <div id="quiz-container" class="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center">
+                <div class="w-full flex flex-wrap justify-between items-center mb-6 sm:mb-8 px-2 gap-2">
+                    <div class="text-[#d4af37] text-[10px] sm:text-xs font-black uppercase tracking-widest bg-[#d4af37]/10 px-3 py-1 rounded-full border border-[#d4af37]/40 whitespace-nowrap shadow-inner" id="quiz-progress-text">Domanda 1 di 5</div>
+                    <div class="flex gap-1.5 shrink-0" id="quiz-dots"></div>
+                </div>
+                <div class="wwtbam-question-box px-4 sm:px-6 py-8 sm:py-10 rounded-xl text-center mb-8 sm:mb-10 w-full">
+                    <p id="quiz-question-text" class="text-[15px] sm:text-lg md:text-xl text-white font-black leading-relaxed drop-shadow-md break-words"></p>
+                </div>
+                <div id="quiz-options-container" class="space-y-3 sm:space-y-4 w-full"></div>
+            </div>
+            
+            <div id="quiz-feedback" class="hidden w-full max-w-2xl mx-auto p-6 sm:p-8 md:p-10 rounded-xl md:rounded-2xl text-center shadow-2xl mt-8 transition-all duration-500 transform-gpu relative overflow-hidden flex justify-center items-center">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
+                <div id="quiz-feedback-icon" class="text-6xl sm:text-8xl relative z-10 drop-shadow-lg flex items-center justify-center">✅</div>
+                <p id="quiz-feedback-text" class="hidden"></p>
+            </div>
+
+            <div id="quiz-completed-screen" class="hidden flex-col items-center justify-center py-10 md:py-16 text-center transition-all duration-500 w-full">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-[#d4af37]/10 rounded-full flex items-center justify-center mb-6 border-2 border-[#d4af37] shadow-[0_0_30px_rgba(212,175,55,0.4)] shrink-0">
+                    <span class="text-4xl sm:text-5xl drop-shadow-lg">🏆</span>
+                </div>
+                <h4 class="text-[#d4af37] font-black text-xl sm:text-2xl md:text-3xl uppercase tracking-widest mb-3 drop-shadow-md break-words w-full" data-i18n="quizCompletedTitle">Check-Point Superato!</h4>
+                <p class="text-gray-200 text-sm md:text-base font-medium mb-10 max-w-md mx-auto px-4 break-words" data-i18n="quizCompletedDesc">Hai sbloccato 500 XP. Ora domini la matematica dell'hedging.</p>
+                <button onclick="resetQuiz()" class="wwtbam-btn px-6 sm:px-10 py-3 sm:py-4 text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-[0.2em] text-[#d4af37] hover:text-white flex items-center justify-center gap-2 sm:gap-3 group max-w-full">
+                    <span class="group-hover:-rotate-180 transition-transform duration-500 text-base sm:text-lg shrink-0">🔄</span> 
+                    <span data-i18n="btnRetryQuiz" class="truncate">Ripeti il test</span>
+                </button>
+            </div>
+        </section>
+
+        <section class="premium-card frame-neon w-full p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center relative overflow-hidden" style="content-visibility: auto;">
+            <div class="absolute inset-0 bg-gray-600 opacity-[0.02] blur-3xl pointer-events-none"></div>
+            <div class="w-full max-w-4xl mx-auto flex justify-start items-center mb-3 md:mb-5 relative z-10">
+                <div class="bg-gray-900 text-[#99E814] border border-[#99E814]/30 text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest break-words" data-i18n="demoBadge">DEMO INTERATTIVA</div>
+            </div>
+            <a href="Demo-5day.html" target="_blank" class="demo-link block group relative w-full max-w-4xl mx-auto rounded-xl sm:rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl border border-[#99E814]/30 hover:border-[#99E814] transition-all duration-700 cursor-pointer bg-[#050a05] transform-gpu hover:-translate-y-1" onclick="SoundEngine.click()">
+                <div class="relative w-full overflow-hidden" style="aspect-ratio: 16/9;">
+                    <img src="Demo-5day.jpeg" onerror="this.src='https://placehold.co/1280x720/102010/99E814?text=IMMAGINE+NON+TROVATA'" alt="Demo Simulator" class="absolute inset-0 w-full h-full object-cover object-center z-0 transition-transform duration-1000 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a140f] via-black/10 to-transparent z-10 transition-opacity duration-700 opacity-60 group-hover:opacity-80 pointer-events-none"></div>
+                    <div class="absolute inset-0 flex items-center justify-center z-20 pointer-events-none px-2">
+                        <div class="play-pulse px-4 py-3 sm:px-8 sm:py-4 bg-[#99E814] border border-[#99E814] rounded-lg sm:rounded-xl flex items-center justify-center shadow-[0_0_30px_rgba(153,232,20,0.5)] transform group-hover:scale-105 transition-all duration-500 ease-out group-hover:bg-[#b3ff33] group-hover:shadow-[0_0_40px_rgba(153,232,20,0.7)] pointer-events-auto gap-2 sm:gap-3 backdrop-blur-sm max-w-[90%]">
+                            <svg class="w-4 h-4 sm:w-6 sm:h-6 text-[#050a05] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                            <span class="text-[#050a05] font-black text-[10px] sm:text-sm md:text-base tracking-[0.1em] sm:tracking-[0.2em] uppercase truncate" data-i18n="startSimulator">Avvia Simulatore</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </section>
+        
+        <section class="premium-card frame-purple w-full p-5 sm:p-8 relative overflow-hidden transform-gpu" style="content-visibility: auto;">
+            <p class="text-[9px] sm:text-[11px] md:text-xs text-[#a855f7] font-black mb-2 sm:mb-4 tracking-[0.2em] uppercase text-center md:text-left break-words" data-i18n="finLabel">PILLOLA FINANZIARIA</p>
+            <p class="text-xs sm:text-base md:text-lg text-gray-300 font-medium italic leading-relaxed text-center md:text-left break-words w-full">"<span data-i18n="finQuote">Il tasto Cash Out è una tassa sull'ignoranza matematica; il Green Up è lo strumento di precisione del trader.</span>"</p>
+        </section>
+
+        <section class="premium-card frame-blue w-full p-6 sm:p-10 flex flex-col items-center justify-center relative transform-gpu">
+            <div class="text-center space-y-3 mb-6 px-4 animate-fade-in-up relative z-10 w-full">
+                <h4 class="text-[#3b82f6] font-black text-lg sm:text-xl md:text-2xl tracking-[0.2em] uppercase drop-shadow-[0_0_15px_rgba(59,130,246,0.5)] w-full break-words" data-i18n="penaltiesTitle">GIOCO EDUCATIVO</h4>
+                <p class="text-gray-300 text-xs sm:text-sm md:text-base font-medium max-w-lg mx-auto leading-relaxed w-full break-words" data-i18n="penaltiesDesc">Monopolizza il tabellone.</p>
+            </div>
+            <a href="Game-5day.html" target="_blank" rel="noopener noreferrer" class="hover:scale-110 transition-transform duration-500 touch-manipulation joystick-pulse transform-gpu shrink-0 relative z-10 mt-4 group" title="Play Game" onclick="SoundEngine.click()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" class="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 drop-shadow-[0_0_20px_rgba(59,130,246,0.5)] group-hover:drop-shadow-[0_0_35px_rgba(153,232,20,0.8)] transition-all duration-500">
+                    <defs>
+                        <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="3" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                    </defs>
+                    <!-- Field -->
+                    <rect x="4" y="4" width="112" height="112" rx="12" fill="#051a0a" stroke="#99E814" stroke-width="2" />
+                    <rect x="10" y="10" width="100" height="100" rx="4" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.4" />
+                    <!-- Midline & Circle -->
+                    <line x1="60" y1="10" x2="60" y2="110" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.4" />
+                    <circle cx="60" cy="60" r="16" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.4" />
+                    <!-- Penalty areas -->
+                    <rect x="10" y="35" width="16" height="50" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.4" />
+                    <rect x="94" y="35" width="16" height="50" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.4" />
+                    <!-- Pac-Man Soccer Ball -->
+                    <g class="group-hover:scale-110 origin-center transition-transform duration-300" filter="url(#neon-glow)">
+                        <path d="M 50 60 L 76 45 A 30 30 0 1 0 76 75 Z" fill="#ffffff" />
+                        <!-- Soccer ball pentagons -->
+                        <polygon points="35,45 45,42 50,50 42,58 32,53" fill="#111"/>
+                        <polygon points="25,65 32,60 38,68 32,75 22,70" fill="#111"/>
+                        <polygon points="50,30 58,25 65,32 55,38" fill="#111"/>
+                        <polygon points="55,75 65,70 70,80 60,85" fill="#111"/>
+                    </g>
+                    <!-- Food dots -->
+                    <circle cx="90" cy="60" r="4" fill="#ffb703" filter="url(#neon-glow)" class="animate-pulse"/>
+                    <circle cx="104" cy="60" r="4" fill="#ffb703" filter="url(#neon-glow)" class="animate-pulse"/>
+                </svg>
+                <div class="absolute inset-0 bg-[#3b82f6] rounded-full blur-[50px] opacity-20 -z-10 group-hover:bg-[#99E814] transition-colors duration-500"></div>
+            </a>
+        </section>
+
+        <div class="flex flex-col justify-center items-center pt-8 pb-4 border-t border-gray-800/50 relative gap-4 w-full">
+            <div id="sub-warning-msg" class="hidden absolute inset-0 md:static sub-warning px-4 sm:px-8 py-3.5 sm:py-4 rounded-xl text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-center w-full items-center justify-center gap-2 z-20 break-words">
+                <span data-i18n="subNotActive">ABBONAMENTO NON ATTIVO! CONTATTA IL TUO REFERENTE</span>
+            </div>
+            
+            <a id="btn-next-lesson" href="https://affiliate-program-bettinge-exchange.vercel.app/SummaryZeroToHeroAcademy.html" onclick="SoundEngine.click()" class="bg-[#0a140f] text-[#99E814] border-2 border-[#99E814] font-black w-full max-w-md mx-auto justify-center px-6 sm:px-10 py-5 rounded-2xl hover:bg-[#99E814] hover:border-[#99E814] transition-all duration-300 text-xs sm:text-sm md:text-base uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(153,232,20,0.2)] hover:shadow-[0_0_40px_rgba(153,232,20,0.6)] touch-manipulation active:scale-95 flex items-center gap-3 z-10 transform-gpu group btn-hover-fix h-auto min-h-[4rem]">
+                <span data-i18n="navNextLesson" class="truncate transition-colors duration-300">PROSSIMA LEZIONE</span> 
+                <span class="text-xl sm:text-2xl group-hover:translate-x-2 group-hover:text-black transition-all duration-300 shrink-0">→</span>
+            </a>
+        </div>
+    </main>
+
+    <div id="ebook-modal" class="fixed inset-0 z-[100] hidden flex-col items-center justify-center bg-[#050a05]/95 backdrop-blur-md p-0 sm:p-4 md:p-6 opacity-0 transition-opacity duration-300">
+        <div class="bg-[#050a05] w-full max-w-4xl h-full sm:h-auto sm:max-h-[95vh] rounded-none sm:rounded-3xl border-0 sm:border border-gray-700 flex flex-col overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 relative modern-ebook" id="ebook-modal-content">
+            <div class="flex justify-between items-center p-4 md:p-6 border-b border-gray-800 bg-[#050a05] shrink-0 z-10 w-full">
+                <h3 class="text-[#99E814] font-black uppercase tracking-widest text-[11px] sm:text-sm md:text-base flex items-center gap-2 truncate">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#ffb703] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477-4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg> 
+                    <span class="text-[#ffb703] truncate" data-i18n="btnEbookTitle">MANUALE</span>
+                </h3>
+                <button onclick="closeEbookModal()" class="text-gray-400 hover:text-white text-3xl md:text-4xl leading-none px-3 py-1 rounded-lg active:scale-95 touch-manipulation transition-colors shrink-0">×</button>
+            </div>
+            <div class="flex-1 overflow-y-auto relative flex flex-col items-center tg-scrollbar bg-[#050a05] w-full">
+                <div class="w-full max-w-3xl p-5 sm:p-8 md:p-10 text-justify md:text-left break-words" id="ebook-content-container" data-i18n-html="ebookContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SoundEngine = {
+            ctx: null, unlocked: false,
+            init: function() { 
+                if(!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if(AudioContext) this.ctx = new AudioContext(); 
+                }
+                if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+                this.unlocked = true;
+            },
+            playTone: function(freq, type, duration, vol) {
+                if(!this.unlocked) this.init();
+                if(!this.ctx || this.ctx.state === 'suspended') return;
+                try {
+                    const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+                    osc.type = type; osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+                    osc.connect(gain); gain.connect(this.ctx.destination);
+                    osc.start(); osc.stop(this.ctx.currentTime + duration);
+                } catch(e) {}
+            },
+            click: function() { this.playTone(600, 'sine', 0.1, 0.1); },
+            cashout: function() { this.playTone(880, 'sine', 0.1, 0.1); setTimeout(() => this.playTone(1760, 'sine', 0.3, 0.15), 100); },
+            error: function() { this.playTone(150, 'sawtooth', 0.3, 0.1); }
+        };
+
+        function openEbookModal() {
+            SoundEngine.click();
+            const modal = document.getElementById('ebook-modal');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+            void modal.offsetWidth; 
+            modal.classList.remove('opacity-0'); modal.classList.add('opacity-100');
+            document.getElementById('ebook-modal-content').classList.remove('scale-95'); document.getElementById('ebook-modal-content').classList.add('scale-100');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeEbookModal() {
+            SoundEngine.click();
+            const modal = document.getElementById('ebook-modal');
+            modal.classList.remove('opacity-100'); modal.classList.add('opacity-0');
+            document.getElementById('ebook-modal-content').classList.remove('scale-100'); document.getElementById('ebook-modal-content').classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); document.body.style.overflow = ''; }, 300);
+        }
+
+        window.RoomApp = (function() {
+            const CONFIG = { STORAGE_KEY: 'bx_academy_demo_hd_v2_day5' }; 
+
+            const podcastUrls = {
+                it: "https://open.spotify.com/episode/3GCtQcKTSFEArbezOJWbri?si=aJT4FaIAS0OywzErm8JIKg",
+                en: "https://open.spotify.com/episode/4KW81aC6aguoj8qEK8lUUN?si=DJbpxwf1T_COVM30sOGqjA",
+                es: "https://open.spotify.com/episode/1CWfuUu5owijWTLpU6azHk?si=m-a9n-ESQ4-Qf7ctsPDFwA",
+                pt: "https://open.spotify.com/episode/2WeWzpIGjiWvMLSpgaETLF?si=eJqe7pCoT-C3dgF3kvkKCg"
+            };
+
+            const ebookTemplate = (langDict) => `
+                <div class="space-y-8 text-gray-300 font-sans">
+                    <div class="text-center mb-8 border-b border-gray-800 pb-6">
+                        <h2 class="text-3xl md:text-4xl font-black text-[#99E814] tracking-widest uppercase drop-shadow-[0_0_15px_rgba(153,232,20,0.4)]">${langDict.ebTitle1}</h2>
+                        <h3 class="text-xl md:text-2xl font-bold text-white mt-3">${langDict.ebTitle2}</h3>
+                        <p class="text-[#ffb703] font-bold mt-2 uppercase tracking-wider text-sm bg-[#ffb703]/10 inline-block px-4 py-1.5 rounded-full border border-[#ffb703]/30">${langDict.ebTitle3}</p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 rounded-2xl border border-gray-700 shadow-lg relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-[#00e5ff] rounded-full blur-[80px] opacity-10 pointer-events-none"></div>
+                        <p class="leading-relaxed text-base md:text-lg relative z-10">${langDict.ebIntro}</p>
+                    </div>
+
+                    <div class="bg-[#3b82f6]/10 p-6 rounded-2xl border border-[#3b82f6]/40 text-center shadow-[0_0_30px_rgba(59,130,246,0.15)] transform-gpu hover:scale-[1.02] transition-transform duration-300">
+                        <p class="text-[#3b82f6] font-black mb-3 uppercase tracking-[0.2em] text-sm flex justify-center items-center gap-2"><span class="text-xl">📐</span> ${langDict.ebLawTitle}</p>
+                        <p class="text-white text-lg md:text-xl font-mono bg-black/40 py-3 px-4 rounded-xl border border-[#3b82f6]/20 inline-block shadow-inner">${langDict.ebLawText}</p>
+                    </div>
+
+                    <div class="flex items-center gap-4 mt-10 mb-6">
+                        <div class="h-px flex-1 bg-gradient-to-r from-transparent to-gray-700"></div>
+                        <h3 class="text-xl md:text-2xl font-black text-white uppercase tracking-widest">${langDict.ebDictTitle}</h3>
+                        <div class="h-px flex-1 bg-gradient-to-l from-transparent to-gray-700"></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="bg-gray-800/60 p-5 rounded-xl border-l-4 border-[#00e5ff] hover:bg-gray-800 transition-colors">
+                            <h4 class="font-black text-[#00e5ff] flex items-center gap-2 uppercase tracking-wider text-sm mb-2"><span class="text-lg">🤖</span> ${langDict.ebMatchedTitle}</h4>
+                            <p class="text-sm md:text-base">${langDict.ebMatchedText}</p>
+                        </div>
+
+                        <div class="bg-gray-800/60 p-5 rounded-xl border-l-4 border-[#99E814] hover:bg-gray-800 transition-colors">
+                            <h4 class="font-black text-[#99E814] flex items-center gap-2 uppercase tracking-wider text-sm mb-2"><span class="text-lg">🎯</span> ${langDict.ebUnmatchedTitle}</h4>
+                            <p class="text-sm md:text-base">${langDict.ebUnmatchedText}</p>
+                        </div>
+
+                        <div class="bg-gray-800/60 p-5 rounded-xl border-l-4 border-[#ffb703] md:col-span-2 hover:bg-gray-800 transition-colors">
+                            <h4 class="font-black text-[#ffb703] flex items-center gap-2 uppercase tracking-wider text-sm mb-2"><span class="text-lg">⚖️</span> ${langDict.ebGapsTitle}</h4>
+                            <p class="text-sm md:text-base">${langDict.ebGapsText}</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 p-6 rounded-2xl border border-[#ffb703]/30 shadow-[0_10px_30px_rgba(0,0,0,0.5)] mt-8">
+                        <h5 class="text-[#ffb703] font-black text-base md:text-lg mb-4 uppercase tracking-widest flex items-center gap-2"><span class="text-2xl">🧮</span> ${langDict.ebCaseStudyTitle}</h5>
+                        <div class="text-sm md:text-base text-gray-300 space-y-2 bg-black/50 p-4 sm:p-5 rounded-xl border border-gray-700 shadow-inner font-medium">
+                            ${langDict.ebRule1}
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-[#7f1d1d]/40 to-[#450a0a]/40 p-6 sm:p-8 rounded-2xl border border-red-500/50 relative overflow-hidden mt-8">
+                        <div class="absolute -right-4 -top-4 text-8xl opacity-10 pointer-events-none">⚠️</div>
+                        <h4 class="font-black text-red-500 flex items-center gap-2 uppercase tracking-widest mb-3 relative z-10"><span class="text-xl">⚠️</span> ${langDict.ebWarningTitle}</h4>
+                        <p class="relative z-10 leading-relaxed text-sm md:text-base">${langDict.ebWarningText}</p>
+                        <p class="text-sm md:text-base text-gray-300 mt-5 bg-black/60 p-4 rounded-xl border border-red-500/20 italic relative z-10">💡 <strong class="text-white">Action:</strong> ${langDict.ebRule2}</p>
+                    </div>
+
+                    <div class="bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-gray-900 p-8 rounded-3xl border border-[#99E814]/30 text-center mt-10 relative overflow-hidden shadow-[0_0_40px_rgba(153,232,20,0.1)]">
+                        <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 pointer-events-none"></div>
+                        <p class="text-lg md:text-xl text-gray-300 italic relative z-10 font-medium">"${langDict.ebQuote1}"</p>
+                        <div class="w-16 h-1 bg-[#99E814] mx-auto my-5 rounded-full relative z-10"></div>
+                        <p class="text-xl md:text-2xl font-black text-white relative z-10 drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">"${langDict.ebQuote2}"</p>
+                    </div>
+                </div>
+            `;
+
+            const dict = {
+                it: {
+                    pageTitle: "Room AI | Global Exchange Academy - Giorno 5",
+                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
+                    moduleTitle: "GIORNO 5/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Cash Out vs. Green Up: La Matematica dell'Hedging.",
+                    finLabel: "PILLOLA FINANZIARIA", finQuote: "Il tasto Cash Out è una tassa sull'ignoranza matematica; il Green Up è lo strumento di precisione del trader.",
+                    demoBadge: "DEMO INTERATTIVA", startSimulator: "AVVIA SIMULATORE",
+                    penaltiesTitle: "GIOCO EDUCATIVO", penaltiesDesc: "Monopolizza il tabellone.",
+                    quizProgress: "Domanda {step} di 5",
+                    btnPodcast: "ASCOLTA IL PODCAST", btnEbook: "VISUALIZZA IL MANUALE", btnEbookTitle: "MANUALE", btnRetryQuiz: "Ripeti il test",
+                    navNextLesson: "PROSSIMA LEZIONE",
+                    subNotActive: "ABBONAMENTO NON ATTIVO! CONTATTA IL TUO REFERENTE",
+                    quizCompletedTitle: "Check-Point Superato!", quizCompletedDesc: "Hai sbloccato 500 XP. Ora domini la matematica dell'hedging.",
+                    videoUrl: "https://www.youtube.com/embed/Hmai4gbc0IQ?rel=0&modestbranding=1",
+                    
+                    ebTitle1: "Giorno 5", ebTitle2: "La Matematica dell'Hedging", ebTitle3: "Cash Out vs Green Up",
+                    ebIntro: "Il divario tra un dilettante e un professionista non riguarda solo la scelta del giusto punto di ingresso, ma come estrai profitto dal mercato quando il trade va a tuo favore. Mentre il principiante va in panico e clicca ciecamente il tasto 'Cash Out', il pro comprende che il vero risk management richiede precisione matematica: il Green Up.",
+                    ebLawTitle: "FORMULA PER UN GREEN UP PERFETTO",
+                    ebLawText: "Lay Stake = (Back Stake × Quote Back Iniziali) / Quote Lay Attuali",
+                    ebDictTitle: "GLOSSARIO TECNICO",
+                    ebMatchedTitle: "Cash Out",
+                    ebMatchedText: "Algoritmo automatizzato che chiude la posizione con un clic, spesso attraversando lo spread e sacrificando valore aggregato.",
+                    ebUnmatchedTitle: "Green Up",
+                    ebUnmatchedText: "Calcolo ed esecuzione manuale di ordini opposti per distribuire il profitto equamente su ogni possibile esito.",
+                    ebGapsTitle: "Free Bet & Scratch Trade",
+                    ebGapsText: "Free Bet: copertura parziale per rimuovere la responsabilità. Scratch Trade: uscita alle stesse quote di ingresso per un pareggio.",
+                    ebCaseStudyTitle: "Caso Studio: La 'Tassa di Comodità'",
+                    ebRule1: `
+                        <div class="grid grid-cols-[80px_1fr] gap-2 mb-3 items-start">
+                            <span class="text-gray-400">Mercato:</span> <span class="text-white font-bold">Real Madrid vs Barcellona | Match Odds</span>
+                            <span class="text-gray-400">Azione:</span> <span class="text-white">Punta 1.000€ su Real Madrid @3.00. Il Real segna, quota Lay scende a @1.50.</span>
+                        </div>
+                        <hr class="border-gray-700 my-4">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-gray-300 mb-2 gap-1">
+                            <span>Calcolo Green Up:</span>
+                            <span class="font-mono text-white text-sm sm:text-base">(1000 × 3.00) / 1.50 = 2000€ (Lay Stake)</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-[#ffb703] font-bold bg-[#ffb703]/10 p-2 sm:p-3 rounded-lg gap-1 border border-[#ffb703]/30">
+                            <span>Profitto Lordo (Green Up):</span>
+                            <span class="font-mono text-sm sm:text-base">Esattamente 1.000€</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-red-400 font-bold bg-red-900/30 p-2 sm:p-3 rounded-lg gap-1 mt-2">
+                            <span>Costo Slippage (Cash Out):</span>
+                            <span class="font-mono text-sm sm:text-base">Cash Out offre 960€. Hai perso 40€ di "tassa di comodità".</span>
+                        </div>
+                    `,
+                    ebWarningTitle: "L'Illusione del Bottone",
+                    ebWarningText: "La funzione Cash Out automatica è una black box. Durante i momenti di alta volatilità, spazza aggressivamente la profondità del mercato ai prezzi peggiori. Nel lungo periodo, questo micro-sanguinamento del 3%-5% per trade distruggerà il tuo ROI.",
+                    ebRule2: "La prossima volta che sei in profitto, ignora il Cash Out. Usa la formula per piazzare l'ordine opposto manuale (limit order) ed evita di pagare la tassa al broker.",
+                    ebQuote1: "Il tasto Cash Out è una tassa sull'ignoranza matematica; il Green Up è lo strumento di precisione del trader.",
+                    ebQuote2: "Sei un trader, non uno scommettitore. Esternalizzare la tua strategia di uscita significa cedere il tuo vantaggio.",
+
+                    quizData: [
+                        { q: "Qual è la differenza principale tra Cash Out e Green Up?", opts: ["Il Green Up è manuale e matematico, il Cash Out è automatizzato dal broker", "Il Cash Out garantisce più profitti nel lungo termine", "Il Green Up si usa solo in perdita", "Nessuna, sono esattamente la stessa cosa"], correct: 0 },
+                        { q: "Qual è la formula per calcolare il Lay Stake in un Green Up perfetto?", opts: ["(Back Stake Iniziale × Quote Back Iniziali) / Quote Lay Attuali", "Back Stake Iniziale + Profitto Desiderato", "(Quote Lay Attuali × Back Stake) - 1", "Back Stake Iniziale × Quote Lay Attuali"], correct: 0 },
+                        { q: "Perché il tasto Cash Out è considerato una 'tassa di comodità'?", opts: ["Perché attraversa lo spread e offre un prezzo aggregato sub-ottimale", "Perché l'Exchange applica una commissione aggiuntiva del 10%", "Perché è disponibile solo per gli account premium", "Perché calcola le tasse governative in automatico"], correct: 0 },
+                        { q: "Cos'è uno 'Scratch Trade'?", opts: ["Uscire dal mercato alle stesse quote di ingresso per un pareggio", "Una scommessa gratuita ottenuta con un bonus", "Un trade effettuato su mercati virtuali", "Una perdita parziale accettata intenzionalmente"], correct: 0 },
+                        { q: "Cosa fa l'algoritmo del Cash Out durante i momenti di alta volatilità?", opts: ["Spazza la profondità del mercato ai prezzi peggiori garantendo l'esecuzione", "Attende il momento migliore per massimizzare il profitto", "Congela la posizione finché il mercato non si stabilizza", "Azzera le commissioni per incentivare l'uscita"], correct: 0 }
+                    ]
+                },
+                en: {
+                    pageTitle: "Room AI | Global Exchange Academy - Day 5",
+                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
+                    moduleTitle: "DAY 5/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Cash Out vs. Green Up: The Mathematics of Hedging.",
+                    finLabel: "FINANCIAL PILL", finQuote: "The Cash Out button is a tax on mathematical ignorance; Green Up is the precision tool of the trader.",
+                    demoBadge: "INTERACTIVE DEMO", startSimulator: "START SIMULATOR",
+                    penaltiesTitle: "EDUCATIONAL GAME", penaltiesDesc: "Monopolize the board.",
+                    quizProgress: "Question {step} of 5",
+                    btnPodcast: "LISTEN TO PODCAST", btnEbook: "VIEW MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Retry Quiz",
+                    navNextLesson: "NEXT LESSON",
+                    subNotActive: "SUBSCRIPTION INACTIVE! CONTACT YOUR REFERENT",
+                    quizCompletedTitle: "Checkpoint Passed!", quizCompletedDesc: "You unlocked 500 XP. You now master hedging mathematics.",
+                    videoUrl: "https://www.youtube.com/embed/4C0oPM7tzeE?rel=0&modestbranding=1",
+                    
+                    ebTitle1: "Day 5", ebTitle2: "The Mathematics of Hedging", ebTitle3: "Cash Out vs. Green Up",
+                    ebIntro: "The gap between an amateur and a professional isn't just about picking the right entry point—it’s about how you extract equity from the market once the trade moves in your favor. While the novice panics and blindly smashes the automated 'Cash Out' button, the pro understands that true risk management requires manual mathematical precision: the Green Up.",
+                    ebLawTitle: "FORMULA FOR A PERFECT GREEN UP",
+                    ebLawText: "Lay Stake = (Back Stake × Initial Back Odds) / Current Lay Odds",
+                    ebDictTitle: "TECHNICAL GLOSSARY",
+                    ebMatchedTitle: "Cash Out",
+                    ebMatchedText: "An automated exchange algorithm that hedges your position with a single click, frequently sacrificing overall value by crossing the spread.",
+                    ebUnmatchedTitle: "Green Up",
+                    ebUnmatchedText: "The manual calculation and execution of opposing orders to distribute profit equally across all outcomes.",
+                    ebGapsTitle: "Free Bet & Scratch Trade",
+                    ebGapsText: "Free Bet: A partial hedge to remove initial liability. Scratch Trade: Exiting at exact same odds to break-even.",
+                    ebCaseStudyTitle: "Case Study: The 'Convenience Tax'",
+                    ebRule1: `
+                        <div class="grid grid-cols-[80px_1fr] gap-2 mb-3 items-start">
+                            <span class="text-gray-400">Market:</span> <span class="text-white font-bold">Real Madrid vs Barcelona | Match Odds</span>
+                            <span class="text-gray-400">Action:</span> <span class="text-white">Back €1,000 on Real @ 3.00. Real scores, Lay drops to @ 1.50.</span>
+                        </div>
+                        <hr class="border-gray-700 my-4">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-gray-300 mb-2 gap-1">
+                            <span>Green Up Calculation:</span>
+                            <span class="font-mono text-white text-sm sm:text-base">(1000 × 3.00) / 1.50 = €2000 (Lay Stake)</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-[#ffb703] font-bold bg-[#ffb703]/10 p-2 sm:p-3 rounded-lg gap-1 border border-[#ffb703]/30">
+                            <span>Gross Profit (Green Up):</span>
+                            <span class="font-mono text-sm sm:text-base">Exactly €1,000</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-red-400 font-bold bg-red-900/30 p-2 sm:p-3 rounded-lg gap-1 mt-2">
+                            <span>Slippage Cost (Cash Out):</span>
+                            <span class="font-mono text-sm sm:text-base">Cash Out offers €960. You lost €40 to "convenience tax".</span>
+                        </div>
+                    `,
+                    ebWarningTitle: "The Illusion of the Button",
+                    ebWarningText: "The automated Cash Out feature is a black box. During high-volatility moments, it aggressively sweeps the market depth, executing at the worst possible prices. This micro-bleeding of 3% to 5% per trade will systematically destroy your long-term ROI.",
+                    ebRule2: "Next time your trade goes into profit, ignore the Cash Out button. Use the formula above to place the manual limit order and control the exit price.",
+                    ebQuote1: "The Cash Out button is a tax on mathematical ignorance; Green Up is the precision tool of the trader.",
+                    ebQuote2: "You are a trader, not a punter. Outsourcing your exit strategy means surrendering your edge.",
+
+                    quizData: [
+                        { q: "What is the main difference between Cash Out and Green Up?", opts: ["Green Up is a manual mathematical calculation, Cash Out is an automated broker algorithm", "Cash Out guarantees more long-term profit", "Green Up is only used for losing trades", "None, they are exactly the same"], correct: 0 },
+                        { q: "Which formula correctly calculates the required Lay stake for a perfect Green Up?", opts: ["(Initial Back Stake × Initial Back Odds) / Current Lay Odds", "Initial Back Stake + Desired Profit", "(Current Lay Odds × Back Stake) - 1", "Initial Back Stake × Current Lay Odds"], correct: 0 },
+                        { q: "Why is the Cash Out button considered a 'convenience tax'?", opts: ["Because it crosses the spread and gives a sub-optimal aggregate price", "Because the Exchange applies an extra 10% fee", "Because it's only available for premium accounts", "Because it automatically calculates government taxes"], correct: 0 },
+                        { q: "What is a 'Scratch Trade'?", opts: ["Exiting the market at the exact same odds you entered to break-even", "A free bet obtained with a bonus", "A trade made on virtual markets", "An intentionally accepted partial loss"], correct: 0 },
+                        { q: "What does the automated Cash Out algorithm do during high-volatility moments?", opts: ["It sweeps the market depth at the worst possible prices to guarantee execution", "It waits for the best moment to maximize profit", "It freezes the position until the market stabilizes", "It zeroes out commissions to incentivize exiting"], correct: 0 }
+                    ]
+                },
+                es: {
+                    pageTitle: "Room AI | Global Exchange Academy - Día 5",
+                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
+                    moduleTitle: "DÍA 5/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Cash Out vs. Green Up: La Matemática de la Cobertura.",
+                    finLabel: "PÍLDORA FINANCIERA", finQuote: "El botón Cash Out es un impuesto a la ignorancia matemática; el Green Up es la herramienta de precisión del trader.",
+                    demoBadge: "DEMO INTERACTIVA", startSimulator: "INICIAR SIMULADOR",
+                    penaltiesTitle: "JUEGO EDUCATIVO", penaltiesDesc: "Monopoliza el tablero.",
+                    quizProgress: "Pregunta {step} de 5",
+                    btnPodcast: "ESCUCHAR PODCAST", btnEbook: "VER MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Repetir Prueba",
+                    navNextLesson: "PRÓXIMA LECCIÓN",
+                    subNotActive: "¡SUSCRIPCIÓN INACTIVA! CONTACTA A TU REFERENTE",
+                    quizCompletedTitle: "¡Punto de control superado!", quizCompletedDesc: "Has desbloqueado 500 XP. Ahora dominas la matemática del hedging.",
+                    videoUrl: "https://www.youtube.com/embed/ezffXMni2Pg?rel=0&modestbranding=1",
+                    
+                    ebTitle1: "Día 5", ebTitle2: "Matemática de la Cobertura", ebTitle3: "Cash Out vs. Green Up",
+                    ebIntro: "La brecha entre un aficionado y un profesional no se trata solo de elegir el punto de entrada correcto, sino de cómo extraes beneficio del mercado una vez que el trade va a tu favor. Mientras el novato entra en pánico y presiona ciegamente el botón de 'Cash Out', el profesional entiende que la verdadera gestión de riesgos requiere precisión matemática: el Green Up.",
+                    ebLawTitle: "FÓRMULA PARA UN GREEN UP PERFECTO",
+                    ebLawText: "Lay Stake = (Back Stake × Cuotas Back Iniciales) / Cuotas Lay Actuales",
+                    ebDictTitle: "GLOSARIO TÉCNICO",
+                    ebMatchedTitle: "Cash Out",
+                    ebMatchedText: "Algoritmo de exchange automatizado que cierra tu posición con un clic, cruzando el spread frecuentemente y sacrificando valor.",
+                    ebUnmatchedTitle: "Green Up",
+                    ebUnmatchedText: "El cálculo y la ejecución manual de órdenes opuestas para distribuir el beneficio equitativamente en todos los resultados.",
+                    ebGapsTitle: "Free Bet & Scratch Trade",
+                    ebGapsText: "Free Bet: cobertura parcial para eliminar la responsabilidad inicial. Scratch Trade: salida a la misma cuota de entrada para empatar.",
+                    ebCaseStudyTitle: "Caso de Estudio: El 'Impuesto de Comodidad'",
+                    ebRule1: `
+                        <div class="grid grid-cols-[80px_1fr] gap-2 mb-3 items-start">
+                            <span class="text-gray-400">Mercado:</span> <span class="text-white font-bold">Real Madrid vs Barcelona | Cuotas de Partido</span>
+                            <span class="text-gray-400">Acción:</span> <span class="text-white">Apostar (Back) 1.000€ al Real @ 3.00. El Real marca, el Lay baja a @ 1.50.</span>
+                        </div>
+                        <hr class="border-gray-700 my-4">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-gray-300 mb-2 gap-1">
+                            <span>Cálculo Green Up:</span>
+                            <span class="font-mono text-white text-sm sm:text-base">(1000 × 3.00) / 1.50 = 2000€ (Lay Stake)</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-[#ffb703] font-bold bg-[#ffb703]/10 p-2 sm:p-3 rounded-lg gap-1 border border-[#ffb703]/30">
+                            <span>Beneficio Bruto (Green Up):</span>
+                            <span class="font-mono text-sm sm:text-base">Exactamente 1.000€</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-red-400 font-bold bg-red-900/30 p-2 sm:p-3 rounded-lg gap-1 mt-2">
+                            <span>Costo de Slippage (Cash Out):</span>
+                            <span class="font-mono text-sm sm:text-base">El Cash Out ofrece 960€. Perdiste 40€ por "impuesto de comodidad".</span>
+                        </div>
+                    `,
+                    ebWarningTitle: "La Ilusión del Botón",
+                    ebWarningText: "La función de Cash Out automático es una caja negra. En momentos de alta volatilidad, barre agresivamente la profundidad del mercado, ejecutando a los peores precios posibles. Este microsangrado del 3% al 5% por trade destruirá sistemáticamente tu ROI a largo plazo.",
+                    ebRule2: "La próxima vez que estés en beneficio, ignora el Cash Out. Usa la fórmula para colocar tu orden límite manualmente y controlar el precio de salida.",
+                    ebQuote1: "El botón Cash Out es un impuesto a la ignorancia matemática; el Green Up es la herramienta de precisión del trader.",
+                    ebQuote2: "Eres un trader, no un apostador. Tercerizar tu estrategia de salida significa ceder tu ventaja.",
+
+                    quizData: [
+                        { q: "¿Cuál es la principal diferencia entre Cash Out y Green Up?", opts: ["Green Up es un cálculo matemático manual, Cash Out es un algoritmo del broker", "El Cash Out garantiza más beneficios a largo plazo", "El Green Up solo se usa para operaciones con pérdidas", "Ninguna, son exactamente lo mismo"], correct: 0 },
+                        { q: "¿Qué fórmula calcula correctamente el Lay stake para un Green Up perfecto?", opts: ["(Back Stake Inicial × Cuota Back Inicial) / Cuota Lay Actual", "Back Stake Inicial + Beneficio Deseado", "(Cuota Lay Actual × Back Stake) - 1", "Back Stake Inicial × Cuota Lay Actual"], correct: 0 },
+                        { q: "¿Por qué el botón Cash Out se considera un 'impuesto de comodidad'?", opts: ["Porque cruza el spread y da un precio agregado subóptimo", "Porque el Exchange cobra un 10% adicional", "Porque solo está disponible para cuentas premium", "Porque calcula los impuestos gubernamentales automáticamente"], correct: 0 },
+                        { q: "¿Qué es un 'Scratch Trade'?", opts: ["Salir del mercado a las mismas cuotas exactas de entrada (empate)", "Una apuesta gratis obtenida con un bono", "Una operación realizada en mercados virtuales", "Una pérdida parcial aceptada intencionalmente"], correct: 0 },
+                        { q: "¿Qué hace el algoritmo de Cash Out durante momentos de alta volatilidad?", opts: ["Barre la profundidad del mercado a los peores precios para garantizar la ejecución", "Espera el mejor momento para maximizar beneficios", "Congela la posición hasta que el mercado se estabilice", "Anula las comisiones para incentivar la salida"], correct: 0 }
+                    ]
+                },
+                pt: {
+                    pageTitle: "Room AI | Global Exchange Academy - Dia 5",
+                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
+                    moduleTitle: "DIA 5/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Cash Out vs. Green Up: A Matemática do Hedging.",
+                    finLabel: "PÍLULA FINANCEIRA", finQuote: "O botão Cash Out é um imposto sobre a ignorância matemática; o Green Up é a ferramenta de precisão do trader.",
+                    demoBadge: "DEMO INTERATIVA", startSimulator: "INICIAR SIMULADOR",
+                    penaltiesTitle: "JOGO EDUCATIVO", penaltiesDesc: "Monopolize o tabuleiro.",
+                    quizProgress: "Pergunta {step} de 5",
+                    btnPodcast: "OUVIR PODCAST", btnEbook: "VER MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Repetir Teste",
+                    navNextLesson: "PRÓXIMA LIÇÃO",
+                    subNotActive: "ASSINATURA INATIVA! CONTATE SEU REFERENTE",
+                    quizCompletedTitle: "Checkpoint Concluído!", quizCompletedDesc: "Você desbloqueou 500 XP. Agora você domina a matemática do hedging.",
+                    videoUrl: "https://www.youtube.com/embed/ezffXMni2Pg?rel=0&modestbranding=1",
+                    
+                    ebTitle1: "Dia 5", ebTitle2: "A Matemática do Hedging", ebTitle3: "Cash Out vs. Green Up",
+                    ebIntro: "A diferença entre um amador e um profissional não se resume a escolher o ponto de entrada certo, mas como extrair capital do mercado quando o trade vai a seu favor. Enquanto o novato entra em pânico e clica cegamente no botão automático de 'Cash Out', o profissional entende que o verdadeiro gerenciamento de risco exige precisão matemática manual: o Green Up.",
+                    ebLawTitle: "FÓRMULA PARA UM GREEN UP PERFEITO",
+                    ebLawText: "Lay Stake = (Back Stake × Odds Back Iniciais) / Odds Lay Atuais",
+                    ebDictTitle: "GLOSSÁRIO TÉCNICO",
+                    ebMatchedTitle: "Cash Out",
+                    ebMatchedText: "Algoritmo automatizado da exchange que faz hedge da sua posição com um clique, muitas vezes cruzando o spread e sacrificando valor geral.",
+                    ebUnmatchedTitle: "Green Up",
+                    ebUnmatchedText: "O cálculo manual e a execução de ordens opostas para distribuir o lucro igualmente em todos os resultados possíveis.",
+                    ebGapsTitle: "Free Bet & Scratch Trade",
+                    ebGapsText: "Free Bet: Hedge parcial para remover o risco inicial. Scratch Trade: Sair com as mesmas odds da entrada, ficando no zero a zero.",
+                    ebCaseStudyTitle: "Estudo de Caso: O 'Imposto de Conveniência'",
+                    ebRule1: `
+                        <div class="grid grid-cols-[80px_1fr] gap-2 mb-3 items-start">
+                            <span class="text-gray-400">Mercado:</span> <span class="text-white font-bold">Real Madrid vs Barcelona | Match Odds</span>
+                            <span class="text-gray-400">Ação:</span> <span class="text-white">Apostar (Back) 1.000€ no Real @ 3.00. O Real marca, as odds do Lay caem para @ 1.50.</span>
+                        </div>
+                        <hr class="border-gray-700 my-4">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-gray-300 mb-2 gap-1">
+                            <span>Cálculo do Green Up:</span>
+                            <span class="font-mono text-white text-sm sm:text-base">(1000 × 3.00) / 1.50 = 2000€ (Lay Stake)</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-[#ffb703] font-bold bg-[#ffb703]/10 p-2 sm:p-3 rounded-lg gap-1 border border-[#ffb703]/30">
+                            <span>Lucro Bruto (Green Up):</span>
+                            <span class="font-mono text-sm sm:text-base">Exatamente 1.000€</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-red-400 font-bold bg-red-900/30 p-2 sm:p-3 rounded-lg gap-1 mt-2">
+                            <span>Custo de Slippage (Cash Out):</span>
+                            <span class="font-mono text-sm sm:text-base">Cash Out oferece 960€. Você perdeu 40€ de "imposto de conveniência".</span>
+                        </div>
+                    `,
+                    ebWarningTitle: "A Ilusão do Botão",
+                    ebWarningText: "A função de Cash Out automático é uma caixa preta. Durante momentos de alta volatilidade, ele varre a profundidade do mercado agressivamente, executando aos piores preços possíveis. Esse micro-sangramento de 3% a 5% por trade destruirá sistematicamente seu ROI a longo prazo.",
+                    ebRule2: "Da próxima vez que o seu trade entrar em lucro, ignore o botão Cash Out. Use a fórmula acima para definir sua ordem limite manual e controle o preço de saída.",
+                    ebQuote1: "O botão Cash Out é um imposto sobre a ignorância matemática; o Green Up é a ferramenta de precisão do trader.",
+                    ebQuote2: "Você é um trader, não um apostador (punter). Terceirizar sua estratégia de saída significa abrir mão da sua vantagem.",
+
+                    quizData: [
+                        { q: "Qual é a principal diferença entre Cash Out e Green Up?", opts: ["Green Up é um cálculo matemático manual, Cash Out é um algoritmo automatizado do broker", "Cash Out garante maiores lucros a longo prazo", "Green Up só é usado para trades em prejuízo", "Nenhuma, são exatamente a mesma coisa"], correct: 0 },
+                        { q: "Qual fórmula calcula corretamente o Lay stake para um Green Up perfeito?", opts: ["(Back Stake Inicial × Odd Back Inicial) / Odd Lay Atual", "Back Stake Inicial + Lucro Desejado", "(Odd Lay Atual × Back Stake) - 1", "Back Stake Inicial × Odd Lay Atual"], correct: 0 },
+                        { q: "Por que o botão Cash Out é considerado um 'imposto de conveniência'?", opts: ["Porque cruza o spread e fornece um preço agregado subótimo", "Porque a Exchange cobra uma taxa extra de 10%", "Porque só está disponível para contas premium", "Porque calcula automaticamente os impostos do governo"], correct: 0 },
+                        { q: "O que é um 'Scratch Trade'?", opts: ["Sair do mercado exatamente com as mesmas odds da entrada (zero a zero)", "Uma aposta grátis recebida via bônus", "Uma operação em mercados virtuais", "Uma perda parcial assumida intencionalmente"], correct: 0 },
+                        { q: "O que faz o algoritmo de Cash Out em momentos de alta volatilidade?", opts: ["Varre a profundidade do mercado aos piores preços para garantir execução", "Aguarda o melhor momento para maximizar o lucro", "Congela a posição até que o mercado se estabilize", "Zera as comissões para incentivar a saída"], correct: 0 }
+                    ]
+                }
+            };
+
+            for (const lang in dict) {
+                dict[lang].ebookContent = ebookTemplate(dict[lang]);
+            }
+
+            let currentLang = 'it';
+            let currentQuizStep = 0;
+            let xpPoints = parseInt(localStorage.getItem(CONFIG.STORAGE_KEY + '_xp')) || 0;
+
+            function applyLang(lang) {
+                currentLang = lang;
+                const d = dict[lang];
+                
+                document.title = d.pageTitle;
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (d[key]) {
+                        if (key.startsWith('quizProgress')) {
+                            // Handled separately
+                        } else {
+                            el.textContent = d[key];
+                        }
+                    }
+                });
+                
+                document.querySelectorAll('[data-i18n-html]').forEach(el => {
+                    const key = el.getAttribute('data-i18n-html');
+                    if (d[key]) el.innerHTML = d[key];
+                });
+
+                document.querySelectorAll('.lang-flag').forEach(btn => {
+                    if (btn.getAttribute('data-lang') === lang) {
+                        btn.classList.add('active'); btn.classList.remove('inactive');
+                    } else {
+                        btn.classList.remove('active'); btn.classList.add('inactive');
+                    }
+                });
+
+                document.getElementById('btn-podcast').href = podcastUrls[lang] || podcastUrls['en'];
+                document.getElementById('main-video').src = d.videoUrl;
+
+                if (document.getElementById('quiz-container').style.display !== 'none') {
+                    loadQuiz();
+                }
+            }
+
+            function loadQuiz() {
+                const d = dict[currentLang];
+                const qData = d.quizData[currentQuizStep];
+                
+                document.getElementById('quiz-progress-text').textContent = d.quizProgress.replace('{step}', currentQuizStep + 1);
+                document.getElementById('quiz-question-text').textContent = qData.q;
+                
+                const optionsContainer = document.getElementById('quiz-options-container');
+                optionsContainer.innerHTML = '';
+                
+                const letters = ['A', 'B', 'C', 'D'];
+                qData.opts.forEach((opt, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'wwtbam-btn w-full text-left px-4 sm:px-6 py-3 sm:py-4 flex items-center group';
+                    btn.onclick = () => handleAnswer(index, btn);
+                    btn.innerHTML = `
+                        <span class="text-[#d4af37] font-black mr-3 sm:mr-4 text-base sm:text-lg shrink-0 w-6">${letters[index]}:</span>
+                        <span class="text-gray-200 font-bold text-[11px] sm:text-sm md:text-base group-hover:text-white transition-colors leading-tight">${opt}</span>
+                        <div class="absolute right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div class="w-2 h-2 rounded-full bg-[#d4af37] shadow-[0_0_8px_#d4af37]"></div>
+                        </div>
+                    `;
+                    optionsContainer.appendChild(btn);
+                });
+                
+                updateProgressDots();
+            }
+
+            function handleAnswer(selectedIndex, btnElement) {
+                const d = dict[currentLang];
+                const qData = d.quizData[currentQuizStep];
+                const isCorrect = selectedIndex === qData.correct;
+                
+                const allBtns = document.getElementById('quiz-options-container').querySelectorAll('button');
+                allBtns.forEach(b => b.disabled = true);
+                
+                if (isCorrect) {
+                    SoundEngine.cashout();
+                    btnElement.classList.add('correct');
+                    showFeedback(true);
+                    xpPoints += 100;
+                    updateXP();
+                    
+                    setTimeout(() => {
+                        currentQuizStep++;
+                        if (currentQuizStep < d.quizData.length) {
+                            loadQuiz();
+                        } else {
+                            showCompletedScreen();
+                        }
+                    }, 1500);
+                } else {
+                    SoundEngine.error();
+                    btnElement.classList.add('wrong');
+                    
+                    setTimeout(() => {
+                        allBtns[qData.correct].classList.add('correct');
+                    }, 500);
+                    
+                    showFeedback(false);
+                    
+                    setTimeout(() => {
+                        btnElement.classList.remove('wrong');
+                        allBtns[qData.correct].classList.remove('correct');
+                        allBtns.forEach(b => b.disabled = false);
+                        hideFeedback();
+                    }, 2000);
+                }
+            }
+
+            function updateProgressDots() {
+                const dotsContainer = document.getElementById('quiz-dots');
+                dotsContainer.innerHTML = '';
+                for (let i = 0; i < 5; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = `w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${i < currentQuizStep ? 'bg-[#10b981] shadow-[0_0_8px_#10b981]' : i === currentQuizStep ? 'bg-[#d4af37] shadow-[0_0_8px_#d4af37] animate-pulse' : 'bg-gray-700'}`;
+                    dotsContainer.appendChild(dot);
+                }
+            }
+
+            function showFeedback(isSuccess) {
+                const feedbackEl = document.getElementById('quiz-feedback');
+                const iconEl = document.getElementById('quiz-feedback-icon');
+                
+                feedbackEl.classList.remove('hidden');
+                
+                if (isSuccess) {
+                    feedbackEl.className = 'w-full max-w-2xl mx-auto p-6 sm:p-8 md:p-10 rounded-xl md:rounded-2xl text-center shadow-2xl mt-8 transition-all duration-500 transform-gpu relative overflow-hidden bg-gradient-to-br from-[#064e3b] to-[#022c22] border-2 border-[#10b981] flex justify-center items-center';
+                    iconEl.textContent = '✅';
+                } else {
+                    feedbackEl.className = 'w-full max-w-2xl mx-auto p-6 sm:p-8 md:p-10 rounded-xl md:rounded-2xl text-center shadow-2xl mt-8 transition-all duration-500 transform-gpu relative overflow-hidden bg-gradient-to-br from-[#7f1d1d] to-[#450a0a] border-2 border-[#ef4444] flex justify-center items-center';
+                    iconEl.textContent = '❌';
+                }
+            }
+
+            function hideFeedback() {
+                document.getElementById('quiz-feedback').classList.add('hidden');
+                document.getElementById('quiz-feedback').classList.remove('flex');
+            }
+
+            function showCompletedScreen() {
+                document.getElementById('quiz-container').style.display = 'none';
+                hideFeedback();
+                const completedScreen = document.getElementById('quiz-completed-screen');
+                completedScreen.classList.remove('hidden');
+                completedScreen.classList.add('flex');
+            }
+
+            function updateXP() {
+                document.getElementById('xp-counter').innerText = `${xpPoints} XP`;
+                localStorage.setItem(CONFIG.STORAGE_KEY + '_xp', xpPoints);
+                const badge = document.getElementById('xp-badge');
+                badge.classList.add('scale-110', 'bg-yellow-500/20');
+                setTimeout(() => badge.classList.remove('scale-110', 'bg-yellow-500/20'), 300);
+            }
+
+            window.changeLang = function(lang) {
+                SoundEngine.click();
+                applyLang(lang);
+            };
+
+            window.resetQuiz = function() {
+                SoundEngine.click();
+                currentQuizStep = 0;
+                document.getElementById('quiz-container').style.display = 'flex';
+                const completedScreen = document.getElementById('quiz-completed-screen');
+                completedScreen.classList.add('hidden');
+                completedScreen.classList.remove('flex');
+                loadQuiz();
+            };
+
+            // Init
+            window.addEventListener('DOMContentLoaded', () => {
+                const userLang = navigator.language || navigator.userLanguage;
+                let initLang = 'en';
+                if(userLang.startsWith('it')) initLang = 'it';
+                else if(userLang.startsWith('es')) initLang = 'es';
+                else if(userLang.startsWith('pt')) initLang = 'pt';
+                
+                updateXP();
+                applyLang(initLang);
+            });
+
+            return { dict };
+        })();
+    </script>
+</body>
+</html>
+
+```
