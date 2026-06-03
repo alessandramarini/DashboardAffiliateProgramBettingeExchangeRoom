@@ -315,25 +315,27 @@
     const RAW_REVENUE_DATA = [ { rawKey: 'mon', amount: 1200 }, { rawKey: 'tue', amount: 2500 }, { rawKey: 'wed', amount: 1800 }, { rawKey: 'thu', amount: 3000 }, { rawKey: 'fri', amount: 4500 }, { rawKey: 'sat', amount: 6000 }, { rawKey: 'today', amount: 5500 } ];
     const PROMOTER_CHART_DATA = [ { rawKey: 'mon', amount: 45 }, { rawKey: 'tue', amount: 120 }, { rawKey: 'wed', amount: 80 }, { rawKey: 'thu', amount: 210 }, { rawKey: 'fri', amount: 150 }, { rawKey: 'sat', amount: 320 }, { rawKey: 'today', amount: 280 } ];
     const GEO_DATA = [ { name: 'IT', value: 45, color: '#a855f7' }, { name: 'ES', value: 25, color: '#f59e0b' }, { name: 'BR', value: 20, color: '#10b981' }, { name: 'UK', value: 10, color: '#3b82f6' } ];
+    
+    // Aggiunto "flag" come richiesto (ricavato idealmente dai dati info Telegram)
     const NETWORK_MEMBERS = [
-      { id: 1, name: 'Alex De Souza', username: '@alex_crypto_pro', wallet: 'UQx...3Fq', volume: 12500, leads: 345, status: 'Active' },
-      { id: 2, name: 'Marco Rossi', username: '@marcorossi', wallet: 'UQz...9Pa', volume: 8400, leads: 280, status: 'Active' },
-      { id: 3, name: 'Elena Gomez', username: '@elegomez', wallet: 'EQ1...7Bn', volume: 5200, leads: 210, status: 'Active' },
-      { id: 4, name: 'John Doe', username: '@johndoe_99', wallet: 'UQy...2Ws', volume: 450, leads: 150, status: 'Inactive' },
-      { id: 5, name: 'Luca Bianchi', username: '@lucabianchi88', wallet: 'EQb...8Ml', volume: 120, leads: 112, status: 'Inactive' }
+      { id: 1, name: 'Alex De Souza', username: '@alex_crypto_pro', wallet: 'UQx...3Fq', volume: 12500, leads: 345, status: 'Active', flag: 'br' },
+      { id: 2, name: 'Marco Rossi', username: '@marcorossi', wallet: 'UQz...9Pa', volume: 8400, leads: 280, status: 'Active', flag: 'it' },
+      { id: 3, name: 'Elena Gomez', username: '@elegomez', wallet: 'EQ1...7Bn', volume: 5200, leads: 210, status: 'Active', flag: 'es' },
+      { id: 4, name: 'John Doe', username: '@johndoe_99', wallet: 'UQy...2Ws', volume: 450, leads: 150, status: 'Inactive', flag: 'gb' },
+      { id: 5, name: 'Luca Bianchi', username: '@lucabianchi88', wallet: 'EQb...8Ml', volume: 120, leads: 112, status: 'Inactive', flag: 'it' }
     ];
     
     const PROMOTER_NETWORK_DATA = [
-      { id: 1, username: '@lucam_88', type: 'deposit', amount: 50, time: '10 min ago', status: 'Active', total_vol: 250 },
-      { id: 2, username: '@sarah_j', type: 'join', time: '1 hour ago', status: 'Active', total_vol: 0 },
-      { id: 3, username: '@mario_rossi', type: 'join', time: '3 hours ago', status: 'Inactive', total_vol: 0 },
-      { id: 4, username: '@crypto_dan', type: 'deposit', amount: 200, time: '5 hours ago', status: 'Active', total_vol: 1200 },
-      { id: 5, username: '@giulia_fx', type: 'deposit', amount: 150, time: '1 day ago', status: 'Active', total_vol: 450 },
-      { id: 6, username: '@trader_bob', type: 'join', time: '2 days ago', status: 'Inactive', total_vol: 0 },
-      { id: 7, username: '@alice_in_crypto', type: 'deposit', amount: 50, time: '3 days ago', status: 'Active', total_vol: 150 },
-      { id: 8, username: '@steve_jobs_fan', type: 'join', time: '1 week ago', status: 'Active', total_vol: 50 },
-      { id: 9, username: '@crypto_whale99', type: 'deposit', amount: 500, time: '1 week ago', status: 'Active', total_vol: 2500 },
-      { id: 10, username: '@newbie_trader', type: 'join', time: '2 weeks ago', status: 'Inactive', total_vol: 0 }
+      { id: 1, username: '@lucam_88', type: 'deposit', amount: 50, time: '10 min ago', status: 'Active', total_vol: 250, flag: 'it' },
+      { id: 2, username: '@sarah_j', type: 'join', time: '1 hour ago', status: 'Active', total_vol: 0, flag: 'gb' },
+      { id: 3, username: '@mario_rossi', type: 'join', time: '3 hours ago', status: 'Inactive', total_vol: 0, flag: 'it' },
+      { id: 4, username: '@crypto_dan', type: 'deposit', amount: 200, time: '5 hours ago', status: 'Active', total_vol: 1200, flag: 'gb' },
+      { id: 5, username: '@giulia_fx', type: 'deposit', amount: 150, time: '1 day ago', status: 'Active', total_vol: 450, flag: 'it' },
+      { id: 6, username: '@trader_bob', type: 'join', time: '2 days ago', status: 'Inactive', total_vol: 0, flag: 'gb' },
+      { id: 7, username: '@alice_in_crypto', type: 'deposit', amount: 50, time: '3 days ago', status: 'Active', total_vol: 150, flag: 'es' },
+      { id: 8, username: '@steve_jobs_fan', type: 'join', time: '1 week ago', status: 'Active', total_vol: 50, flag: 'gb' },
+      { id: 9, username: '@crypto_whale99', type: 'deposit', amount: 500, time: '1 week ago', status: 'Active', total_vol: 2500, flag: 'pt' },
+      { id: 10, username: '@newbie_trader', type: 'join', time: '2 weeks ago', status: 'Inactive', total_vol: 0, flag: 'es' }
     ];
 
     const TgLink = ({ username, className = "" }) => {
@@ -607,24 +609,26 @@
 
     const CompanyDashboard = ({ sc, t }) => {
       const [isSimulating, setIsSimulating] = useState(false);
-      const [statusSort, setStatusSort] = useState('none'); 
+      // Imposto 'activeFirst' di default come richiesto
+      const [statusSort, setStatusSort] = useState('activeFirst'); 
       const [showWhitepaper, setShowWhitepaper] = useState(false);
 
       const localizedChartData = useMemo(() => RAW_REVENUE_DATA.map(d => ({...d, name: t(d.rawKey) || d.rawKey})), [t]);
       
       const sortedMembers = useMemo(() => {
-        if (statusSort === 'none') return NETWORK_MEMBERS;
-        return [...NETWORK_MEMBERS].sort((a, b) => {
+        let baseList = [...NETWORK_MEMBERS];
+        if (statusSort === 'none') return baseList;
+        return baseList.sort((a, b) => {
           if (a.status === b.status) return 0;
-          if (statusSort === 'inactiveFirst') return a.status === 'Inactive' ? -1 : 1;
-          return a.status === 'Active' ? -1 : 1;
+          if (statusSort === 'activeFirst') return a.status === 'Active' ? -1 : 1;
+          return a.status === 'Inactive' ? -1 : 1;
         });
       }, [statusSort]);
 
       const handleSortClick = () => {
-        if (statusSort === 'none') setStatusSort('inactiveFirst');
-        else if (statusSort === 'inactiveFirst') setStatusSort('activeFirst');
-        else setStatusSort('none');
+        if (statusSort === 'activeFirst') setStatusSort('inactiveFirst');
+        else if (statusSort === 'inactiveFirst') setStatusSort('none');
+        else setStatusSort('activeFirst');
       };
 
       const handleDeposit = async () => { 
@@ -730,9 +734,12 @@
                       {sortedMembers.map(member => (
                         <tr key={member.id} className="hover:bg-surface-900/50 transition-colors">
                           <td className="px-3 py-3">
-                            <div className="flex flex-col">
-                              <span className="text-zinc-100 font-bold text-xs truncate max-w-[120px] sm:max-w-xs">{member.name}</span>
-                              <TgLink username={member.username} className="text-[10px] mt-0.5" />
+                            <div className="flex items-center gap-2">
+                              {member.flag && <img src={`https://flagcdn.com/${member.flag}.svg`} alt="flag" className="w-[18px] h-[13px] object-cover rounded-[2px] shadow-[0_0_2px_rgba(0,0,0,0.5)] opacity-80 shrink-0" />}
+                              <div className="flex flex-col">
+                                <span className="text-zinc-100 font-bold text-xs truncate max-w-[120px] sm:max-w-xs">{member.name}</span>
+                                <TgLink username={member.username} className="text-[10px] mt-0.5" />
+                              </div>
                             </div>
                           </td>
                           <td className="px-3 py-3 font-mono text-success-400 font-bold text-xs text-right whitespace-nowrap">{formatCurrency(member.volume, false)}</td>
@@ -765,11 +772,19 @@
       const localizedChartData = useMemo(() => PROMOTER_CHART_DATA.map(d => ({...d, name: t(d.rawKey)||d.rawKey})), [t]);
       const tgUser = { first_name: "Alex", last_name: "De Souza", username: "@alex_crypto_pro" };
 
-      // Updated to reflect the new Global Weekly Milestone logic
-      const globalVolume = sc.state.globalWeeklyVolume; // Global tracking
+      // Ordinamento Active -> Inactive per la dashboard del promoter (Di base "attivi" ai "non attivi")
+      const sortedNetworkData = useMemo(() => {
+        return [...PROMOTER_NETWORK_DATA].sort((a, b) => {
+          if (a.status === b.status) return 0;
+          return a.status === 'Active' ? -1 : 1;
+        });
+      }, []);
+
+      // Nuovo calcolo logico target settimanale (ridotto a 10.000 come richiesto)
+      const globalVolume = sc.state.globalWeeklyVolume; 
       const globalTarget = sc.state.globalWeeklyTarget;
       const isQualified = globalVolume >= globalTarget;
-      const weeklyPoolTotal = (globalVolume * 0.10); // 10% of global goes to pool
+      const weeklyPoolTotal = (globalVolume * 0.10); 
 
       const copyReferral = () => {
         navigator.clipboard.writeText(`https://tonpull.app/ref/${sc.state.walletAddress.substring(0,8)}`).then(() => {
@@ -900,11 +915,12 @@
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-surface-800/50 bg-surface-950/30">
-                      {PROMOTER_NETWORK_DATA.map((lead, idx) => (
+                      {sortedNetworkData.map((lead, idx) => (
                         <tr key={idx} className="hover:bg-surface-900/50 transition-colors">
                           <td className="px-3 py-2">
                             <div className="flex items-center gap-2">
                                <div className={`p-1.5 rounded-lg shrink-0 border hidden sm:block ${lead.type === 'deposit' ? 'bg-success-500/10 text-success-400 border-success-500/30' : 'bg-brand-500/10 text-brand-400 border-brand-500/30'}`}><Icon name={lead.type === 'deposit' ? 'coins' : 'user-plus'} size={12} /></div>
+                               {lead.flag && <img src={`https://flagcdn.com/${lead.flag}.svg`} alt="flag" className="w-[18px] h-[13px] object-cover rounded-[2px] shadow-[0_0_2px_rgba(0,0,0,0.5)] opacity-80 shrink-0" />}
                                <div className="min-w-0">
                                  <TgLink username={lead.username} className="text-[10px] sm:text-[11px] truncate" />
                                  <p className="text-[8px] text-zinc-500 uppercase tracking-wider font-bold mt-0.5">{lead.time}</p>
@@ -974,8 +990,8 @@
       const [promoterAvailable, setPromoterAvailable] = useState(450.00);
       const [promoterLifetime, setPromoterLifetime] = useState(3250.00);
       
-      const [globalWeeklyVolume, setGlobalWeeklyVolume] = useState(85420.00); // 85k / 100k
-      const [globalWeeklyTarget, setGlobalWeeklyTarget] = useState(100000.00); 
+      const [globalWeeklyVolume, setGlobalWeeklyVolume] = useState(85420.00); // Rimane a 85k per mostrare ora il target sbloccato
+      const [globalWeeklyTarget, setGlobalWeeklyTarget] = useState(10000.00); // Modificato da 100k a 10k
 
       const [claimHistory, setClaimHistory] = useState([ { date: '12 May 2026', amount: 120.00, tx: '0xTX...4f2' } ]);
 
@@ -1028,7 +1044,6 @@
     };
 
     const App = () => {
-      // Inizializza lingua in base al browser o fallback a 'en'
       const [lang, setLang] = useState(() => {
         const browserLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
         return ['en', 'es', 'pt', 'it'].includes(browserLang) ? browserLang : 'en';
@@ -1038,7 +1053,7 @@
       const sc = useSmartContract(); 
 
       useEffect(() => {
-        setTimeout(() => setIsInitLoad(false), 800); // UI init simulator
+        setTimeout(() => setIsInitLoad(false), 800); 
       }, []);
 
       const t = useCallback((key) => translations[lang]?.[key] || translations['en'][key] || key, [lang]);
@@ -1088,7 +1103,6 @@
             </div>
           </nav>
 
-          {/* Main Content Area - Full height to avoid page scrolling if possible */}
           <main className={`max-w-[1400px] mx-auto px-3 sm:px-6 py-4 sm:py-6 flex-1 flex flex-col w-full min-h-0 relative z-10 ${sc.state.walletConnected ? 'pb-20 md:pb-6' : ''}`}>
             {!sc.state.walletConnected ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6 fade-in h-full min-h-[50vh]">
