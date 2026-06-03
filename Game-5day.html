@@ -1,756 +1,654 @@
-Ecco una versione della tua dashboard con una **grafica drasticamente migliorata**.
-
-Ho mantenuto intatta tutta la logica del tuo codice (incluso il sistema di traduzione e i link alle lezioni), ma ho elevato l'interfaccia utente (UI) e l'esperienza visiva (UX) per renderla degna di una piattaforma fintech/Web3 premium.
-
-### Le principali novità introdotte:
-
-* **Effetto Glassmorphism:** Le card ora sembrano pannelli di vetro fluttuanti grazie all'uso di `backdrop-filter` e trasparenze calibrate.
-* **Sfondi Dinamici e Glow:** Aggiunti due "blob" luminosi animati in background (uno lime e uno viola scuro) che si muovono lentamente per dare profondità e vita alla pagina senza distrarre.
-* **Animazioni di Ingresso:** I moduli appaiono in sequenza (Staggered Fade-In) quando si carica la pagina, restituendo un feedback visivo molto soddisfacente.
-* **Tipografia Premium:** Inseriti gradienti sul titolo principale e un layout più pulito per i badge numerici delle lezioni.
-* **Interazioni Migliorate:** Gli hover sulle singole lezioni ora rivelano un sottile gradiente di background, il testo si illumina e l'icona della freccia scivola fluidamente.
-* **Scrollbar Personalizzata:** Sostituita la barra di scorrimento standard con una variante scura e minimale.
-
-Copia e incolla il seguente codice nel tuo file `.html`:
-
-```html
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    
-    <!-- SECURITY & PERFORMANCE HEADERS -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:;">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    
-    <!-- PRECONNECT FOR SPEED -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://flagcdn.com">
-
-    <title>BETTING EXCHANGE ROOM | Academy</title>
-    
-    <!-- FONTS & ICONS -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Zero To Hero Academy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            /* Premium Fintech Dark Palette & Neon */
-            --bg-base: #050505;
-            --bg-surface: rgba(24, 24, 27, 0.45);
-            --bg-card: rgba(15, 15, 17, 0.6);
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
-            --accent-neon: #ccff00;
-            --accent-glow: rgba(204, 255, 0, 0.3);
-            --accent-dim: rgba(204, 255, 0, 0.08);
-            --border-light: rgba(255, 255, 255, 0.06);
-            --border-hover: rgba(204, 255, 0, 0.4);
-            --glass-blur: blur(16px);
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;800;900&display=swap');
+        
+        :root { 
+            --bg-base: #020617; /* Slate 950 */
+            --bg-panel: #0f172a; /* Slate 900 */
+            --primary: #10b981;  /* Emerald 500 */
+            --primary-glow: rgba(16, 185, 129, 0.4);
+            --accent: #38bdf8;   /* Light Blue */
         }
+        
+        body, html {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-base); 
+            color: #f8fafc;
+            margin: 0; padding: 0;
+            width: 100%; height: 100dvh;
+            overflow: hidden; /* STRICT NO SCROLL */
+            touch-action: none;
+            display: flex; flex-direction: column;
+        }
+
+        .mono-text { font-family: 'Share Tech Mono', monospace; }
+
+        /* Glassmorphism & UI Panels */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .canvas-wrapper {
+            flex: 1; min-h: 0; width: 100%;
+            display: flex; justify-content: center; align-items: center;
+            position: relative;
+            padding: 4px;
+        }
+        
+        canvas {
+            max-width: 100%; max-height: 100%;
+            aspect-ratio: 42 / 46;
+            background-color: #14532d; /* Fallback grass color */
+            border: 4px solid #f8fafc; /* White pitch boundary */
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 20px rgba(255,255,255,0.2);
+            image-rendering: pixelated;
+            object-fit: contain;
+        }
+
+        /* Animations & Effects */
+        .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-8px, 0, 0); }
+            40%, 60% { transform: translate3d(8px, 0, 0); }
+        }
+        
+        .neon-text { text-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary); }
+        .alert-text { color: #ef4444; text-shadow: 0 0 10px rgba(239, 68, 68, 0.6), 0 0 20px rgba(239, 68, 68, 0.4); }
+        
+        /* Language Flags */
+        .lang-btn {
+            opacity: 0.3; filter: grayscale(100%); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 0 2px transparent; cursor: pointer;
+        }
+        .lang-btn.active {
+            opacity: 1; filter: grayscale(0%);
+            box-shadow: 0 0 0 2px var(--accent); transform: scale(1.15);
+        }
+        .lang-btn:hover:not(.active) { opacity: 0.7; filter: grayscale(50%); }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-base); }
-        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        body {
-            background-color: var(--bg-base);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            padding: 20px 20px 60px 20px; 
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* Animated Ambient Background Glows */
-        .ambient-glow {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(140px);
-            z-index: -1;
-            opacity: 0.5;
-            animation: float 15s infinite ease-in-out alternate;
-            pointer-events: none;
-        }
-        .glow-1 {
-            top: -10%; left: -5%;
-            width: 40vw; height: 40vw;
-            background: rgba(204, 255, 0, 0.12);
-        }
-        .glow-2 {
-            bottom: -20%; right: -10%;
-            width: 50vw; height: 50vw;
-            background: rgba(112, 0, 255, 0.1);
-            animation-delay: -5s;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0) scale(1); }
-            100% { transform: translateY(40px) scale(1.1); }
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Top Bar & Language Switcher */
-        .top-bar {
-            width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: flex-end;
-            padding: 10px 0 30px 0;
-            position: relative;
-            z-index: 10;
-        }
-
-        .lang-switcher {
-            display: flex;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.02);
-            padding: 8px;
-            border-radius: 16px;
-            border: 1px solid var(--border-light);
-            backdrop-filter: var(--glass-blur);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-        }
-
-        .lang-btn {
-            background: transparent;
-            border: 1px solid transparent;
-            cursor: pointer;
-            padding: 6px;
-            border-radius: 10px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            opacity: 0.4;
-            filter: grayscale(100%);
-        }
-
-        .lang-btn img {
-            border-radius: 4px;
-            display: block;
-            width: 28px;
-            height: 20px;
-            object-fit: cover;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-        }
-
-        .lang-btn:hover {
-            opacity: 0.8;
-            filter: grayscale(30%);
-            background: rgba(255,255,255,0.05);
-            transform: translateY(-2px);
-        }
-
-        .lang-btn.active {
-            opacity: 1;
-            filter: grayscale(0%);
-            border-color: var(--accent-neon);
-            background: var(--accent-dim);
-            box-shadow: 0 0 15px rgba(204,255,0,0.2);
-            transform: translateY(0);
-        }
-
-        /* Header Area */
-        header {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto 50px auto;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            z-index: 10;
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        .logo-img {
-            width: 88px;
-            height: 88px;
-            border-radius: 24px;
-            object-fit: cover;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: var(--bg-surface);
-            padding: 4px;
-            box-shadow: 0 0 40px rgba(204, 255, 0, 0.15), inset 0 0 20px rgba(255,255,255,0.05);
-            margin-bottom: 24px;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        .custom-scroll { scrollbar-width: thin; scrollbar-color: var(--primary) transparent; overflow-y: auto; touch-action: pan-y; }
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: var(--primary); border-radius: 10px; }
         
-        .logo-img:hover {
-            transform: scale(1.08) rotate(5deg);
-            box-shadow: 0 0 50px rgba(204, 255, 0, 0.25), inset 0 0 20px rgba(255,255,255,0.1);
-            border-color: var(--border-hover);
-        }
-
-        h1 {
-            font-family: 'Outfit', sans-serif;
-            font-size: clamp(32px, 5vw, 56px);
-            font-weight: 900;
-            letter-spacing: -1.5px;
-            margin-bottom: 12px;
-            line-height: 1.1;
-            text-transform: uppercase;
-            background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        h1 span {
-            display: block;
-            font-size: clamp(20px, 3vw, 28px);
-            margin-top: 8px;
-            letter-spacing: 4px;
-            background: linear-gradient(90deg, var(--accent-neon), #99cc00);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(204, 255, 0, 0.4);
-            font-weight: 800;
-        }
-
-        p.subtitle {
-            color: var(--text-muted);
-            font-size: clamp(15px, 1.5vw, 18px);
-            max-width: 650px;
-            margin: 0 auto;
-            font-weight: 300;
-            letter-spacing: 0.5px;
-        }
-
-        /* Dashboard Grid */
-        .dashboard-container {
-            width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 28px;
-            position: relative;
-            z-index: 10;
-        }
-
-        /* Module Cards (Glassmorphism) */
-        .module-card {
-            background: var(--bg-card);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--border-light);
-            border-radius: 24px;
-            padding: 32px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            opacity: 0;
-            animation: fadeInUp 0.8s ease-out forwards;
-        }
-
-        /* Staggered Animations for Cards */
-        .module-card:nth-child(1) { animation-delay: 0.1s; }
-        .module-card:nth-child(2) { animation-delay: 0.2s; }
-        .module-card:nth-child(3) { animation-delay: 0.3s; }
-        .module-card:nth-child(4) { animation-delay: 0.4s; }
-        .module-card:nth-child(5) { animation-delay: 0.5s; }
-        .module-card:nth-child(6) { animation-delay: 0.6s; }
-
-        /* Glowing Top Border */
-        .module-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent-neon), transparent);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .module-card:hover {
-            border-color: rgba(204, 255, 0, 0.2);
-            transform: translateY(-8px);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(204, 255, 0, 0.05);
-            background: rgba(24, 24, 27, 0.7);
-        }
-
-        .module-card:hover::before {
-            opacity: 1;
-        }
-
-        /* Module Header */
-        .module-header {
-            margin-bottom: 24px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .module-number {
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--accent-neon);
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            display: inline-block;
-            letter-spacing: 2px;
-            background: var(--accent-dim);
-            padding: 6px 12px;
-            border-radius: 8px;
-            text-transform: uppercase;
-        }
-
-        .module-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-main);
-            letter-spacing: -0.5px;
-            line-height: 1.2;
-        }
-
-        /* Lessons List */
-        .lessons-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            flex-grow: 1;
-        }
-
-        .lesson-btn {
-            display: flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.015);
-            color: var(--text-muted);
-            text-decoration: none;
-            padding: 14px 16px;
-            border-radius: 12px;
-            border: 1px solid transparent;
-            transition: all 0.3s ease;
-            font-size: 14px;
-            font-weight: 500;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Subtle left border accent on hover */
-        .lesson-btn::before {
-            content: '';
-            position: absolute;
-            left: 0; top: 0; bottom: 0;
-            width: 3px;
-            background: var(--accent-neon);
-            transform: scaleY(0);
-            transition: transform 0.3s ease;
-            transform-origin: center;
-        }
-
-        .lesson-btn:hover {
-            background: rgba(255, 255, 255, 0.04);
-            color: #ffffff;
-            border-color: rgba(255, 255, 255, 0.08);
-            transform: translateX(6px);
-        }
-
-        .lesson-btn:hover::before {
-            transform: scaleY(1);
-        }
-
-        .lesson-num {
-            font-family: 'JetBrains Mono', monospace;
-            background: rgba(255,255,255,0.05);
-            color: #71717a;
-            padding: 4px 8px;
-            border-radius: 6px;
-            margin-right: 14px;
-            font-size: 11px;
-            min-width: 32px;
-            text-align: center;
-            font-weight: 700;
-            transition: all 0.3s ease;
-        }
-
-        .lesson-btn:hover .lesson-num {
-            background: var(--accent-dim);
-            color: var(--accent-neon);
-        }
-
-        .lesson-btn span[data-i18n] {
-            flex-grow: 1;
-            line-height: 1.4;
-        }
-
-        .lesson-btn i {
-            margin-left: 12px;
-            color: var(--accent-neon);
-            opacity: 0;
-            transform: translateX(-10px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 14px;
-        }
-
-        .lesson-btn:hover i {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .dashboard-container {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            body { padding: 16px 16px 40px 16px; }
-            .glow-1 { width: 80vw; height: 80vw; }
-            .glow-2 { width: 100vw; height: 100vw; }
-            .dashboard-container { 
-                grid-template-columns: 1fr; 
-                gap: 20px; 
-            }
-            .module-card { padding: 24px; border-radius: 20px; }
-            header { margin-bottom: 30px; }
-            
-            .lesson-btn {
-                padding: 12px 14px;
-                border: 1px solid rgba(255,255,255,0.03);
-                background: rgba(255,255,255,0.02);
-            }
-            .lesson-btn:hover { transform: translateX(2px); }
-            .lesson-btn i { opacity: 1; transform: translateX(0); color: rgba(255,255,255,0.2); }
-            .lesson-btn:hover i { color: var(--accent-neon); }
-        }
+        .hide-broken-img { font-size: 0; }
+        .hide-broken-img::before { content: "ZH"; font-size: 14px; font-weight: 900; color: #10b981; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: #0f172a; border-radius: 50%; }
     </style>
 </head>
-<body>
+<body class="p-2 lg:p-4 gap-3 box-border">
 
-    <!-- Ambient Glowing Backgrounds -->
-    <div class="ambient-glow glow-1"></div>
-    <div class="ambient-glow glow-2"></div>
-
-    <!-- Language Switcher -->
-    <div class="top-bar">
-        <div class="lang-switcher">
-            <button class="lang-btn" onclick="setLanguage('en')" data-lang="en" aria-label="English">
-                <img src="https://flagcdn.com/w40/gb.png" srcset="https://flagcdn.com/w80/gb.png 2x" alt="English">
-            </button>
-            <button class="lang-btn" onclick="setLanguage('es')" data-lang="es" aria-label="Español">
-                <img src="https://flagcdn.com/w40/es.png" srcset="https://flagcdn.com/w80/es.png 2x" alt="Español">
-            </button>
-            <button class="lang-btn" onclick="setLanguage('pt')" data-lang="pt" aria-label="Português">
-                <img src="https://flagcdn.com/w40/pt.png" srcset="https://flagcdn.com/w80/pt.png 2x" alt="Português">
-            </button>
-            <button class="lang-btn" onclick="setLanguage('it')" data-lang="it" aria-label="Italiano">
-                <img src="https://flagcdn.com/w40/it.png" srcset="https://flagcdn.com/w80/it.png 2x" alt="Italiano">
-            </button>
+    <header class="glass-panel rounded-xl p-3 flex justify-between items-center w-full flex-shrink-0 z-20 border-t-2 border-t-emerald-500/50">
+        <div class="flex items-center gap-3">
+            <div class="relative w-10 h-10 lg:w-12 lg:h-12 flex-shrink-0">
+                <img src="logo-tondo.jpeg" alt="Logo" class="w-full h-full object-cover rounded-full border-2 border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.4)] hide-broken-img bg-slate-800" onerror="this.onerror=null; this.classList.add('hide-broken-img');">
+                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-[#020617] animate-pulse"></div>
+            </div>
+            <div class="flex flex-col justify-center">
+                <h1 class="text-base lg:text-2xl font-black tracking-tight leading-none text-white">ZERO TO HERO <span class="text-emerald-500">ACADEMY</span></h1>
+                <p class="text-[9px] lg:text-xs text-slate-400 font-semibold tracking-widest uppercase mt-1 mono-text" id="t_subtitle">Trader vs Algorithms</p>
+            </div>
         </div>
-    </div>
-
-    <!-- Header -->
-    <header>
-        <img src="logo-tondo.jpeg" alt="Logo" class="logo-img" onerror="this.src='https://placehold.co/200x200/18181b/ccff00?text=BER&font=outfit'">
-        <h1>
-            BETTING EXCHANGE ROOM
-            <span data-i18n="title_academy">ZERO TO HERO ACADEMY</span>
-        </h1>
-        <p class="subtitle" data-i18n="subtitle_desc">
-            Il tuo percorso completo da zero a trader professionista.
-        </p>
+        
+        <div class="flex gap-2 lg:gap-3 bg-slate-950 p-1.5 lg:p-2 rounded-lg border border-slate-700/80 shadow-inner">
+            <img src="https://flagcdn.com/w40/gb.png" class="lang-btn w-6 h-4 lg:w-7 lg:h-5 object-cover rounded-sm" onclick="setLang('en')" alt="EN">
+            <img src="https://flagcdn.com/w40/es.png" class="lang-btn w-6 h-4 lg:w-7 lg:h-5 object-cover rounded-sm" onclick="setLang('es')" alt="ES">
+            <img src="https://flagcdn.com/w40/pt.png" class="lang-btn w-6 h-4 lg:w-7 lg:h-5 object-cover rounded-sm" onclick="setLang('pt')" alt="PT">
+            <img src="https://flagcdn.com/w40/it.png" class="lang-btn w-6 h-4 lg:w-7 lg:h-5 object-cover rounded-sm" onclick="setLang('it')" alt="IT">
+        </div>
     </header>
 
-    <div class="dashboard-container">
-        
-        <!-- MODULO 1 -->
-        <div class="module-card">
-            <div class="module-header">
-                <span class="module-number" data-i18n="mod_1">MODULO 01</span>
-                <h2 class="module-title" data-i18n="m1_title">Fondamenta Operative</h2>
-            </div>
-            <div class="lessons-list">
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/1ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L1</span> <span data-i18n="l1_text">Il Paradigma dell'Exchange e il Gubbing</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/2ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L2</span> <span data-i18n="l2_text">Anatomia del Prezzo & Ladder</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/3ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L3</span> <span data-i18n="l3_text">Liquidità e Profondità</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/4ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L4</span> <span data-i18n="l4_text">Slippage e Commissioni</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/5ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L5</span> <span data-i18n="l5_text">Cash Out & Green Up</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-
-        <!-- MODULO 2 -->
-        <div class="module-card">
-            <div class="module-header">
-                <span class="module-number" data-i18n="mod_2">MODULO 02</span>
-                <h2 class="module-title" data-i18n="m2_title">Strumenti e Ingegneria</h2>
-            </div>
-            <div class="lessons-list">
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/6ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L6</span> <span data-i18n="l6_text">Software di Trading e API</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/7ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L7</span> <span data-i18n="l7_text">Analisi Quantitativa (xG)</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/8ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L8</span> <span data-i18n="l8_text">Leggere i Market Movers</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/9ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L9</span> <span data-i18n="l9_text">Psicologia Finanziaria, Bias & Tilt</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/10ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L10</span> <span data-i18n="l10_text">Il Trading come Impresa: Routine e Mindset</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-
-        <!-- MODULO 3 -->
-        <div class="module-card">
-            <div class="module-header">
-                <span class="module-number" data-i18n="mod_3">MODULO 03</span>
-                <h2 class="module-title" data-i18n="m3_title">Risk Management & Validazione</h2>
-            </div>
-            <div class="lessons-list">
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/11ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L11</span> <span data-i18n="l11_text">Bankroll Management & Expected Value (EV+)</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/12ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L12</span> <span data-i18n="l12_text">Risk/Reward Dinamico & Position Sizing</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/13ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L13</span> <span data-i18n="l13_text">Gestione del Drawdown & Varianza</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/14ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L14</span> <span data-i18n="l14_text">Backtesting & Paper Trading</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/15ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L15</span> <span data-i18n="l15_text">Record Keeping Data-Driven & Piano Operativo</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-
-        <!-- MODULO 4 -->
-        <div class="module-card">
-            <div class="module-header">
-                <span class="module-number" data-i18n="mod_4">MODULO 04</span>
-                <h2 class="module-title" data-i18n="m4_title">Strategie Pre-Match</h2>
-            </div>
-            <div class="lessons-list">
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/16ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L16</span> <span data-i18n="l16_text">Data Modeling Avanzato & Ricerca del Valore</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/17ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L17</span> <span data-i18n="l17_text">Weight of Money (WoM) & Order Flow</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/18ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L18</span> <span data-i18n="l18_text">Scalping Pre-Match & Spread Trading</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/19ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L19</span> <span data-i18n="l19_text">Swing Trading Sistematico</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/20ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L20</span> <span data-i18n="l20_text">Dutching Matematico & Coperture</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-
-        <!-- MODULO 5 -->
-        <div class="module-card">
-            <div class="module-header">
-                <span class="module-number" data-i18n="mod_5">MODULO 05</span>
-                <h2 class="module-title" data-i18n="m5_title">Operatività In-Play</h2>
-            </div>
-            <div class="lessons-list">
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/21ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L21</span> <span data-i18n="l21_text">Time Decay (Decadimento) & Pricing Dinamico</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/22ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L22</span> <span data-i18n="l22_text">Segnali Operativi & Trigger (Alfa/Beta)</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/23ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L23</span> <span data-i18n="l23_text">Scalping In-Play Evoluto</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/24ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L24</span> <span data-i18n="l24_text">Lay The Draw (LTD) Dinamico</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/25ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L25</span> <span data-i18n="l25_text">Gestione dei Cigni Neri & Hedging in Emergenza</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-
-        <!-- MODULO 6 -->
-        <div class="module-card">
-            <div class="module-header">
-                <span class="module-number" data-i18n="mod_6">MODULO 06</span>
-                <h2 class="module-title" data-i18n="m6_title">Ecosistemi Avanzati & Ingegneria Finanziaria</h2>
-            </div>
-            <div class="lessons-list">
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/26ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L26</span> <span data-i18n="l26_text">Trading Automatico: Dalle API ai Bot di Segnali</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/27ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L27</span> <span data-i18n="l27_text">Scanner di Mercato & API Agnostiche</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/28ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L28</span> <span data-i18n="l28_text">Betting CEX vs DEX: Web3, Smart Contract e Network ad Alta Velocità</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/29ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L29</span> <span data-i18n="l29_text">Esecuzione Avanzata: Latency Arbitrage & Cross-Market (Live)</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a href="https://affiliate-program-bettinge-exchange.vercel.app/30ZeroToHeroAcademy.html" target="_blank" class="lesson-btn">
-                    <span class="lesson-num">L30</span> <span data-i18n="l30_text">Scaling Operativo & Gestione del Rischio Sistemico</span> <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-
+    <!-- MOBILE TABS -->
+    <div class="flex lg:hidden w-full flex-shrink-0 rounded-lg overflow-hidden h-10 border border-slate-700 glass-panel z-10">
+        <button id="tabGameBtn" class="flex-1 font-bold text-sm transition-all duration-300" onclick="switchTab('game')">⚽ <span id="t_tabGame">PITCH</span></button>
+        <button id="tabAcademyBtn" class="flex-1 font-bold text-sm transition-all duration-300" onclick="switchTab('academy')">📚 <span id="t_tabAcademy">ACADEMY</span></button>
     </div>
 
-    <script>
-        const i18n = {
-            // Header e Titoli
-            "title_academy": {
-                en: "ZERO TO HERO ACADEMY",
-                es: "ACADEMIA ZERO TO HERO",
-                pt: "ACADEMIA ZERO TO HERO",
-                it: "ZERO TO HERO ACADEMY"
-            },
-            "subtitle_desc": {
-                en: "Your complete path from zero to professional trader.",
-                es: "Tu camino completo de cero a trader profesional.",
-                pt: "Seu caminho completo de zero a trader profissional.",
-                it: "Il tuo percorso completo da zero a trader professionista."
-            },
-
-            // Intestazioni Moduli
-            "mod_1": { en: "MODULE 01", es: "MÓDULO 01", pt: "MÓDULO 01", it: "MODULO 01" },
-            "mod_2": { en: "MODULE 02", es: "MÓDULO 02", pt: "MÓDULO 02", it: "MODULO 02" },
-            "mod_3": { en: "MODULE 03", es: "MÓDULO 03", pt: "MÓDULO 03", it: "MODULO 03" },
-            "mod_4": { en: "MODULE 04", es: "MÓDULO 04", pt: "MÓDULO 04", it: "MODULO 04" },
-            "mod_5": { en: "MODULE 05", es: "MÓDULO 05", pt: "MÓDULO 05", it: "MODULO 05" },
-            "mod_6": { en: "MODULE 06", es: "MÓDULO 06", pt: "MÓDULO 06", it: "MODULO 06" },
+    <main class="flex-1 flex flex-col lg:flex-row gap-4 min-h-0 w-full relative z-10">
+        
+        <!-- PANEL: GAME -->
+        <section id="panelGame" class="flex-1 flex flex-col min-h-0 w-full h-full">
             
-            // Titoli Moduli
-            "m1_title": { en: "Operational Foundations", es: "Fundamentos Operativos", pt: "Fundamentos Operacionais", it: "Fondamenta Operative" },
-            "m2_title": { en: "Tools & Engineering", es: "Herramientas e Ingeniería", pt: "Ferramentas e Engenharia", it: "Strumenti e Ingegneria" },
-            "m3_title": { en: "Risk Management & Validation", es: "Gestión de Riesgos y Validación", pt: "Gestão de Risco e Validação", it: "Risk Management & Validazione" },
-            "m4_title": { en: "Pre-Match Strategies", es: "Estrategias Pre-Match", pt: "Estratégias Pré-Match", it: "Strategie Pre-Match" },
-            "m5_title": { en: "In-Play Trading", es: "Operativa In-Play", pt: "Operações In-Play", it: "Operatività In-Play" },
-            "m6_title": { en: "Advanced Ecosystems & Fin-Eng", es: "Ecosistemas Avanzados e Ing. Financiera", pt: "Ecossistemas Avançados e Eng. Financeira", it: "Ecosistemi Avanzati & Ingegneria Finanziaria" },
+            <!-- Professional Coach Tutor HUD -->
+            <div class="w-full flex justify-between items-end mb-2 px-1 flex-shrink-0 gap-2">
+                <div class="flex-1 glass-panel border border-accent/40 rounded-lg p-2 flex items-center overflow-hidden shadow-inner bg-slate-900/90">
+                    <!-- Tutor Icon -->
+                    <svg class="w-5 h-5 text-accent mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                    <div class="flex flex-col min-w-0">
+                        <span class="text-[8px] lg:text-[10px] text-accent font-bold uppercase tracking-widest leading-none" id="t_coachLabel">ACADEMY COACH</span>
+                        <span id="tutorMsg" class="text-[10px] lg:text-xs text-white font-medium whitespace-nowrap overflow-hidden text-ellipsis mt-0.5"></span>
+                    </div>
+                </div>
+                
+                <!-- Stats -->
+                <div class="text-right flex-shrink-0 bg-slate-900/80 px-3 py-1 rounded-lg border border-slate-700">
+                    <div class="text-sm lg:text-xl font-black text-slate-300 mono-text" id="t_profit">Equity: <span id="scoreDisplay" class="text-emerald-400">€0</span></div>
+                    <div class="text-[10px] lg:text-xs text-slate-500 font-bold mt-0.5 uppercase" id="t_lives">Accounts: <span id="livesDisplay" class="text-yellow-500">⭐⭐⭐</span></div>
+                </div>
+            </div>
 
-            // Lezioni Modulo 1
-            "l1_text": { en: "The Exchange Paradigm & Gubbing", es: "El Paradigma del Exchange y Gubbing", pt: "O Paradigma do Exchange e Gubbing", it: "Il Paradigma dell'Exchange e il Gubbing" },
-            "l2_text": { en: "Price Anatomy & Ladder", es: "Anatomía del Precio y Ladder", pt: "Anatomia do Preço e Ladder", it: "Anatomia del Prezzo & Ladder" },
-            "l3_text": { en: "Liquidity & Market Depth", es: "Liquidez y Profundidad", pt: "Liquidez e Profundidade", it: "Liquidità e Profondità" },
-            "l4_text": { en: "Slippage & Commissions", es: "Slippage y Comisiones", pt: "Slippage e Comissões", it: "Slippage e Commissioni" },
-            "l5_text": { en: "Cash Out & Green Up", es: "Cash Out y Green Up", pt: "Cash Out e Green Up", it: "Cash Out & Green Up" },
+            <!-- RESPONSIVE CANVAS -->
+            <div class="canvas-wrapper">
+                <div class="relative w-full h-full flex justify-center items-center" id="gameWrapper">
+                    <canvas id="gameCanvas" width="420" height="460"></canvas>
+                    
+                    <!-- OVERLAYS -->
+                    <div id="startScreen" class="absolute inset-0 bg-slate-950/90 backdrop-blur-sm flex flex-col items-center justify-center rounded-xl z-10 p-6 text-center border border-slate-800">
+                        <h2 class="text-3xl lg:text-5xl font-black mb-4 neon-text tracking-tighter" id="t_startTitle">THE MARKET PITCH</h2>
+                        <button id="startBtn" class="mt-4 px-8 py-4 bg-emerald-600 text-white font-black rounded-xl hover:bg-emerald-500 text-lg lg:text-xl shadow-[0_10px_20px_rgba(16,185,129,0.3)] transition-all transform hover:-translate-y-1 hover:scale-105 border-b-4 border-emerald-800 active:border-b-0 active:translate-y-0">
+                            ENTER PITCH
+                        </button>
+                        <p class="mt-6 text-[10px] lg:text-xs text-slate-400 font-medium mono-text bg-slate-900 px-4 py-2 rounded-full border border-slate-700" id="t_controls">🖥️ ARROWS/WASD | 📱 SWIPE TO ROLL</p>
+                    </div>
 
-            // Lezioni Modulo 2
-            "l6_text": { en: "Trading Software & APIs", es: "Software de Trading y API", pt: "Software de Trading e API", it: "Software di Trading e API" },
-            "l7_text": { en: "Quantitative Analysis (xG)", es: "Análisis Cuantitativo (xG)", pt: "Análise Quantitativa (xG)", it: "Analisi Quantitativa (xG)" },
-            "l8_text": { en: "Reading Market Movers", es: "Leyendo Market Movers", pt: "Lendo os Market Movers", it: "Leggere i Market Movers" },
-            "l9_text": { en: "Financial Psychology, Bias & Tilt", es: "Psicología Financiera, Sesgos y Tilt", pt: "Psicologia Financeira, Viés e Tilt", it: "Psicologia Finanziaria, Bias & Tilt" },
-            "l10_text": { en: "Trading as a Business: Routine & Mindset", es: "Trading como Empresa: Rutina y Mentalidad", pt: "Trading como Negócio: Rotina e Mentalidade", it: "Il Trading come Impresa: Routine e Mindset" },
+                    <div id="gameOverScreen" class="absolute inset-0 bg-red-950/95 backdrop-blur-md flex flex-col items-center justify-center rounded-xl z-10 hidden p-6 text-center border border-red-900">
+                        <h2 class="text-4xl lg:text-6xl font-black mb-2 alert-text shake tracking-tighter">MARGIN CALL</h2>
+                        <p class="text-sm lg:text-base font-medium text-slate-300 mt-2 mb-8 max-w-xs" id="t_gameOverDesc">You hit the Cash Out button and paid the broker's hidden tax.</p>
+                        <div class="bg-black/50 px-6 py-3 rounded-lg mb-8 border border-red-500/30">
+                            <p class="text-xs text-slate-400 mono-text uppercase" id="t_finalProfitLbl">Final Equity</p>
+                            <p class="text-3xl font-black text-white mono-text" id="t_finalProfitVal">€0</p>
+                        </div>
+                        <button id="restartBtn" class="px-8 py-4 bg-red-600 text-white font-black rounded-xl hover:bg-red-500 text-lg shadow-[0_10px_20px_rgba(239,68,68,0.3)] transition-all transform hover:-translate-y-1 border-b-4 border-red-800 active:border-b-0">
+                            RETRY
+                        </button>
+                    </div>
+                    
+                    <div id="winScreen" class="absolute inset-0 bg-emerald-950/95 backdrop-blur-md flex flex-col items-center justify-center rounded-xl z-10 hidden p-6 text-center border border-emerald-900">
+                        <h2 class="text-4xl lg:text-6xl font-black mb-2 neon-text tracking-tighter">PRO TRADER</h2>
+                        <p class="text-sm lg:text-base font-medium text-emerald-100 mt-2 mb-8" id="t_winDesc">Mathematical precision on the pitch.</p>
+                        <div class="bg-black/50 px-6 py-3 rounded-lg mb-8 border border-emerald-500/30">
+                            <p class="text-xs text-emerald-400 mono-text uppercase" id="t_totalExtractedLbl">Total Extracted</p>
+                            <p class="text-3xl font-black text-white mono-text" id="t_totalExtractedVal">€0</p>
+                        </div>
+                        <button id="nextLevelBtn" class="px-8 py-4 bg-emerald-500 text-slate-900 font-black rounded-xl hover:bg-emerald-400 text-lg shadow-[0_10px_20px_rgba(16,185,129,0.3)] transition-all transform hover:-translate-y-1 border-b-4 border-emerald-700 active:border-b-0">
+                            NEXT MATCH
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-1 text-[9px] text-slate-500 text-center lg:hidden font-medium mono-text tracking-wide" id="t_swipeInfo">
+                [ SWIPE SULL'AREA DI GIOCO PER ROTOLARE ]
+            </div>
+        </section>
 
-            // Lezioni Modulo 3
-            "l11_text": { en: "Bankroll Management & Expected Value (EV+)", es: "Gestión de Bankroll y Valor Esperado (EV+)", pt: "Gestão de Banca e Valor Esperado (EV+)", it: "Bankroll Management & Expected Value (EV+)" },
-            "l12_text": { en: "Dynamic Risk/Reward & Position Sizing", es: "Riesgo/Beneficio Dinámico y Position Sizing", pt: "Risco/Recompensa Dinâmico e Position Sizing", it: "Risk/Reward Dinamico & Position Sizing" },
-            "l13_text": { en: "Drawdown Management & Variance", es: "Gestión del Drawdown y Varianza", pt: "Gestão do Drawdown e Variância", it: "Gestione del Drawdown & Varianza" },
-            "l14_text": { en: "Backtesting & Paper Trading", es: "Backtesting y Paper Trading", pt: "Backtesting e Paper Trading", it: "Backtesting & Paper Trading" },
-            "l15_text": { en: "Data-Driven Record Keeping & Operative Plan", es: "Record Keeping Data-Driven y Plan Operativo", pt: "Record Keeping Data-Driven e Plano Operacional", it: "Record Keeping Data-Driven & Piano Operativo" },
+        <section id="panelAcademy" class="hidden lg:flex flex-1 glass-panel border border-slate-700 rounded-xl p-4 lg:p-6 flex-col min-h-0 shadow-2xl relative">
+            <div class="border-b border-slate-700/80 pb-3 mb-4 flex-shrink-0 flex items-center justify-between">
+                <h2 class="text-lg lg:text-xl font-black text-white tracking-tight flex items-center gap-2">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    <span id="t_academyTitle">ACADEMY TERMINAL</span>
+                </h2>
+                <span class="px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded text-[9px] font-bold mono-text border border-emerald-500/20" id="t_moduleBadge">MODULE: HEDGING</span>
+            </div>
+            
+            <div class="custom-scroll pr-3 flex-1 space-y-4 lg:space-y-6 text-sm text-slate-300">
+                
+                <div class="bg-slate-800/50 p-4 rounded-xl border-l-4 border-l-emerald-500 hover:bg-slate-800 transition-colors">
+                    <h3 class="text-emerald-400 font-bold mb-2 text-base uppercase tracking-wide" id="t_sec1Title">CASH OUT VS. GREEN UP</h3>
+                    <p class="leading-relaxed text-[13px] lg:text-sm" id="t_sec1Desc">The difference between a novice and a professional is how they extract capital. Novices panic and hit "Cash Out", paying the broker's tax. Pros use math: the Green Up.</p>
+                </div>
 
-            // Lezioni Modulo 4
-            "l16_text": { en: "Advanced Data Modeling & Value Hunting", es: "Modelado de Datos Avanzado y Búsqueda de Valor", pt: "Modelagem de Dados Avançada e Busca de Valor", it: "Data Modeling Avanzato & Ricerca del Valore" },
-            "l17_text": { en: "Weight of Money (WoM) & Order Flow", es: "Weight of Money (WoM) y Order Flow", pt: "Weight of Money (WoM) e Order Flow", it: "Weight of Money (WoM) & Order Flow" },
-            "l18_text": { en: "Pre-Match Scalping & Spread Trading", es: "Scalping Pre-Match y Spread Trading", pt: "Scalping Pré-Match e Spread Trading", it: "Scalping Pre-Match & Spread Trading" },
-            "l19_text": { en: "Systematic Swing Trading", es: "Swing Trading Sistemático", pt: "Swing Trading Sistemático", it: "Swing Trading Sistematico" },
-            "l20_text": { en: "Mathematical Dutching & Hedging", es: "Dutching Matemático y Coberturas", pt: "Dutching Matemático e Coberturas", it: "Dutching Matematico & Coperture" },
+                <div class="bg-black/40 p-4 rounded-xl border border-slate-700 shadow-inner">
+                    <h3 class="text-accent font-bold mb-3 text-base uppercase tracking-wide flex items-center gap-2" id="t_sec2Title">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                        GREEN UP FORMULA
+                    </h3>
+                    
+                    <div class="bg-slate-900 p-3 lg:p-4 font-bold mono-text text-[11px] lg:text-sm text-emerald-300 text-center rounded-lg border border-emerald-900/50 shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+                        <span id="t_formula1" class="text-white bg-slate-800 px-2 py-1 rounded">Lay Stake</span> = 
+                        <br class="lg:hidden"><span class="lg:hidden my-1 inline-block"></span>
+                        ( <span id="t_formula2" class="text-accent">Back Stake × Init Odds</span> ) 
+                        <br class="lg:hidden"><span class="lg:hidden my-1 inline-block"></span>
+                        / <span id="t_formula3" class="text-yellow-400">Current Lay Odds</span>
+                    </div>
+                    <p class="text-center mt-3 text-xs text-slate-400 italic" id="t_formulaNote">Zero hallucinations: pure math to spread risk evenly.</p>
+                </div>
 
-            // Lezioni Modulo 5
-            "l21_text": { en: "Time Decay & Dynamic Pricing", es: "Decaimiento del Tiempo y Precios Dinámicos", pt: "Decaimento do Tempo e Preços Dinâmicos", it: "Time Decay (Decadimento) & Pricing Dinamico" },
-            "l22_text": { en: "Operative Signals & Triggers (Alpha/Beta)", es: "Señales Operativas y Triggers (Alfa/Beta)", pt: "Sinais Operacionais e Triggers (Alfa/Beta)", it: "Segnali Operativi & Trigger (Alfa/Beta)" },
-            "l23_text": { en: "Advanced In-Play Scalping", es: "Scalping In-Play Evolucionado", pt: "Scalping In-Play Avançado", it: "Scalping In-Play Evoluto" },
-            "l24_text": { en: "Dynamic Lay The Draw (LTD)", es: "Lay The Draw (LTD) Dinámico", pt: "Lay The Draw (LTD) Dinâmico", it: "Lay The Draw (LTD) Dinamico" },
-            "l25_text": { en: "Black Swans Management & Emergency Hedging", es: "Gestión de Cisnes Negros y Hedging de Emergencia", pt: "Gestão de Cisnes Negros e Hedging de Emergência", it: "Gestione dei Cigni Neri & Hedging in Emergenza" },
+                <div class="bg-slate-800/50 p-4 rounded-xl border-l-4 border-l-red-500 hover:bg-slate-800 transition-colors">
+                    <h3 class="text-red-400 font-bold mb-2 text-base uppercase tracking-wide" id="t_sec3Title">THE HIDDEN TAX</h3>
+                    <p class="leading-relaxed text-[13px] lg:text-sm" id="t_sec3Desc">The Cash Out button crosses the spread, giving you a sub-optimal price (convenience tax). Over time, losing 3-5% per trade will destroy your long-term ROI.</p>
+                </div>
 
-            // Lezioni Modulo 6
-            "l26_text": { en: "Automated Trading: From APIs to Signal Bots", es: "Trading Automático: De las API a los Bots de Señales", pt: "Trading Automático: Das APIs aos Bots de Sinais", it: "Trading Automatico: Dalle API ai Bot di Segnali" },
-            "l27_text": { en: "Market Scanners & Agnostic APIs", es: "Escáneres de Mercado y API Agnósticas", pt: "Scanners de Mercado e APIs Agnósticas", it: "Scanner di Mercato & API Agnostiche" },
-            "l28_text": { en: "Betting CEX vs DEX: Web3, Smart Contracts & High-Speed Networks", es: "Betting CEX vs DEX: Web3, Smart Contracts y Redes de Alta Velocidad", pt: "Betting CEX vs DEX: Web3, Smart Contracts e Redes de Alta Velocidade", it: "Betting CEX vs DEX: Web3, Smart Contract e Network ad Alta Velocità" },
-            "l29_text": { en: "Advanced Execution: Latency Arbitrage & Cross-Market (Live)", es: "Ejecución Avanzada: Arbitraje de Latencia y Cross-Market (En Vivo)", pt: "Execução Avançada: Arbitragem de Latência e Cross-Market (Ao Vivo)", it: "Esecuzione Avanzata: Latency Arbitrage & Cross-Market (Live)" },
-            "l30_text": { en: "Operational Scaling & Systemic Risk Management", es: "Escalado Operativo y Gestión del Riesgo Sistémico", pt: "Scaling Operacional e Gestão de Risco Sistêmico", it: "Scaling Operativo & Gestione del Rischio Sistemico" }
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- 1. LOCALIZATION (EN, ES, PT, IT) ---
+        const i18n = {
+            en: {
+                subtitle: "Trader vs Algorithms", tabGame: "PITCH", tabAcademy: "ACADEMY",
+                coachLabel: "ACADEMY COACH", profit: "Equity: ", lives: "Accounts: ", 
+                startTitle: "THE MARKET PITCH", btnStart: "ENTER PITCH", controls: "🖥️ ARROWS/WASD | 📱 SWIPE TO ROLL", swipeInfo: "[ SWIPE INSIDE TO ROLL ]",
+                gameOverDesc: "You hit the Cash Out button and paid the broker's hidden tax. Read the Academy!", finalProfitLbl: "Final Equity", btnRetry: "RETRY",
+                winDesc: "Mathematical precision on the pitch.", totalExtractedLbl: "Total Extracted", btnNext: "NEXT MATCH",
+                academyTitle: "ACADEMY TERMINAL", moduleBadge: "MODULE: HEDGING",
+                sec1Title: "CASH OUT VS. GREEN UP", sec1Desc: "The difference between a novice and a pro is how they extract capital. Novices panic and hit 'Cash Out'. Pros use math: the Green Up.",
+                sec2Title: "GREEN UP FORMULA", formula1: "Lay Stake", formula2: "Back Stake × Init Odds", formula3: "Current Lay Odds", formulaNote: "Zero hallucinations: pure math to spread risk evenly.",
+                sec3Title: "THE HIDDEN TAX", sec3Desc: "The broker's Cash Out button crosses the spread, giving a sub-optimal price (convenience tax). Losing 3-5% per trade will destroy your long-term ROI.",
+                // New contextual tutor messages
+                tutStart: "Welcome to the pitch! Gather Equity and avoid the Cash Out tax.", 
+                tutGhost: "Watch out! Those red boards force a Cash Out.", 
+                tutPower: "Software Active! The book is exposed. Execute the Green Up!", 
+                tutEat: "Perfect Green Up! You balanced the trade and eliminated risk."
+            },
+            es: {
+                subtitle: "Trader vs Algoritmos", tabGame: "CAMPO", tabAcademy: "ACADEMIA",
+                coachLabel: "COACH ACADEMIA", profit: "Capital: ", lives: "Cuentas: ", 
+                startTitle: "EL CAMPO DE MERCADO", btnStart: "ENTRAR AL CAMPO", controls: "🖥️ FLECHAS/WASD | 📱 DESLIZAR", swipeInfo: "[ DESLIZA PARA RODAR ]",
+                gameOverDesc: "Pulsaste Cash Out y pagaste el impuesto oculto del bróker. ¡Lee la Academia!", finalProfitLbl: "Capital Final", btnRetry: "REINTENTAR",
+                winDesc: "Precisión matemática en el campo.", totalExtractedLbl: "Total Extraído", btnNext: "SIGUIENTE PARTIDO",
+                academyTitle: "TERMINAL ACADEMIA", moduleBadge: "MÓDULO: COBERTURA",
+                sec1Title: "CASH OUT VS. GREEN UP", sec1Desc: "La diferencia entre un novato y un pro es cómo extraen capital. El novato pulsa 'Cash Out'. El pro usa matemáticas: Green Up.",
+                sec2Title: "FÓRMULA GREEN UP", formula1: "Riesgo Contra", formula2: "Apuesta Inicial × Cuota", formula3: "Cuota Contra Actual", formulaNote: "Cero alucinaciones: matemática pura para dividir riesgo.",
+                sec3Title: "EL IMPUESTO OCULTO", sec3Desc: "El Cash Out del bróker cruza el spread, dando un precio subóptimo. Perder un 3-5% por operación destruirá tu ROI a largo plazo.",
+                tutStart: "¡Bienvenido al campo! Recoge Capital y evita el impuesto del Cash Out.", 
+                tutGhost: "¡Cuidado! Esos carteles rojos fuerzan el Cash Out.", 
+                tutPower: "¡Software Activo! El libro está expuesto. ¡Ejecuta el Green Up!", 
+                tutEat: "¡Green Up Perfecto! Equilibraste el trade eliminando el riesgo."
+            },
+            pt: {
+                subtitle: "Trader vs Algoritmos", tabGame: "CAMPO", tabAcademy: "ACADEMIA",
+                coachLabel: "COACH ACADEMIA", profit: "Capital: ", lives: "Contas: ", 
+                startTitle: "O CAMPO DE MERCADO", btnStart: "ENTRAR NO CAMPO", controls: "🖥️ SETAS/WASD | 📱 DESLIZAR", swipeInfo: "[ DESLIZE PARA ROLAR ]",
+                gameOverDesc: "Você clicou no Cash Out e pagou a taxa oculta da corretora. Leia a Academia!", finalProfitLbl: "Capital Final", btnRetry: "TENTAR NOVAMENTE",
+                winDesc: "Precisão matemática no campo.", totalExtractedLbl: "Total Extraído", btnNext: "PRÓXIMO JOGO",
+                academyTitle: "TERMINAL DA ACADEMIA", moduleBadge: "MÓDULO: HEDGING",
+                sec1Title: "CASH OUT VS. GREEN UP", sec1Desc: "A diferença entre novato e pro é como extrair lucro. O novato entra em pânico e faz 'Cash Out'. O pro usa matemática: Green Up.",
+                sec2Title: "FÓRMULA GREEN UP", formula1: "Aposta Lay", formula2: "Aposta Inicial × Odd", formula3: "Odd Lay Atual", formulaNote: "Zero alucinações: matemática pura para dividir o risco.",
+                sec3Title: "A TAXA OCULTA", sec3Desc: "O botão Cash Out cruza o spread dando um preço ruim (taxa de conveniência). Perder 3-5% por trade destrói seu ROI de longo prazo.",
+                tutStart: "Bem-vindo ao campo! Colete Equity e evite a taxa do Cash Out.", 
+                tutGhost: "Cuidado! Aquelas placas vermelhas forçam o Cash Out.", 
+                tutPower: "Software Ativo! O book está exposto. Execute o Green Up!", 
+                tutEat: "Green Up Perfeito! Você equilibrou o trade e eliminou o risco."
+            },
+            it: {
+                subtitle: "Trader vs Algoritmi", tabGame: "CAMPO", tabAcademy: "ACCADEMIA",
+                coachLabel: "COACH ACCADEMIA", profit: "Equity: ", lives: "Conti: ", 
+                startTitle: "IL CAMPO DI MERCATO", btnStart: "ENTRA IN CAMPO", controls: "🖥️ FRECCE/WASD | 📱 SCORRI", swipeInfo: "[ SCORRI PER ROTOLARE ]",
+                gameOverDesc: "Hai premuto Cash Out pagando la tassa occulta del broker. Leggi l'Academy!", finalProfitLbl: "Equity Finale", btnRetry: "RIPROVA",
+                winDesc: "Precisione matematica in campo.", totalExtractedLbl: "Totale Estratto", btnNext: "PROSSIMO MATCH",
+                academyTitle: "TERMINALE ACCADEMIA", moduleBadge: "MODULO: COPERTURA",
+                sec1Title: "CASH OUT VS. GREEN UP", sec1Desc: "La differenza tra un principiante e un professionista non è solo l'ingresso a mercato, ma come si estrae il capitale. Il novellino preme 'Cash Out'. Il pro usa la matematica: il Green Up.",
+                sec2Title: "FORMULA GREEN UP", formula1: "Puntata Banca", formula2: "Puntata Iniziale × Quota", formula3: "Quota Banca Attuale", formulaNote: "Zero allucinazioni: matematica pura per spalmare il rischio.",
+                sec3Title: "LA TASSA NASCOSTA", sec3Desc: "Il Cash Out del broker spazza il book incrociando lo spread, dandoti un prezzo sub-ottimale. Perdere il 3-5% ad ogni operazione distruggerà il tuo ROI nel lungo termine.",
+                tutStart: "Benvenuto in campo! Raccogli Equity ed evita la tassa del Cash Out.", 
+                tutGhost: "Attento! Quei cartelloni rossi forzano il Cash Out.", 
+                tutPower: "Software Attivo! Il book è esposto. Esegui il Green Up!", 
+                tutEat: "Green Up Perfetto! Hai bilanciato il trade azzerando il rischio."
+            }
         };
 
-        function setLanguage(lang) {
-            // Aggiorna testo e DOM
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (i18n[key] && i18n[key][lang]) {
-                    el.textContent = i18n[key][lang];
-                }
-            });
+        let currentLang = 'en';
 
-            // Toggle active state sulle bandiere
-            document.documentElement.lang = lang;
+        function initLang() {
+            const userLang = (navigator.language || navigator.userLanguage || 'en').substring(0, 2).toLowerCase();
+            const supported = ['en', 'es', 'pt', 'it'];
+            setLang(supported.includes(userLang) ? userLang : 'en');
+        }
+
+        function setLang(lang) {
+            currentLang = lang;
             document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.lang === lang);
+                btn.classList.remove('active');
+                if (btn.alt.toLowerCase() === lang) btn.classList.add('active');
             });
+            
+            const t = i18n[lang];
+            const el = id => { const e = document.getElementById(id); if (e) e.innerText = t[id] || e.innerText; };
+            
+            ['t_subtitle', 't_tabGame', 't_tabAcademy', 't_coachLabel', 't_startTitle', 'btnStart', 't_controls', 't_swipeInfo',
+             't_gameOverDesc', 't_finalProfitLbl', 'btnRetry', 't_winDesc', 't_totalExtractedLbl', 'btnNext',
+             't_academyTitle', 't_moduleBadge', 't_sec1Title', 't_sec1Desc', 't_sec2Title', 't_formula1', 
+             't_formula2', 't_formula3', 't_formulaNote', 't_sec3Title', 't_sec3Desc'
+            ].forEach(el);
 
-            // Salva preferenza se disponibile
-            try {
-                localStorage.setItem('academy_lang', lang);
-            } catch (e) {
-                console.warn("LocalStorage non disponibile.");
+            document.getElementById('t_profit').childNodes[0].nodeValue = t.profit;
+            document.getElementById('t_lives').childNodes[0].nodeValue = t.lives;
+            
+            updateScoreDisplays();
+            triggerTutor('tutStart', '#38bdf8');
+        }
+
+        // --- 2. MOBILE TABS ---
+        function switchTab(tab) {
+            const isGame = tab === 'game';
+            const w = window.innerWidth;
+            
+            document.getElementById('panelGame').classList.toggle('hidden', !isGame && w < 1024);
+            document.getElementById('panelGame').classList.toggle('flex', isGame || w >= 1024);
+            document.getElementById('panelAcademy').classList.toggle('hidden', isGame && w < 1024);
+            document.getElementById('panelAcademy').classList.toggle('flex', !isGame || w >= 1024);
+            
+            const aC = 'flex-1 font-bold text-sm transition-all duration-300 bg-slate-800 text-slate-400';
+            const actC = 'flex-1 font-bold text-sm transition-all duration-300 bg-emerald-600 text-white shadow-inner';
+            document.getElementById('tabGameBtn').className = isGame ? actC : aC;
+            document.getElementById('tabAcademyBtn').className = !isGame ? actC : aC;
+        }
+        window.addEventListener('resize', () => switchTab('game'));
+
+        // --- 3. A.I. TUTOR & AUDIO ---
+        function triggerTutor(msgKey, color="#38bdf8") {
+            const el = document.getElementById('tutorMsg');
+            el.innerText = i18n[currentLang][msgKey];
+            el.style.color = color;
+            const container = el.parentElement.parentElement;
+            container.classList.remove('shake'); void container.offsetWidth; container.classList.add('shake');
+        }
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playTone(f, type, dur, vol=0.1) {
+            if(audioCtx.state === 'suspended') return;
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.type = type; osc.frequency.setValueAtTime(f, audioCtx.currentTime);
+            gain.gain.setValueAtTime(vol, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + dur);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + dur);
+        }
+        function pSnd(t) { 
+            if(t==='d') playTone(800, 'sine', 0.1, 0.05);
+            else if(t==='p') { playTone(400, 'square', 0.1, 0.1); setTimeout(()=>playTone(600, 'square', 0.1, 0.1), 100); }
+            else if(t==='e') { playTone(1200, 'square', 0.1, 0.1); setTimeout(()=>playTone(1600, 'sine', 0.3, 0.2), 100); }
+            else if(t==='x') {
+                const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.type = 'sawtooth';
+                o.frequency.setValueAtTime(200, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 1);
+                g.gain.setValueAtTime(0.2, audioCtx.currentTime); g.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
+                o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 1);
             }
         }
 
-        // Auto-detect della lingua all'avvio
-        window.addEventListener('DOMContentLoaded', () => {
-            const supportedLangs = ['en', 'es', 'pt', 'it'];
-            let currentLang = 'it'; 
-            
-            try {
-                const savedLang = localStorage.getItem('academy_lang');
-                if (savedLang && supportedLangs.includes(savedLang)) {
-                    currentLang = savedLang;
+        // --- 4. GAME ENGINE (Football Theme) ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const TS = 20; const ROWS = 23; const COLS = 21;
+        
+        const mapData = [
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,2,2,2,2,2,2,2,2,2,1,2,2,2,2,2,2,2,2,2,1],
+            [1,3,1,1,1,2,1,1,1,2,1,2,1,1,1,2,1,1,1,3,1],
+            [1,2,1,1,1,2,1,1,1,2,1,2,1,1,1,2,1,1,1,2,1],
+            [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+            [1,2,1,1,1,2,1,2,1,1,1,1,1,2,1,2,1,1,1,2,1],
+            [1,2,2,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,2,2,1],
+            [1,1,1,1,1,2,1,1,1,0,1,0,1,1,1,2,1,1,1,1,1],
+            [0,0,0,0,1,2,1,0,0,0,0,0,0,0,1,2,1,0,0,0,0],
+            [1,1,1,1,1,2,1,0,1,1,4,1,1,0,1,2,1,1,1,1,1],
+            [0,0,0,0,0,2,0,0,1,0,0,0,1,0,0,2,0,0,0,0,0],
+            [1,1,1,1,1,2,1,0,1,1,1,1,1,0,1,2,1,1,1,1,1],
+            [0,0,0,0,1,2,1,0,0,0,0,0,0,0,1,2,1,0,0,0,0],
+            [1,1,1,1,1,2,1,2,1,1,1,1,1,2,1,2,1,1,1,1,1],
+            [1,2,2,2,2,2,2,2,2,2,1,2,2,2,2,2,2,2,2,2,1],
+            [1,2,1,1,1,2,1,1,1,2,1,2,1,1,1,2,1,1,1,2,1],
+            [1,3,2,2,1,2,2,2,2,2,0,2,2,2,2,2,1,2,2,3,1],
+            [1,1,1,2,1,2,1,2,1,1,1,1,1,2,1,2,1,2,1,1,1],
+            [1,2,2,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,2,2,1],
+            [1,2,1,1,1,1,1,1,1,2,1,2,1,1,1,1,1,1,1,2,1],
+            [1,2,1,1,1,1,1,1,1,2,1,2,1,1,1,1,1,1,1,2,1],
+            [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ];
+
+        let map=[], score=0, lives=3, state='START', animId, texts=[];
+        let seenGhost = false;
+
+        class Player {
+            constructor() { this.rst(); }
+            rst() {
+                this.x = 10*TS+TS/2; this.y = 16*TS+TS/2; this.vx=0; this.vy=0; this.nx=0; this.ny=0;
+                this.spd = 2.5; this.r = TS/2-2; this.rollAng = 0;
+            }
+            upd() {
+                if (this.can(this.x, this.y, this.nx, this.ny)) {
+                    if (this.vx!==0 && this.ny!==0) this.x = Math.floor(this.x/TS)*TS+TS/2;
+                    if (this.vy!==0 && this.nx!==0) this.y = Math.floor(this.y/TS)*TS+TS/2;
+                    this.vx=this.nx; this.vy=this.ny;
+                }
+                if (this.can(this.x, this.y, this.vx, this.vy)) { 
+                    this.x+=this.vx*this.spd; this.y+=this.vy*this.spd; 
+                    if(this.vx!==0 || this.vy!==0) this.rollAng += 0.2; // Roll physics
+                }
+                if (this.x < -TS) this.x = canvas.width+TS; if (this.x > canvas.width+TS) this.x = -TS;
+                this.chk();
+            }
+            can(cx, cy, vx, vy) {
+                if(!vx && !vy) return false;
+                const nX=cx+vx*this.spd, nY=cy+vy*this.spd, l=nX-this.r, r=nX+this.r, t=nY-this.r, b=nY+this.r;
+                return ![gT(l,t), gT(r,t), gT(l,b), gT(r,b)].includes(1) && ![gT(l,t), gT(r,t), gT(l,b), gT(r,b)].includes(4);
+            }
+            chk() {
+                const c=Math.floor(this.x/TS), r=Math.floor(this.y/TS);
+                if(r>=0 && r<ROWS && c>=0 && c<COLS) {
+                    if(map[r][c]===2) { map[r][c]=0; addSc(10); pSnd('d'); chkWin(); }
+                    else if(map[r][c]===3) { map[r][c]=0; addSc(50); pSnd('p'); actPower(); chkWin(); triggerTutor('tutPower', '#34d399'); }
+                }
+            }
+            drw() {
+                ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rollAng);
+                
+                // Football Base
+                ctx.beginPath(); ctx.arc(0,0,this.r, 0, Math.PI*2);
+                ctx.fillStyle='#ffffff'; ctx.fill();
+                ctx.lineWidth=1; ctx.strokeStyle='#000'; ctx.stroke();
+                
+                // Football Patches
+                ctx.fillStyle='#1e293b';
+                ctx.beginPath(); ctx.arc(0,0,this.r*0.4, 0, Math.PI*2); ctx.fill();
+                for(let i=0; i<5; i++) {
+                    let a = (i*Math.PI*2)/5;
+                    let px = Math.cos(a)*this.r*0.75;
+                    let py = Math.sin(a)*this.r*0.75;
+                    ctx.beginPath(); ctx.arc(px,py,this.r*0.25, 0, Math.PI*2); ctx.fill();
+                }
+                ctx.restore();
+            }
+        }
+
+        class Enemy {
+            constructor(x,y,d) { this.sx=x*TS+TS/2; this.sy=y*TS+TS/2; this.del=d; this.rst(); }
+            rst() { this.x=this.sx; this.y=this.sy; this.vx=0; this.vy=-1; this.spd=1.5; this.sc=false; this.st=0; this.dt=this.del; this.dd=false; }
+            upd() {
+                if(this.dt>0){ this.dt--; return; }
+                if(this.sc){ this.st--; this.spd=1.0; if(this.st<=0){ this.sc=false; this.spd=1.5; } }
+                if(this.dd){ this.rst(); this.dt=80; return; }
+                
+                const c=this.x/TS, r=this.y/TS;
+                if(Number.isInteger(c-0.5) && Number.isInteger(r-0.5)) {
+                    const dirs = [{vx:0,vy:-1},{vx:1,vy:0},{vx:0,vy:1},{vx:-1,vy:0}].filter(d => !(d.vx===-this.vx && d.vy===-this.vy) && this.can(d.vx,d.vy));
+                    if(dirs.length>0) {
+                        if(!this.sc && Math.random()>0.3) {
+                            let bd=dirs[0], md=Infinity;
+                            for(let d of dirs) { let dist=Math.hypot((this.x+d.vx*TS)-p1.x, (this.y+d.vy*TS)-p1.y); if(dist<md){ md=dist; bd=d; } }
+                            this.vx=bd.vx; this.vy=bd.vy;
+                        } else {
+                            let ch = dirs[Math.floor(Math.random()*dirs.length)]; this.vx=ch.vx; this.vy=ch.vy;
+                        }
+                    } else { this.vx*=-1; this.vy*=-1; }
+                }
+                this.x+=this.vx*this.spd; this.y+=this.vy*this.spd;
+                if(this.x<-TS) this.x=canvas.width+TS; if(this.x>canvas.width+TS) this.x=-TS;
+                
+                if(!seenGhost && Math.hypot(this.x-p1.x, this.y-p1.y) < TS*4 && !this.sc) {
+                    seenGhost = true; triggerTutor('tutGhost', '#ef4444');
+                }
+                this.chk();
+            }
+            can(vx,vy){ return gT(this.x+vx*TS, this.y+vy*TS) !== 1; }
+            chk() {
+                if(Math.hypot(this.x-p1.x, this.y-p1.y) < TS-4) {
+                    if(this.sc && !this.dd) {
+                        this.dd=true; addSc(250); pSnd('e'); mkTxt("+€250", this.x, this.y-10, '#10b981');
+                        triggerTutor('tutEat', '#10b981'); // Tutor explains Green Up
+                    } else if(!this.sc && !this.dd) { kill(); }
+                }
+            }
+            drw() {
+                if(this.dd) return;
+                ctx.save(); ctx.translate(this.x, this.y);
+                
+                let w = TS-4; let h = TS-6;
+                
+                // Pole
+                ctx.fillStyle='#94a3b8'; ctx.fillRect(-1.5, 0, 3, TS/2);
+                
+                // Billboard Base
+                let isBlink = this.sc && this.st<150 && Math.floor(Date.now()/150)%2===0;
+                ctx.fillStyle = this.sc ? (isBlink ? '#f8fafc' : '#10b981') : '#ef4444';
+                ctx.fillRect(-w/2, -h, w, h);
+                ctx.strokeStyle='#ffffff'; ctx.lineWidth=1; ctx.strokeRect(-w/2, -h, w, h);
+                
+                // Text
+                ctx.fillStyle = this.sc && isBlink ? '#0f172a' : '#ffffff';
+                ctx.font = 'bold 8px monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+                if(this.sc) {
+                    ctx.fillText("GREEN", 0, -h+5); ctx.fillText("UP", 0, -h+11);
                 } else {
-                    const browserLang = (navigator.language || navigator.userLanguage).slice(0, 2).toLowerCase();
-                    if (supportedLangs.includes(browserLang)) {
-                        currentLang = browserLang;
+                    ctx.fillText("CASH", 0, -h+5); ctx.fillText("OUT", 0, -h+11);
+                }
+                
+                ctx.restore();
+            }
+        }
+
+        let p1=new Player(), enms=[];
+        function gT(x,y) { const c=Math.floor(x/TS), r=Math.floor(y/TS); return (r>=0&&r<ROWS&&c>=0&&c<COLS) ? map[r][c] : 1; }
+        
+        function initLvl() {
+            map = JSON.parse(JSON.stringify(mapData)); p1.rst();
+            enms = [new Enemy(10,9,0), new Enemy(9,10,30), new Enemy(11,10,60)];
+            texts=[]; seenGhost = false;
+        }
+        
+        function addSc(p) { score+=p; updateScoreDisplays(); }
+        function updateScoreDisplays() {
+            document.getElementById('scoreDisplay').innerText = '€' + score;
+            document.getElementById('livesDisplay').innerText = '💳'.repeat(Math.max(0,lives))||'REKT';
+        }
+        
+        function actPower() { 
+            enms.forEach(e=>{ if(!e.dd){ e.sc=true; e.st=600; e.vx*=-1; e.vy*=-1; }}); // 600 frames = 10s plenty of time
+        }
+        function mkTxt(t,x,y,c) { texts.push({t,x,y,c,l:60}); }
+
+        function drawAll() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            
+            // Draw Grass Pitch Pattern
+            for(let i=0; i<canvas.height; i+=TS*2) {
+                ctx.fillStyle='#166534'; ctx.fillRect(0, i, canvas.width, TS);
+                ctx.fillStyle='#14532d'; ctx.fillRect(0, i+TS, canvas.width, TS);
+            }
+
+            // Map Overlay
+            for(let r=0;r<ROWS;r++) {
+                for(let c=0;c<COLS;c++) {
+                    let t=map[r][c], x=c*TS, y=r*TS;
+                    if(t===1){ 
+                        // Pitch Lines (Walls)
+                        ctx.fillStyle='rgba(255,255,255,0.8)'; 
+                        ctx.fillRect(x+2,y+2,TS-4,TS-4); 
+                    }
+                    else if(t===2){ 
+                        // Equity Coins
+                        ctx.fillStyle='#fbbf24'; ctx.beginPath(); ctx.arc(x+TS/2,y+TS/2,2.5,0,Math.PI*2); ctx.fill(); 
+                    }
+                    else if(t===3){ 
+                        // Green Up Powerup (Software)
+                        ctx.fillStyle='#10b981'; ctx.beginPath(); ctx.arc(x+TS/2,y+TS/2,5+Math.sin(Date.now()/150)*1.5,0,Math.PI*2); ctx.fill();
+                        ctx.strokeStyle='#fff'; ctx.lineWidth=1; ctx.stroke();
+                        ctx.fillStyle='#fff'; ctx.font='bold 6px monospace'; ctx.textAlign='center'; ctx.fillText('GU', x+TS/2, y+TS/2+2);
+                    }
+                    else if(t===4){ 
+                        // Ghost Gate
+                        ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.fillRect(x,y+TS/2-1,TS,2); 
                     }
                 }
-            } catch (e) {}
+            }
+            p1.drw(); enms.forEach(e=>e.drw());
+            
+            // Texts
+            for(let i=texts.length-1;i>=0;i--) { 
+                let f=texts[i]; ctx.fillStyle=f.c; ctx.font='bold 14px monospace'; ctx.textAlign='center'; 
+                ctx.globalAlpha=f.l/60; ctx.fillText(f.t,f.x,f.y); ctx.globalAlpha=1; 
+                f.y-=0.5; f.l--; if(f.l<=0) texts.splice(i,1); 
+            }
+        }
 
-            setLanguage(currentLang);
+        function kill() {
+            lives--; updateScoreDisplays(); pSnd('x');
+            const w = document.getElementById('gameWrapper'); w.classList.remove('shake'); void w.offsetWidth; w.classList.add('shake');
+            mkTxt("- LIQUIDATED -", p1.x, p1.y, '#ef4444');
+            triggerTutor('gameOverDesc', '#ef4444');
+            if(lives<=0) {
+                state='OVER'; 
+                document.getElementById('t_finalProfitVal').innerText = '€' + score;
+                document.getElementById('gameOverScreen').classList.remove('hidden');
+            } else { p1.rst(); enms.forEach(e=>e.rst()); }
+        }
+
+        function chkWin() {
+            if(map.flat().filter(t=>t===2||t===3).length === 0) {
+                state='WIN'; 
+                document.getElementById('t_totalExtractedVal').innerText = '€' + score;
+                document.getElementById('winScreen').classList.remove('hidden');
+            }
+        }
+
+        function loop() {
+            if(state==='PLAY') { p1.upd(); enms.forEach(e=>e.upd()); drawAll(); }
+            animId = requestAnimationFrame(loop);
+        }
+
+        // --- 5. SWIPE & INPUT ---
+        function setDir(k) {
+            if(state!=='PLAY') return;
+            if(audioCtx.state==='suspended') audioCtx.resume();
+            if(k==='Up') p1.nx=0, p1.ny=-1; else if(k==='Down') p1.nx=0, p1.ny=1; else if(k==='Left') p1.nx=-1, p1.ny=0; else if(k==='Right') p1.nx=1, p1.ny=0;
+        }
+        window.addEventListener('keydown', e => {
+            const k = e.key.replace('Arrow','');
+            if(['Up','Down','Left','Right'].includes(k)) { e.preventDefault(); setDir(k); }
+            else if(['w','s','a','d'].includes(k.toLowerCase())) { const m={w:'Up',s:'Down',a:'Left',d:'Right'}; setDir(m[k.toLowerCase()]); }
         });
+
+        const gWrap = document.getElementById('gameWrapper');
+        let tsX=0, tsY=0;
+        gWrap.addEventListener('touchstart', e => { tsX = e.changedTouches[0].screenX; tsY = e.changedTouches[0].screenY; }, {passive:false});
+        gWrap.addEventListener('touchmove', e => { e.preventDefault(); }, {passive:false});
+        gWrap.addEventListener('touchend', e => {
+            let dx = e.changedTouches[0].screenX - tsX, dy = e.changedTouches[0].screenY - tsY;
+            if(Math.abs(dx)>30 || Math.abs(dy)>30) {
+                if(Math.abs(dx) > Math.abs(dy)) setDir(dx>0 ? 'Right' : 'Left');
+                else setDir(dy>0 ? 'Down' : 'Up');
+            }
+        });
+
+        // --- 6. BOOTSTRAP ---
+        function start() {
+            if(audioCtx.state==='suspended') audioCtx.resume();
+            ['startScreen','gameOverScreen','winScreen'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            score=0; lives=3; initLvl(); state='PLAY'; updateScoreDisplays();
+            triggerTutor('tutStart', '#38bdf8');
+        }
+
+        document.getElementById('startBtn').addEventListener('click', start);
+        document.getElementById('restartBtn').addEventListener('click', start);
+        document.getElementById('nextLevelBtn').addEventListener('click', start);
+
+        initLang(); switchTab('game'); initLvl(); drawAll(); loop();
     </script>
 </body>
 </html>
-
-```
