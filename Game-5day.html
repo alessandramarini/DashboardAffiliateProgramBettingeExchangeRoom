@@ -878,11 +878,12 @@
         document.getElementById('nextLevelBtn').addEventListener('click', start);
 
         window.onload = function() {
+            // FIX CRITICO: La mappa DEVE essere inizializzata prima del primo tentativo di rendering (resizeCanvas)
+            initLvl(); 
             initLang(); 
             switchTab('game'); 
             resizeCanvas();
             setTimeout(resizeCanvas, 150); 
-            initLvl(); 
             drawAll(); 
             loop();
         }
