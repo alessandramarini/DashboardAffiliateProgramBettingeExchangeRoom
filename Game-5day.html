@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Zero To Hero Academy</title>
     
-    <!-- Ottimizzazione Caricamento Font (Scheggia) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
@@ -28,9 +27,9 @@
                 radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.05), transparent 50%);
             color: #f8fafc;
             margin: 0; padding: 0;
-            width: 100vw; height: 100dvh;
-            overflow: hidden; /* Zero scroll sul body */
-            touch-action: none;
+            width: 100%; height: 100dvh;
+            overflow: hidden;
+            touch-action: none; /* Impedisce scroll e zoom accidentali */
             display: flex; flex-direction: column;
         }
 
@@ -44,11 +43,13 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.05);
         }
 
+        /* Layout robusto per il canvas */
         .canvas-wrapper {
-            flex: 1; min-h: 0; min-w: 0; width: 100%; height: 100%;
+            flex: 1 1 auto; 
+            width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
             position: relative;
-            overflow: hidden; /* Evita qualsiasi sovrapposizione o taglio del canvas */
+            overflow: hidden; 
         }
         
         canvas {
@@ -56,6 +57,7 @@
             box-shadow: 0 15px 50px rgba(0,0,0,0.8), 0 0 0 2px rgba(255, 255, 255, 0.1);
             display: block;
             background-color: #14532d;
+            max-width: 100%; max-height: 100%;
         }
 
         /* Animations */
@@ -70,7 +72,6 @@
         .neon-text { text-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary); }
         .alert-text { color: #ef4444; text-shadow: 0 0 15px rgba(239, 68, 68, 0.8), 0 0 30px rgba(239, 68, 68, 0.5); }
         
-        /* Bandierine Alta Definizione Piccole e Rettangolari */
         .lang-btn {
             opacity: 0.4; filter: grayscale(80%); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer; border-radius: 2px; border: 1px solid rgba(255,255,255,0.15);
@@ -84,14 +85,53 @@
         }
         .lang-btn:hover:not(.active) { opacity: 0.8; filter: grayscale(30%); }
 
-        /* Custom Scrollbar per l'Academy */
-        .custom-scroll { scrollbar-width: thin; scrollbar-color: var(--primary) transparent; overflow-y: auto; overflow-x: hidden; touch-action: pan-y; }
+        .custom-scroll { scrollbar-width: thin; scrollbar-color: var(--primary) transparent; overflow-y: auto; overflow-x: hidden; }
         .custom-scroll::-webkit-scrollbar { width: 5px; }
         .custom-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-thumb { background-color: var(--primary); border-radius: 10px; }
+
+        /* JOYSTICK VIRTUALE (Solo Mobile) */
+        #joystick-container {
+            display: none; /* Attivato via JS su touch */
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 140px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px solid rgba(16, 185, 129, 0.4);
+            border-radius: 50%;
+            backdrop-filter: blur(8px);
+            z-index: 50;
+            touch-action: none;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5), inset 0 0 15px rgba(16, 185, 129, 0.2);
+        }
+
+        #joystick-knob {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px; height: 60px;
+            background: radial-gradient(circle, #34d399, #059669);
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.6), inset 0 2px 4px rgba(255,255,255,0.4);
+            pointer-events: none;
+            transition: transform 0.05s linear;
+        }
+
+        /* Frecce decorative sul joypad */
+        .joy-arrow {
+            position: absolute; width: 0; height: 0; border-style: solid; opacity: 0.3;
+        }
+        .joy-up { top: 10px; left: 50%; transform: translateX(-50%); border-width: 0 8px 10px 8px; border-color: transparent transparent #fff transparent; }
+        .joy-down { bottom: 10px; left: 50%; transform: translateX(-50%); border-width: 10px 8px 0 8px; border-color: #fff transparent transparent transparent; }
+        .joy-left { left: 10px; top: 50%; transform: translateY(-50%); border-width: 8px 10px 8px 0; border-color: transparent #fff transparent transparent; }
+        .joy-right { right: 10px; top: 50%; transform: translateY(-50%); border-width: 8px 0 8px 10px; border-color: transparent transparent transparent #fff; }
+
     </style>
 </head>
-<body class="p-2 lg:p-4 gap-2 lg:gap-3 box-border" style="padding-top: max(0.5rem, env(safe-area-inset-top)); padding-bottom: max(0.5rem, env(safe-area-inset-bottom)); padding-left: max(0.5rem, env(safe-area-inset-left)); padding-right: max(0.5rem, env(safe-area-inset-right));">
+<body class="p-2 lg:p-4 gap-2 lg:gap-3 box-border flex flex-col h-[100dvh]" style="padding-top: max(0.5rem, env(safe-area-inset-top)); padding-bottom: max(0.5rem, env(safe-area-inset-bottom)); padding-left: max(0.5rem, env(safe-area-inset-left)); padding-right: max(0.5rem, env(safe-area-inset-right));">
 
     <!-- HEADER -->
     <header class="glass-panel rounded-xl p-2 lg:p-3 flex justify-between items-center w-full flex-shrink-0 z-20">
@@ -124,10 +164,10 @@
     </div>
 
     <!-- MAIN CONTAINER -->
-    <main class="flex-1 flex flex-col lg:flex-row gap-2 lg:gap-4 min-h-0 min-w-0 w-full relative z-10">
+    <main class="flex-1 flex flex-col lg:flex-row gap-2 lg:gap-4 min-h-0 w-full relative z-10 h-full">
         
         <!-- PANEL: GAME -->
-        <section id="panelGame" class="flex-1 flex flex-col min-h-0 min-w-0 w-full h-full relative">
+        <section id="panelGame" class="flex-1 flex flex-col min-h-0 w-full h-full relative">
             
             <!-- HUD -->
             <div class="w-full flex justify-between items-end mb-1.5 flex-shrink-0 gap-2">
@@ -150,6 +190,15 @@
             <div class="canvas-wrapper" id="gameWrapper">
                 <canvas id="gameCanvas"></canvas>
                 
+                <!-- JOYSTICK OVERLAY -->
+                <div id="joystick-container">
+                    <div class="joy-arrow joy-up"></div>
+                    <div class="joy-arrow joy-down"></div>
+                    <div class="joy-arrow joy-left"></div>
+                    <div class="joy-arrow joy-right"></div>
+                    <div id="joystick-knob"></div>
+                </div>
+                
                 <div id="startScreen" class="absolute inset-0 bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center rounded-lg z-10 p-6 text-center border border-white/5">
                     <div class="w-16 h-16 lg:w-20 lg:h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mb-4 border border-emerald-500/30 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
                         <span class="text-3xl lg:text-4xl">⚽</span>
@@ -158,7 +207,7 @@
                     <button id="startBtn" class="mt-2 px-6 py-3 lg:px-8 lg:py-4 bg-gradient-to-b from-emerald-500 to-emerald-700 text-white font-black rounded-xl hover:from-emerald-400 hover:to-emerald-600 text-sm lg:text-lg shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all transform hover:-translate-y-1 active:scale-95 uppercase border-b-4 border-emerald-900 active:border-b-0 active:translate-y-0 tracking-wider">
                         ENTER PITCH
                     </button>
-                    <p class="mt-6 text-[9px] lg:text-xs text-slate-300 font-medium mono-text bg-black/60 px-4 py-2 rounded-lg border border-white/10" id="t_controls">🖥️ ARROWS/WASD | 📱 SWIPE</p>
+                    <p class="mt-6 text-[9px] lg:text-xs text-slate-300 font-medium mono-text bg-black/60 px-4 py-2 rounded-lg border border-white/10" id="t_controls">🖥️ ARROWS/WASD | 📱 JOYSTICK</p>
                 </div>
 
                 <div id="gameOverScreen" class="absolute inset-0 bg-red-950/90 backdrop-blur-xl flex flex-col items-center justify-center rounded-lg z-10 hidden p-4 text-center border border-red-500/30">
@@ -195,12 +244,12 @@
             </div>
             
             <div class="mt-1 text-[8px] text-slate-500 text-center lg:hidden font-bold mono-text tracking-widest uppercase opacity-70" id="t_swipeInfo">
-                [ SWIPE TO ROLL ]
+                [ USE JOYSTICK TO MOVE ]
             </div>
         </section>
 
         <!-- PANEL: ACADEMY -->
-        <section id="panelAcademy" class="hidden lg:flex flex-1 glass-panel rounded-xl p-3 lg:p-5 flex-col min-h-0 min-w-0 relative overflow-hidden border border-white/5 lg:max-w-[400px] xl:max-w-[450px]">
+        <section id="panelAcademy" class="hidden lg:flex flex-1 glass-panel rounded-xl p-3 lg:p-5 flex-col min-h-0 h-full relative overflow-hidden border border-white/5 lg:max-w-[400px] xl:max-w-[450px]">
             <div class="absolute top-0 right-0 w-40 h-40 bg-emerald-500/10 rounded-full blur-[50px] pointer-events-none"></div>
             
             <div class="border-b border-white/10 pb-2 lg:pb-3 mb-3 flex-shrink-0 flex items-center justify-between relative z-10">
@@ -258,7 +307,7 @@
             en: {
                 brand1: "ZERO TO HERO", brand2: "ACADEMY", subtitle: "Trader vs Algorithms", tabGame: "PITCH", tabAcademy: "ACADEMY",
                 coachLabel: "ACADEMY COACH", profit: "Equity: ", lives: "Accounts: ", 
-                startTitle: "THE MARKET PITCH", startBtn: "ENTER PITCH", controls: "🖥️ ARROWS/WASD | 📱 SWIPE", swipeInfo: "[ SWIPE TO ROLL ]",
+                startTitle: "THE MARKET PITCH", startBtn: "ENTER PITCH", controls: "🖥️ ARROWS/WASD | 📱 JOYSTICK", swipeInfo: "[ USE JOYSTICK TO MOVE ]",
                 gameOverTitle: "MARGIN CALL", gameOverDesc: "You hit the Cash Out button and paid the broker's hidden tax. Read the Academy!", finalProfitLbl: "Final Equity", restartBtn: "RETRY",
                 winTitle: "PRO TRADER", winDesc: "Mathematical precision on the pitch.", totalExtractedLbl: "Total Extracted", nextLevelBtn: "NEXT MATCH",
                 academyTitle: "ACADEMY TERMINAL", moduleBadge: "MOD: HEDGING",
@@ -274,7 +323,7 @@
             es: {
                 brand1: "ZERO TO HERO", brand2: "ACADEMY", subtitle: "Trader vs Algoritmos", tabGame: "CAMPO", tabAcademy: "ACADEMIA",
                 coachLabel: "COACH ACADEMIA", profit: "Capital: ", lives: "Cuentas: ", 
-                startTitle: "EL CAMPO DE MERCADO", startBtn: "ENTRAR AL CAMPO", controls: "🖥️ FLECHAS/WASD | 📱 DESLIZAR", swipeInfo: "[ DESLIZAR PARA RODAR ]",
+                startTitle: "EL CAMPO DE MERCADO", startBtn: "ENTRAR AL CAMPO", controls: "🖥️ FLECHAS/WASD | 📱 JOYSTICK", swipeInfo: "[ USA EL JOYSTICK PARA MOVERTE ]",
                 gameOverTitle: "MARGIN CALL", gameOverDesc: "Pulsaste Cash Out y pagaste el impuesto oculto. ¡Lee la Academia!", finalProfitLbl: "Capital Final", restartBtn: "REINTENTAR",
                 winTitle: "PRO TRADER", winDesc: "Precisión matemática en el campo.", totalExtractedLbl: "Total Extraído", nextLevelBtn: "SIGUIENTE PARTIDO",
                 academyTitle: "TERMINAL ACADEMIA", moduleBadge: "MOD: COBERTURA",
@@ -290,7 +339,7 @@
             pt: {
                 brand1: "ZERO TO HERO", brand2: "ACADEMY", subtitle: "Trader vs Algoritmos", tabGame: "CAMPO", tabAcademy: "ACADEMIA",
                 coachLabel: "COACH ACADEMIA", profit: "Capital: ", lives: "Contas: ", 
-                startTitle: "O CAMPO DE MERCADO", startBtn: "ENTRAR NO CAMPO", controls: "🖥️ SETAS/WASD | 📱 DESLIZAR", swipeInfo: "[ DESLIZAR PARA ROLAR ]",
+                startTitle: "O CAMPO DE MERCADO", startBtn: "ENTRAR NO CAMPO", controls: "🖥️ SETAS/WASD | 📱 JOYSTICK", swipeInfo: "[ USE O JOYSTICK PARA MOVER ]",
                 gameOverTitle: "MARGIN CALL", gameOverDesc: "Você clicou no Cash Out e pagou a taxa oculta. Leia a Academia!", finalProfitLbl: "Capital Final", restartBtn: "TENTAR NOVAMENTE",
                 winTitle: "PRO TRADER", winDesc: "Precisão matemática no campo.", totalExtractedLbl: "Total Extraído", nextLevelBtn: "PRÓXIMO JOGO",
                 academyTitle: "TERMINAL DA ACADEMIA", moduleBadge: "MOD: HEDGING",
@@ -306,7 +355,7 @@
             it: {
                 brand1: "ZERO TO HERO", brand2: "ACADEMY", subtitle: "Trader vs Algoritmi", tabGame: "CAMPO", tabAcademy: "ACCADEMIA",
                 coachLabel: "COACH ACCADEMIA", profit: "Equity: ", lives: "Conti: ", 
-                startTitle: "IL CAMPO DI MERCATO", startBtn: "ENTRA IN CAMPO", controls: "🖥️ FRECCE/WASD | 📱 SCORRI", swipeInfo: "[ SCORRI PER ROTOLARE ]",
+                startTitle: "IL CAMPO DI MERCATO", startBtn: "ENTRA IN CAMPO", controls: "🖥️ FRECCE/WASD | 📱 JOYSTICK", swipeInfo: "[ USA IL JOYPAD PER MUOVERTI ]",
                 gameOverTitle: "MARGIN CALL", gameOverDesc: "Hai premuto Cash Out pagando la tassa occulta. Leggi l'Academy!", finalProfitLbl: "Equity Finale", restartBtn: "RIPROVA",
                 winTitle: "PRO TRADER", winDesc: "Precisione matematica in campo.", totalExtractedLbl: "Totale Estratto", nextLevelBtn: "PROSSIMO MATCH",
                 academyTitle: "TERMINALE ACCADEMIA", moduleBadge: "MOD: COPERTURA",
@@ -374,7 +423,15 @@
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
-                switchTab('game'); 
+                const isDesktop = window.innerWidth >= 1024;
+                if(isDesktop) {
+                    document.getElementById('panelGame').classList.remove('hidden');
+                    document.getElementById('panelGame').classList.add('flex');
+                    document.getElementById('panelAcademy').classList.remove('hidden');
+                    document.getElementById('panelAcademy').classList.add('flex');
+                } else {
+                    switchTab(document.getElementById('tabGameBtn').className.includes('bg-emerald') ? 'game' : 'academy'); 
+                }
                 resizeCanvas();
             }, 100);
         });
@@ -409,7 +466,7 @@
             }
         }
 
-        // --- 4. GAME ENGINE (Optimized & Strict Grid) ---
+        // --- 4. GAME ENGINE ---
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
@@ -422,14 +479,17 @@
 
         function resizeCanvas() {
             const wrapper = document.getElementById('gameWrapper');
-            if(!wrapper || wrapper.clientWidth === 0) return;
+            if(!wrapper) return;
             
+            // Misurazione più sicura
             const wrapRect = wrapper.getBoundingClientRect();
-            const ratio = BASE_WIDTH / BASE_HEIGHT;
+            if(wrapRect.width === 0 || wrapRect.height === 0) return;
             
+            const ratio = BASE_WIDTH / BASE_HEIGHT;
             let displayW = wrapRect.width;
             let displayH = wrapRect.height;
             
+            // Mantieni proporzioni
             if (displayW / displayH > ratio) {
                 displayW = displayH * ratio; 
             } else {
@@ -453,7 +513,6 @@
             if (state === 'START' || state === 'OVER' || state === 'WIN') drawAll();
         }
 
-        // Labirinto più fluido e continuo
         const mapData = [
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
             [1,2,2,2,2,2,2,2,2,2,1,2,2,2,2,2,2,2,2,2,1],
@@ -497,23 +556,50 @@
         class Player {
             constructor() { this.rst(); }
             rst() {
-                this.x = 10*TS+TS/2; this.y = 16*TS+TS/2; this.vx=0; this.vy=0; this.nx=0; this.ny=0;
+                this.x = 10*TS+TS/2; this.y = 16*TS+TS/2; 
+                this.vx=0; this.vy=0; 
+                this.nx=0; this.ny=0; // Next Direction (Buffer)
                 this.spd = 2.5; this.r = TS/2-3; this.rollAng = 0; this.trail = [];
                 this.visX = this.x; this.visY = this.y; 
             }
             upd() {
-                if (this.can(this.x, this.y, this.nx, this.ny)) {
-                    if (this.vx!==0 && this.ny!==0) this.x = Math.floor(this.x/TS)*TS+TS/2;
-                    if (this.vy!==0 && this.nx!==0) this.y = Math.floor(this.y/TS)*TS+TS/2;
-                    this.vx=this.nx; this.vy=this.ny;
+                // INPUT BUFFERING: Controlla se la direzione richiesta (nx, ny) è ora possibile
+                if (this.nx !== 0 || this.ny !== 0) {
+                    // Cerca di allineare se siamo vicini al centro della cella (permetter curve morbide)
+                    let cX = Math.floor(this.x/TS)*TS + TS/2;
+                    let cY = Math.floor(this.y/TS)*TS + TS/2;
+                    let distToCenter = Math.hypot(this.x - cX, this.y - cY);
+                    
+                    // Se stiamo per girare (direzione diversa), e siamo vicini all'incrocio
+                    if ((this.nx !== this.vx || this.ny !== this.vy) && distToCenter < this.spd * 2) {
+                        // Controlliamo se la cella adiacente desiderata è libera partendo dal centro
+                        let testX = cX + this.nx * TS;
+                        let testY = cY + this.ny * TS;
+                        if (gT(testX, testY) !== 1) { // 1 = muro
+                            // Curva perfetta
+                            this.x = cX; this.y = cY;
+                            this.vx = this.nx; this.vy = this.ny;
+                        }
+                    } else if (this.vx === 0 && this.vy === 0) {
+                        // Partenza da fermo
+                        if (this.canMove(this.x, this.y, this.nx, this.ny)) {
+                            this.vx = this.nx; this.vy = this.ny;
+                        }
+                    }
                 }
                 
                 let moved = false;
-                if (this.can(this.x, this.y, this.vx, this.vy)) { 
-                    this.x+=this.vx*this.spd; this.y+=this.vy*this.spd; 
-                    if(this.vx!==0 || this.vy!==0) { this.rollAng += 0.25; moved = true; }
+                // Controlla il movimento attuale
+                if (this.canMove(this.x, this.y, this.vx, this.vy)) { 
+                    this.x += this.vx * this.spd; 
+                    this.y += this.vy * this.spd; 
+                    if(this.vx !== 0 || this.vy !== 0) { this.rollAng += 0.25; moved = true; }
+                } else {
+                    // Se colpiamo un muro, fermati
+                    this.vx = 0; this.vy = 0;
                 }
 
+                // Tunnel warp
                 if (this.x < -TS) this.x = BASE_WIDTH+TS; if (this.x > BASE_WIDTH+TS) this.x = -TS;
                 
                 this.visX += (this.x - this.visX) * 0.5;
@@ -526,10 +612,13 @@
 
                 this.chk();
             }
-            can(cx, cy, vx, vy) {
-                if(!vx && !vy) return false;
-                const nX=cx+vx*this.spd, nY=cy+vy*this.spd, l=nX-this.r, r=nX+this.r, t=nY-this.r, b=nY+this.r;
-                return ![gT(l,t), gT(r,t), gT(l,b), gT(r,b)].includes(1) && ![gT(l,t), gT(r,t), gT(l,b), gT(r,b)].includes(4);
+            canMove(cx, cy, vx, vy) {
+                if(vx === 0 && vy === 0) return false;
+                const nX=cx+vx*this.spd, nY=cy+vy*this.spd;
+                const l=nX-this.r, r=nX+this.r, t=nY-this.r, b=nY+this.r;
+                // Controlla i 4 vertici del giocatore
+                return ![gT(l,t), gT(r,t), gT(l,b), gT(r,b)].includes(1) && 
+                       ![gT(l,t), gT(r,t), gT(l,b), gT(r,b)].includes(4); // 4 = porta fantasma
             }
             chk() {
                 const c=Math.floor(this.x/TS), r=Math.floor(this.y/TS);
@@ -594,7 +683,7 @@
             constructor(x,y,d) { this.sx=x*TS+TS/2; this.sy=y*TS+TS/2; this.del=d; this.rst(); }
             rst() { 
                 this.x=this.sx; this.y=this.sy; this.vx=0; this.vy=-1; 
-                this.spd=1.25; /* Divisibile per TS(20) */
+                this.spd=1.25; /* Divisibile per TS(20) per allineamento perfetto al centro */
                 this.sc=false; this.st=0; this.dt=this.del; this.dd=false; 
                 this.visX=this.x; this.visY=this.y; 
             }
@@ -603,9 +692,8 @@
                 if(this.sc){ this.st--; this.spd=0.625; if(this.st<=0){ this.sc=false; this.spd=1.25; } }
                 if(this.dd){ this.rst(); this.dt=80; return; }
                 
-                // Strict Grid Movement (Gira solo al centro della cella)
+                // Gira solo se siamo esattamente al centro di una cella
                 if(Math.abs((this.x - TS/2) % TS) < 0.1 && Math.abs((this.y - TS/2) % TS) < 0.1) {
-                    // Allinea per evitare deviazioni floating point
                     this.x = Math.floor(this.x/TS)*TS + TS/2;
                     this.y = Math.floor(this.y/TS)*TS + TS/2;
                     
@@ -615,6 +703,7 @@
                     
                     if(dirs.length>0) {
                         if(!this.sc && Math.random()>0.2) {
+                            // Insegui giocatore
                             let bd=dirs[0], md=Infinity;
                             for(let d of dirs) { 
                                 let dist=Math.hypot((this.x+d.vx*TS)-p1.x, (this.y+d.vy*TS)-p1.y); 
@@ -622,11 +711,12 @@
                             }
                             this.vx=bd.vx; this.vy=bd.vy;
                         } else {
+                            // Random
                             let ch = dirs[Math.floor(Math.random()*dirs.length)]; 
                             this.vx=ch.vx; this.vy=ch.vy;
                         }
                     } else { 
-                        // Vicolo cieco, torna indietro
+                        // Vicolo cieco
                         this.vx*=-1; this.vy*=-1; 
                     }
                 }
@@ -643,7 +733,6 @@
                 this.chk();
             }
             can(vx,vy){ 
-                // Controlla esattamente la cella adiacente in direzione vx, vy
                 return gT(this.x+vx*TS, this.y+vy*TS) !== 1; 
             }
             chk() {
@@ -664,7 +753,6 @@
                 let h = TS - 6;
                 let isBlink = this.sc && this.st<150 && Math.floor(Date.now()/150)%2===0;
                 
-                // Palo del cartellone (Manico in Legno)
                 ctx.fillStyle = '#8B5A2B'; 
                 ctx.fillRect(-1.5, 0, 3, TS/2 + 2);
                 
@@ -678,10 +766,8 @@
                     borderCol = '#10b981';
                 }
                 
-                // Ombra cartello
                 ctx.shadowBlur = 4; ctx.shadowColor = 'rgba(0,0,0,0.4)';
                 
-                // Tabellone Arrotondato
                 ctx.fillStyle = boardBg;
                 ctx.beginPath();
                 if(ctx.roundRect) ctx.roundRect(-w/2, -h, w, h, 3);
@@ -689,12 +775,10 @@
                 ctx.fill();
                 ctx.shadowBlur = 0;
                 
-                // Bordo interno
                 ctx.strokeStyle = borderCol;
                 ctx.lineWidth = 1.5;
                 ctx.stroke();
                 
-                // Testi Tradotti dinamicamente
                 ctx.fillStyle = textCol;
                 ctx.font = '900 4.5px "Outfit", sans-serif'; 
                 ctx.textAlign = 'center'; 
@@ -717,13 +801,9 @@
         
         function initLvl() {
             map = JSON.parse(JSON.stringify(mapData)); p1.rst();
-            // 5 Nemici che escono con tempi ritardati (staggered)
             enms = [
-                new Enemy(10,9,0), 
-                new Enemy(9,10,30), 
-                new Enemy(11,10,60), 
-                new Enemy(10,11,90), 
-                new Enemy(9,11,120)
+                new Enemy(10,9,0), new Enemy(9,10,30), new Enemy(11,10,60), 
+                new Enemy(10,11,90), new Enemy(9,11,120)
             ];
             texts=[]; particles=[]; seenGhost = false; screenShake = 0;
         }
@@ -742,12 +822,9 @@
         function mkTxt(t,x,y,c) { texts.push({t,x,y,c,l:60}); }
 
         function drawAll() {
-            // Prato
             for(let i=0; i<BASE_HEIGHT; i+=TS*2) {
-                ctx.fillStyle = '#166534'; 
-                ctx.fillRect(0, i, BASE_WIDTH, TS);
-                ctx.fillStyle = '#15803d'; 
-                ctx.fillRect(0, i+TS, BASE_WIDTH, TS);
+                ctx.fillStyle = '#166534'; ctx.fillRect(0, i, BASE_WIDTH, TS);
+                ctx.fillStyle = '#15803d'; ctx.fillRect(0, i+TS, BASE_WIDTH, TS);
             }
             
             ctx.save();
@@ -756,7 +833,6 @@
                 ctx.translate(dx, dy); screenShake *= 0.85; if(screenShake < 0.5) screenShake = 0;
             }
 
-            // Disegna i muri smussati elegantemente
             ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
             ctx.shadowBlur = 4; ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
             ctx.beginPath();
@@ -768,8 +844,7 @@
                     }
                 }
             }
-            ctx.fill(); 
-            ctx.shadowBlur = 0;
+            ctx.fill(); ctx.shadowBlur = 0;
 
             for(let r=0;r<ROWS;r++) {
                 for(let c=0;c<COLS;c++) {
@@ -846,25 +921,71 @@
         function setDir(k) {
             if(state!=='PLAY') return;
             if(audioCtx.state==='suspended') audioCtx.resume();
-            if(k==='Up') p1.nx=0, p1.ny=-1; else if(k==='Down') p1.nx=0, p1.ny=1; else if(k==='Left') p1.nx=-1, p1.ny=0; else if(k==='Right') p1.nx=1, p1.ny=0;
+            if(k==='Up') { p1.nx=0; p1.ny=-1; }
+            else if(k==='Down') { p1.nx=0; p1.ny=1; }
+            else if(k==='Left') { p1.nx=-1; p1.ny=0; }
+            else if(k==='Right') { p1.nx=1; p1.ny=0; }
         }
+        
         window.addEventListener('keydown', e => {
             const k = e.key.replace('Arrow','');
             if(['Up','Down','Left','Right'].includes(k)) { e.preventDefault(); setDir(k); }
             else if(['w','s','a','d'].includes(k.toLowerCase())) { const m={w:'Up',s:'Down',a:'Left',d:'Right'}; setDir(m[k.toLowerCase()]); }
         });
 
-        const gWrap = document.getElementById('gameWrapper');
-        let tsX=0, tsY=0;
-        gWrap.addEventListener('touchstart', e => { tsX = e.changedTouches[0].screenX; tsY = e.changedTouches[0].screenY; }, {passive:false});
-        gWrap.addEventListener('touchmove', e => { e.preventDefault(); }, {passive:false});
-        gWrap.addEventListener('touchend', e => {
-            let dx = e.changedTouches[0].screenX - tsX, dy = e.changedTouches[0].screenY - tsY;
-            if(Math.abs(dx)>20 || Math.abs(dy)>20) {
-                if(Math.abs(dx) > Math.abs(dy)) setDir(dx>0 ? 'Right' : 'Left');
-                else setDir(dy>0 ? 'Down' : 'Up');
-            }
+        // --- 5. VIRTUAL JOYSTICK LOGIC ---
+        const joyContainer = document.getElementById('joystick-container');
+        const joyKnob = document.getElementById('joystick-knob');
+        let joyActive = false;
+        let joyStartX = 0, joyStartY = 0;
+
+        // Mostra il joystick solo se il dispositivo supporta il touch
+        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+            joyContainer.style.display = 'block';
+        }
+
+        joyContainer.addEventListener('touchstart', e => {
+            e.preventDefault();
+            joyActive = true;
+            const touch = e.touches[0];
+            const rect = joyContainer.getBoundingClientRect();
+            joyStartX = rect.left + rect.width / 2;
+            joyStartY = rect.top + rect.height / 2;
+            handleJoyMove(touch);
         });
+
+        joyContainer.addEventListener('touchmove', e => {
+            e.preventDefault();
+            if (!joyActive) return;
+            handleJoyMove(e.touches[0]);
+        });
+
+        joyContainer.addEventListener('touchend', e => {
+            e.preventDefault();
+            joyActive = false;
+            joyKnob.style.transform = `translate(-50%, -50%)`;
+        });
+
+        function handleJoyMove(touch) {
+            const dx = touch.clientX - joyStartX;
+            const dy = touch.clientY - joyStartY;
+            const dist = Math.min(Math.hypot(dx, dy), 35); // Limita raggio visivo
+            const angle = Math.atan2(dy, dx);
+
+            const knobX = Math.cos(angle) * dist;
+            const knobY = Math.sin(angle) * dist;
+            joyKnob.style.transform = `translate(calc(-50% + ${knobX}px), calc(-50% + ${knobY}px))`;
+
+            // Zona morta per evitare input accidentali
+            if (dist > 15) { 
+                let dir = '';
+                if (angle >= -Math.PI/4 && angle < Math.PI/4) dir = 'Right';
+                else if (angle >= Math.PI/4 && angle < 3*Math.PI/4) dir = 'Down';
+                else if (angle >= -3*Math.PI/4 && angle < -Math.PI/4) dir = 'Up';
+                else dir = 'Left';
+                setDir(dir);
+            }
+        }
 
         function start() {
             if(audioCtx.state==='suspended') audioCtx.resume();
@@ -878,10 +999,17 @@
         document.getElementById('nextLevelBtn').addEventListener('click', start);
 
         window.onload = function() {
-            // FIX CRITICO: La mappa DEVE essere inizializzata prima del primo tentativo di rendering (resizeCanvas)
             initLvl(); 
             initLang(); 
-            switchTab('game'); 
+            // Inizializzazione sicura layout
+            const w = window.innerWidth;
+            if(w >= 1024) {
+                document.getElementById('panelGame').classList.remove('hidden');
+                document.getElementById('panelAcademy').classList.remove('hidden');
+            } else {
+                switchTab('game'); 
+            }
+            
             resizeCanvas();
             setTimeout(resizeCanvas, 150); 
             drawAll(); 
