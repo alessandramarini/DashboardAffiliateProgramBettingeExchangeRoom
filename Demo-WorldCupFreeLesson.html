@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#111111">
+    <meta name="description" content="Simulatore professionale di Betting Exchange.">
+    <!-- Meta tag essenziali per WebViews (Telegram, WhatsApp, IG) -->
+    <meta name="format-detection" content="telephone=no">
+    <!-- Open Graph Meta Tags per un'anteprima elegante su Telegram -->
+    <meta property="og:title" content="Zero To Hero | Match Guide Simulator">
+    <meta property="og:description" content="Simulatore professionale di Betting Exchange in tempo reale. Mettiti alla prova!">
+    <meta property="og:type" content="website">
+    
+    <title>Zero To Hero | Match Guide Simulator</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://flagcdn.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root { 
+            --bf-yellow: #fab400; 
+            --bf-dark: #111111;
+            --pitch-green: #2d6b22;
+            --btn-back: #72BBEB;       /* Betfair Back Blue */
+            --btn-back-hover: #5DA5D6;
+            --btn-lay: #F29BB4;        /* Betfair Lay Pink */
+            --btn-lay-hover: #E386A1;
+            --zth-green: #39ff14;
+            --arg-blue: #74acdf;
+        }
+        
+        /* ZERO FLASH SETUP, BACKGROUND & PERF */
+        html, body { 
+            background-color: #080808; color: #333; margin: 0; padding: 0; 
+            height: 100dvh; overflow: hidden; 
+            font-family: 'Roboto', system-ui, -apple-system, sans-serif; 
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent; 
+            text-rendering: optimizeLegibility;
+            overscroll-behavior: none; /* Previene il pull-to-refresh fastidioso su Telegram Android */
+        }
+
+        body { 
+            background-image: linear-gradient(135deg, #0a0a0a 0%, #151515 100%);
+            display: flex; align-items: center; justify-content: center; 
+            opacity: 0; transition: opacity 0.3s ease-out; 
+        }
+        
+        body.ready { opacity: 1; }
+        
+        /* ADAPTIVE PRO LAYOUT COMPACTED FOR ZERO SCROLLING */
+        #app-container { 
+            width: 100%; height: 100%; background: #f2f2f2; 
+            display: flex; flex-direction: column; overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            transform: translateZ(0); /* Hardware Acceleration */
+        }
+        
+        @media (min-width: 800px) {
+            body { padding: 1.5rem; }
+            #app-container { flex-direction: row; max-width: 1200px; height: 100%; max-height: 850px; border-radius: 12px; }
+            #left-pane { width: 45%; border-right: 1px solid #111; height: 100%; display: flex; flex-direction: column; background: #222; z-index: 10;}
+            #right-pane { width: 55%; height: 100%; display: flex; flex-direction: column; background: #f2f2f2; position: relative; z-index: 10;}
+            .mobile-only { display: none !important; }
+        }
+        
+        @media (max-width: 799px) {
+            #left-pane { display: flex; flex-direction: column; flex-shrink: 1; min-height: 0; background: #222; z-index: 10;}
+            #right-pane { display: flex; flex-direction: column; flex-grow: 1; min-height: 0; overflow: hidden; position: relative; background: #f2f2f2; z-index: 10;}
+            .desktop-only { display: none !important; }
+        }
+
+        /* PITCH RADAR (Scales gracefully) */
+        #pitch-container {
+            position: relative; width: 100%; flex-shrink: 1; 
+            height: 18vh; min-height: 100px; max-height: 180px;
+            background-color: var(--pitch-green);
+            border-bottom: 2px solid #111; overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+        }
+        
+        .pitch-stripes {
+            position: absolute; inset: 0;
+            background-image: repeating-linear-gradient(90deg, transparent, transparent 10%, rgba(0,0,0,0.06) 10%, rgba(0,0,0,0.06) 20%);
+            z-index: 0;
+        }
+
+        .pitch-wrapper { position: relative; height: 92%; aspect-ratio: 105/68; max-width: 96%; z-index: 1; }
+
+        .pitch-lines { position: absolute; inset: 0; border: 1.5px solid rgba(255,255,255,0.55); pointer-events: none; }
+        .pitch-center-line { position: absolute; left: 50%; top: 0; bottom: 0; width: 1.5px; background: rgba(255,255,255,0.55); transform: translateX(-50%); }
+        .pitch-center-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); height: 35%; aspect-ratio: 1/1; border: 1.5px solid rgba(255,255,255,0.55); border-radius: 50%; }
+        .pitch-center-dot { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 4px; height: 4px; background: rgba(255,255,255,0.8); border-radius: 50%; }
+        
+        .pitch-area-left { position: absolute; top: 21%; left: 0; width: 16%; height: 58%; border: 1.5px solid rgba(255,255,255,0.55); border-left: 0; }
+        .pitch-area-right { position: absolute; top: 21%; right: 0; width: 16%; height: 58%; border: 1.5px solid rgba(255,255,255,0.55); border-right: 0; }
+        .pitch-goal-left { position: absolute; top: 36%; left: 0; width: 5.5%; height: 28%; border: 1.5px solid rgba(255,255,255,0.55); border-left: 0; }
+        .pitch-goal-right { position: absolute; top: 36%; right: 0; width: 5.5%; height: 28%; border: 1.5px solid rgba(255,255,255,0.55); border-right: 0; }
+        
+        .pitch-arc-left { position: absolute; top: 50%; left: 16%; transform: translateY(-50%); width: 6.5%; height: 25%; border: 1.5px solid rgba(255,255,255,0.55); border-left: none; border-radius: 0 100px 100px 0; }
+        .pitch-arc-right { position: absolute; top: 50%; right: 16%; transform: translateY(-50%); width: 6.5%; height: 25%; border: 1.5px solid rgba(255,255,255,0.55); border-right: none; border-radius: 100px 0 0 100px; }
+        .pitch-pen-left { position: absolute; top: 50%; left: 11%; transform: translate(-50%, -50%); width: 3px; height: 3px; background: rgba(255,255,255,0.8); border-radius: 50%; }
+        .pitch-pen-right { position: absolute; top: 50%; right: 11%; transform: translate(50%, -50%); width: 3px; height: 3px; background: rgba(255,255,255,0.8); border-radius: 50%; }
+
+        .ball { 
+            position: absolute; z-index: 25; 
+            transform: translate(-50%, -50%); transition: left 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), top 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            will-change: left, top; display: flex; align-items: center; justify-content: center;
+            font-size: 13px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.7)); 
+        }
+        
+        .attack-cone {
+            position: absolute; top: 50%; height: 60%; width: 35%;
+            transform: translateY(-50%); z-index: 10; transition: all 0.8s ease; opacity: 0; pointer-events: none;
+            clip-path: polygon(0 35%, 100% 0, 100% 100%, 0 65%);
+            will-change: opacity, left, transform;
+        }
+
+        .info-badge {
+            position: absolute; left: 50%; top: 15%; transform: translate(-50%, 0);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 30;
+            transition: all 0.5s ease; opacity: 0; background: transparent; pointer-events: none;
+        }
+        #event-team { text-shadow: 0 2px 4px rgba(0,0,0,1), 0 0 10px rgba(0,0,0,0.9); }
+        #event-desc { text-shadow: 0 1px 3px rgba(0,0,0,1); letter-spacing: 0.5px; }
+
+        /* MARKET UI COMPONENTS */
+        .market-tabs { overflow-x: auto; white-space: nowrap; scrollbar-width: none; border-bottom: 1px solid #ddd; background: #fff; flex-shrink: 0; -webkit-overflow-scrolling: touch; }
+        .market-tabs::-webkit-scrollbar { display: none; }
+        .tab-item { display: inline-block; padding: 8px 12px; font-size: 11px; font-weight: 500; color: #666; border-bottom: 3px solid transparent; cursor: pointer; }
+        .tab-active { color: #111; font-weight: 700; border-bottom-color: var(--bf-yellow); }
+
+        .bf-btn-back { background-color: var(--btn-back); transition: background-color 0.1s; border-radius: 2px; }
+        .bf-btn-back:active { background-color: var(--btn-back-hover); }
+        .bf-btn-lay { background-color: var(--btn-lay); transition: background-color 0.1s; border-radius: 2px; }
+        .bf-btn-lay:active { background-color: var(--btn-lay-hover); }
+        
+        .btn-odd-container { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 38px; }
+        .odd-price { font-size: 15px; font-weight: 900; line-height: 1; color: #111; will-change: contents; }
+        .odd-vol { font-size: 9px; font-weight: 500; color: #444; margin-top: 2px; line-height: 1; }
+
+        .card-icon { width: 8px; height: 12px; border-radius: 1px; display: inline-block; margin-left: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+        .card-yellow { background: #ffd600; border: 1px solid #ccaa00; }
+        .card-red { background: #d50000; border: 1px solid #aa0000; }
+
+        /* DRAGGABLE CASHOUT PANEL */
+        #position-panel {
+            position: fixed; 
+            will-change: transform, opacity;
+            touch-action: none; 
+            z-index: 999999; 
+        }
+        
+        .team-flag { width: 22px; height: 16px; border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.4); object-fit: cover; }
+        
+        /* MENTOR FORMATTING */
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.35;
+        }
+        
+        /* STILI DIDATTICI PER PAROLE CHIAVE DEL BETTING EXCHANGE */
+        .t-b { color: #00e676; font-weight: 900; text-shadow: 0 0 5px rgba(0,230,118,0.2); } /* Back / Green */
+        .t-l { color: #ff4444; font-weight: 900; text-shadow: 0 0 5px rgba(255,68,68,0.2); } /* Lay / Red */
+        .t-y { color: var(--bf-yellow); font-weight: 900; } /* Cash Out / Concepts */
+        .t-c { color: #00e5ff; font-weight: 900; } /* Math / Logic / Variables */
+        
+        /* PNL Animation */
+        #pnl-val { transition: color 0.2s ease, transform 0.1s ease; will-change: contents, transform; }
+    </style>
+</head>
+<body>
+
+<!-- WIDGET CASHOUT FLUTTUANTE GLOBALE RIDIMENSIONATO E MENO INVADENTE -->
+<div id="position-panel" class="w-[240px] bg-white border border-gray-300 rounded-lg shadow-[0_15px_40px_rgba(0,0,0,0.6)] flex-col transition-opacity duration-200 opacity-0 pointer-events-none cursor-move select-none" style="transform: translate(-50%, -50%); display: flex; left: 50%; top: 50%;">
+    <div class="bg-gray-100 p-2 border-b border-gray-200 rounded-t-lg flex justify-between items-center pointer-events-none">
+        <div class="flex items-center gap-1.5">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#888"><path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"/></svg>
+            <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest" data-i18n="pos_open">Posizione Aperta</span>
+        </div>
+        <span id="pos-odds" class="text-[11px] font-black text-gray-800 bg-gray-200 px-1.5 py-0.5 rounded-sm">@ 0.00</span>
+    </div>
+    
+    <div class="p-2.5 flex flex-col gap-2.5">
+        <div class="flex justify-between items-center pb-2 border-b border-gray-100 pointer-events-none">
+            <span id="pos-label" class="text-[#111] text-[10px] font-black px-2 py-0.5 rounded-sm shadow-sm">BACK</span>
+            <div class="flex flex-col items-end">
+                <span id="pos-stake" class="text-[10px] font-mono font-bold text-gray-700">Stake: €0.00</span>
+                <span id="pos-liab" class="text-[10px] font-mono font-bold text-red-500">Resp: €0.00</span>
+            </div>
+        </div>
+        <div class="flex items-center justify-between pt-0.5">
+            <div class="flex flex-col leading-none pointer-events-none">
+                <span class="text-[9px] text-gray-500 font-bold uppercase mb-0.5" data-i18n="pnl">Live PNL</span>
+                <span id="pnl-val" class="text-[18px] font-black text-[#111] leading-none">€ 0.00</span>
+            </div>
+            <button onclick="Trade.cashOut()" id="btn-cashout-mob" class="bg-[var(--zth-green)] hover:bg-[#2eff0a] text-[#111] font-black px-3 py-2 rounded-sm text-[10px] uppercase tracking-widest shadow-sm active:scale-95 transition-transform cursor-pointer" data-i18n="cashout">Cash Out</button>
+        </div>
+    </div>
+</div>
+
+<div id="app-container">
+
+    <!-- ========================================== -->
+    <!-- LEFT PANE: MATCH CONTEXT & RADAR           -->
+    <!-- ========================================== -->
+    <div id="left-pane">
+        
+        <!-- HEADER TOP "ZERO TO HERO" -->
+        <header class="bg-[#0f0f0f] flex justify-between items-center px-3 shrink-0 shadow-sm z-20 h-[42px] border-b border-[#222]">
+            <div class="flex items-center gap-2 text-white">
+                <img src="logo-tondo.jpeg" alt="Zero To Hero Logo" class="w-7 h-7 shrink-0 drop-shadow-md rounded-full object-cover">
+                <div class="flex flex-col">
+                    <span class="font-black text-[14px] tracking-tight leading-none text-white font-sans">ZERO TO HERO</span>
+                    <span class="text-[8px] font-bold leading-none uppercase mt-[1px] text-[var(--bf-yellow)]">Academy</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <div class="bg-[#1a1a1a] rounded flex items-center border border-[#333] px-1">
+                    <select id="lang-selector" class="bg-transparent text-white text-[9px] font-bold outline-none border-none cursor-pointer py-1">
+                        <option value="it">🇮🇹 IT</option><option value="en">🇬🇧 EN</option><option value="es">🇪🇸 ES</option><option value="pt">🇵🇹 PT</option>
+                    </select>
+                </div>
+                <div class="bg-[#1a1a1a] text-white px-2 py-0.5 rounded flex flex-col items-end shadow-sm leading-tight border border-[#333]">
+                    <span class="text-[7px] text-gray-400 uppercase" data-i18n="avail">Cassa</span>
+                    <span id="bankroll-mobile" class="font-bold text-[10px] text-[#00e676]">€ 100.00</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- LIVE SCORE STRIP COMPACT -->
+        <div class="bg-[#1a1a1a] flex flex-col shrink-0 z-10 relative">
+            <div class="text-white px-3 py-1 flex items-center border-b border-[#2a2a2a]">
+                <div class="flex flex-col items-center justify-center min-w-[32px] mr-2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zm-10-7h2v5h-2zM8 11h2v5H8zm8-4h2v5h-2z"/></svg>
+                    <span class="text-white text-[7px] font-black uppercase tracking-widest mt-[1px]" data-i18n="live">Live</span>
+                </div>
+                
+                <div class="flex flex-col items-end">
+                    <span class="text-[#00e676] font-mono text-[13px] font-bold w-10 text-center" id="match-timer">00:00</span>
+                    <span onclick="Sim.fastForward()" class="text-[8px] text-[#fab400] bg-[#333] px-1 rounded cursor-pointer mt-0.5 whitespace-nowrap active:bg-[#555] shadow-sm">⏩ 80'</span>
+                </div>
+                
+                <div class="flex flex-col gap-0.5 items-center text-[#00e676] font-mono text-[14px] font-bold leading-none ml-3 bg-[#111] px-2 py-1 rounded shadow-inner border border-[#333]">
+                    <span id="score-h">0</span>
+                    <span id="score-a">0</span>
+                </div>
+                
+                <div class="flex flex-col gap-1 text-[12px] font-bold tracking-tight leading-none ml-3 flex-grow overflow-hidden">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <img src="https://flagcdn.com/w40/ar.png" loading="lazy" class="team-flag" alt="AR">
+                            <span class="text-white truncate">Argentina</span>
+                        </div>
+                        <div id="cards-h" class="flex shrink-0"></div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <img src="https://flagcdn.com/w40/fr.png" loading="lazy" class="team-flag" alt="FR">
+                            <span class="text-white truncate">Francia</span>
+                        </div>
+                        <div id="cards-a" class="flex shrink-0"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TIMELINE -->
+            <div class="px-3 flex items-center justify-between relative bg-[#111] h-[24px] border-b border-[#222]">
+                <div class="relative w-[49%] h-[4px] bg-white/20 rounded-sm">
+                    <div id="timeline-1" class="absolute left-0 top-0 bottom-0 bg-[#00e676] rounded-sm transition-all duration-1000" style="width: 0%"></div>
+                </div>
+                <div class="relative w-[49%] h-[4px] bg-white/20 rounded-sm">
+                    <div id="timeline-2" class="absolute left-0 top-0 bottom-0 bg-[#00e676] rounded-sm transition-all duration-1000" style="width: 0%"></div>
+                </div>
+                <div id="timeline-events" class="absolute left-3 right-3 top-1/2 -translate-y-1/2 h-[4px] pointer-events-none z-10"></div>
+            </div>
+        </div>
+
+        <!-- PITCH RADAR -->
+        <section id="pitch-container">
+            <div class="pitch-stripes"></div>
+            
+            <div class="pitch-wrapper">
+                <div class="pitch-lines">
+                    <div class="pitch-center-line"></div>
+                    <div class="pitch-center-dot"></div>
+                    <div class="pitch-center-circle"></div>
+                    <div class="pitch-area-left"></div>
+                    <div class="pitch-area-right"></div>
+                    <div class="pitch-goal-left"></div>
+                    <div class="pitch-goal-right"></div>
+                    <div class="pitch-arc-left"></div>
+                    <div class="pitch-arc-right"></div>
+                    <div class="pitch-pen-left"></div>
+                    <div class="pitch-pen-right"></div>
+                </div>
+                
+                <div id="attack-cone" class="attack-cone"></div>
+                <div id="ball" class="ball" style="left: 50%; top: 50%;">⚽</div>
+
+                <div id="event-badge" class="info-badge">
+                    <span id="event-team" class="text-white font-black text-[11px] tracking-tight leading-tight">Argentina</span>
+                    <span id="event-desc" class="text-[#00e676] text-[8px] font-bold uppercase tracking-wider mt-0.5">Attacking</span>
+                </div>
+            </div>
+
+            <!-- OVERLAY GOAL -->
+            <div id="goal-alert" class="absolute inset-0 z-50 bg-black/85 flex flex-col items-center justify-center hidden backdrop-blur-md">
+                <span class="bg-red-600 text-white font-black text-[11px] px-4 py-1.5 rounded shadow-xl tracking-widest uppercase mb-4 animate-pulse border border-red-400" data-i18n="susp">Sospeso</span>
+                <span class="text-[70px] sm:text-[90px] animate-bounce mb-2" style="filter: drop-shadow(0 10px 10px rgba(0,0,0,0.8));">⚽</span>
+                <h2 id="scorer-name" class="text-3xl sm:text-4xl font-black text-white italic drop-shadow-xl mt-1">Messi</h2>
+                <h2 class="text-5xl sm:text-7xl font-black text-[#00e676] italic mt-1 tracking-tighter" style="text-shadow: 0 4px 10px rgba(0,0,0,0.9), 0 0 30px rgba(0,230,118,0.8);">GOAL!</h2>
+            </div>
+
+            <!-- OVERLAY FINE PARTITA -->
+            <div id="suspended" class="absolute inset-0 z-40 bg-black/80 hidden flex-col items-center justify-center backdrop-blur-sm">
+                <span class="bg-red-600 text-white font-black text-base px-8 py-3 rounded-sm shadow-xl tracking-widest uppercase border border-red-500" data-i18n="susp">Sospeso</span>
+            </div>
+        </section>
+
+        <!-- MARKET ANALYST (MENTOR) BAR -->
+        <div class="bg-[#111] p-3 flex items-center gap-3 border-b border-[#333] shrink-0 shadow-inner h-[80px] min-h-[80px] overflow-hidden relative">
+            
+            <!-- LAMPADINA CENTRATA CON DOLCE BAGLIORE GIALLO -->
+            <div class="w-10 h-10 rounded-md bg-[#0a0a0a] border border-[#222] flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(250,180,0,0.4)]">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-[var(--bf-yellow)]" style="filter: drop-shadow(0 0 3px rgba(250,180,0,0.8));">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6A4.997 4.997 0 0 1 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1zM10 20h4c0 1.1-.9 2-2 2s-2-.9-2-2z"/>
+                </svg>
+            </div>
+            
+            <div class="flex flex-col w-full">
+                <span class="text-[8px] font-black text-[var(--bf-yellow)] uppercase tracking-widest mb-[2px]" data-i18n="mentor_title">Guida Partita</span>
+                <p id="mentor-txt" class="text-[11px] font-medium text-gray-300 leading-snug line-clamp-3"></p>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- ========================================== -->
+    <!-- RIGHT PANE: TRADING DESK & RISK            -->
+    <!-- ========================================== -->
+    <div id="right-pane">
+        
+        <!-- RISK MGMT HEADER -->
+        <div class="bg-white flex justify-between items-center px-3 py-1.5 border-b border-gray-200 shrink-0 shadow-sm z-10">
+            <div class="flex gap-1.5 items-center">
+                <span class="text-[8px] font-black text-gray-400 uppercase mr-1" data-i18n="stake_lbl">Stake Base:</span>
+                <button onclick="Trade.setStakePct(1)" id="stk-1" class="px-2.5 py-1 bg-white border border-gray-300 rounded text-[11px] font-bold text-gray-500 shadow-sm transition-colors cursor-pointer touch-manipulation">1%</button>
+                <button onclick="Trade.setStakePct(2)" id="stk-2" class="px-2.5 py-1 bg-gray-800 border border-gray-800 rounded text-[11px] font-bold text-[var(--bf-yellow)] shadow-sm transition-colors cursor-pointer touch-manipulation">2%</button>
+                <button onclick="Trade.setStakePct(5)" id="stk-5" class="px-2.5 py-1 bg-white border border-gray-300 rounded text-[11px] font-bold text-gray-500 shadow-sm transition-colors cursor-pointer touch-manipulation">5%</button>
+            </div>
+            <div class="flex gap-2">
+                <div class="flex flex-col items-end leading-tight desktop-only">
+                    <span class="text-[7px] font-black text-gray-400 uppercase" data-i18n="avail">Cassa</span>
+                    <span id="bankroll-desktop" class="font-mono font-bold text-[11px] text-[#00e676]">€ 100.00</span>
+                </div>
+                <div class="flex flex-col items-end leading-tight pl-2 border-l border-gray-200">
+                    <span class="text-[7px] font-black text-gray-400 uppercase" data-i18n="liability">Liability</span>
+                    <span id="val-liab" class="font-mono font-black text-[12px] text-gray-400">€ 0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="market-tabs shadow-sm relative z-0">
+            <div class="tab-item" data-i18n="market_most_played">Più giocati</div>
+            <div class="tab-item tab-active" data-i18n="mo">Esito Finale</div>
+            <div class="tab-item" data-i18n="ou">Under/Over 2.5</div>
+        </div>
+
+        <!-- MARKETS LIST COMPACTED -->
+        <div class="flex-grow overflow-y-auto bg-gray-100 relative pb-2" style="-webkit-overflow-scrolling: touch;">
+            
+            <!-- OVERLAY MERCATO SOSPESO -->
+            <div id="market-suspended-overlay" class="absolute inset-0 z-50 bg-white/60 backdrop-blur-[2px] hidden flex-col items-center justify-center">
+                <span class="bg-red-600 text-white font-black text-lg px-6 py-2 rounded shadow-2xl tracking-widest uppercase border border-red-800 animate-pulse drop-shadow-lg" data-i18n="susp">Sospeso</span>
+            </div>
+
+            <div class="bg-[#333] text-white flex justify-between items-center px-3 py-1 sticky top-0 z-10 shadow-sm">
+                <span class="text-[11px] font-bold" data-i18n="mo">Esito Finale</span>
+                <div class="flex items-center gap-1.5">
+                    <div class="w-3 h-3 bg-[#fab400] rounded-sm flex items-center justify-center"><div class="w-1 h-1 bg-[#333] rounded-full"></div></div>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="#00e676"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                </div>
+            </div>
+
+            <!-- HEADER COLONNE -->
+            <div class="bg-white flex items-center justify-between pl-3 pr-3 py-1 text-[10px] font-bold text-[#333] border-b border-gray-200 shadow-sm relative z-0">
+                <div class="truncate flex-grow">
+                    <span><span data-i18n="matched">Matched</span>: <span id="vol-tot" class="font-normal text-gray-500">€0</span></span>
+                </div>
+                <div class="flex gap-1 shrink-0">
+                    <div class="w-[65px] sm:w-[75px] text-center text-blue-800 bg-[#e4f1f9] rounded-sm py-0.5" data-i18n="back">Back</div>
+                    <div class="w-[65px] sm:w-[75px] text-center text-pink-800 bg-[#fdebf0] rounded-sm py-0.5" data-i18n="lay">Lay</div>
+                </div>
+            </div>
+
+            <!-- ROW ARGENTINA -->
+            <div class="flex items-center justify-between w-full bg-white border-b border-gray-200 pl-3 pr-3 py-1 hover:bg-gray-50 transition-colors" id="row-H">
+                <div class="flex items-center gap-2 flex-grow truncate pr-2">
+                    <img src="https://flagcdn.com/w40/ar.png" loading="lazy" class="team-flag shrink-0" alt="AR">
+                    <span class="text-[13px] font-bold text-[#222] tracking-tight truncate">Argentina</span>
+                </div>
+                <div class="flex gap-1 shrink-0">
+                    <div class="w-[65px] sm:w-[75px]">
+                        <button onclick="Trade.trade('H', 'back')" class="btn-odd-container bf-btn-back cursor-pointer touch-manipulation" id="btn-H-b">
+                            <span class="odd-price" id="odd-H-b">2.78</span>
+                            <span class="odd-vol" id="vol-H-b">€12K</span>
+                        </button>
+                    </div>
+                    <div class="w-[65px] sm:w-[75px]">
+                        <button onclick="Trade.trade('H', 'lay')" class="btn-odd-container bf-btn-lay cursor-pointer touch-manipulation" id="btn-H-l">
+                            <span class="odd-price" id="odd-H-l">2.80</span>
+                            <span class="odd-vol" id="vol-H-l">€4K</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROW FRANCIA -->
+            <div class="flex items-center justify-between w-full bg-white border-b border-gray-200 pl-3 pr-3 py-1 hover:bg-gray-50 transition-colors" id="row-A">
+                <div class="flex items-center gap-2 flex-grow truncate pr-2">
+                    <img src="https://flagcdn.com/w40/fr.png" loading="lazy" class="team-flag shrink-0" alt="FR">
+                    <span class="text-[13px] font-bold text-[#222] tracking-tight truncate">Francia</span>
+                </div>
+                <div class="flex gap-1 shrink-0">
+                    <div class="w-[65px] sm:w-[75px]">
+                        <button onclick="Trade.trade('A', 'back')" class="btn-odd-container bf-btn-back cursor-pointer touch-manipulation" id="btn-A-b">
+                            <span class="odd-price" id="odd-A-b">2.84</span>
+                            <span class="odd-vol" id="vol-A-b">€14K</span>
+                        </button>
+                    </div>
+                    <div class="w-[65px] sm:w-[75px]">
+                        <button onclick="Trade.trade('A', 'lay')" class="btn-odd-container bf-btn-lay cursor-pointer touch-manipulation" id="btn-A-l">
+                            <span class="odd-price" id="odd-A-l">2.86</span>
+                            <span class="odd-vol" id="vol-A-l">€8K</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROW DRAW -->
+            <div class="flex items-center justify-between w-full bg-white border-b border-gray-300 pl-3 pr-3 py-1 hover:bg-gray-50 transition-colors" id="row-X">
+                <div class="flex items-center gap-2 flex-grow truncate pr-2">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#888" class="shrink-0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    <span class="text-[13px] font-bold text-[#222] tracking-tight truncate" data-i18n="draw">Pareggio</span>
+                </div>
+                <div class="flex gap-1 shrink-0">
+                    <div class="w-[65px] sm:w-[75px]">
+                        <button onclick="Trade.trade('X', 'back')" class="btn-odd-container bf-btn-back cursor-pointer touch-manipulation" id="btn-X-b">
+                            <span class="odd-price" id="odd-X-b">3.05</span>
+                            <span class="odd-vol" id="vol-X-b">€22K</span>
+                        </button>
+                    </div>
+                    <div class="w-[65px] sm:w-[75px]">
+                        <button onclick="Trade.trade('X', 'lay')" class="btn-odd-container bf-btn-lay cursor-pointer touch-manipulation" id="btn-X-l">
+                            <span class="odd-price" id="odd-X-l">3.10</span>
+                            <span class="odd-vol" id="vol-X-l">€18K</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+/**
+ * Zero FOUC Initialization & AUTO START Match
+ */
+document.addEventListener("DOMContentLoaded", () => {
+    requestAnimationFrame(() => {
+        document.body.classList.add('ready');
+        App.init(); 
+    });
+});
+
+/**
+ * ============================================================================
+ * 🌐 i18n MULTILINGUAL ENGINE - SHORT, CLEAR, 3-LINE MESSAGES MAX
+ * ============================================================================
+ */
+const I18N_DICT = {
+    it: {
+        avail: "Cassa", draw: "Pareggio", start: "Avvia Simulazione",
+        mo: "Esito Finale", ou: "Under/Over 2.5", market_most_played: "Più Giocati",
+        susp: "Sospeso", pos_open: "Posizione Aperta", mentor_title: "Guida Partita",
+        matched: "Matched", back: "Back", lay: "Lay", liability: "Liability", stake_lbl: "Stake:", cashout: "Cash Out", pnl: "Live PNL",
+        
+        mentor_idle: "Mercato stabile. Il <span class='t-y'>Time Decay</span> erode i margini sulla X. Volumi confermano lo status quo.",
+        mentor_h: "Aumento <span class='t-c'>xG</span> per l'Argentina. <span class='t-c'>Market Maker</span> restringono lo <span class='t-y'>Spread</span>, <span class='t-b'>Back</span> in drop.",
+        mentor_a: "Incursione Francia. Liquidità rimossa per mitigare il rischio, <span class='t-y'>Spread</span> in allargamento.",
+        mentor_card_y: "Ammonizione. L'algoritmo prezza il <span class='t-l'>Red Card Risk Premium</span> correggendo la probabilità.",
+        mentor_pen: "RIGORE! Panic selling. Volumi massicci in <span class='t-b'>Back</span> sul tiratore, svuotamento dell'<span class='t-y'>Order Book</span>.",
+        mentor_goal: "GOAL! Mercato Sospeso. Ordini cancellati. Ricalcolo del <span class='t-c'>Fair Value</span> basato su <span class='t-c'>Poisson</span>...",
+        mentor_swing: "<span class='t-y'>REPRICING</span> ESTREMO! <span class='t-y'>Swing</span> violento. La liquidità si sposta per assorbire il nuovo scenario.",
+        
+        mentor_co_win: "<span class='t-b'>Hedge</span> completato. <span class='t-l'>Liability</span> sbloccata: +€{liab}.<br><span class='t-b'>PNL</span> netto in cassa (+5% fee): +€{net}.",
+        mentor_co_loss: "<span class='t-b'>Hedge</span> completato. <span class='t-l'>Liability</span> sbloccata: +€{liab}.<br><span class='t-b'>PNL</span> netto scalato (zero fee): €{net}.",
+        mentor_risk: "<span class='t-c'>Money Mgmt</span>: <span class='t-c'>Stake</span> dinamico al {pct}% (€{stk}).<br>Nel <span class='t-l'>Lay</span> la <span class='t-l'>Liability</span> è: <span class='t-c'>Stake</span> × (Quota - 1).",
+        mentor_no_funds: "Operazione annullata. Cassa insufficiente per la <span class='t-l'>Liability</span> di €{liab}.",
+        mentor_bet_back: "Piazzato <span class='t-b'>Back</span> @ {odd}. <span class='t-c'>Stake</span> = Rischio: €{liab}.<br>Profitto potenziale netto: €{prof}.",
+        mentor_bet_lay: "Piazzato <span class='t-l'>Lay</span> @ {odd}. Fai tu da banco!<br><span class='t-l'>Liability</span> (Il tuo rischio bloccato): €{liab}.",
+        
+        tut_1: "Inizia la partita! ⚡ Usa il <span class='t-b'>Back</span> per scommettere a favore. Usa il <span class='t-l'>Lay</span> per scommettere contro: diventi tu il bookmaker!",
+        tut_2: "Domina il mercato! 🛡️ Nel <span class='t-b'>Back</span> rischi solo il tuo <span class='t-c'>Stake</span>. Nel <span class='t-l'>Lay</span>, la <span class='t-l'>Liability</span> sale con la quota.",
+        tut_3: "Entriamo in azione! 🎯 Piazziamo un <span class='t-l'>Lay</span> sul Pareggio. Al primo gol la quota della X esploderà: preparati al <span class='t-y'>Cash Out</span>!",
+        
+        mentor_23: "Shock di liquidità. Rigore Messi. Quota a 1.50. Il mercato prezza 0.00 <span class='t-c'>xG</span> Francia.",
+        mentor_35: "Transizione perfetta. Di Maria (2-0). Quota @1.12. Massicci <span class='t-l'>Lay</span> sulla X, <span class='t-y'>Spread</span> in volo.",
+        mentor_54: "Errore E. Martínez. Reset del Possession Value. Rischio anomalo non prezzato.",
+        mentor_80: "BLACK SWAN! (Rigore Mbappé). I bot in tilt. Il differenziale distrugge il <span class='t-y'>Time Decay</span>.",
+        mentor_81: "CRASH DI MERCATO! 2-2 in 97s. Panic Selling sull'ARG. La X collassa da 36.00 a 1.56.",
+        mentor_ah: "Fine 90'. Dissonanza: L'<span class='t-c'>Asian Handicap</span> ARG -0.25 genera Half-Loss, capitali intrappolati.",
+        mentor_gb: "Caos Golden Boot: Tripletta Mbappé. Quota a 1.01. Devastante swing di ricchezza.",
+        mentor_refill: "Cassa azzerata! 💸 Abbiamo ricaricato il tuo conto con 100€. Riprova e gestisci meglio il rischio!"
+    },
+    en: {
+        avail: "Bankroll", draw: "Draw", start: "Start Simulation",
+        mo: "Match Odds", ou: "Over/Under 2.5", market_most_played: "Popular",
+        susp: "Suspended", pos_open: "Open Position", mentor_title: "Match Guide",
+        matched: "Matched", back: "Back", lay: "Lay", liability: "Liability", stake_lbl: "Stake:", cashout: "Cash Out", pnl: "Live PNL",
+        
+        mentor_idle: "Stable market. <span class='t-y'>Time Decay</span> erodes Draw margins. Volumes confirm status quo.",
+        mentor_h: "ARG <span class='t-c'>xG</span> increase. <span class='t-c'>Market Makers</span> tighten <span class='t-y'>Spread</span>, <span class='t-b'>Back</span> drops.",
+        mentor_a: "France attacks. Liquidity pulled to mitigate risk, <span class='t-y'>Spread</span> widening.",
+        mentor_card_y: "Yellow Card. Algo prices the <span class='t-l'>Red Card Risk Premium</span> correcting probabilities.",
+        mentor_pen: "PENALTY! Panic selling. Massive <span class='t-b'>Back</span> volumes on kicker emptying <span class='t-y'>Order Book</span>.",
+        mentor_goal: "GOAL! Market Suspended. Orders cancelled. <span class='t-c'>Poisson Fair Value</span> recalculation...",
+        mentor_swing: "EXTREME <span class='t-y'>REPRICING</span>! Violent <span class='t-y'>Swing</span>. Liquidity shifts massively for new scenario.",
+        
+        mentor_co_win: "<span class='t-b'>Hedge</span> completed. <span class='t-l'>Liability</span> unlocked: +€{liab}.<br>Net <span class='t-b'>PNL</span> to bankroll (+5% fee): +€{net}.",
+        mentor_co_loss: "<span class='t-b'>Hedge</span> completed. <span class='t-l'>Liability</span> unlocked: +€{liab}.<br>Net <span class='t-b'>PNL</span> subtracted (zero fee): €{net}.",
+        mentor_risk: "<span class='t-c'>Money Mgmt</span>: Dynamic <span class='t-c'>Stake</span> at {pct}% (€{stk}).<br>In a <span class='t-l'>Lay</span>, <span class='t-l'>Liability</span> is: <span class='t-c'>Stake</span> × (Odds - 1).",
+        mentor_no_funds: "Trade rejected. Insufficient Bankroll for <span class='t-l'>Liability</span> of €{liab}.",
+        mentor_bet_back: "Placed <span class='t-b'>Back</span> @ {odd}. <span class='t-c'>Stake</span> = Risk: €{liab}.<br>Potential net profit: €{prof}.",
+        mentor_bet_lay: "Placed <span class='t-l'>Lay</span> @ {odd}. You act as bookmaker!<br><span class='t-l'>Liability</span> (Locked risk): €{liab}.",
+        
+        tut_1: "Game on! ⚡ Remember: <span class='t-b'>Back</span> means betting FOR an outcome. <span class='t-l'>Lay</span> means betting AGAINST it—you are the bookmaker!",
+        tut_2: "Manage risk like a pro! 🛡️ In <span class='t-b'>Back</span> you risk your <span class='t-c'>Stake</span>. In <span class='t-l'>Lay</span>, your <span class='t-l'>Liability</span> multiplies with the odds.",
+        tut_3: "Ready for action? 🎯 Place a <span class='t-l'>Lay</span> on the Draw. At the first goal, odds will spike—perfect time for a <span class='t-y'>Cash Out</span>!",
+        
+        mentor_23: "Liquidity Shock. Messi penalty. Odds at 1.50. Market prices 0.00 <span class='t-c'>xG</span> for FRA.",
+        mentor_35: "Perfect transition. Di Maria (2-0). Odds @1.12. Massive <span class='t-l'>Lay</span> on Draw, <span class='t-y'>Spread</span> flies.",
+        mentor_54: "E. Martínez error. Possession Value reset. Unpriced anomalous risk.",
+        mentor_80: "BLACK SWAN! (Mbappé pen). Bots short-circuit. Energy destroys <span class='t-y'>Time Decay</span>.",
+        mentor_81: "MARKET CRASH! 2-2 in 97s. Panic Selling on ARG. Draw collapses to 1.56.",
+        mentor_ah: "End 90'. Dissonance: ARG -0.25 <span class='t-c'>Asian Handicap</span> gives Half-Loss, trapped capital.",
+        mentor_gb: "Golden Boot Chaos: Mbappé Hat-Trick. Odds to 1.01. Wealth transfer.",
+        mentor_refill: "Bankroll busted! 💸 The house gave you a €100 <span class='t-c'>Refill</span>. Try again with better risk management!"
+    },
+    es: {
+        avail: "Fondo", draw: "Empate", start: "Iniciar Simulación", 
+        mo: "Cuotas de partido", ou: "Más/Menos 2.5", market_most_played: "Populares",
+        susp: "Suspendido", pos_open: "Posición Abierta", mentor_title: "Guía del Partido",
+        matched: "Matched", back: "Back", lay: "Lay", liability: "Liability", stake_lbl: "Stake:", cashout: "Cash Out", pnl: "Live PNL",
+        
+        mentor_idle: "Mercado estable. El <span class='t-y'>Time Decay</span> erosiona el Empate. Volúmenes confirman status quo.",
+        mentor_h: "Aumento <span class='t-c'>xG</span> ARG. <span class='t-c'>Market Makers</span> ajustan <span class='t-y'>Spread</span>, <span class='t-b'>Back</span> cayendo.",
+        mentor_a: "Francia ataca. Liquidez retirada para mitigar riesgo, <span class='t-y'>Spread</span> ampliándose.",
+        mentor_card_y: "Amonestación. El algoritmo cotiza el <span class='t-l'>Red Card Risk Premium</span>.",
+        mentor_pen: "¡PENALTI! Venta de pánico. Volúmenes masivos en <span class='t-b'>Back</span> vacían el <span class='t-y'>Order Book</span>.",
+        mentor_goal: "¡GOL! Mercado Suspendido. Órdenes canceladas. Recalculando <span class='t-c'>Fair Value</span>...",
+        mentor_swing: "¡<span class='t-y'>REPRICING</span> EXTREMO! <span class='t-y'>Swing</span> violento. La liquidez se mueve masivamente.",
+        
+        mentor_co_win: "<span class='t-b'>Hedge</span> completado. <span class='t-l'>Liability</span> libre: +€{liab}.<br><span class='t-b'>PNL</span> neto en fondo (+5% fee): +€{net}.",
+        mentor_co_loss: "<span class='t-b'>Hedge</span> completado. <span class='t-l'>Liability</span> libre: +€{liab}.<br><span class='t-b'>PNL</span> neto restado (zero fee): €{net}.",
+        mentor_risk: "<span class='t-c'>Money Mgmt</span>: <span class='t-c'>Stake</span> dinámico al {pct}% (€{stk}).<br>En el <span class='t-l'>Lay</span>, la <span class='t-l'>Liability</span> es: <span class='t-c'>Stake</span> × (Cuota - 1).",
+        mentor_no_funds: "Operación rechazada. Saldo insuficiente para <span class='t-l'>Liability</span> de €{liab}.",
+        mentor_bet_back: "Hecho <span class='t-b'>Back</span> @ {odd}. <span class='t-c'>Stake</span> = Riesgo: €{liab}.<br>Beneficio potencial: €{prof}.",
+        mentor_bet_lay: "Hecho <span class='t-l'>Lay</span> @ {odd}. ¡Eres la casa!<br><span class='t-l'>Liability</span> (Riesgo bloqueado): €{liab}.",
+        
+        tut_1: "¡Empieza el espectáculo! ⚡ <span class='t-b'>Back</span> es apostar A FAVOR. Con <span class='t-l'>Lay</span> apuestas EN CONTRA y tú te conviertes en la casa de apuestas.",
+        tut_2: "¡Gestiona el riesgo! 🛡️ En <span class='t-b'>Back</span> arriesgas tu <span class='t-c'>Stake</span>. En <span class='t-l'>Lay</span>, tu <span class='t-l'>Liability</span> se multiplica por la cuota.",
+        tut_3: "¿Listo para la acción? 🎯 Colocamos un <span class='t-l'>Lay</span> al Empate. Al primer gol la cuota volará: ¡momento ideal para hacer <span class='t-y'>Cash Out</span>!",
+        
+        mentor_23: "Shock de liquidez. Penalti Messi. Cuota a 1.50. Mercado asume 0.00 <span class='t-c'>xG</span> FRA.",
+        mentor_35: "Transición perfecta. Di Maria (2-0). Cuota @1.12. Massive <span class='t-l'>Lay</span> al Empate.",
+        mentor_54: "Error E. Martínez. Reset del Valor de Posesión. Riesgo no cotizado.",
+        mentor_80: "¡BLACK SWAN! (Penalti Mbappé). Bots en corto. Energía anula <span class='t-y'>Time Decay</span>.",
+        mentor_81: "¡CRASH DE MERCADO! 2-2 en 97s. Panic Selling en ARG. Empate colapsa a 1.56.",
+        mentor_ah: "Fin 90'. Disonancia: <span class='t-c'>Asian Handicap</span> ARG -0.25 genera Half-Loss.",
+        mentor_gb: "Caos Golden Boot: Hat-Trick Mbappé. Cuota a 1.01. Transferencia de riqueza.",
+        mentor_refill: "¡Fondo agotado! 💸 La casa te ha concedido un <span class='t-c'>Refill</span> de €100. Intenta otra estrategia."
+    },
+    pt: {
+        avail: "Saldo", draw: "Empate", start: "Iniciar Simulação", 
+        mo: "Probabilidades", ou: "Mais/Menos 2.5", market_most_played: "Populares",
+        susp: "Suspenso", pos_open: "Posição Aberta", mentor_title: "Guia da Partida",
+        matched: "Matched", back: "Back", lay: "Lay", liability: "Liability", stake_lbl: "Stake:", cashout: "Cash Out", pnl: "Live PNL",
+        
+        mentor_idle: "Mercado estável. O <span class='t-y'>Time Decay</span> corrói o Empate. Volumes confirmam status quo.",
+        mentor_h: "Aumento <span class='t-c'>xG</span> ARG. <span class='t-c'>Market Makers</span> reduzem <span class='t-y'>Spread</span>, <span class='t-b'>Back</span> em queda.",
+        mentor_a: "França ataca. Liquidez retirada para mitigar risco, <span class='t-y'>Spread</span> aumentando.",
+        mentor_card_y: "Cartão amarelo. Algoritmo cota o <span class='t-l'>Red Card Risk Premium</span>.",
+        mentor_pen: "PÊNALTI! Pânico de venda. Volumes massivos no <span class='t-b'>Back</span> esvaziam <span class='t-y'>Order Book</span>.",
+        mentor_goal: "GOLO! Mercado Suspenso. Ordens canceladas. Recálculo do <span class='t-c'>Fair Value</span>...",
+        mentor_swing: "<span class='t-y'>REPRICING</span> EXTREMO! <span class='t-y'>Swing</span> violento. Liquidez mudando massivamente.",
+        
+        mentor_co_win: "<span class='t-b'>Hedge</span> concluído. <span class='t-l'>Liability</span> livre: +€{liab}.<br><span class='t-b'>PNL</span> neto adicionado (+5% fee): +€{net}.",
+        mentor_co_loss: "<span class='t-b'>Hedge</span> concluído. <span class='t-l'>Liability</span> livre: +€{liab}.<br><span class='t-b'>PNL</span> neto descontado (zero fee): €{net}.",
+        mentor_risk: "<span class='t-c'>Money Mgmt</span>: <span class='t-c'>Stake</span> dinâmica a {pct}% (€{stk}).<br>No <span class='t-l'>Lay</span>, a <span class='t-l'>Liability</span> é: <span class='t-c'>Stake</span> × (Odd - 1).",
+        mentor_no_funds: "Aposta rejeitada. Saldo insuficiente para <span class='t-l'>Liability</span> de €{liab}.",
+        mentor_bet_back: "Fez <span class='t-b'>Back</span> a odd {odd}. <span class='t-c'>Stake</span> = Risco: €{liab}.<br>Lucro potencial: €{prof}.",
+        mentor_bet_lay: "Fez <span class='t-l'>Lay</span> a odd {odd}. Tu és a casa!<br><span class='t-l'>Liability</span> (Risco bloqueado): €{liab}.",
+        
+        tut_1: "Que comece o jogo! ⚡ <span class='t-b'>Back</span> é apostar A FAVOR. Com <span class='t-l'>Lay</span> apostas CONTRA e assumes o papel da casa de apostas!",
+        tut_2: "Gere o risco como um pro! 🛡️ No <span class='t-b'>Back</span> o risco é a tua <span class='t-c'>Stake</span>. No <span class='t-l'>Lay</span>, a tua <span class='t-l'>Liability</span> multiplica-se pela odd.",
+        tut_3: "Pronto para a ação? 🎯 Fazemos <span class='t-l'>Lay</span> ao Empate. Ao 1º golo a odd sobe, garantindo um <span class='t-y'>Cash Out</span> perfeito!",
+        
+        mentor_23: "Choque de liquidez. Penálti Messi. Odd a 1.50. Mercado assume 0.00 <span class='t-c'>xG</span> FRA.",
+        mentor_35: "Transição perfeita. Di Maria (2-0). Odd @1.12. Massive <span class='t-l'>Lay</span> no Empate.",
+        mentor_54: "Erro E. Martínez. Reset do Valor de Posse. Risco fora do modelo.",
+        mentor_80: "BLACK SWAN! (Penálti Mbappé). Bots em curto. Diferencial destrói <span class='t-y'>Time Decay</span>.",
+        mentor_81: "CRASH DE MERCADO! 2-2 em 97s. Panic Selling na ARG. Empate colapsa a 1.56.",
+        mentor_ah: "Fim 90'. Dissonância: <span class='t-c'>Asian Handicap</span> ARG -0.25 gera Half-Loss.",
+        mentor_gb: "Caos Golden Boot: Hat-Trick Mbappé. Odd a 1.01. Transferência massiva.",
+        mentor_refill: "Banca quebrada! 💸 A casa deu-te um <span class='t-c'>Refill</span> de €100. Tenta uma nova estratégia."
+    }
+};
+
+/**
+ * ============================================================================
+ * 🚀 DOM CACHING & DRAGGABLE WIDGET (SAFE FOR WEBVIEWS)
+ * ============================================================================
+ */
+const DOM = {
+    odds: {}, vols: {}, btns: {},
+    timer: null, scoreH: null, scoreA: null, volTot: null,
+    tl1: null, tl2: null, tlEv: null, mentorTxt: null,
+    balMob: null, balDsk: null, valLiab: null,
+    pnlMob: null, posPanel: null
+};
+
+const Drag = {
+    active: false, initialX: 0, initialY: 0, xOffset: 0, yOffset: 0,
+    
+    init() {
+        const panel = document.getElementById('position-panel');
+        if(!panel) return;
+        panel.addEventListener("pointerdown", (e) => this.start(e), {passive: false});
+        document.addEventListener("pointerup", (e) => this.end(e), {passive: false});
+        document.addEventListener("pointermove", (e) => this.move(e), {passive: false});
+    },
+    
+    start(e) {
+        if (e.target.tagName.toLowerCase() === 'button' || e.target.closest('button')) return;
+        this.initialX = e.clientX - this.xOffset;
+        this.initialY = e.clientY - this.yOffset;
+        if (e.target.closest('#position-panel')) {
+            this.active = true;
+            // SAFE CAPTURE: Some WebViews (like early Telegram Android versions) throw here.
+            try { DOM.posPanel.setPointerCapture(e.pointerId); } catch(err) { console.warn("Pointer capture non supportato."); }
+        }
+    },
+    
+    end(e) { 
+        this.active = false; 
+    },
+    
+    move(e) {
+        if (this.active) {
+            e.preventDefault();
+            this.xOffset = e.clientX - this.initialX;
+            this.yOffset = e.clientY - this.initialY;
+            requestAnimationFrame(() => {
+                if(DOM.posPanel) DOM.posPanel.style.transform = `translate(calc(-50% + ${this.xOffset}px), calc(-50% + ${this.yOffset}px))`;
+            });
+        }
+    },
+    
+    reset() {
+        this.xOffset = 0; this.yOffset = 0; this.initialX = 0; this.initialY = 0;
+        if(DOM.posPanel) {
+            const pitch = document.getElementById('pitch-container');
+            if (pitch) {
+                // Calcola dinamicamente le coordinate del centro del campo per posizionare il widget
+                const rect = pitch.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                DOM.posPanel.style.left = `${centerX}px`;
+                DOM.posPanel.style.top = `${centerY}px`;
+            } else {
+                DOM.posPanel.style.left = '50%';
+                DOM.posPanel.style.top = '50%';
+            }
+            DOM.posPanel.style.transform = `translate(-50%, -50%)`;
+        }
+    }
+};
+
+const App = {
+    lang: 'it',
+    
+    init() {
+        ['H', 'X', 'A'].forEach(k => {
+            DOM.odds[`${k}-b`] = document.getElementById(`odd-${k}-b`);
+            DOM.odds[`${k}-l`] = document.getElementById(`odd-${k}-l`);
+            DOM.vols[`${k}-b`] = document.getElementById(`vol-${k}-b`);
+            DOM.vols[`${k}-l`] = document.getElementById(`vol-${k}-l`);
+            DOM.btns[`${k}-b`] = document.getElementById(`btn-${k}-b`);
+            DOM.btns[`${k}-l`] = document.getElementById(`btn-${k}-l`);
+        });
+        DOM.timer = document.getElementById('match-timer');
+        DOM.scoreH = document.getElementById('score-h');
+        DOM.scoreA = document.getElementById('score-a');
+        DOM.volTot = document.getElementById('vol-tot');
+        DOM.tl1 = document.getElementById('timeline-1');
+        DOM.tl2 = document.getElementById('timeline-2');
+        DOM.tlEv = document.getElementById('timeline-events');
+        DOM.mentorTxt = document.getElementById('mentor-txt');
+        DOM.balMob = document.getElementById('bankroll-mobile');
+        DOM.balDsk = document.getElementById('bankroll-desktop');
+        DOM.valLiab = document.getElementById('val-liab');
+        DOM.pnlMob = document.getElementById('pnl-val'); 
+        DOM.posPanel = document.getElementById('position-panel');
+
+        Drag.init();
+
+        document.getElementById('lang-selector').addEventListener('change', (e) => {
+            this.lang = e.target.value;
+            this.updateI18n();
+            // Retrigger mentor text with new lang
+            if(State.lastMentorKey) Sim.mentor(State.lastMentorKey, State.lastMentorVars, true, State.mentorPriority);
+        });
+        
+        // SAFE LOCALSTORAGE: Telegram WebView in Incognito mode throws unhandled exception on getItem
+        let saved = null;
+        try {
+            saved = JSON.parse(localStorage.getItem('qa_pro_v26'));
+        } catch (err) {
+            console.warn("LocalStorage bloccato (Privacy WebView Telegram). Procedo con dati di default.");
+        }
+        
+        if(saved && saved.bal) { State.bal = saved.bal; }
+        
+        this.updateI18n();
+        Trade.setStakePct(2); // Inizia con il 2% della cassa
+        Sim.updateTime();
+        Sim.renderUI();
+        
+        if (State.bal < 1.00) { Trade.checkBust(); }
+        
+        // Avvio Immediato
+        setTimeout(() => { Sim.start(); }, 500);
+    },
+
+    updateI18n() {
+        const dict = I18N_DICT[this.lang];
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (dict[key]) {
+                el.innerHTML = dict[key];
+            }
+        });
+        
+        if(State.pos) {
+            let label = State.pos.sel === 'H' ? 'Argentina' : (State.pos.sel === 'X' ? dict.draw : 'Francia');
+            let action = State.pos.t === 'back' ? dict.back.toUpperCase() : dict.lay.toUpperCase();
+            document.getElementById('pos-label').innerText = `${action} ${label}`;
+        }
+    },
+    
+    t(key) { return I18N_DICT[this.lang][key] || key; }
+};
+
+/**
+ * ============================================================================
+ * 🧠 CORE ENGINE STORICO CON TIMELINE "LUSAIL STRESS TEST"
+ * ============================================================================
+ */
+let matchInterval = null;
+
+let State = {
+    active: false, susp: false, 
+    sec: 0, 
+    score: [0,0], bal: 100.00, stake: 2.00, currentPct: 2,
+    odds: { H: 2.78, X: 3.05, A: 2.82 }, 
+    vol: { H: [15400, 8400], X: [12300, 9500], A: [14200, 8900] },
+    pos: null, mState: 'idle',
+    cards: { H: {y:0, r:0}, A: {y:0, r:0} },
+    mentorLockUntil: 0, 
+    mentorPriority: 0,
+    lastMentorKey: 'mentor_idle',
+    lastMentorVars: {},
+    
+    // Timeline dilatata per consentire lettura dei concetti
+    events: [
+        { time: 2, type: 'info', mentor: 'tut_1', priority: 8, triggered: false }, 
+        { time: 50, type: 'info', mentor: 'tut_2', priority: 8, triggered: false }, 
+        { time: 100, type: 'info', mentor: 'tut_3', priority: 8, triggered: false }, 
+        { time: 1380, type: 'goal', team: 'H', scorer: 'Messi (Pen)', triggered: false, mentor: 'mentor_23', priority: 10 },
+        { time: 2100, type: 'attack', team: 'H', desc: 'Errore rimessa FRA', triggered: false, priority: 5 },
+        { time: 2160, type: 'goal', team: 'H', scorer: 'Di Maria', triggered: false, mentor: 'mentor_35', priority: 10 },
+        { time: 2700, type: 'card', color: 'yellow', team: 'H', player: 'E. Fernandez', triggered: false, priority: 8 },
+        { time: 3240, type: 'attack', team: 'A', desc: 'Errore E. Martínez', triggered: false, mentor: 'mentor_54', priority: 10 },
+        { time: 4800, type: 'goal', team: 'A', scorer: 'Mbappé (Pen)', triggered: false, mentor: 'mentor_80', priority: 10 },
+        { time: 4860, type: 'goal', team: 'A', scorer: 'Mbappé', triggered: false, mentor: 'mentor_81', priority: 10 },
+        { time: 5400, type: 'info', mentor: 'mentor_ah', priority: 10, triggered: false }
+    ]
+};
+
+const Sim = {
+    _currentSpreadFactor: 1,
+
+    start() {
+        if(State.active) return;
+        State.active = true;
+        const b = document.getElementById('ball');
+        if (b) { b.style.left = '50%'; b.style.top = '50%'; }
+
+        this.renderTimeline();
+        this.renderCards();
+        this.tick();
+        this.animRadar();
+        matchInterval = setInterval(() => this.tick(), 1000); 
+    },
+
+    fastForward() {
+        if(!State.active) return;
+        
+        // Reset massivo dei dati per allineamento perfetto 80' Minuto
+        State.sec = 4750; // Poco prima del Cigno Nero
+        State.score = [2,0];
+        State.cards.H.y = 1; State.cards.H.r = 0;
+        State.cards.A.y = 0; State.cards.A.r = 0;
+        
+        // Aggiorna gli eventi storici come eseguiti
+        State.events.forEach(e => { 
+            e.triggered = (e.time <= State.sec); 
+        });
+        
+        DOM.scoreH.innerText = State.score[0];
+        DOM.scoreA.innerText = State.score[1];
+        
+        this.renderCards();
+        this.updateTime();
+        this.calcOdds();
+        this.renderUI();
+    },
+
+    tick() {
+        if(State.susp) return;
+        if (State.sec >= 5700) { this.endMatch(); return; }
+
+        State.sec++;
+        this.updateTime();
+        this.checkEvents();
+        
+        if(!State.susp) {
+            this.calcOdds();
+            if (State.sec % 4 === 0) this.animRadar(); 
+            this.renderUI();
+        }
+    },
+
+    endMatch() {
+        State.susp = true;
+        document.getElementById('suspended').style.display = 'flex';
+        document.querySelector('#suspended span').innerText = 'FULL TIME';
+        Trade.renderState();
+    },
+
+    checkEvents() {
+        const ev = State.events.find(e => e.time === State.sec && !e.triggered);
+        if (ev) {
+            ev.triggered = true;
+            if (ev.mentor) this.mentor(ev.mentor, {}, true, ev.priority || 10);
+            if (ev.type === 'goal') this.goal(ev.team, ev.scorer, ev.mentor);
+            if (ev.type === 'card') this.card(ev.team, ev.color, ev.player);
+            if (ev.type === 'attack') this.forceAttack(ev.team, ev.desc);
+        }
+    },
+
+    renderTimeline() {
+        if(State.sec <= 2700) {
+            DOM.tl1.style.width = (State.sec / 2700 * 100) + '%';
+            DOM.tl2.style.width = '0%';
+        } else {
+            DOM.tl1.style.width = '100%';
+            DOM.tl2.style.width = ((State.sec - 2700) / 2700 * 100) + '%';
+        }
+
+        DOM.tlEv.innerHTML = '';
+        State.events.forEach(ev => {
+            if (ev.triggered && (ev.type === 'goal' || ev.type === 'card')) {
+                let el = document.createElement('div');
+                
+                if (ev.type === 'goal') {
+                    el.innerText = '⚽';
+                    el.className = 'absolute text-[12px] transform -translate-x-1/2 flex items-center justify-center z-10 drop-shadow-md leading-none';
+                } else if (ev.type === 'card') {
+                    el.className = `absolute transform -translate-x-1/2 z-10 drop-shadow-md card-icon card-${ev.color}`;
+                    el.style.marginLeft = '0';
+                }
+                
+                // Mappatura precisa sui due segmenti da 49%
+                let leftPct;
+                if(ev.time <= 2700) {
+                    leftPct = (ev.time / 2700) * 49;
+                } else {
+                    leftPct = 51 + ((ev.time - 2700) / 2700) * 49;
+                }
+                el.style.left = leftPct + '%'; 
+                
+                // Logica Tangente Unificata (Goal e Cartellini)
+                if (ev.team === 'H') {
+                    el.style.bottom = '100%'; // Argentina tangente da SOPRA
+                    el.style.marginBottom = '1px';
+                } else if (ev.team === 'A') {
+                    el.style.top = '100%'; // Francia tangente da SOTTO
+                    el.style.marginTop = '1px';
+                }
+                
+                DOM.tlEv.appendChild(el);
+            }
+        });
+    },
+
+    renderCards() {
+        const renderTeamCards = (team) => {
+            const container = document.getElementById(`cards-${team.toLowerCase()}`);
+            container.innerHTML = '';
+            for(let i=0; i<State.cards[team].y; i++) container.innerHTML += '<div class="card-icon card-yellow"></div>';
+            for(let i=0; i<State.cards[team].r; i++) container.innerHTML += '<div class="card-icon card-red"></div>';
+        };
+        renderTeamCards('H'); renderTeamCards('A');
+    },
+
+    forceAttack(team, desc) {
+        State.mState = team === 'H' ? 'h-attack' : 'a-attack';
+        const c = document.getElementById('attack-cone');
+        const badge = document.getElementById('event-badge');
+        const tName = document.getElementById('event-team');
+        const tDesc = document.getElementById('event-desc');
+
+        if(team === 'H') {
+            c.style.opacity = '1'; c.style.left = '60%'; c.style.transform = 'translateY(-50%) rotate(0deg)';
+            badge.style.opacity = '1'; tName.innerText = 'Argentina'; tDesc.innerText = desc; tDesc.style.color = 'var(--arg-blue)';
+        } else {
+            c.style.opacity = '1'; c.style.left = '0%'; c.style.transform = 'translateY(-50%) rotate(180deg)';
+            badge.style.opacity = '1'; tName.innerText = 'Francia'; tDesc.innerText = desc; tDesc.style.color = '#2cb1e8';
+        }
+    },
+
+    animRadar() {
+        if(!State.active || State.susp || State.events.some(e => Math.abs(e.time - State.sec) < 5)) return;
+
+        const b = document.getElementById('ball');
+        const c = document.getElementById('attack-cone');
+        const badge = document.getElementById('event-badge');
+        const tName = document.getElementById('event-team');
+        const tDesc = document.getElementById('event-desc');
+
+        let r = Math.random();
+        let nx, ny;
+
+        if (r < 0.25) {
+            State.mState = 'h-attack'; this.mentor('mentor_h', {}, false, 1);
+            nx = 75 + Math.random()*15; ny = 20 + Math.random()*60;
+            c.style.opacity = '1'; c.style.left = '60%'; c.style.transform = 'translateY(-50%) rotate(0deg)';
+            badge.style.opacity = '1'; tName.innerText = 'Argentina'; tDesc.innerText = 'Attacking'; tDesc.style.color = 'var(--arg-blue)';
+        } else if (r < 0.50) {
+            State.mState = 'a-attack'; this.mentor('mentor_a', {}, false, 1);
+            nx = 10 + Math.random()*15; ny = 20 + Math.random()*60;
+            c.style.opacity = '1'; c.style.left = '0%'; c.style.transform = 'translateY(-50%) rotate(180deg)';
+            badge.style.opacity = '1'; tName.innerText = 'Francia'; tDesc.innerText = 'Attacking'; tDesc.style.color = '#2cb1e8';
+        } else {
+            State.mState = 'idle'; this.mentor('mentor_idle', {}, false, 1);
+            nx = 40 + Math.random()*20; ny = 30 + Math.random()*40;
+            c.style.opacity = '0';
+            badge.style.opacity = '1'; tName.innerText = nx > 50 ? 'Argentina' : 'Francia'; tDesc.innerText = 'Ball Safe'; tDesc.style.color = '#00e676';
+        }
+
+        b.style.left = `${nx}%`; b.style.top = `${ny}%`;
+    },
+
+    goal(team, scorer, customMentor) {
+        State.susp = true;
+        if(team === 'H') State.score[0]++; else State.score[1]++;
+        
+        document.getElementById('goal-alert').style.display = 'flex';
+        document.getElementById('scorer-name').innerText = scorer;
+        document.getElementById('event-badge').style.opacity = '0';
+        document.getElementById('attack-cone').style.opacity = '0';
+        DOM.scoreH.innerText = State.score[0];
+        DOM.scoreA.innerText = State.score[1];
+        
+        if(!customMentor) this.mentor('mentor_goal', {}, true, 10);
+        Trade.renderState(); 
+        this.renderTimeline();
+
+        setTimeout(() => {
+            State.susp = false;
+            document.getElementById('goal-alert').style.display = 'none';
+            document.getElementById('ball').style.left = '50%'; document.getElementById('ball').style.top = '50%';
+            Trade.renderState();
+        }, 6000); 
+    },
+
+    card(team, color, player) {
+        if(color === 'yellow') State.cards[team].y++;
+        if(color === 'red') State.cards[team].r++;
+        this.mentor('mentor_card_y', { player: player }, true, 8);
+        this.renderCards();
+        this.renderTimeline();
+    },
+
+    calcOdds() {
+        let rem = 1 - Math.min((State.sec / 5400), 0.99);
+        let tH, tX, tA;
+        let spreadFactor = 1;
+
+        if (State.sec < 4800) {
+            if (State.score[0] === 0 && State.score[1] === 0) {
+                tX = 1.01 + (2.90 - 1.01) * Math.pow(rem, 1.5);
+                tH = 2.74 + (1-rem)*5; tA = 2.80 + (1-rem)*5;
+            } else if (State.score[0] === 1 && State.score[1] === 0) {
+                tH = 1.01 + (1.50 - 1.01) * Math.pow(rem, 2);
+                tX = 4.50 + (1-rem)*10; tA = 12.0 + (1-rem)*40;
+            } else if (State.score[0] === 2 && State.score[1] === 0) {
+                tH = 1.01 + (1.12 - 1.01) * Math.pow(rem, 3);
+                tX = 13.0 + (1-rem)*60; 
+                tA = 50.0 + (1-rem)*200;
+            } else {
+                tH = 2.0; tX = 2.0; tA = 2.0;
+            }
+        } else if (State.sec >= 4800 && State.sec < 4860) {
+            tH = 1.25; tX = 5.00; tA = 15.0;
+        } else if (State.sec >= 4860) {
+            tX = 1.56 + (1-rem)*0.5; 
+            tH = 3.50 + (1-rem)*2; 
+            tA = 2.80 + (1-rem)*2;
+            
+            if (State.sec < 4900) {
+                spreadFactor = 5; // Spread si allarga a dismisura in fase di crash
+                State.vol.H[0] += Math.floor(Math.random() * 50000); 
+                State.vol.H[1] += Math.floor(Math.random() * 80000); 
+            } else {
+                spreadFactor = 1.5;
+            }
+        }
+
+        if (State.mState === 'h-attack') { tH -= 0.05; tX += 0.02; tA += 0.1; }
+        if (State.mState === 'a-attack') { tA -= 0.05; tX += 0.02; tH += 0.1; }
+
+        State.odds.H = Math.max(1.01, State.odds.H + (tH - State.odds.H)*0.3 + (Math.random()-0.5)*0.02);
+        State.odds.X = Math.max(1.01, State.odds.X + (tX - State.odds.X)*0.4 + (Math.random()-0.5)*0.05);
+        State.odds.A = Math.max(1.01, State.odds.A + (tA - State.odds.A)*0.3 + (Math.random()-0.5)*0.1);
+
+        this._currentSpreadFactor = spreadFactor; 
+
+        let totalVol = 0;
+        ['H','X','A'].forEach(k => {
+            State.vol[k][0] = Math.floor(Math.max(10, State.vol[k][0] + (Math.random()-0.5)*150));
+            State.vol[k][1] = Math.floor(Math.max(10, State.vol[k][1] + (Math.random()-0.5)*150));
+            totalVol += State.vol[k][0] + State.vol[k][1];
+        });
+        
+        if (DOM.volTot) DOM.volTot.innerText = `€${(totalVol + 7500000).toLocaleString()}`; 
+        
+        // PNL Aggiornato Istantaneamente seguendo le quote!
+        window.requestAnimationFrame(() => Trade.updatePnl());
+    },
+
+    updateTime() {
+        let m = Math.floor(State.sec/60).toString().padStart(2,'0');
+        let s = (State.sec%60).toString().padStart(2,'0');
+        DOM.timer.innerText = `${m}:${s}`;
+        this.renderTimeline();
+    },
+
+    renderUI() {
+        const formatOdd = (n) => n >= 100 ? Math.round(n).toString() : parseFloat(n.toFixed(2)).toString();
+        const formatK = (num) => num > 999 ? (num/1000).toFixed(1) + 'K' : num;
+        let sf = this._currentSpreadFactor || 1;
+
+        ['H','X','A'].forEach(k => {
+            let oB = Trade.roundTick(State.odds[k]); 
+            let oL = Trade.roundTick(oB + (Trade.getTickStep(oB) * sf)); 
+            
+            if (DOM.odds[`${k}-b`]) DOM.odds[`${k}-b`].innerText = formatOdd(oB);
+            if (DOM.odds[`${k}-l`]) DOM.odds[`${k}-l`].innerText = formatOdd(oL);
+            
+            if (DOM.vols[`${k}-b`]) DOM.vols[`${k}-b`].innerText = `€${formatK(State.vol[k][0])}`;
+            if (DOM.vols[`${k}-l`]) DOM.vols[`${k}-l`].innerText = `€${formatK(State.vol[k][1])}`;
+        });
+    },
+
+    mentor(key, vars = {}, force = false, priority = 1) {
+        if (State.sec >= State.mentorLockUntil) {
+            State.mentorPriority = 0;
+        }
+
+        if (!force && State.sec < State.mentorLockUntil && priority <= State.mentorPriority) return;
+        
+        State.lastMentorKey = key;
+        State.lastMentorVars = vars;
+
+        let txt = App.t(key);
+        for (const [k, v] of Object.entries(vars)) {
+            txt = txt.replace(`{${k}}`, v);
+        }
+        if (DOM.mentorTxt) DOM.mentorTxt.innerHTML = txt;
+        
+        // MODERAZIONE ESPERTO: Tempi di lettura aumentati enormemente
+        let lockTime = 25; 
+        if (priority >= 5) lockTime = 35; 
+        if (priority >= 8) lockTime = 45;
+
+        State.mentorLockUntil = State.sec + lockTime;
+        State.mentorPriority = priority;
+    }
+};
+
+/**
+ * ============================================================================
+ * 💰 TRADING E MONEY MANAGEMENT DINAMICO
+ * ============================================================================
+ */
+const Trade = {
+    _roundCents(val) {
+        return Math.round(val * 100) / 100;
+    },
+
+    roundTick(p) {
+        if(p <= 1.01) return 1.01; if(p < 2) return Math.round(p*100)/100; if(p < 3) return Math.round(p*50)/50;
+        if(p < 4) return Math.round(p*20)/20; if(p < 6) return Math.round(p*10)/10; if(p < 10) return Math.round(p*5)/5;
+        if(p < 20) return Math.round(p*2)/2; if(p < 30) return Math.round(p); if(p < 50) return Math.round(p/2)*2;
+        if(p < 100) return Math.round(p/5)*5; return Math.round(p/10)*10;
+    },
+    
+    getTickStep(p) {
+        if(p < 2) return 0.01; if(p < 3) return 0.02; if(p < 4) return 0.05;
+        if(p < 6) return 0.1; if(p < 10) return 0.2; if(p < 20) return 0.5;
+        if(p < 30) return 1; if(p < 50) return 2; if(p < 100) return 5; return 10;
+    },
+    
+    setStakePct(pct) {
+        State.currentPct = pct;
+        // Stake Dinamico: Calcolato in % sulla cassa attuale
+        State.stake = this._roundCents(State.bal * (pct / 100));
+        if(State.stake < 0.10) State.stake = 0.10; // Floor matematico minimo
+
+        [1, 2, 5].forEach(i => {
+            let el = document.getElementById(`stk-${i}`);
+            if(el) {
+                if(i === pct) el.className = "px-3.5 py-1.5 bg-gray-800 border border-gray-800 rounded text-[12px] font-bold text-[var(--bf-yellow)] shadow-sm transition-colors cursor-pointer touch-manipulation";
+                else el.className = "px-3.5 py-1.5 bg-white border border-gray-300 rounded text-[12px] font-bold text-gray-500 shadow-sm transition-colors cursor-pointer touch-manipulation";
+            }
+        });
+        
+        if(State.active) Sim.mentor('mentor_risk', { stk: State.stake.toFixed(2), pct: pct }, true, 6);
+        this.updateHeader();
+    },
+
+    updateHeader() {
+        let balStr = `€ ${State.bal.toFixed(2)}`;
+        if(DOM.balMob) DOM.balMob.innerText = balStr;
+        if(DOM.balDsk) DOM.balDsk.innerText = balStr;
+        
+        let l = State.pos ? State.pos.l : 0;
+        if(DOM.valLiab) {
+            DOM.valLiab.innerText = `€ ${l.toFixed(2)}`;
+            if (l > 0) {
+                DOM.valLiab.classList.remove('text-gray-400');
+                DOM.valLiab.classList.add('text-red-500');
+            } else {
+                DOM.valLiab.classList.remove('text-red-500');
+                DOM.valLiab.classList.add('text-gray-400');
+            }
+        }
+    },
+
+    checkBust() {
+        if (State.bal < 1.00 && !State.pos) { // Auto-refill se la cassa è troppo bassa e non ci sono trades aperti
+            State.bal = 100.00;
+            Sim.mentor('mentor_refill', {}, true, 10);
+            this.setStakePct(State.currentPct || 2);
+            this.updateHeader();
+            try { localStorage.setItem('qa_pro_v26', JSON.stringify({bal: State.bal})); } catch(e) {}
+            return true;
+        }
+        return false;
+    },
+
+    trade(sel, type) {
+        if(!State.active || State.susp || State.pos) return;
+        
+        let sf = Sim._currentSpreadFactor || 1;
+        let rawB = State.odds[sel];
+        let o = type === 'back' ? this.roundTick(rawB) : this.roundTick(rawB + (this.getTickStep(rawB) * sf));
+        
+        let s = this._roundCents(State.stake); 
+        let l = type === 'lay' ? this._roundCents(s * (o - 1)) : s;
+
+        if(State.bal < l) {
+            // Se non hai soldi a sufficienza controlla se serve un refill. Se refillato, ferma il trade corrente per far leggere l'avviso
+            if (!this.checkBust()) {
+                Sim.mentor('mentor_no_funds', { liab: l.toFixed(2) }, true, 10);
+            }
+            return;
+        }
+        
+        State.bal = this._roundCents(State.bal - l);
+        State.pos = { sel, t: type, e: o, s: s, l: l };
+        
+        // Ricalcola il prossimo stake ora che la cassa è scesa
+        if(State.currentPct) this.setStakePct(State.currentPct);
+        
+        Drag.reset(); 
+        if(DOM.posPanel) {
+            DOM.posPanel.classList.remove('opacity-0', 'pointer-events-none');
+            DOM.posPanel.classList.add('opacity-100', 'pointer-events-auto');
+        }
+        
+        App.updateI18n(); 
+        
+        document.getElementById('pos-label').className = `text-[#111] text-[10px] font-black px-2 py-0.5 rounded-sm shadow-sm ${type==='back'?'bg-[var(--btn-back)]':'bg-[var(--btn-lay)]'}`;
+        const formatOdd = (n) => parseFloat(n.toFixed(2)).toString();
+        
+        document.getElementById('pos-odds').innerText = `@ ${formatOdd(o)}`;
+        document.getElementById('pos-stake').innerText = `Stake: €${s.toFixed(2)}`;
+        document.getElementById('pos-liab').innerText = `Resp: €${l.toFixed(2)}`;
+        
+        let potProf = type === 'back' ? this._roundCents(s * (o - 1)) : s;
+        let mentorKey = type === 'back' ? 'mentor_bet_back' : 'mentor_bet_lay';
+        Sim.mentor(mentorKey, { odd: formatOdd(o), stk: s.toFixed(2), liab: l.toFixed(2), prof: potProf.toFixed(2) }, true, 6);
+
+        this.renderState();
+        this.updateHeader();
+    },
+
+    // IL PNL SEGUE ISTANTANEAMENTE LE QUOTE ESATTE SUL MERCATO OPPOSTO (Hedging Rules)
+    updatePnl() {
+        if(!State.pos) return;
+        
+        let sf = Sim._currentSpreadFactor || 1;
+        let rawB = State.odds[State.pos.sel];
+        let cB = this.roundTick(rawB);
+        let cL = this.roundTick(rawB + (this.getTickStep(rawB) * sf));
+        
+        // Se ho Bancato (Lay), per uscire dal mercato devo Puntare (Back). Uso cB.
+        // Se ho Puntato (Back), per uscire dal mercato devo Bancare (Lay). Uso cL.
+        let current = State.pos.t === 'back' ? cL : cB;
+        
+        // Formula Scientifica di copertura in Live (Hedged PNL)
+        let pnl = State.pos.t === 'back' ? 
+            State.pos.s * (State.pos.e / current - 1) : 
+            State.pos.s * (1 - State.pos.e / current);
+        
+        let net = pnl > 0 ? pnl * 0.95 : pnl;
+        net = this._roundCents(net);
+        
+        let str = `${net >= 0 ? '+' : '-'}€${Math.abs(net).toFixed(2)}`;
+        let cls = `font-black leading-none tracking-tight ${net > 0 ? 'text-[#00e676]' : (net < 0 ? 'text-red-500' : 'text-[#111]')}`;
+
+        if (DOM.pnlMob) { 
+            // Animazione PNL: Flash colorato durante gli spike
+            if (DOM.pnlMob.innerText !== str) {
+                DOM.pnlMob.style.transform = 'scale(1.05)';
+                setTimeout(() => DOM.pnlMob.style.transform = 'scale(1)', 100);
+            }
+            DOM.pnlMob.innerText = str; 
+            DOM.pnlMob.className = 'text-[18px] ' + cls; 
+        }
+    },
+
+    cashOut() {
+        if(!State.pos || State.susp) return;
+        
+        let sf = Sim._currentSpreadFactor || 1;
+        let rawB = State.odds[State.pos.sel];
+        let cB = this.roundTick(rawB);
+        let cL = this.roundTick(rawB + (this.getTickStep(rawB) * sf));
+        let current = State.pos.t === 'back' ? cL : cB;
+        
+        let pnl = State.pos.t === 'back' ? State.pos.s * (State.pos.e / current - 1) : State.pos.s * (1 - State.pos.e / current);
+        
+        let net = pnl > 0 ? pnl * 0.95 : pnl;
+        net = this._roundCents(net); 
+        
+        if (pnl > 0) {
+            Sim.mentor('mentor_co_win', { liab: State.pos.l.toFixed(2), net: net.toFixed(2) }, true, 9);
+        } else {
+            Sim.mentor('mentor_co_loss', { liab: State.pos.l.toFixed(2), net: net.toFixed(2) }, true, 9);
+        }
+        
+        State.bal = this._roundCents(State.bal + State.pos.l + net);
+        State.pos = null;
+        
+        if(State.currentPct) this.setStakePct(State.currentPct);
+        
+        if(DOM.posPanel) {
+            DOM.posPanel.classList.remove('opacity-100', 'pointer-events-auto');
+            DOM.posPanel.classList.add('opacity-0', 'pointer-events-none');
+        }
+        
+        this.renderState();
+        this.updateHeader();
+        
+        // Controllo se il Cash Out ha svuotato completamente la cassa
+        this.checkBust();
+        
+        // SAFE LOCALSTORAGE SAVE
+        try { localStorage.setItem('qa_pro_v26', JSON.stringify({bal: State.bal})); } catch(e) {}
+    },
+
+    renderState() {
+        let isSuspended = State.susp || State.sec >= 5700;
+        let lock = State.pos !== null || isSuspended;
+        
+        // OVERLAY DEL MERCATO QUANDO C'È UN GOAL
+        let mOverlay = document.getElementById('market-suspended-overlay');
+        if (mOverlay) mOverlay.style.display = isSuspended ? 'flex' : 'none';
+
+        ['H','X','A'].forEach(k => {
+            if(DOM.btns[`${k}-b`] && DOM.btns[`${k}-l`]) {
+                DOM.btns[`${k}-b`].disabled = lock; DOM.btns[`${k}-l`].disabled = lock;
+                if (lock) {
+                    DOM.btns[`${k}-b`].classList.add('opacity-40', 'cursor-not-allowed');
+                    DOM.btns[`${k}-l`].classList.add('opacity-40', 'cursor-not-allowed');
+                } else {
+                    DOM.btns[`${k}-b`].classList.remove('opacity-40', 'cursor-not-allowed');
+                    DOM.btns[`${k}-l`].classList.remove('opacity-40', 'cursor-not-allowed');
+                }
+            }
+        });
+        
+        const updateCoBtn = (coBtn) => {
+            if(coBtn) {
+                if(isSuspended) {
+                    coBtn.disabled = true; coBtn.className = "bg-gray-300 text-gray-500 font-black px-3 py-2 rounded-sm text-[10px] uppercase tracking-widest cursor-not-allowed";
+                    coBtn.innerText = App.t('susp');
+                } else {
+                    coBtn.disabled = false; coBtn.className = "bg-[var(--zth-green)] hover:bg-[#2eff0a] text-[#111] font-black px-3 py-2 rounded-sm text-[10px] uppercase tracking-widest shadow-sm active:scale-95 transition-transform cursor-pointer touch-manipulation";
+                    coBtn.innerText = App.t('cashout');
+                }
+            }
+        };
+
+        updateCoBtn(document.getElementById('btn-cashout-mob'));
+    }
+};
+</script>
+</body>
+</html>
