@@ -91,19 +91,24 @@
         .custom-scroll::-webkit-scrollbar-thumb { background-color: var(--primary); border-radius: 10px; }
 
         /* JOYSTICK VIRTUALE (Solo Mobile) */
-        #joystick-container {
+        #joystick-area {
             display: none; /* Attivato via JS su touch */
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 140px;
-            height: 140px;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            padding: 8px 0;
+            flex-shrink: 0;
+            z-index: 50;
+        }
+
+        #joystick-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
             background: rgba(15, 23, 42, 0.6);
             border: 2px solid rgba(16, 185, 129, 0.4);
             border-radius: 50%;
             backdrop-filter: blur(8px);
-            z-index: 50;
             touch-action: none;
             box-shadow: 0 0 20px rgba(0,0,0,0.5), inset 0 0 15px rgba(16, 185, 129, 0.2);
         }
@@ -112,7 +117,7 @@
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 60px; height: 60px;
+            width: 40px; height: 40px;
             background: radial-gradient(circle, #34d399, #059669);
             border-radius: 50%;
             box-shadow: 0 4px 10px rgba(0,0,0,0.6), inset 0 2px 4px rgba(255,255,255,0.4);
@@ -124,10 +129,10 @@
         .joy-arrow {
             position: absolute; width: 0; height: 0; border-style: solid; opacity: 0.3;
         }
-        .joy-up { top: 10px; left: 50%; transform: translateX(-50%); border-width: 0 8px 10px 8px; border-color: transparent transparent #fff transparent; }
-        .joy-down { bottom: 10px; left: 50%; transform: translateX(-50%); border-width: 10px 8px 0 8px; border-color: #fff transparent transparent transparent; }
-        .joy-left { left: 10px; top: 50%; transform: translateY(-50%); border-width: 8px 10px 8px 0; border-color: transparent #fff transparent transparent; }
-        .joy-right { right: 10px; top: 50%; transform: translateY(-50%); border-width: 8px 0 8px 10px; border-color: transparent transparent transparent #fff; }
+        .joy-up { top: 6px; left: 50%; transform: translateX(-50%); border-width: 0 6px 8px 6px; border-color: transparent transparent #fff transparent; }
+        .joy-down { bottom: 6px; left: 50%; transform: translateX(-50%); border-width: 8px 6px 0 6px; border-color: #fff transparent transparent transparent; }
+        .joy-left { left: 6px; top: 50%; transform: translateY(-50%); border-width: 6px 8px 6px 0; border-color: transparent #fff transparent transparent; }
+        .joy-right { right: 6px; top: 50%; transform: translateY(-50%); border-width: 6px 0 6px 8px; border-color: transparent transparent transparent #fff; }
 
     </style>
 </head>
@@ -190,15 +195,6 @@
             <div class="canvas-wrapper" id="gameWrapper">
                 <canvas id="gameCanvas"></canvas>
                 
-                <!-- JOYSTICK OVERLAY -->
-                <div id="joystick-container">
-                    <div class="joy-arrow joy-up"></div>
-                    <div class="joy-arrow joy-down"></div>
-                    <div class="joy-arrow joy-left"></div>
-                    <div class="joy-arrow joy-right"></div>
-                    <div id="joystick-knob"></div>
-                </div>
-                
                 <div id="startScreen" class="absolute inset-0 bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center rounded-lg z-10 p-6 text-center border border-white/5">
                     <div class="w-16 h-16 lg:w-20 lg:h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mb-4 border border-emerald-500/30 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
                         <span class="text-3xl lg:text-4xl">⚽</span>
@@ -240,6 +236,17 @@
                     <button id="nextLevelBtn" class="px-6 py-3 bg-gradient-to-b from-emerald-500 to-emerald-700 text-white font-black rounded-xl hover:from-emerald-400 hover:to-emerald-600 text-sm lg:text-lg shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all transform hover:-translate-y-1 active:scale-95 border-b-4 border-emerald-900 active:border-b-0 uppercase tracking-wide">
                         NEXT MATCH
                     </button>
+                </div>
+            </div>
+            
+            <!-- JOYSTICK AREA (Separata dal canvas) -->
+            <div id="joystick-area">
+                <div id="joystick-container">
+                    <div class="joy-arrow joy-up"></div>
+                    <div class="joy-arrow joy-down"></div>
+                    <div class="joy-arrow joy-left"></div>
+                    <div class="joy-arrow joy-right"></div>
+                    <div id="joystick-knob"></div>
                 </div>
             </div>
             
@@ -934,6 +941,7 @@
         });
 
         // --- 5. VIRTUAL JOYSTICK LOGIC ---
+        const joyArea = document.getElementById('joystick-area');
         const joyContainer = document.getElementById('joystick-container');
         const joyKnob = document.getElementById('joystick-knob');
         let joyActive = false;
@@ -941,7 +949,7 @@
 
         // Mostra il joystick solo se il dispositivo supporta il touch
         if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-            joyContainer.style.display = 'block';
+            joyArea.style.display = 'flex';
         }
 
         joyContainer.addEventListener('touchstart', e => {
@@ -969,7 +977,7 @@
         function handleJoyMove(touch) {
             const dx = touch.clientX - joyStartX;
             const dy = touch.clientY - joyStartY;
-            const dist = Math.min(Math.hypot(dx, dy), 35); // Limita raggio visivo
+            const dist = Math.min(Math.hypot(dx, dy), 30); // Limita raggio visivo (ridotto per knob più piccolo)
             const angle = Math.atan2(dy, dx);
 
             const knobX = Math.cos(angle) * dist;
@@ -977,7 +985,7 @@
             joyKnob.style.transform = `translate(calc(-50% + ${knobX}px), calc(-50% + ${knobY}px))`;
 
             // Zona morta per evitare input accidentali
-            if (dist > 15) { 
+            if (dist > 10) { 
                 let dir = '';
                 if (angle >= -Math.PI/4 && angle < Math.PI/4) dir = 'Right';
                 else if (angle >= Math.PI/4 && angle < 3*Math.PI/4) dir = 'Down';
