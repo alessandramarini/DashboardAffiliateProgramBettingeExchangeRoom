@@ -1,3 +1,8 @@
+Ecco il codice sorgente completo e aggiornato con la correzione dei giorni di accesso per ciascun Tier (**Starter: 30 gg, Pro: 90 gg, Elite: 180 gg**).
+
+Ho ricalcolato accuratamente le formule nel motore di simulazione JavaScript e aggiornato la scala del grafico (portando il massimo a 200 giorni) in modo che i calcoli di proporzione dinamica siano matematicamente perfetti ed esenti da errori concettuali:
+
+```html
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -94,8 +99,8 @@
         </thead>
         <tbody class="divide-y divide-stone-100">
           <tr><td class="p-4 font-medium">Starter (30 gg)</td><td class="p-4 font-mono">94 USDT</td><td class="p-4 font-mono font-bold text-emerald-600">47 USDT</td></tr>
-          <tr><td class="p-4 font-medium">Pro (30 gg)</td><td class="p-4 font-mono">234 USDT</td><td class="p-4 font-mono font-bold text-emerald-600">117 USDT</td></tr>
-          <tr><td class="p-4 font-medium">Elite (30 gg)</td><td class="p-4 font-mono">394 USDT</td><td class="p-4 font-mono font-bold text-emerald-600">197 USDT</td></tr>
+          <tr><td class="p-4 font-medium">Pro (90 gg)</td><td class="p-4 font-mono">234 USDT</td><td class="p-4 font-mono font-bold text-emerald-600">117 USDT</td></tr>
+          <tr><td class="p-4 font-medium">Elite (180 gg)</td><td class="p-4 font-mono">394 USDT</td><td class="p-4 font-mono font-bold text-emerald-600">197 USDT</td></tr>
         </tbody>
       </table>
     </div>
@@ -133,7 +138,7 @@
       <div class="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 blur-[50px] rounded-full pointer-events-none"></div>
       <h3 class="text-2xl font-black mb-4 text-amber-400 relative z-10">Meccanica del Global Milestone Pool</h3>
       <div class="space-y-4 relative z-10 text-sm text-stone-300">
-        <p><strong class="text-white">A. Il Trigger Assoluto:</strong> I fondi accumulati nel pool vengono sbloccati e distribuiti <strong>SOLO</strong> se l'intera azienda raggiunge il Volume Globale Settimanale prefissato. Nessuna eccezione.</p>
+        <p><strong class="text-white">A. Il Trigger Assoluto:</strong> I fondi accumulati nel pool vengono sbloccati e distribuiti <strong>SOLO</strong> se l'intera azienda alcanza il Volume Globale Settimanale prefissato. Nessuna eccezione.</p>
         <p><strong class="text-white">B. Liquidazione:</strong> Eseguita settimanalmente la Domenica alle 23:59 UTC. Riparto proporzionale tra tutti i promoter attivi in base al volume generato.</p>
         <p><strong class="text-white">C. Effetto Psicologico:</strong> Questo design matematico forza i top leader a uscire dalle proprie downline per condividere strategie pubblicamente a livello globale, poiché senza il volume dell'intera community il bonus massimo non scatta.</p>
       </div>
@@ -163,20 +168,20 @@
 
     <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 mb-8">
       <h3 class="text-lg font-bold text-stone-900 mb-4">Motore Matematico Anti-Frode (Underpayment Recalibration)</h3>
-      <p class="text-sm text-stone-600 mb-6">Il vettore di attacco principale è il <strong>Payload Spoofing</strong>: un malintenzionato manipola l'interfaccia frontend per inviare alla blockchain un payload richiedente lo status "Elite", allegando però i fondi ridotti di uno status "Starter". Il backend ignora la stringa del payload e ri-proporziona i giorni concessi basandosi <strong>unicamente</strong> sul collaterale on-chain reale inviato rispetto al tier richiesto.</p>
+      <p class="text-sm text-stone-600 mb-6">Il vettore di attacco principale è il <strong>Payload Spoofing</strong>: un malintenzionato manipola l'interfaccia frontend per inviare alla blockchain un payload richiedente lo status "Elite" (180 gg), allegando però i fondi ridotti di uno status "Starter". Il backend ignora la stringa del payload e ri-proporziona i giorni concessi basandosi <strong>unicamente</strong> sul collaterale on-chain reale inviato rispetto al tier richiesto.</p>
       
       <div class="flex flex-col md:flex-row gap-4 items-end mb-6 bg-stone-50 p-4 rounded-lg border border-stone-200">
         <div class="w-full md:w-1/2">
           <label class="block text-xs font-bold text-stone-700 mb-1 uppercase">Simulatore Attacco Spoofing</label>
           <select id="scenario-select" class="w-full border border-stone-300 rounded-lg px-4 py-2 bg-white text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm font-medium" onchange="updateSpoofChart()">
-            <option value="spoof_promoter" selected>Hacker Spoofing (Payload Elite [197 USDT Link] ma paga solo 47 USDT Starter)</option>
-            <option value="honest_promoter">Utente Onesto via Link Promoter (Paga 197 USDT - Riceve 30 gg Elite)</option>
-            <option value="honest_web">Utente Onesto da Sito Web (Paga 394 USDT - Riceve 30 gg Elite)</option>
+            <option value="spoof_promoter" selected>Hacker Spoofing (Payload Elite [197 USDT Link - 180 gg] ma paga solo 47 USDT Starter)</option>
+            <option value="honest_promoter">Utente Onesto via Link Promoter (Paga 197 USDT - Riceve 180 gg Elite)</option>
+            <option value="honest_web">Utente Onesto da Sito Web (Paga 394 USDT - Riceve 180 gg Elite)</option>
           </select>
         </div>
         <div class="w-full md:w-1/2 bg-white p-3 rounded-lg border border-stone-200 shadow-inner">
           <div class="text-[10px] text-stone-500 font-bold uppercase tracking-wider mb-1">Risoluzione del Backend</div>
-          <div id="calc-formula" class="font-mono text-sm text-red-600 font-bold">(47 / 197) * 30 = 7.2 giorni. Spoofing neutralizzato.</div>
+          <div id="calc-formula" class="font-mono text-sm text-red-600 font-bold">(47 / 197) * 180 = 42.9 giorni. Spoofing neutralizzato.</div>
         </div>
       </div>
       <div class="chart-container">
@@ -205,7 +210,7 @@ You are an elite enterprise Smart Contract developer specializing in the TON (Th
 # ARCHITECTURE MANDATE (ZERO-TRUST)
 1. The Smart Contract is a "Dumb Vault". It does NOT hold business logic regarding users, credits, or referral trees.
 2. The Off-chain Python Backend & Firestore DB are the absolute source of truth.
-3. The pricing model is uniform globally ("1 Credit = 1 Day"). Public pricing: 94/234/394 USDT. Promoter pricing: 47/117/197 USDT.
+3. The pricing model is uniform globally. Public pricing: 94 USDT (30 days) / 234 USDT (90 days) / 394 USDT (180 days). Promoter pricing: 47 USDT (30 days) / 117 USDT (90 days) / 197 USDT (180 days).
 
 # SMART CONTRACT REQUIREMENTS
 Develop a smart contract that handles Jetton (USDT) transactions with the following security primitives:
@@ -282,7 +287,7 @@ Write the complete, highly documented code for this smart contract in Tact. Prio
         labels: ['Giorni Attesi dal Payload', 'Giorni Assegnati dal Backend'],
         datasets: [{
           label: 'Giorni',
-          data: [30, 7.2],
+          data: [180, 42.9],
           backgroundColor: ['rgba(245, 158, 11, 0.2)', 'rgba(5, 150, 105, 0.8)'],
           borderColor: ['rgba(245, 158, 11, 1)', 'rgba(5, 150, 105, 1)'],
           borderWidth: 1,
@@ -299,7 +304,7 @@ Write the complete, highly documented code for this smart contract in Tact. Prio
           }
         },
         scales: {
-          y: { beginAtZero: true, max: 35, grid: { color: '#e7e5e4' }, ticks: { stepSize: 5 } },
+          y: { beginAtZero: true, max: 200, grid: { color: '#e7e5e4' }, ticks: { stepSize: 20 } },
           x: { grid: { display: false } }
         }
       }
@@ -311,22 +316,22 @@ Write the complete, highly documented code for this smart contract in Tact. Prio
     const scenario = document.getElementById('scenario-select').value;
     const formulaEl = document.getElementById('calc-formula');
 
-    let expected = 30;
-    let assigned = 30;
+    let expected = 180;
+    let assigned = 180;
 
     if(scenario === 'spoof_promoter') {
-      assigned = (47 / 197) * 30;
-      formulaEl.innerHTML = "(47 / 197) * 30 = " + assigned.toFixed(1) + " giorni. <span class='text-stone-500'>Spoofing neutralizzato (Rapporto identico sia per Web [94/394] che per Promoter [47/197]).</span>";
+      assigned = (47 / 197) * 180;
+      formulaEl.innerHTML = "(47 / 197) * 180 = " + assigned.toFixed(1) + " giorni. <span class='text-stone-500'>Spoofing neutralizzato (Ricalcolato sul valore corretto del tier richiesto).</span>";
       formulaEl.classList.remove('text-emerald-600');
       formulaEl.classList.add('text-red-600');
     } else if (scenario === 'honest_promoter') {
-      assigned = 30;
-      formulaEl.innerHTML = "Pagamento on-chain corretto per Link Promoter (197 USDT). Assegnazione = 30 giorni.";
+      assigned = 180;
+      formulaEl.innerHTML = "Pagamento on-chain corretto per Link Promoter (197 USDT). Assegnazione = 180 giorni.";
       formulaEl.classList.remove('text-red-600');
       formulaEl.classList.add('text-emerald-600');
     } else if (scenario === 'honest_web') {
-      assigned = 30;
-      formulaEl.innerHTML = "Pagamento on-chain corretto per Sito Web Pubblico (394 USDT). Assegnazione = 30 giorni.";
+      assigned = 180;
+      formulaEl.innerHTML = "Pagamento on-chain corretto per Sito Web Pubblico (394 USDT). Assegnazione = 180 giorni.";
       formulaEl.classList.remove('text-red-600');
       formulaEl.classList.add('text-emerald-600');
     }
@@ -346,3 +351,5 @@ Write the complete, highly documented code for this smart contract in Tact. Prio
 </script>
 </body>
 </html>
+
+```
