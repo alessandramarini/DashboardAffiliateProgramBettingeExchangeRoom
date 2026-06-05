@@ -1,3 +1,12 @@
+Hai assolutamente ragione. Se il listino ora è unico e globale per tutti gli utenti, il tracciamento dell'IP e le difese Anti-VPN diventano concettualmente superate.
+
+In un'architettura decentralizzata con listini universali, il vero vettore di attacco non è più la geolocalizzazione, ma il **Payload Spoofing** (o *Underpayment*): un utente malevolo che manipola il codice del frontend per inviare alla blockchain la richiesta di sblocco del pacchetto "Elite", allegando però solo i fondi del pacchetto "Starter".
+
+Ho aggiornato il file eliminando ogni riferimento a VPN/IP, inserendo il listino corretto e spostando il focus della sicurezza esclusivamente sulla validazione matematica dei fondi reali arrivati on-chain.
+
+Ecco il codice aggiornato:
+
+```html
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -48,7 +57,7 @@
   <div class="flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto p-4 gap-2 flex-1 scrollbar-hide">
     <button onclick="switchTab('arch')" id="btn-arch" class="tab-btn w-full text-left px-4 py-3 rounded-lg bg-stone-800 text-stone-50 font-medium transition-colors hover:bg-stone-700 whitespace-nowrap md:whitespace-normal border border-stone-700">🏛️ Architettura & Pricing</button>
     <button onclick="switchTab('revenue')" id="btn-revenue" class="tab-btn w-full text-left px-4 py-3 rounded-lg text-stone-400 font-medium transition-colors hover:bg-stone-700 whitespace-nowrap md:whitespace-normal border border-transparent">💸 Revenue Split & Pool</button>
-    <button onclick="switchTab('security')" id="btn-security" class="tab-btn w-full text-left px-4 py-3 rounded-lg text-stone-400 font-medium transition-colors hover:bg-stone-700 whitespace-nowrap md:whitespace-normal border border-transparent">🛑 Zero-Trust & Anti-VPN</button>
+    <button onclick="switchTab('security')" id="btn-security" class="tab-btn w-full text-left px-4 py-3 rounded-lg text-stone-400 font-medium transition-colors hover:bg-stone-700 whitespace-nowrap md:whitespace-normal border border-transparent">🛑 Zero-Trust & Anti-Spoofing</button>
     <button onclick="switchTab('prompt')" id="btn-prompt" class="tab-btn w-full text-left px-4 py-3 rounded-lg text-stone-400 font-medium transition-colors hover:bg-stone-700 whitespace-nowrap md:whitespace-normal border border-transparent mt-auto md:mt-4 bg-stone-900/50">🤖 Prompt AI / Dev Spec</button>
   </div>
 </nav>
@@ -77,12 +86,12 @@
         <div class="bg-amber-50 p-3 rounded text-sm text-amber-900 border border-amber-200 font-medium">
           Regola Aurea Trasparenza:<br>
           <span class="font-black text-amber-600">1 Credito = 1 Giorno esatto.</span><br>
-          Nessun sistema a punti complesso.
+          Listino universale applicato globalmente.
         </div>
       </div>
     </div>
 
-    <h3 class="text-xl font-bold text-stone-900 mb-4">Pricing Web vs Promoter Link</h3>
+    <h3 class="text-xl font-bold text-stone-900 mb-4">Pricing Universale: Web vs Promoter Link</h3>
     <div class="overflow-x-auto rounded-xl border border-stone-200 shadow-sm mb-8">
       <table class="w-full text-left bg-white text-sm">
         <thead class="bg-stone-900 text-stone-100">
@@ -93,9 +102,9 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-stone-100">
-          <tr><td class="p-4 font-medium">Starter</td><td class="p-4 font-mono">94 USDT</td><td class="p-4 font-mono font-bold text-emerald-600">47 USDT</td></tr>
-          <tr><td class="p-4 font-medium">Pro</td><td class="p-4 font-mono">234 USDT</td><td class="p-4 font-mono font-bold text-emerald-600">117 USDT</td></tr>
-          <tr><td class="p-4 font-medium">Elite</td><td class="p-4 font-mono">394 USDT</td><td class="p-4 font-mono font-bold text-emerald-600">197 USDT</td></tr>
+          <tr><td class="p-4 font-medium">Starter (30 gg)</td><td class="p-4 font-mono">94 USDT</td><td class="p-4 font-mono font-bold text-emerald-600">47 USDT</td></tr>
+          <tr><td class="p-4 font-medium">Pro (30 gg)</td><td class="p-4 font-mono">234 USDT</td><td class="p-4 font-mono font-bold text-emerald-600">117 USDT</td></tr>
+          <tr><td class="p-4 font-medium">Elite (30 gg)</td><td class="p-4 font-mono">394 USDT</td><td class="p-4 font-mono font-bold text-emerald-600">197 USDT</td></tr>
         </tbody>
       </table>
     </div>
@@ -142,7 +151,7 @@
 
   <div id="security" class="tab-content max-w-5xl mx-auto">
     <header class="mb-8">
-      <h2 class="text-3xl font-extrabold text-stone-900 mb-2 tracking-tight">Sicurezza Zero-Trust & Anti-VPN</h2>
+      <h2 class="text-3xl font-extrabold text-stone-900 mb-2 tracking-tight">Sicurezza Zero-Trust & Anti-Spoofing</h2>
       <p class="text-lg text-stone-600">Modellazione delle minacce e difese automatizzate a livello di transazione e database.</p>
     </header>
 
@@ -162,20 +171,20 @@
     </div>
 
     <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 mb-8">
-      <h3 class="text-lg font-bold text-stone-900 mb-4">Motore Matematico Anti-VPN Ricalibrato</h3>
-      <p class="text-sm text-stone-600 mb-6">Il backend ignora completamente la provenienza IP (facilmente falsificabile tramite VPN). Il conteggio dei giorni ("1 Credito = 1 Giorno") si basa <strong>unicamente</strong> sul collaterale on-chain reale. Simula uno scenario qui sotto.</p>
+      <h3 class="text-lg font-bold text-stone-900 mb-4">Motore Matematico Anti-Frode (Underpayment Recalibration)</h3>
+      <p class="text-sm text-stone-600 mb-6">Con l'unificazione globale dei listini, l'indirizzo IP non è più rilevante. Il nuovo vettore di attacco è il <strong>Payload Spoofing</strong>: un malintenzionato manipola l'interfaccia frontend per inviare alla blockchain un payload richiedente lo status "Elite", ma allegando i fondi minimi di uno status "Starter". Il backend ignora la richiesta e assegna i giorni <strong>unicamente</strong> in proporzione al collaterale on-chain reale.</p>
       
       <div class="flex flex-col md:flex-row gap-4 items-end mb-6 bg-stone-50 p-4 rounded-lg border border-stone-200">
         <div class="w-full md:w-1/2">
           <label class="block text-xs font-bold text-stone-700 mb-1 uppercase">Simulatore Attacco Spoofing</label>
           <select id="scenario-select" class="w-full border border-stone-300 rounded-lg px-4 py-2 bg-white text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm font-medium" onchange="updateVpnChart()">
-            <option value="honest">Utente Regolare (Paga 197 USDT - Si aspetta 30 gg Elite)</option>
-            <option value="spoof" selected>Hacker con VPN (Paga 47 USDT Starter - Spera di avere 30 gg Elite)</option>
+            <option value="honest">Utente Regolare (Paga 197 USDT on-chain - Si aspetta 30 gg Elite)</option>
+            <option value="spoof" selected>Hacker Spoofing (Invia Payload Elite ma paga solo 47 USDT Starter)</option>
           </select>
         </div>
         <div class="w-full md:w-1/2 bg-white p-3 rounded-lg border border-stone-200 shadow-inner">
           <div class="text-[10px] text-stone-500 font-bold uppercase tracking-wider mb-1">Risoluzione del Backend</div>
-          <div id="calc-formula" class="font-mono text-sm text-red-600 font-bold">(47 / 197) * 30 = 7.1 giorni. Errore VPN mitigato.</div>
+          <div id="calc-formula" class="font-mono text-sm text-red-600 font-bold">(47 / 197) * 30 = 7.1 giorni. Spoofing neutralizzato.</div>
         </div>
       </div>
       <div class="chart-container">
@@ -187,7 +196,7 @@
   <div id="prompt" class="tab-content max-w-5xl mx-auto h-full flex flex-col">
     <header class="mb-4 shrink-0">
       <h2 class="text-3xl font-extrabold text-stone-900 mb-2 tracking-tight">AI Developer Prompt</h2>
-      <p class="text-lg text-stone-600">Usa questo prompt di sistema per istruire un'intelligenza artificiale o uno sviluppatore a generare lo Smart Contract TON (in FunC/Tact) esattamente con i requisiti di sicurezza dell'ecosistema.</p>
+      <p class="text-lg text-stone-600">Usa questo prompt di sistema per istruire un'intelligenza artificiale o uno sviluppatore a generare lo Smart Contract TON (in FunC/Tact) integrando le logiche di Zero-Trust pattuite.</p>
     </header>
 
     <div class="flex-1 bg-stone-950 rounded-xl shadow-2xl border border-stone-800 flex flex-col overflow-hidden">
@@ -204,7 +213,7 @@ You are an elite enterprise Smart Contract developer specializing in the TON (Th
 # ARCHITECTURE MANDATE (ZERO-TRUST)
 1. The Smart Contract is a "Dumb Vault". It does NOT hold business logic regarding users, credits, or referral trees.
 2. The Off-chain Python Backend & Firestore DB are the absolute source of truth.
-3. The pricing model is "1 Credit = 1 Day". Public pricing: 94/234/394 USDT. Promoter pricing: 47/117/197 USDT.
+3. The pricing model is uniform globally ("1 Credit = 1 Day"). Public pricing: 94/234/394 USDT. Promoter pricing: 47/117/197 USDT.
 
 # SMART CONTRACT REQUIREMENTS
 Develop a smart contract that handles Jetton (USDT) transactions with the following security primitives:
@@ -213,6 +222,7 @@ Develop a smart contract that handles Jetton (USDT) transactions with the follow
 - Accept incoming USDT transfers.
 - STRICT Fake Token Shield: The contract must explicitly verify the `jetton_master_address` to match the official TON USDT address (EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs). Reject anything else.
 - Payload parsing: The memo/payload of the transfer MUST contain the user's `Telegram_ID` as an immutable string/integer so the off-chain listener can link the payment to the user database.
+- The contract does NOT dictate tiers. The backend recalculates days automatically against the actual USDT received (e.g. Underpayment Recalibration).
 
 ## 2. Withdrawal Mechanism (Outbound / Claim)
 - Implement an on-chain ED25519 signature verification system for the `claim()` function.
@@ -277,7 +287,7 @@ Write the complete, highly documented code for this smart contract in Tact. Prio
     vpnChartInstance = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['Giorni Attesi dall\'Utente', 'Giorni Assegnati dal Backend'],
+        labels: ['Giorni Attesi dal Payload', 'Giorni Assegnati dal Backend'],
         datasets: [{
           label: 'Giorni',
           data: [30, 7.1],
@@ -313,14 +323,14 @@ Write the complete, highly documented code for this smart contract in Tact. Prio
     let assigned = 30;
 
     if(scenario === 'spoof') {
-      // Paga Starter Affiliate (47) aspettandosi Elite (197)
+      // Forza payload Elite (197) ma paga Starter (47)
       assigned = (47 / 197) * 30;
-      formulaEl.innerHTML = "(47 / 197) * 30 = 7.1 giorni. <span class='text-stone-500'>Errore VPN mitigato.</span>";
+      formulaEl.innerHTML = "(47 / 197) * 30 = 7.1 giorni. <span class='text-stone-500'>Spoofing neutralizzato.</span>";
       formulaEl.classList.remove('text-emerald-600');
       formulaEl.classList.add('text-red-600');
     } else {
       assigned = 30;
-      formulaEl.innerHTML = "Pagamento on-chain corretto. Assegnazione = 30 giorni.";
+      formulaEl.innerHTML = "Pagamento on-chain congruo al payload. Assegnazione = 30 giorni.";
       formulaEl.classList.remove('text-red-600');
       formulaEl.classList.add('text-emerald-600');
     }
@@ -341,3 +351,5 @@ Write the complete, highly documented code for this smart contract in Tact. Prio
 </script>
 </body>
 </html>
+
+```
