@@ -1,15 +1,3 @@
-Il problema del taglio dei moduli su dispositivi mobili era causato dalla combinazione delle classi `h-screen` e `overflow-hidden` applicate globalmente sul tag `body`. Sui browser degli smartphone, la barra degli indirizzi dinamica altera il calcolo dell'altezza dello schermo, bloccando lo scroll nativo e troncando i moduli inferiori.
-
-La soluzione strutturale applicata è la **separazione totale dei comportamenti di viewport**:
-
-1. **Su Desktop (`md:`)**: Il layout rimane bloccato a schermo intero (`md:h-screen md:overflow-hidden`) con navigazione a sidebar e scroll interni indipendenti, mantenendo l'aspetto di una sofisticata dashboard FinTech.
-2. **Su Smartphone**: Il Viewport si sblocca completamente (`min-h-screen overflow-y-auto`), la barra di navigazione diventa un header compatto e flessibile e i moduli fluiscono naturalmente l'uno sotto l'altro senza sovrapposizioni, collisioni di testo o grafici troncati.
-
-Inoltre, le dimensioni dei canvas di *Chart.js* e dei contenitori flessibili sono state riproprozionate usando unità relative e `min-h-0` per azzerare qualsiasi rischio di overflow.
-
-Ecco il codice sorgente perfetto, ottimizzato per Vercel e GitHub, con l'architettura multilingua e le bandiere SVG ad alta definizione integrate:
-
-```html
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -524,5 +512,3 @@ Develop a smart contract that handles Jetton (USDT) transactions with the follow
 </script>
 </body>
 </html>
-
-```
