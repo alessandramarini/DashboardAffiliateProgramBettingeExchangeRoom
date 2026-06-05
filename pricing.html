@@ -1,437 +1,343 @@
 <!DOCTYPE html>
-<html lang="en" class="antialiased">
+<html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>BETTING EXCHANGE ROOM - Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Contract Blueprint & Security V3 - Betting Exchange</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 40vh; max-height: 400px; }
+  @media (min-width: 768px) { .chart-container { height: 350px; } }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeIn 0.4s ease-out forwards; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   
-  <meta name="theme-color" content="#09090b">
-  <meta name="description" content="Betting Exchange Room Affiliate Program and Smart Contract Dashboard.">
-
-  <link rel="preconnect" href="https://unpkg.com" crossorigin>
-  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
-  <link rel="preconnect" href="https://flagcdn.com" crossorigin>
-
-  <style>
-    body, html {
-      margin: 0; padding: 0;
-      background-color: #09090b !important; color: #f4f4f5 !important;
-      font-family: 'Inter', system-ui, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      width: 100%; min-height: 100vh; min-height: 100dvh;
-    }
-    
-    #root { display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; }
-    
-    .bg-grid-pattern {
-      background-color: #09090b;
-      background-image: radial-gradient(rgba(212, 175, 55, 0.07) 1px, transparent 1px), radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-      background-size: 32px 32px, 64px 64px; background-position: 0 0, 16px 16px; position: relative;
-    }
-    .bg-grid-pattern::before {
-      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 1000px; height: 600px;
-      background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, rgba(9, 9, 11, 0) 70%); pointer-events: none; z-index: 0;
-    }
-
-    .text-gold-gradient { background: linear-gradient(135deg, #fef08a 0%, #d4af37 50%, #92400e 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .bg-gold-gradient { background: linear-gradient(135deg, #fcd34d 0%, #d4af37 50%, #b45309 100%); }
-
-    .initial-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: #09090b; color: #d4af37; z-index: 9999; }
-    .spinner-ring { width: 48px; height: 48px; border: 3px solid rgba(212, 175, 55, 0.1); border-radius: 50%; border-top-color: #d4af37; animation: spin 1s linear infinite; margin-bottom: 24px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d4af37; }
-
-    .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    .toast-enter { animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    
-    .glass-panel { background: rgba(24, 24, 27, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
-    .coin-unqualified { filter: grayscale(100%) opacity(0.5); }
-    .coin-qualified { filter: grayscale(0%) opacity(1); box-shadow: 0 0 25px rgba(212, 175, 55, 0.5); }
-  </style>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = { theme: { extend: { colors: { 
-      brand: { 300: '#fde68a', 400: '#fcd34d', 500: '#d4af37', 600: '#b45309', 700: '#92400e' },
-      success: { 500: '#10b981', 400: '#34d399', 600: '#059669' },
-      surface: { 950: '#09090b', 900: '#18181b', 800: '#27272a', 700: '#3f3f46' },
-      zinc: { 400: '#a1a1aa', 500: '#71717a' }
-    } } } }
-  </script>
+  /* FinTech Aesthetic Reset */
+  body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
   
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
-  <script src="https://unpkg.com/recharts@2.1.12/umd/Recharts.js"></script>
+  /* Scrollbar Custom */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
+</style>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          stone: { 50: '#fafaf9', 100: '#f5f5f4', 200: '#e7e5e4', 300: '#d6d3d1', 800: '#292524', 900: '#1c1917', 950: '#0c0a09' },
+          amber: { 500: '#f59e0b', 600: '#d97706' },
+          emerald: { 600: '#059669' },
+          blue: { 600: '#2563eb' }
+        },
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], mono: ['ui-monospace', 'SFMono-Regular', 'monospace'] }
+      }
+    }
+  }
+</script>
 </head>
-<body class="bg-surface-950 text-zinc-300 selection:bg-brand-500/30">
-  
-  <div id="root">
-    <div class="initial-loader">
-      <div class="spinner-ring"></div>
-      <div class="text-xs text-zinc-500 mt-2 font-bold tracking-widest uppercase">Initializing System...</div>
+<body class="bg-stone-50 text-stone-800 font-sans h-screen overflow-hidden flex flex-col md:flex-row">
+
+<nav class="w-full md:w-72 bg-stone-950 text-stone-100 flex flex-col shadow-2xl z-20 h-auto md:h-full shrink-0 border-r border-stone-800">
+  <div class="p-6 bg-stone-900 border-b border-stone-800">
+    <h1 class="text-xl font-black tracking-tight text-amber-500 uppercase">🛡️ Tech Blueprint V3</h1>
+    <p class="text-xs text-stone-400 mt-1 font-mono">TON Smart Contract Specs</p>
+  </div>
+  <div class="flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto p-4 gap-2 flex-1 scrollbar-hide">
+    <button onclick="switchTab('arch')" id="btn-arch" class="tab-btn w-full text-left px-4 py-3 rounded-lg bg-stone-800 text-stone-50 font-medium transition-colors hover:bg-stone-700 whitespace-nowrap md:whitespace-normal border border-stone-700">🏛️ Architettura & Pricing</button>
+    <button onclick="switchTab('revenue')" id="btn-revenue" class="tab-btn w-full text-left px-4 py-3 rounded-lg text-stone-400 font-medium transition-colors hover:bg-stone-700 whitespace-nowrap md:whitespace-normal border border-transparent">💸 Revenue Split & Pool</button>
+    <button onclick="switchTab('security')" id="btn-security" class="tab-btn w-full text-left px-4 py-3 rounded-lg text-stone-400 font-medium transition-colors hover:bg-stone-700 whitespace-nowrap md:whitespace-normal border border-transparent">🛑 Zero-Trust & Anti-VPN</button>
+    <button onclick="switchTab('prompt')" id="btn-prompt" class="tab-btn w-full text-left px-4 py-3 rounded-lg text-stone-400 font-medium transition-colors hover:bg-stone-700 whitespace-nowrap md:whitespace-normal border border-transparent mt-auto md:mt-4 bg-stone-900/50">🤖 Prompt AI / Dev Spec</button>
+  </div>
+</nav>
+
+<main class="flex-1 overflow-y-auto p-4 md:p-8 lg:p-12 bg-stone-50 relative scroll-smooth">
+
+  <div id="arch" class="tab-content active max-w-5xl mx-auto">
+    <header class="mb-8">
+      <h2 class="text-3xl font-extrabold text-stone-900 mb-2 tracking-tight">Architettura di Sistema V3</h2>
+      <p class="text-lg text-stone-600">Separazione netta degli ambienti: il backend Python è la singola fonte di verità, mentre la blockchain agisce da registro immutabile e cassaforte.</p>
+    </header>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+        <h3 class="text-lg font-bold text-stone-900 mb-4 flex items-center gap-2">🔗 Il Paradigma "Dumb Vault"</h3>
+        <p class="text-sm text-stone-600 leading-relaxed mb-4">Lo Smart Contract su TON non possiede logica di business complessa (es. non sa chi è sponsor di chi). La sua unica funzione è ricevere USDT, emettere un evento verificabile e attendere firme crittografiche dal backend per autorizzare i prelievi.</p>
+        <div class="bg-stone-100 p-3 rounded font-mono text-xs text-stone-700 border-l-2 border-blue-500">
+          Backend (Python/DB) -> Source of Truth<br>
+          Smart Contract (TON) -> Escrow & Liquidity
+        </div>
+      </div>
+      
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+        <h3 class="text-lg font-bold text-stone-900 mb-4 flex items-center gap-2">🆔 Motore di Identità & Accesso</h3>
+        <p class="text-sm text-stone-600 leading-relaxed mb-4">Il <code class="bg-stone-100 px-1 rounded">Telegram_ID</code> funge da Chiave Primaria Immutabile. Le downline di affiliazione sono collegate a vita al database off-chain.</p>
+        <div class="bg-amber-50 p-3 rounded text-sm text-amber-900 border border-amber-200 font-medium">
+          Regola Aurea Trasparenza:<br>
+          <span class="font-black text-amber-600">1 Credito = 1 Giorno esatto.</span><br>
+          Nessun sistema a punti complesso.
+        </div>
+      </div>
+    </div>
+
+    <h3 class="text-xl font-bold text-stone-900 mb-4">Pricing Web vs Promoter Link</h3>
+    <div class="overflow-x-auto rounded-xl border border-stone-200 shadow-sm mb-8">
+      <table class="w-full text-left bg-white text-sm">
+        <thead class="bg-stone-900 text-stone-100">
+          <tr>
+            <th class="p-4 font-semibold">Tier di Accesso</th>
+            <th class="p-4 font-semibold">Prezzo Pubblico (Web)</th>
+            <th class="p-4 font-semibold text-amber-400">Prezzo Link Promoter (-50%)</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-stone-100">
+          <tr><td class="p-4 font-medium">Starter</td><td class="p-4 font-mono">94 USDT</td><td class="p-4 font-mono font-bold text-emerald-600">47 USDT</td></tr>
+          <tr><td class="p-4 font-medium">Pro</td><td class="p-4 font-mono">234 USDT</td><td class="p-4 font-mono font-bold text-emerald-600">117 USDT</td></tr>
+          <tr><td class="p-4 font-medium">Elite</td><td class="p-4 font-mono">394 USDT</td><td class="p-4 font-mono font-bold text-emerald-600">197 USDT</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <script type="text/babel">
-    const { useState, useEffect, useCallback, useRef, useMemo } = React;
-    const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } = window.Recharts; 
+  <div id="revenue" class="tab-content max-w-5xl mx-auto">
+    <header class="mb-8">
+      <h2 class="text-3xl font-extrabold text-stone-900 mb-2 tracking-tight">Distribuzione Ricavi & Global Pool</h2>
+      <p class="text-lg text-stone-600">Logica matematica di calcolo off-chain prima dell'autorizzazione del prelievo on-chain.</p>
+    </header>
 
-    // FIX 1: Render sicuro degli SVG senza far impazzire il Virtual DOM di React
-    const Icon = ({ name, size = 24, className = '', ...props }) => {
-      if (!window.lucide || !window.lucide.icons[name]) return <span className={`w-[${size}px] h-[${size}px] inline-block`} />;
-      const svgString = window.lucide.icons[name].toSvg({ width: size, height: size, class: className, ...props });
-      return <span dangerouslySetInnerHTML={{ __html: svgString }} className="inline-flex shrink-0 items-center justify-center" />;
-    };
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+        <h3 class="font-bold text-stone-900 mb-4 uppercase tracking-wider text-sm">Scenario A: Vendita Tramite Ref-Link</h3>
+        <div class="space-y-3 font-mono text-sm">
+          <div class="flex justify-between items-center p-2 hover:bg-stone-50 rounded"><span>Livello 1 (Diretto)</span> <span class="font-bold text-emerald-600">50%</span></div>
+          <div class="flex justify-between items-center p-2 hover:bg-stone-50 rounded"><span>Livello 2 (Mentore)</span> <span class="font-bold text-emerald-600">10%</span></div>
+          <div class="flex justify-between items-center p-2 hover:bg-stone-50 rounded"><span>Livello 3 (Master)</span> <span class="font-bold text-emerald-600">5%</span></div>
+          <div class="flex justify-between items-center p-2 border-t border-stone-100"><span>Tesoreria (Azienda)</span> <span class="font-bold text-stone-900">25%</span></div>
+          <div class="flex justify-between items-center p-2 bg-amber-50 border border-amber-100 rounded text-amber-700 font-bold"><span>Global Milestone Pool</span> <span>10%</span></div>
+        </div>
+      </div>
 
-    const LANGUAGES = [
-      { code: 'en', name: 'ENG', flag: 'gb' }, { code: 'es', name: 'ESP', flag: 'es' },
-      { code: 'pt', name: 'POR', flag: 'pt' }, { code: 'it', name: 'ITA', flag: 'it' }
-    ];
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+        <h3 class="font-bold text-stone-900 mb-4 uppercase tracking-wider text-sm">Scenario B: Vendita Diretta dal Sito</h3>
+        <div class="space-y-3 font-mono text-sm">
+          <div class="flex justify-between items-center p-2 hover:bg-stone-50 rounded"><span>Tesoreria (Azienda)</span> <span class="font-bold text-stone-900">40%</span></div>
+          <div class="flex justify-between items-center p-2 bg-amber-50 border border-amber-100 rounded text-amber-700 font-bold"><span>Global Milestone Pool</span> <span>30%</span></div>
+          <div class="flex justify-between items-center p-2 hover:bg-stone-50 rounded"><span>Events & Eco Fund</span> <span class="font-bold text-blue-600">30%</span></div>
+        </div>
+      </div>
+    </div>
 
-    const translations = {
-      en: {
-        app_title: "BETTING EXCHANGE ROOM", user_dash: "User Area", partner_dash: "Partner Area", company_dash: "Treasury",
-        academy_btn: "Zero to Hero Academy", signals_btn: "Telegram Signals Room", setup_wallet: "Setup TON Wallet", 
-        setup_wallet_desc: "Configure your TON USDT wallet.", change_wallet: "Change Wallet", edit_wallet_desc: "Update your destination TON address.",
-        save_wallet: "Save Wallet", cancel: "Cancel", login: "Connect Wallet", logout: "Disconnect", treasury_center: "Treasury Operations", 
-        simulate_deposit: "Simulate Deposit", processed_volume: "Gross Volume", real_usdt: "On-Chain USDT", company_reserve: "Company Reserve", 
-        withdrawable_funds: "Liquid Funds", active_nodes: "Active Promoters", registered_pools: "System Users", cash_flow: "Revenue (7D)", 
-        copy_link: "Copy Link", copied: "Copied!", vault_available: "Available for Withdrawal", no_funds: "No Funds", signing: "Processing...", 
-        unlock_withdraw: "Withdraw Funds", lifetime_deposit: "Total Earned", audit_trail: "Withdrawal History", no_tx: "No transactions.",
-        security_auth: "Confirm Withdrawal", requested_amount: "Amount", dest_wallet: "Destination", signing_btn: "Confirming...", 
-        sign_withdraw_btn: "Confirm Transfer", earnings_chart: "Earnings Overview", daily_subs: "Active Leads", conv_rate: "Conv. Rate", 
-        bot_interactions: "Link Clicks", geo_dist: "Global Distribution", recent_activity: "Recent Referrals",
-        network_dir: "Network Directory", my_network: "My Downline", promoter: "Promoter", volume: "Volume", status: "Status",
-        global_pool: "Global Milestone Pool", pool_qualified: "Target Reached!", pool_unqualified: "Target Not Met", target: "Target", 
-        ends_sat: "Liquidates Sunday 23:59 UTC", white_paper: "White Paper", close_doc: "Close Document"
-      },
-      es: {
-        app_title: "BETTING EXCHANGE ROOM", user_dash: "Área Usuario", partner_dash: "Área Socios", company_dash: "Tesorería",
-        academy_btn: "Zero to Hero Academy", signals_btn: "Sala Señales Telegram", setup_wallet: "Configurar TON Wallet", 
-        setup_wallet_desc: "Configura tu billetera TON USDT.", change_wallet: "Cambiar Billetera", edit_wallet_desc: "Actualiza tu dirección TON.",
-        save_wallet: "Guardar", cancel: "Cancelar", login: "Conectar Billetera", logout: "Desconectar", treasury_center: "Operaciones de Tesorería", 
-        simulate_deposit: "Simular Depósito", processed_volume: "Volumen Bruto", real_usdt: "USDT On-Chain", company_reserve: "Reserva Empresa", 
-        withdrawable_funds: "Fondos Líquidos", active_nodes: "Promotores Activos", registered_pools: "Usuarios", cash_flow: "Ingresos (7D)", 
-        copy_link: "Copiar Enlace", copied: "¡Copiado!", vault_available: "Disponible para Retiro", no_funds: "Sin Fondos", signing: "Procesando...", 
-        unlock_withdraw: "Retirar Fondos", lifetime_deposit: "Ganancias Totales", audit_trail: "Historial Retiros", no_tx: "Sin transacciones.",
-        security_auth: "Confirmar Retiro", requested_amount: "Monto", dest_wallet: "Destino", signing_btn: "Confirmando...", 
-        sign_withdraw_btn: "Confirmar Transferencia", earnings_chart: "Resumen de Ganancias", daily_subs: "Leads Activos", conv_rate: "Tasa Conv.", 
-        bot_interactions: "Clics en Enlace", geo_dist: "Distribución Global", recent_activity: "Referidos Recientes",
-        network_dir: "Directorio de Red", my_network: "Mi Red", promoter: "Promotor", volume: "Volumen", status: "Estado",
-        global_pool: "Global Milestone Pool", pool_qualified: "¡Objetivo Alcanzado!", pool_unqualified: "Objetivo No Alcanzado", target: "Objetivo", 
-        ends_sat: "Liquidación Domingo 23:59 UTC", white_paper: "White Paper", close_doc: "Cerrar Documento"
-      },
-      pt: {
-        app_title: "BETTING EXCHANGE ROOM", user_dash: "Área Usuário", partner_dash: "Área Sócios", company_dash: "Tesouraria",
-        academy_btn: "Zero to Hero Academy", signals_btn: "Sala Sinais Telegram", setup_wallet: "Configurar TON Wallet", 
-        setup_wallet_desc: "Configure sua carteira TON USDT.", change_wallet: "Mudar Carteira", edit_wallet_desc: "Atualize o endereço TON.",
-        save_wallet: "Salvar", cancel: "Cancelar", login: "Conectar Carteira", logout: "Desconectar", treasury_center: "Operações de Tesouraria", 
-        simulate_deposit: "Simular Depósito", processed_volume: "Volume Bruto", real_usdt: "USDT On-Chain", company_reserve: "Reserva Empresa", 
-        withdrawable_funds: "Fundos Líquidos", active_nodes: "Promotores Ativos", registered_pools: "Usuários", cash_flow: "Receita (7D)", 
-        copy_link: "Copiar Link", copied: "Copiado!", vault_available: "Disponível para Saque", no_funds: "Sem Fundos", signing: "Processando...", 
-        unlock_withdraw: "Sacar Fundos", lifetime_deposit: "Ganhos Totais", audit_trail: "Histórico Saques", no_tx: "Nenhum saque.",
-        security_auth: "Confirmar Saque", requested_amount: "Valor", dest_wallet: "Destino", signing_btn: "Confirmando...", 
-        sign_withdraw_btn: "Confirmar Transferência", earnings_chart: "Resumo de Ganhos", daily_subs: "Leads Ativos", conv_rate: "Taxa Conv.", 
-        bot_interactions: "Cliques no Link", geo_dist: "Distribuição Global", recent_activity: "Indicados Recentes",
-        network_dir: "Diretório de Rede", my_network: "A Sua Rede", promoter: "Promotor", volume: "Volume", status: "Status",
-        global_pool: "Global Milestone Pool", pool_qualified: "Alvo Atingido!", pool_unqualified: "Alvo Não Atingido", target: "Meta", 
-        ends_sat: "Liquidação Domingo 23:59 UTC", white_paper: "White Paper", close_doc: "Fechar"
-      },
-      it: {
-        app_title: "BETTING EXCHANGE ROOM", user_dash: "Area Utente", partner_dash: "Area Partner", company_dash: "Tesoreria",
-        academy_btn: "Zero to Hero Academy", signals_btn: "Sala Segnali Telegram", setup_wallet: "Configura Wallet TON", 
-        setup_wallet_desc: "Imposta il tuo wallet TON USDT.", change_wallet: "Cambia Wallet", edit_wallet_desc: "Aggiorna l'indirizzo TON.",
-        save_wallet: "Salva Wallet", cancel: "Annulla", login: "Connetti Wallet", logout: "Disconnetti", treasury_center: "Operazioni Tesoreria", 
-        simulate_deposit: "Simula Deposito", processed_volume: "Volume Lordo", real_usdt: "USDT On-Chain", company_reserve: "Riserva Aziendale", 
-        withdrawable_funds: "Fondi Liquidi", active_nodes: "Promoter Attivi", registered_pools: "Utenti a Sistema", cash_flow: "Ricavi (7G)", 
-        copy_link: "Copia Link", copied: "Copiato!", vault_available: "Prelevabile", no_funds: "Nessun Fondo", signing: "Elaborazione...", 
-        unlock_withdraw: "Preleva Fondi", lifetime_deposit: "Guadagni Totali", audit_trail: "Storico Prelievi", no_tx: "Nessun prelievo.",
-        security_auth: "Conferma Prelievo", requested_amount: "Importo", dest_wallet: "Destinazione", signing_btn: "Conferma...", 
-        sign_withdraw_btn: "Conferma Trasferimento", earnings_chart: "Panoramica Guadagni", daily_subs: "Lead Attivi", conv_rate: "Tasso Conv.", 
-        bot_interactions: "Clic Link", geo_dist: "Distribuzione Globale", recent_activity: "Referral Recenti",
-        network_dir: "Directory di Rete", my_network: "La Tua Downline", promoter: "Promoter", volume: "Volume", status: "Stato",
-        global_pool: "Global Milestone Pool", pool_qualified: "Target Raggiunto!", pool_unqualified: "Target Non Raggiunto", target: "Target", 
-        ends_sat: "Liquidazione Domenica 23:59 UTC", white_paper: "White Paper", close_doc: "Chiudi Documento"
-      }
-    };
+    <div class="bg-stone-900 p-8 rounded-xl shadow-xl text-stone-100 border border-stone-800 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 blur-[50px] rounded-full pointer-events-none"></div>
+      <h3 class="text-2xl font-black mb-4 text-amber-400 relative z-10">Meccanica del Global Milestone Pool</h3>
+      <div class="space-y-4 relative z-10 text-sm text-stone-300">
+        <p><strong class="text-white">A. Il Trigger Assoluto:</strong> I fondi accumulati nel pool vengono sbloccati e distribuiti <strong>SOLO</strong> se l'intera azienda raggiunge il Volume Globale Settimanale prefissato. Nessuna eccezione.</p>
+        <p><strong class="text-white">B. Liquidazione:</strong> Eseguita settimanalmente la Domenica alle 23:59 UTC. Riparto proporzionale tra tutti i promoter attivi in base al volume generato.</p>
+        <p><strong class="text-white">C. Effetto Psicologico:</strong> Questo design matematico forza i top leader a uscire dalle proprie downline per condividere strategie pubblicamente a livello globale, poiché senza il volume dell'intera community il bonus massimo non scatta.</p>
+      </div>
+    </div>
+  </div>
 
-    const RAW_REVENUE_DATA = [ { rawKey: 'mon', amount: 1200 }, { rawKey: 'tue', amount: 2500 }, { rawKey: 'wed', amount: 1800 }, { rawKey: 'thu', amount: 3000 }, { rawKey: 'fri', amount: 4500 }, { rawKey: 'sat', amount: 6000 }, { rawKey: 'today', amount: 5500 } ];
-    const PROMOTER_CHART_DATA = [ { rawKey: 'mon', amount: 45 }, { rawKey: 'tue', amount: 120 }, { rawKey: 'wed', amount: 80 }, { rawKey: 'thu', amount: 210 }, { rawKey: 'fri', amount: 150 }, { rawKey: 'sat', amount: 320 }, { rawKey: 'today', amount: 280 } ];
-    const GEO_DATA = [ { name: 'IT', value: 45, color: '#a855f7' }, { name: 'ES', value: 25, color: '#f59e0b' }, { name: 'BR', value: 20, color: '#10b981' }, { name: 'UK', value: 10, color: '#3b82f6' } ];
+  <div id="security" class="tab-content max-w-5xl mx-auto">
+    <header class="mb-8">
+      <h2 class="text-3xl font-extrabold text-stone-900 mb-2 tracking-tight">Sicurezza Zero-Trust & Anti-VPN</h2>
+      <p class="text-lg text-stone-600">Modellazione delle minacce e difese automatizzate a livello di transazione e database.</p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm border-t-4 border-t-blue-500">
+        <h4 class="font-bold text-stone-900 mb-2 text-sm">Validazione Decimali USDT</h4>
+        <p class="text-xs text-stone-600">Su TON, USDT ha 6 decimali rigidi. Il parser converte automaticamente <code class="bg-stone-100 px-1 rounded">197</code> in <code class="bg-stone-100 px-1 rounded">197000000</code>. Ogni discrepanza rifiuta l'accredito giorni.</p>
+      </div>
+      <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm border-t-4 border-t-emerald-500">
+        <h4 class="font-bold text-stone-900 mb-2 text-sm">Atomicidad Firestore</h4>
+        <p class="text-xs text-stone-600">Difesa contro Replay Attacks: utilizzo stringente di <code class="bg-stone-100 px-1 rounded font-mono">transaction.get(txRef)</code>. Se l'hash della transazione TON esiste in DB, l'aggiornamento viene abortito on-the-fly.</p>
+      </div>
+      <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm border-t-4 border-t-red-500">
+        <h4 class="font-bold text-stone-900 mb-2 text-sm">Fake Token Shield</h4>
+        <p class="text-xs text-stone-600">Controllo inesorabile sul <code class="bg-stone-100 px-1 rounded font-mono">jetton_master_address</code> per respingere l'invio di shitcoin chiamate "USDT" volte a truffare il parser.</p>
+      </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 mb-8">
+      <h3 class="text-lg font-bold text-stone-900 mb-4">Motore Matematico Anti-VPN Ricalibrato</h3>
+      <p class="text-sm text-stone-600 mb-6">Il backend ignora completamente la provenienza IP (facilmente falsificabile tramite VPN). Il conteggio dei giorni ("1 Credito = 1 Giorno") si basa <strong>unicamente</strong> sul collaterale on-chain reale. Simula uno scenario qui sotto.</p>
+      
+      <div class="flex flex-col md:flex-row gap-4 items-end mb-6 bg-stone-50 p-4 rounded-lg border border-stone-200">
+        <div class="w-full md:w-1/2">
+          <label class="block text-xs font-bold text-stone-700 mb-1 uppercase">Simulatore Attacco Spoofing</label>
+          <select id="scenario-select" class="w-full border border-stone-300 rounded-lg px-4 py-2 bg-white text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm font-medium" onchange="updateVpnChart()">
+            <option value="honest">Utente Regolare (Paga 197 USDT - Si aspetta 30 gg Elite)</option>
+            <option value="spoof" selected>Hacker con VPN (Paga 47 USDT Starter - Spera di avere 30 gg Elite)</option>
+          </select>
+        </div>
+        <div class="w-full md:w-1/2 bg-white p-3 rounded-lg border border-stone-200 shadow-inner">
+          <div class="text-[10px] text-stone-500 font-bold uppercase tracking-wider mb-1">Risoluzione del Backend</div>
+          <div id="calc-formula" class="font-mono text-sm text-red-600 font-bold">(47 / 197) * 30 = 7.1 giorni. Errore VPN mitigato.</div>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas id="vpnChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div id="prompt" class="tab-content max-w-5xl mx-auto h-full flex flex-col">
+    <header class="mb-4 shrink-0">
+      <h2 class="text-3xl font-extrabold text-stone-900 mb-2 tracking-tight">AI Developer Prompt</h2>
+      <p class="text-lg text-stone-600">Usa questo prompt di sistema per istruire un'intelligenza artificiale o uno sviluppatore a generare lo Smart Contract TON (in FunC/Tact) esattamente con i requisiti di sicurezza dell'ecosistema.</p>
+    </header>
+
+    <div class="flex-1 bg-stone-950 rounded-xl shadow-2xl border border-stone-800 flex flex-col overflow-hidden">
+      <div class="bg-stone-900 px-4 py-3 flex justify-between items-center border-b border-stone-800 shrink-0">
+        <span class="text-xs font-mono text-amber-500 flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div> System_Prompt.md</span>
+        <button onclick="copyPrompt()" id="copy-btn" class="text-xs font-bold bg-stone-800 hover:bg-stone-700 text-stone-300 px-3 py-1.5 rounded transition-colors flex items-center gap-2">
+          📋 Copia Prompt
+        </button>
+      </div>
+      <textarea id="prompt-text" class="w-full flex-1 bg-stone-950 text-emerald-400 font-mono text-xs md:text-sm p-4 md:p-6 focus:outline-none resize-none" readonly>
+# CONTEXT
+You are an elite enterprise Smart Contract developer specializing in the TON (The Open Network) blockchain, using Tact or FunC. You are tasked with creating the "Vault" contract for the Betting Exchange Room architecture.
+
+# ARCHITECTURE MANDATE (ZERO-TRUST)
+1. The Smart Contract is a "Dumb Vault". It does NOT hold business logic regarding users, credits, or referral trees.
+2. The Off-chain Python Backend & Firestore DB are the absolute source of truth.
+3. The pricing model is "1 Credit = 1 Day". Public pricing: 94/234/394 USDT. Promoter pricing: 47/117/197 USDT.
+
+# SMART CONTRACT REQUIREMENTS
+Develop a smart contract that handles Jetton (USDT) transactions with the following security primitives:
+
+## 1. Deposit & Verification (Inbound)
+- Accept incoming USDT transfers.
+- STRICT Fake Token Shield: The contract must explicitly verify the `jetton_master_address` to match the official TON USDT address (EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs). Reject anything else.
+- Payload parsing: The memo/payload of the transfer MUST contain the user's `Telegram_ID` as an immutable string/integer so the off-chain listener can link the payment to the user database.
+
+## 2. Withdrawal Mechanism (Outbound / Claim)
+- Implement an on-chain ED25519 signature verification system for the `claim()` function.
+- A user can only withdraw funds if they provide a cryptographic signature generated by the backend server's private key.
+- The signed payload must hash: `Amount + Destination Wallet Address + Nonce`.
+- Ensure nonces are tracked on-chain to prevent Replay Attacks on withdrawals.
+
+## 3. Administrator Controls
+- Include an emergency `sweep()` function callable ONLY by the admin wallet to transfer all USDT liquidity to an offline cold storage address in case of a critical threat.
+- Implement an Admin Threshold mechanism: Any withdrawal requested via standard signatures above 1,000 USDT must be temporarily frozen/flagged and require manual multi-sig approval.
+
+# TASK
+Write the complete, highly documented code for this smart contract in Tact. Prioritize absolute security against re-entrancy, fake token spoofing, and signature malleability. Ensure strict handling of USDT's 6 decimals logic.
+      </textarea>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
     
-    const NETWORK_MEMBERS = [
-      { id: 1, name: 'Alex De Souza', username: '@alex_crypto_pro', volume: 12500, status: 'Active', flag: 'br' },
-      { id: 2, name: 'Marco Rossi', username: '@marcorossi', volume: 8400, status: 'Active', flag: 'it' },
-      { id: 3, name: 'Elena Gomez', username: '@elegomez', volume: 5200, status: 'Active', flag: 'es' },
-      { id: 4, name: 'John Doe', username: '@johndoe_99', volume: 450, status: 'Inactive', flag: 'gb' }
-    ];
+    document.querySelectorAll('.tab-btn').forEach(el => {
+      el.classList.remove('bg-stone-800', 'text-stone-50', 'border-stone-700', 'bg-stone-900/50');
+      el.classList.add('text-stone-400', 'border-transparent');
+    });
+    
+    const activeBtn = document.getElementById('btn-' + tabId);
+    activeBtn.classList.remove('text-stone-400', 'border-transparent');
+    activeBtn.classList.add('bg-stone-800', 'text-stone-50', 'border-stone-700');
+    
+    if(tabId === 'prompt') activeBtn.classList.add('bg-stone-900/50');
+    
+    if(tabId === 'security') {
+      setTimeout(initChart, 100);
+    }
+  }
 
-    const Card = ({ children, className = '', padding = 'p-4 sm:p-6' }) => (
-      <div className={`glass-panel rounded-2xl ${padding} shadow-lg hover:border-surface-700 transition-colors duration-300 flex flex-col min-w-0 ${className}`}>
-        {children}
-      </div>
-    );
+  function copyPrompt() {
+    const text = document.getElementById('prompt-text').value;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copy-btn');
+      btn.innerHTML = '✅ Copiato!';
+      btn.classList.add('text-emerald-400');
+      setTimeout(() => {
+        btn.innerHTML = '📋 Copia Prompt';
+        btn.classList.remove('text-emerald-400');
+      }, 2000);
+    });
+  }
 
-    const StatCard = ({ title, value, subtext, icon, colorClass, highlight = false }) => (
-      <Card padding="p-4" className={`justify-center h-full ${highlight ? 'ring-1 ring-brand-500/40 bg-gradient-to-br from-surface-900 to-surface-800/80 shadow-[0_0_20px_rgba(212,175,55,0.05)]' : ''}`}>
-        <div className="flex justify-between items-start gap-2">
-          <div className="flex flex-col flex-1 min-w-0">
-            <p className="text-zinc-500 font-bold mb-1 text-[10px] sm:text-xs uppercase tracking-widest">{title}</p>
-            <h3 className="text-xl sm:text-2xl font-black text-zinc-100 mb-1 truncate">{value}</h3>
-            <div className={`text-[9px] sm:text-[10px] font-bold ${colorClass} uppercase tracking-wider truncate`}>{subtext}</div>
-          </div>
-          <div className={`p-2.5 rounded-xl bg-surface-950 border border-surface-800 shrink-0 ${colorClass}`}>
-            <Icon name={icon} size={20} />
-          </div>
-        </div>
-      </Card>
-    );
+  let vpnChartInstance = null;
 
-    const LanguageSelector = ({ lang, setLang }) => {
-      const [isOpen, setIsOpen] = useState(false);
-      const currentLang = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
-      return (
-        <div className="relative">
-          <button onClick={() => setIsOpen(!isOpen)} className="flex items-center gap-2 bg-surface-950/80 border border-surface-700 hover:border-brand-500/50 rounded-lg px-2.5 py-1.5 sm:py-2">
-            <img src={`https://flagcdn.com/${currentLang.flag}.svg`} alt={currentLang.name} className="w-5 h-[15px] object-cover rounded-[2px]" />
-            <span className="text-[11px] font-bold text-zinc-300 hidden sm:block">{currentLang.name}</span>
-            <Icon name="chevron-down" size={14} className="text-zinc-500" />
-          </button>
-          {isOpen && (
-            <div className="absolute right-0 mt-2 w-32 bg-surface-900 border border-surface-700 rounded-xl shadow-2xl z-50 fade-in overflow-hidden">
-              {LANGUAGES.map((l) => (
-                <button key={l.code} onClick={() => { setLang(l.code); setIsOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-surface-800 ${lang === l.code ? 'text-brand-400' : 'text-zinc-300'}`}>
-                  <img src={`https://flagcdn.com/${l.flag}.svg`} alt={l.name} className="w-5 h-[15px] object-cover rounded-[2px]" />
-                  <span className="text-[11px] font-bold">{l.name}</span>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      );
-    };
+  function initChart() {
+    if (vpnChartInstance) return;
+    const ctx = document.getElementById('vpnChart').getContext('2d');
+    
+    Chart.defaults.font.family = 'Inter, sans-serif';
+    
+    vpnChartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Giorni Attesi dall\'Utente', 'Giorni Assegnati dal Backend'],
+        datasets: [{
+          label: 'Giorni',
+          data: [30, 7.1],
+          backgroundColor: ['rgba(245, 158, 11, 0.2)', 'rgba(5, 150, 105, 0.8)'],
+          borderColor: ['rgba(245, 158, 11, 1)', 'rgba(5, 150, 105, 1)'],
+          borderWidth: 1,
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: { label: function(context) { return context.raw + ' Giorni'; } }
+          }
+        },
+        scales: {
+          y: { beginAtZero: true, max: 35, grid: { color: '#e7e5e4' }, ticks: { stepSize: 5 } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }
 
-    const formatCurrency = (amount, isHidden) => isHidden ? '••,•••.••' : amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  function updateVpnChart() {
+    if(!vpnChartInstance) return;
+    const scenario = document.getElementById('scenario-select').value;
+    const formulaEl = document.getElementById('calc-formula');
 
-    const UserDashboard = ({ t }) => (
-      <div className="flex-1 flex flex-col items-center justify-center w-full max-w-4xl mx-auto fade-in h-full py-6">
-        <Card padding="p-8 sm:p-12" className="flex flex-col items-center justify-center text-center bg-gradient-to-b from-surface-900/90 to-surface-950 border-t-2 border-t-brand-500 w-full min-h-[50vh]">
-          <h2 className="text-3xl sm:text-5xl font-black text-zinc-100 mb-8"><span className="text-gold-gradient">WELCOME!</span></h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 w-full max-w-2xl">
-            <a href="#" className="flex flex-col items-center justify-center p-8 rounded-2xl bg-surface-950 border border-brand-500/30 hover:border-brand-500 transition-all shadow-lg group">
-              <div className="w-16 h-16 rounded-full bg-surface-900 border border-brand-500/40 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Icon name="graduation-cap" size={28} className="text-brand-400" />
-              </div>
-              <h3 className="text-sm font-black text-zinc-100 uppercase tracking-widest text-center">{t('academy_btn')}</h3>
-            </a>
-            <a href="#" className="flex flex-col items-center justify-center p-8 rounded-2xl bg-surface-950 border border-[#2AABEE]/30 hover:border-[#2AABEE] transition-all shadow-lg group">
-              <div className="w-16 h-16 rounded-full bg-surface-900 border border-[#2AABEE]/40 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Icon name="send" size={28} className="text-[#2AABEE]" />
-              </div>
-              <h3 className="text-sm font-black text-zinc-100 uppercase tracking-widest text-center">{t('signals_btn')}</h3>
-            </a>
-          </div>
-        </Card>
-      </div>
-    );
+    let expected = 30;
+    let assigned = 30;
 
-    const CompanyDashboard = ({ sc, t }) => {
-      const localizedChartData = useMemo(() => RAW_REVENUE_DATA.map(d => ({...d, name: t(d.rawKey) || d.rawKey})), [t]);
-      
-      return (
-        <div className="flex flex-col gap-4 fade-in pb-20 md:pb-4 flex-1">
-          <Card padding="p-4" className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-gradient-to-r from-surface-900 to-surface-800 border-l-4 border-l-brand-500">
-            <div className="flex items-center gap-3 w-full sm:w-auto">
-              <div className="w-10 h-10 bg-brand-500/10 rounded-lg flex items-center justify-center text-brand-400 shrink-0 border border-brand-500/20"><Icon name="building" size={20} /></div>
-              <h2 className="text-lg sm:text-xl font-black text-zinc-100 truncate uppercase tracking-widest">{t('treasury_center')}</h2>
-            </div>
-            <button className="w-full sm:w-auto px-5 py-2.5 bg-surface-950 hover:bg-surface-800 border border-surface-700 text-brand-400 rounded-xl text-xs font-black flex items-center justify-center gap-2 uppercase">
-              <Icon name="file-text" size={16} /> {t('white_paper')}
-            </button>
-          </Card>
+    if(scenario === 'spoof') {
+      // Paga Starter Affiliate (47) aspettandosi Elite (197)
+      assigned = (47 / 197) * 30;
+      formulaEl.innerHTML = "(47 / 197) * 30 = 7.1 giorni. <span class='text-stone-500'>Errore VPN mitigato.</span>";
+      formulaEl.classList.remove('text-emerald-600');
+      formulaEl.classList.add('text-red-600');
+    } else {
+      assigned = 30;
+      formulaEl.innerHTML = "Pagamento on-chain corretto. Assegnazione = 30 giorni.";
+      formulaEl.classList.remove('text-red-600');
+      formulaEl.classList.add('text-emerald-600');
+    }
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1">
-            <div className="lg:col-span-3 flex flex-col gap-4">
-              <StatCard title={t('processed_volume')} value={formatCurrency(sc.state.totalProcessed, false)} subtext={t('real_usdt')} icon="bar-chart-2" colorClass="text-brand-400" />
-              <StatCard title={t('company_reserve')} value={formatCurrency(sc.state.contractBalance, false)} subtext={t('withdrawable_funds')} icon="wallet" colorClass="text-success-400" highlight={true} />
-              
-              <Card className="flex-1 min-h-[250px]">
-                <h3 className="text-xs font-bold text-zinc-100 mb-2 uppercase flex items-center gap-2"><Icon name="globe-2" size={14} className="text-brand-500" /> {t('geo_dist')}</h3>
-                <div className="flex-1 min-h-0 w-full"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={GEO_DATA} cx="50%" cy="50%" innerRadius="60%" outerRadius="80%" paddingAngle={5} dataKey="value" stroke="none">{GEO_DATA.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}</Pie></PieChart></ResponsiveContainer></div>
-              </Card>
-            </div>
-
-            <div className="lg:col-span-5 flex flex-col gap-4">
-              <Card className="flex-1 min-h-[300px]">
-                <h3 className="text-xs font-bold text-zinc-100 mb-2 uppercase flex items-center gap-2"><Icon name="activity" size={16} className="text-brand-500"/> {t('cash_flow')}</h3>
-                <div className="flex-1 w-full min-h-0">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -20, bottom: 0}}>
-                      <defs><linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#d4af37" stopOpacity={0.4}/><stop offset="95%" stopColor="#d4af37" stopOpacity={0}/></linearGradient></defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
-                      <XAxis dataKey="name" stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700}} axisLine={false} tickLine={false} dy={10} />
-                      <YAxis stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700}} axisLine={false} tickLine={false} dx={-10} width={45} />
-                      <Area type="monotone" dataKey="amount" stroke="#d4af37" strokeWidth={2} fillOpacity={1} fill="url(#colorAmount)" activeDot={{r: 5, fill: '#d4af37'}} />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
-              </Card>
-            </div>
-
-            <div className="lg:col-span-4 flex flex-col gap-4">
-              <Card padding="p-0" className="flex-1 overflow-hidden min-h-[300px]">
-                <div className="p-4 border-b border-surface-800 bg-surface-900/50 shrink-0"><h3 className="text-zinc-100 font-bold uppercase text-xs flex items-center gap-2"><Icon name="users-2" size={16} className="text-brand-500" /> {t('network_dir')}</h3></div>
-                <div className="overflow-y-auto custom-scrollbar p-2">
-                  <table className="w-full text-left">
-                    <thead><tr className="text-[10px] uppercase text-zinc-500 border-b border-surface-800"><th className="px-3 py-2 font-bold">{t('promoter')}</th><th className="px-3 py-2 font-bold text-right">{t('volume')}</th></tr></thead>
-                    <tbody className="divide-y divide-surface-800/50">
-                      {NETWORK_MEMBERS.map(member => (
-                        <tr key={member.id} className="hover:bg-surface-900/50">
-                          <td className="px-3 py-3 flex items-center gap-2"><img src={`https://flagcdn.com/${member.flag}.svg`} className="w-4 h-3 rounded-sm" /><div className="flex flex-col"><span className="text-zinc-100 font-bold text-xs">{member.name}</span><span className="text-[9px] text-zinc-500">{member.username}</span></div></td>
-                          <td className="px-3 py-3 font-mono text-success-400 font-bold text-xs text-right">{formatCurrency(member.volume, false)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </Card>
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    const PromoterDashboard = ({ sc, t }) => {
-      const isQualified = sc.state.globalWeeklyVolume >= sc.state.globalWeeklyTarget;
-      
-      return (
-        <div className="flex flex-col gap-4 fade-in pb-20 md:pb-4 flex-1">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1">
-            
-            <div className="lg:col-span-3 flex flex-col gap-4">
-              <Card padding="p-4" className="border-l-2 border-l-brand-500">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 rounded-full bg-surface-950 flex items-center justify-center border border-brand-500/50">
-                     <Icon name="user" size={24} className="text-brand-400" />
-                  </div>
-                  <div className="min-w-0"><h2 className="text-sm font-black text-zinc-100 truncate">Alex De Souza</h2><span className="text-[10px] text-brand-400">@alex_crypto_pro</span></div>
-                </div>
-              </Card>
-
-              <Card className="flex flex-col items-center justify-center text-center bg-gradient-to-b from-surface-900 to-surface-950 border-t-2 border-t-success-500 p-6">
-                <p className="text-[10px] text-zinc-500 font-bold uppercase mb-1">{t('vault_available')}</p>
-                <div className="text-3xl font-black text-zinc-100 mb-4 font-mono">{formatCurrency(sc.state.promoterAvailable, false)} USDT</div>
-                <button className="w-full py-3 rounded-xl font-black text-xs uppercase bg-success-600 text-white shadow-lg"><Icon name="fingerprint" size={16} className="inline mr-2"/> {t('unlock_withdraw')}</button>
-              </Card>
-
-              <Card className={`text-center p-4 border-b-4 ${isQualified ? 'border-brand-500 bg-brand-500/10' : 'border-surface-700'}`}>
-                 <h3 className="text-[10px] font-bold uppercase mb-2 flex justify-center items-center gap-1.5"><Icon name="award" size={14} className={isQualified ? 'text-brand-500' : 'text-zinc-500'}/> {t('global_pool')}</h3>
-                 <p className="text-xs text-zinc-300 font-mono mb-2">{formatCurrency(sc.state.globalWeeklyVolume, false)} / {formatCurrency(sc.state.globalWeeklyTarget, false)}</p>
-                 <div className="h-1.5 w-full bg-surface-950 rounded-full overflow-hidden"><div className="h-full bg-brand-500" style={{width: `${Math.min((sc.state.globalWeeklyVolume/sc.state.globalWeeklyTarget)*100, 100)}%`}}></div></div>
-                 <p className="text-[9px] mt-2 text-brand-400 font-bold uppercase">{isQualified ? t('pool_qualified') : t('pool_unqualified')}</p>
-              </Card>
-            </div>
-
-            <div className="lg:col-span-9 flex flex-col gap-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <StatCard title={t('lifetime_deposit')} value={formatCurrency(sc.state.promoterLifetime, false)} subtext="USDT" icon="coins" colorClass="text-brand-400" />
-                <StatCard title={t('daily_subs')} value="345" subtext="Leads" icon="users" colorClass="text-blue-400" />
-              </div>
-              <Card className="flex-1 min-h-[300px]">
-                <h3 className="text-xs font-bold text-zinc-100 mb-4 uppercase"><Icon name="bar-chart-3" size={16} className="inline text-success-500 mr-2" /> {t('earnings_chart')}</h3>
-                <div className="flex-1 w-full min-h-0"><ResponsiveContainer width="100%" height="100%"><AreaChart data={PROMOTER_CHART_DATA}><CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} /><XAxis dataKey="rawKey" stroke="#71717a" /><YAxis stroke="#71717a" /><Area type="monotone" dataKey="amount" stroke="#10b981" fillOpacity={0.2} fill="#10b981" /></AreaChart></ResponsiveContainer></div>
-              </Card>
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    const useSmartContract = () => {
-      const [walletConnected, setWalletConnected] = useState(false);
-      const [contractBalance] = useState(3200.50);
-      const [totalProcessed] = useState(12450.00);
-      const [activePromoters] = useState(142);
-      const [promoterAvailable] = useState(450.00);
-      const [promoterLifetime] = useState(3250.00);
-      const [globalWeeklyVolume] = useState(85420.00); 
-      const [globalWeeklyTarget] = useState(10000.00); 
-      return { state: { walletConnected, contractBalance, totalProcessed, activePromoters, promoterAvailable, promoterLifetime, globalWeeklyVolume, globalWeeklyTarget }, connect: () => setWalletConnected(true), disconnect: () => setWalletConnected(false) };
-    };
-
-    const App = () => {
-      const [lang, setLang] = useState(() => {
-        const browserLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
-        return ['en', 'es', 'pt', 'it'].includes(browserLang) ? browserLang : 'en';
-      });
-      const [view, setView] = useState('user');
-      const [isInitLoad, setIsInitLoad] = useState(true);
-      const sc = useSmartContract(); 
-
-      useEffect(() => { setTimeout(() => setIsInitLoad(false), 500); }, []);
-      const t = useCallback((key) => translations[lang]?.[key] || translations['en'][key] || key, [lang]);
-
-      if (isInitLoad) return null;
-
-      return (
-        <div className="bg-grid-pattern h-full flex flex-col min-h-screen">
-          <nav className="glass-panel border-b border-surface-800 sticky top-0 z-40">
-            <div className="max-w-[1400px] mx-auto px-4 h-14 sm:h-16 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-surface-950 border border-brand-500/50 flex items-center justify-center text-brand-500"><Icon name="shield" size={16} /></div>
-                <h1 className="text-[10px] sm:text-[13px] font-black tracking-widest text-zinc-100 uppercase">{t('app_title')}</h1>
-              </div>
-              <div className="flex items-center gap-3">
-                <LanguageSelector lang={lang} setLang={setLang} />
-                {sc.state.walletConnected && (
-                  <div className="hidden md:flex items-center bg-surface-950 border border-surface-800 rounded-lg p-1">
-                    <button onClick={() => setView('user')} className={`px-3 py-1.5 text-[10px] font-bold uppercase rounded-md ${view === 'user' ? 'bg-surface-800 text-brand-400' : 'text-zinc-500'}`}>{t('user_dash')}</button>
-                    <button onClick={() => setView('promoter')} className={`px-3 py-1.5 text-[10px] font-bold uppercase rounded-md ${view === 'promoter' ? 'bg-surface-800 text-brand-400' : 'text-zinc-500'}`}>{t('partner_dash')}</button>
-                    <button onClick={() => setView('company')} className={`px-3 py-1.5 text-[10px] font-bold uppercase rounded-md ${view === 'company' ? 'bg-surface-800 text-brand-400' : 'text-zinc-500'}`}>{t('company_dash')}</button>
-                  </div>
-                )}
-                <button onClick={() => sc.state.walletConnected ? sc.disconnect() : sc.connect()} className={`px-4 py-2 rounded-lg font-black text-[10px] sm:text-xs uppercase shadow-lg ${sc.state.walletConnected ? 'bg-surface-900 border border-surface-700 text-zinc-300' : 'bg-gold-gradient text-surface-950'}`}>
-                  {sc.state.walletConnected ? t('logout') : t('login')}
-                </button>
-              </div>
-            </div>
-          </nav>
-
-          <main className="max-w-[1400px] mx-auto px-4 py-6 flex-1 flex w-full">
-            {!sc.state.walletConnected ? (
-              <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6">
-                <div className="w-24 h-24 bg-surface-900 text-brand-400 rounded-3xl flex items-center justify-center border border-brand-500/50"><Icon name="shield-check" size={40} /></div>
-                <h2 className="text-2xl font-black text-zinc-100 uppercase">Zero-Trust Environment</h2>
-                <button onClick={() => sc.connect()} className="px-8 py-3 bg-gold-gradient text-surface-950 rounded-xl font-black text-xs uppercase shadow-[0_10px_30px_rgba(212,175,55,0.3)]">Connect Wallet</button>
-              </div>
-            ) : (
-              view === 'user' ? <UserDashboard t={t} /> : view === 'company' ? <CompanyDashboard sc={sc} t={t} /> : <PromoterDashboard sc={sc} t={t} />
-            )}
-          </main>
-
-          {sc.state.walletConnected && (
-            <div className="md:hidden fixed bottom-3 left-3 right-3 bg-surface-950/95 backdrop-blur-xl border border-surface-800 rounded-xl p-1 flex shadow-2xl z-40">
-              <button onClick={() => setView('user')} className={`flex-1 py-3 rounded-lg text-[9px] font-bold uppercase ${view === 'user' ? 'bg-surface-800 text-brand-400' : 'text-zinc-500'}`}>{t('user_dash')}</button>
-              <button onClick={() => setView('promoter')} className={`flex-1 py-3 rounded-lg text-[9px] font-bold uppercase ${view === 'promoter' ? 'bg-surface-800 text-brand-400' : 'text-zinc-500'}`}>{t('partner_dash')}</button>
-              <button onClick={() => setView('company')} className={`flex-1 py-3 rounded-lg text-[9px] font-bold uppercase ${view === 'company' ? 'bg-surface-800 text-brand-400' : 'text-zinc-500'}`}>{t('company_dash')}</button>
-            </div>
-          )}
-        </div>
-      );
-    };
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
-  </script>
+    vpnChartInstance.data.datasets[0].data = [expected, assigned.toFixed(1)];
+    
+    // Aggiorna colori a seconda dello scenario
+    if (scenario === 'honest') {
+      vpnChartInstance.data.datasets[0].backgroundColor = ['rgba(5, 150, 105, 0.8)', 'rgba(5, 150, 105, 0.8)'];
+      vpnChartInstance.data.datasets[0].borderColor = ['rgba(5, 150, 105, 1)', 'rgba(5, 150, 105, 1)'];
+    } else {
+      vpnChartInstance.data.datasets[0].backgroundColor = ['rgba(245, 158, 11, 0.2)', 'rgba(5, 150, 105, 0.8)'];
+      vpnChartInstance.data.datasets[0].borderColor = ['rgba(245, 158, 11, 1)', 'rgba(5, 150, 105, 1)'];
+    }
+    
+    vpnChartInstance.update();
+  }
+</script>
 </body>
 </html>
