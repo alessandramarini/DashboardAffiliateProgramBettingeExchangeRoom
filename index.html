@@ -1,3 +1,6 @@
+Ecco il codice completo e aggiornato. Ho rimosso la finestra modale precedente (che non è più necessaria), sostituendo il pulsante singolo con una griglia a due pulsanti dal design pulito e "FinTech". Entrambi i pulsanti ora fungono da link diretti (aprendo i file richiesti in una nuova scheda) e aggiungono automaticamente in coda il codice ref del promoter, ottimizzando il tracciamento.
+
+```html
 <!DOCTYPE html>
 <html lang="en" class="antialiased">
 <head>
@@ -8,7 +11,6 @@
   <meta name="theme-color" content="#09090b">
   <meta name="description" content="Betting Exchange Room Affiliate Program and Smart Contract Dashboard.">
 
-  <!-- Preconnect per caricamento ultra-rapido -->
   <link rel="preconnect" href="https://unpkg.com" crossorigin>
   <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
   <link rel="preconnect" href="https://flagcdn.com" crossorigin>
@@ -187,16 +189,9 @@
         wp_tech_4_title: "4. Admin Thresholds", wp_tech_4_desc: "Payouts > 1,000 USDT get flagged as Pending_Manual_Review.",
         wp_tech_5_title: "5. Offline Cold Storage", wp_tech_5_desc: "Smart contract has an emergency sweep function to move funds to a hardware wallet.",
         
-        /* New Exporter Translations */
-        promo_title: "PROMO 50 Landing",
-        promo_desc: "Instantly deploy or export your personal high-converting discount page with your ref code already integrated.",
-        promo_btn_action: "PROMO 50 GENERATOR",
-        promo_modal_header: "PROMO 50 LANDING CONSOLE",
-        promo_link_lbl: "Your Live Promotional Link",
-        promo_copy_url: "Copy Link",
-        promo_download_btn: "Download Custom HTML File",
-        promo_preview_live: "Open Preview",
-        promo_features_title: "How it boosts your results:"
+        /* Promos */
+        promo_btn_action: "PROMO -50%",
+        promo_masterclass: "PROMO MASTERCLASS"
       },
       es: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programa de Afiliados", user_dash: "Área Usuario", partner_dash: "Área Socios", company_dash: "Tesorería",
@@ -239,16 +234,9 @@
         wp_tech_4_title: "4. Umbrales de Administrador", wp_tech_4_desc: "Pagos > 1,000 USDT requieren revisión manual.",
         wp_tech_5_title: "5. Almacenamiento en Frío", wp_tech_5_desc: "Función de barrido de emergencia hacia hardware wallet.",
         
-        /* New Exporter Translations */
-        promo_title: "PROMO 50 Landing",
-        promo_desc: "Despliega o exporta tu página de descuento personalizada con tu código de referido ya integrado.",
-        promo_btn_action: "PROMO 50 GENERADOR",
-        promo_modal_header: "CONSOLA PROMO 50",
-        promo_link_lbl: "Tu Enlace Promocional Directo",
-        promo_copy_url: "Copiar Enlace",
-        promo_download_btn: "Descargar Archivo HTML",
-        promo_preview_live: "Abrir Previsualización",
-        promo_features_title: "Cómo impulsa tus resultados:"
+        /* Promos */
+        promo_btn_action: "PROMO -50%",
+        promo_masterclass: "PROMO MASTERCLASS"
       },
       pt: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programa Afiliados", user_dash: "Área Usuário", partner_dash: "Área Sócios", company_dash: "Tesouraria",
@@ -264,7 +252,7 @@
         network_dir: "Diretório de Rede", my_network: "A Sua Rede", wallet: "Endereço Carteira", status: "Status", volume: "Volume", global_pool: "Global Milestone Pool", pool_qualified: "Alvo Atingido - Pool Desbloqueado!",
         pool_unqualified: "Alvo Global Não Atingido", target: "Meta", ends_sat: "Liquidação Domingo 23:59 UTC", leads: "Leads", promoter: "Promotor", rank: "Pos",
         white_paper: "White Paper", close_doc: "Fechar", specifications: "Especificações", show_balances: "Mostrar Saldos", hide_balances: "Ocultar Saldos",
-        registered_subtext: "Registrados", conv_subtext: "Lead para Ativo", clicks_subtext: "Cliques Totais", user_col: "Usuário", action_col: "Ação", vol_col: "Vol",
+        registered_subtext: "Registrados", conv_subtext: "Lead para Ativo", clicks_subtext: "Cliques Totales", user_col: "Usuário", action_col: "Ação", vol_col: "Vol",
         toast_success_title: "Sucesso", toast_conn_title: "Conectado", toast_conn_msg: "Conexão segura estabelecida.", toast_dep_title: "Depósito Detectado", toast_dep_msg: "Liquidez atualizada on-chain.", toast_auth_title: "Autorização", toast_auth_msg: "Fundos enviados para sua wallet.",
         
         wp_title: "Arquitetura Web3 V3", wp_v: "Modelo Colaborativo • Addon de Segurança",
@@ -287,20 +275,13 @@
         wp_tech_btn: "Ver Especificações de Segurança", wp_tech_hide: "Ocultar Specs",
         wp_tech_1_title: "1. Assinaturas On-Chain", wp_tech_1_desc: "claim() DEBE verificar a assinatura ED25519: Hash(Amount, Wallet, Nonce).",
         wp_tech_2_title: "2. Deduplicação Estrita", wp_tech_2_desc: "DB impõe restrição UNIQUE no tx_hash.",
-        wp_tech_3_title: "3. Bloqueio por Mudança de Carteira", wp_tech_3_desc: "Alterar a carteira bloqueia os saques por 72 horas.",
+        wp_tech_3_title: "3. Bloqueo por Mudança de Carteira", wp_tech_3_desc: "Alterar a carteira bloqueia os saques por 72 horas.",
         wp_tech_4_title: "4. Limites Administrativos", wp_tech_4_desc: "Saques > 1.000 USDT exigem revisão manual.",
         wp_tech_5_title: "5. Armazenamento Frio", wp_tech_5_desc: "Função de varredura para hardware wallet.",
         
-        /* New Exporter Translations */
-        promo_title: "PROMO 50 Landing",
-        promo_desc: "Exporte ou visualize sua própria landing page de desconto com seu reflink nativamente incorporado.",
-        promo_btn_action: "PROMO 50 CONFIGURADOR",
-        promo_modal_header: "PAINEL PROMO 50",
-        promo_link_lbl: "O Seu Link Promocional",
-        promo_copy_url: "Copiar Link",
-        promo_download_btn: "Baixar Página HTML Própria",
-        promo_preview_live: "Abrir Pré-visualização",
-        promo_features_title: "Como aumenta seus resultados:"
+        /* Promos */
+        promo_btn_action: "PROMO -50%",
+        promo_masterclass: "PROMO MASTERCLASS"
       },
       it: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programma Affiliati", user_dash: "Area Utente", partner_dash: "Area Partner", company_dash: "Tesoreria",
@@ -337,22 +318,15 @@
         wp_sec3_c_title: "C. La Psicologia", wp_sec3_c_desc: "I top leader sono costretti a collaborare e condividere strategie a livello globale per sbloccare il massiccio pool comunitario.",
         
         wp_tech_btn: "Mostra Specifiche di Sicurezza Enterprise", wp_tech_hide: "Nascondi Specifiche",
-        wp_tech_1_title: "1. Firme Server On-Chain", wp_tech_1_desc: "claim() DEVE verificare la firma ED25519 dal backend: Hash(Amount, Wallet, Nonce).",
+        wp_tech_1_title: "1. Firme Server On-Chain", wp_tech_1_desc: "claim() DEBE verificare la firma ED25519 dal backend: Hash(Amount, Wallet, Nonce).",
         wp_tech_2_title: "2. Deduplicazione Severa", wp_tech_2_desc: "Il DB applica un vincolo UNIQUE su tx_hash di TON per evitare Replay Attacks.",
         wp_tech_3_title: "3. Time-Lock Cambio Wallet", wp_tech_3_desc: "Cambiare il wallet attivo fa scattare un blocco di 72 ore sui prelievi (Anti-Hijacking).",
         wp_tech_4_title: "4. Soglie Amministrative", wp_tech_4_desc: "I prelievi > 1.000 USDT vengono contrassegnati per la revisione manuale.",
         wp_tech_5_title: "5. Cold Storage Offline", wp_tech_5_desc: "Lo Smart Contract ha una funzione di sweep di emergenza per spostare la tesoreria su un hardware wallet.",
         
-        /* New Exporter Translations */
-        promo_title: "PROMO 50 Landing",
-        promo_desc: "Esporta o visualizza la tua landing page promozionale personalizzata con il tuo codice di riferimento pre-integrato.",
-        promo_btn_action: "PROMO 50 GENERATORE",
-        promo_modal_header: "CONSOLE ATTRAZIONE PROMO 50",
-        promo_link_lbl: "Il Tuo Link Promo Personalizzato",
-        promo_copy_url: "Copia Link",
-        promo_download_btn: "Scarica Pagina HTML Dedicata",
-        promo_preview_live: "Apri Anteprima",
-        promo_features_title: "Perché aumenta i tuoi risultati:"
+        /* Promos */
+        promo_btn_action: "PROMO -50%",
+        promo_masterclass: "PROMO MASTERCLASS"
       }
     };
 
@@ -360,7 +334,6 @@
     const PROMOTER_CHART_DATA = [ { rawKey: 'mon', amount: 45 }, { rawKey: 'tue', amount: 120 }, { rawKey: 'wed', amount: 80 }, { rawKey: 'thu', amount: 210 }, { rawKey: 'fri', amount: 150 }, { rawKey: 'sat', amount: 320 }, { rawKey: 'today', amount: 280 } ];
     const GEO_DATA = [ { name: 'IT', value: 45, color: '#a855f7' }, { name: 'ES', value: 25, color: '#f59e0b' }, { name: 'BR', value: 20, color: '#10b981' }, { name: 'UK', value: 10, color: '#3b82f6' } ];
     
-    // Aggiunto "flag" come richiesto (ricavato idealmente dai dati info Telegram)
     const NETWORK_MEMBERS = [
       { id: 1, name: 'Alex De Souza', username: '@alex_crypto_pro', wallet: 'UQx...3Fq', volume: 12500, leads: 345, status: 'Active', flag: 'br' },
       { id: 2, name: 'Marco Rossi', username: '@marcorossi', wallet: 'UQz...9Pa', volume: 8400, leads: 280, status: 'Active', flag: 'it' },
@@ -557,7 +530,6 @@
                 <p className="mb-4">{t('wp_sec2_desc')}</p>
                 
                 <div className="space-y-4">
-                  {/* Scenario A */}
                   <div className="bg-surface-950 p-4 rounded-xl border border-surface-800 font-mono text-xs sm:text-sm text-zinc-400 shadow-inner overflow-x-auto">
                     <h5 className="text-brand-400 font-bold mb-2 pb-2 border-b border-surface-800/50">{t('scenario_a')}</h5>
                     <div className="flex justify-between py-1 border-b border-surface-800/50 min-w-[300px]"><span>├── {t('level_1')}</span><span className="text-success-400 ml-auto">50%</span></div>
@@ -567,7 +539,6 @@
                     <div className="flex justify-between py-1 min-w-[300px]"><span>└── <span className="text-brand-400 font-black">{t('global_pool')}</span></span><span className="text-brand-500 ml-auto font-bold">10%</span></div>
                   </div>
 
-                  {/* Scenario B */}
                   <div className="bg-surface-950 p-4 rounded-xl border border-surface-800 font-mono text-xs sm:text-sm text-zinc-400 shadow-inner overflow-x-auto">
                     <h5 className="text-blue-400 font-bold mb-2 pb-2 border-b border-surface-800/50">{t('scenario_b')}</h5>
                     <div className="flex justify-between py-1 border-b border-surface-800/50 min-w-[300px]"><span>├── {t('treasury_comp')}</span><span className="text-zinc-100 ml-auto">40%</span></div>
@@ -653,7 +624,6 @@
 
     const CompanyDashboard = ({ sc, t }) => {
       const [isSimulating, setIsSimulating] = useState(false);
-      // Imposto 'activeFirst' di default come richiesto
       const [statusSort, setStatusSort] = useState('activeFirst'); 
       const [showWhitepaper, setShowWhitepaper] = useState(false);
 
@@ -683,7 +653,6 @@
 
       return (
         <div className="flex flex-col flex-1 h-full fade-in gap-4 lg:gap-5 pb-4">
-          {/* Top Bar */}
           <Card padding="p-4" className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-gradient-to-r from-surface-900 to-surface-800 border-l-4 border-l-brand-500 shrink-0">
             <div className="w-full sm:w-auto overflow-hidden min-w-0 flex-1">
               <div className="flex items-center gap-3">
@@ -701,10 +670,7 @@
             </div>
           </Card>
 
-          {/* Main Grid Layout for seamless Desktop vs Mobile viewing */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5 flex-1 min-h-0">
-            
-            {/* Left Column (Stats & Geo) */}
             <div className="lg:col-span-3 flex flex-col gap-4 lg:gap-5 min-h-0">
               <StatCard title={t('processed_volume')} value={formatCurrency(sc.state.totalProcessed, sc.state.isHidden)} subtext={t('real_usdt')} icon="bar-chart-2" colorClass="text-brand-400" />
               <StatCard title={t('company_reserve')} value={formatCurrency(sc.state.contractBalance, sc.state.isHidden)} subtext={t('withdrawable_funds')} icon="wallet" colorClass="text-success-400" highlight={true} />
@@ -734,7 +700,6 @@
               </Card>
             </div>
 
-            {/* Middle Column (Chart) */}
             <div className="lg:col-span-5 flex flex-col gap-4 lg:gap-5 min-h-0">
               <Card className="flex-col-fluid flex-1 min-h-[300px] lg:min-h-0 flex">
                 <div className="flex justify-between items-center mb-4 shrink-0">
@@ -755,7 +720,6 @@
               </Card>
             </div>
 
-            {/* Right Column (Network Directory) */}
             <div className="lg:col-span-4 flex flex-col gap-4 lg:gap-5 min-h-0">
               <Card padding="p-0" className="flex-col-fluid flex-1 min-h-[350px] lg:min-h-0 flex flex-col">
                 <div className="p-4 border-b border-surface-800 bg-surface-900/50 flex justify-between items-center shrink-0">
@@ -807,114 +771,15 @@
       );
     };
 
-    /* PROMO 50 LANDING CONSOLE MODAL */
-    const Promo50Modal = ({ isOpen, onClose, walletAddress, t, addToast }) => {
-      const [copied, setCopied] = useState(false);
-      if (!isOpen) return null;
-
-      // Extract unique code based on the connected wallet
-      const refCode = walletAddress ? walletAddress.substring(2, 10).toUpperCase() : "BER50";
-      const customizedUrl = `${window.location.origin}${window.location.pathname.replace('index.html', '')}promo-50.html?ref=${refCode}`;
-
-      const handleCopy = () => {
-        navigator.clipboard.writeText(customizedUrl).then(() => {
-          setCopied(true);
-          addToast(t('copied'), "", "success");
-          setTimeout(() => setCopied(false), 2000);
-        }).catch(() => addToast(t('copy_error'), "", "error"));
-      };
-
-      const handleDownloadHTML = () => {
-        // We obtain the custom built promo-50.html with hardcoded refCode!
-        // This is done by requesting the page template and injecting the custom refCode directly.
-        fetch('promo-50.html')
-          .then(response => {
-            if (!response.ok) throw new Error("Template file not found on server.");
-            return response.text();
-          })
-          .then(html => {
-            // Replace the template placeholder with the actual Ref Code
-            const modifiedHtml = html.replace('/*_REF_CODE_PLACEHOLDER_*/', refCode);
-            
-            const blob = new Blob([modifiedHtml], { type: 'text/html;charset=utf-8;' });
-            const element = document.createElement("a");
-            element.href = URL.createObjectURL(blob);
-            element.download = `promo-50-${refCode}.html`;
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
-            addToast("Success", "Custom Standalone Landing Page Downloaded!", "success");
-          })
-          .catch(err => {
-            // Fallback if local fetch fails (e.g. running outside local server)
-            addToast("Error", "Could not fetch local template. Copy the Promolink instead.", "error");
-          });
-      };
-
-      return (
-        <div className="fixed inset-0 z-[250] flex items-center justify-center bg-surface-950/95 backdrop-blur-md p-4 fade-in">
-          <div className="glass-panel border-brand-500/30 rounded-3xl w-full max-w-lg shadow-[0_0_80px_rgba(163,230,53,0.15)] overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="p-5 border-b border-surface-800 bg-[#141416]/50 flex justify-between items-center">
-              <div className="flex items-center gap-2 text-brand-400">
-                <Icon name="sparkles" size={20} className="text-yellow-400 animate-pulse" />
-                <h3 className="text-sm sm:text-base font-black uppercase tracking-wider">{t('promo_modal_header')}</h3>
-              </div>
-              <button onClick={onClose} className="p-1 hover:bg-surface-800 rounded-lg text-zinc-400 hover:text-white transition-colors">
-                <Icon name="x" size={20} />
-              </button>
-            </div>
-
-            <div className="p-6 overflow-y-auto space-y-6 text-sm">
-              <div className="bg-brand-500/5 rounded-2xl p-4 border border-brand-500/20 text-xs text-brand-300">
-                <p className="font-bold mb-1 uppercase tracking-wider">{t('promo_features_title')}</p>
-                <ul className="list-disc pl-4 space-y-1 mt-2 text-zinc-400">
-                  <li>Embeds your personal promoter code natively.</li>
-                  <li>Applies a 50% checkout discount instantly (Starter 47$, Pro 117$, Elite 197$).</li>
-                  <li>Skips manual code prompts, locking in commissions with maximum UX comfort.</li>
-                </ul>
-              </div>
-
-              <div>
-                <label className="text-zinc-500 font-bold uppercase tracking-wider text-[10px] block mb-2">{t('promo_link_lbl')}</label>
-                <div className="flex items-center bg-surface-950 rounded-xl border border-surface-800 p-1.5 shadow-inner">
-                  <div className="px-3 text-xs text-zinc-300 truncate flex-1 font-mono">{customizedUrl}</div>
-                  <button onClick={handleCopy} className={`shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-black transition-all uppercase tracking-wider shadow-md ${copied ? 'bg-success-500 text-white shadow-success-500/20' : 'bg-surface-800 hover:bg-surface-700 text-zinc-100'}`}>
-                    <Icon name={copied ? 'check' : 'copy'} size={14} /> <span>{copied ? t('copied') : t('promo_copy_url')}</span>
-                  </button>
-                </div>
-              </div>
-
-              <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <a href={customizedUrl} target="_blank" rel="noopener noreferrer" className="py-3 px-4 rounded-xl font-bold bg-surface-950 border border-surface-800 hover:border-brand-500/50 hover:bg-surface-900 transition-all text-xs text-zinc-100 uppercase tracking-widest flex items-center justify-center gap-2 shadow-inner">
-                  <Icon name="external-link" size={14} />
-                  {t('promo_preview_live')}
-                </a>
-                <button onClick={handleDownloadHTML} className="py-3 px-4 rounded-xl font-black bg-gradient-to-r from-yellow-500 to-amber-600 hover:opacity-95 transition-all text-xs text-surface-950 uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg">
-                  <Icon name="download" size={14} />
-                  {t('promo_download_btn')}
-                </button>
-              </div>
-            </div>
-
-            <div className="p-4 border-t border-surface-800 bg-[#141416]/50 shrink-0 flex justify-end">
-              <button onClick={onClose} className="px-6 py-2 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded-xl text-xs font-bold uppercase tracking-wider shadow transition-colors">{t('cancel')}</button>
-            </div>
-          </div>
-        </div>
-      );
-    };
-
     const PromoterDashboard = ({ sc, t, lang }) => {
       const [isClaiming, setIsClaiming] = useState(false);
       const [copied, setCopied] = useState(false);
       const [showSecureModal, setShowSecureModal] = useState(false);
       const [showWalletModal, setShowWalletModal] = useState(false);
-      const [showPromoModal, setShowPromoModal] = useState(false);
       
       const localizedChartData = useMemo(() => PROMOTER_CHART_DATA.map(d => ({...d, name: t(d.rawKey)||d.rawKey})), [t]);
       const tgUser = { first_name: "Alex", last_name: "De Souza", username: "@alex_crypto_pro" };
 
-      // Ordinamento Active -> Inactive per la dashboard del promoter (Di base "attivi" ai "non attivi")
       const sortedNetworkData = useMemo(() => {
         return [...PROMOTER_NETWORK_DATA].sort((a, b) => {
           if (a.status === b.status) return 0;
@@ -922,7 +787,6 @@
         });
       }, []);
 
-      // Nuovo calcolo logico target settimanale (ridotto a 10.000 come richiesto)
       const globalVolume = sc.state.globalWeeklyVolume; 
       const globalTarget = sc.state.globalWeeklyTarget;
       const isQualified = globalVolume >= globalTarget;
@@ -938,7 +802,6 @@
       return (
         <div className="flex flex-col flex-1 h-full fade-in gap-4 lg:gap-5 pb-4">
           
-          {/* Main Desktop Grid - Adapts to Mobile Stack */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5 flex-1 min-h-0">
             
             {/* Left Column: Profile, Vault, Weekly Pool */}
@@ -964,11 +827,17 @@
                   </button>
                 </div>
 
-                {/* PROMO 50 GENERATOR ACTIVATE BUTTON */}
-                <button onClick={() => setShowPromoModal(true)} className="w-full py-3 px-4 rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-transform hover:-translate-y-0.5 bg-gradient-to-r from-success-600 via-emerald-500 to-teal-600 text-white shadow-[0_4px_20px_rgba(16,185,129,0.25)] hover:shadow-[0_6px_25px_rgba(16,185,129,0.35)] border border-emerald-400/20">
-                  <Icon name="sparkles" size={16} className="text-yellow-300 animate-pulse" />
-                  {t('promo_btn_action')}
-                </button>
+                {/* PROMOTIONAL DIRECT LINKS */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                  <a href={`promo-50.html?ref=${sc.state.walletAddress.substring(0,8)}`} target="_blank" rel="noopener noreferrer" className="w-full py-3 px-2 rounded-xl font-black text-[10px] sm:text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-transform hover:-translate-y-0.5 bg-gradient-to-r from-success-600 via-emerald-500 to-teal-600 text-white shadow-[0_4px_20px_rgba(16,185,129,0.25)] hover:shadow-[0_6px_25px_rgba(16,185,129,0.35)] border border-emerald-400/20 text-center">
+                    <Icon name="sparkles" size={14} className="text-yellow-300 shrink-0" />
+                    <span className="truncate">{t('promo_btn_action')}</span>
+                  </a>
+                  <a href={`promo-masterclass.html?ref=${sc.state.walletAddress.substring(0,8)}`} target="_blank" rel="noopener noreferrer" className="w-full py-3 px-2 rounded-xl font-black text-[10px] sm:text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-transform hover:-translate-y-0.5 bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-700 text-white shadow-[0_4px_20px_rgba(59,130,246,0.25)] hover:shadow-[0_6px_25px_rgba(59,130,246,0.35)] border border-blue-400/20 text-center">
+                    <Icon name="graduation-cap" size={14} className="text-blue-200 shrink-0" />
+                    <span className="truncate">{t('promo_masterclass')}</span>
+                  </a>
+                </div>
               </Card>
 
               <Card className="flex flex-col items-center justify-center text-center relative overflow-hidden bg-gradient-to-b from-surface-900 to-surface-950 border-t-2 border-t-success-500 shrink-0" padding="p-4 sm:p-6">
@@ -1120,7 +989,6 @@
           
           <SecurityModal isOpen={showSecureModal} onClose={() => setShowSecureModal(false)} onConfirm={async () => { setShowSecureModal(false); setIsClaiming(true); await sc.processClaim(t); setIsClaiming(false); }} amount={sc.state.promoterAvailable} walletAddress={sc.state.tonWallet || sc.state.walletAddress} t={t} />
           <TonWalletModal isOpen={showWalletModal} onClose={() => setShowWalletModal(false)} onSave={(val) => { sc.setTonWallet(val); sc.addToast(t('toast_success_title'), t('save_wallet'), 'success'); }} currentWallet={sc.state.tonWallet} t={t} />
-          <Promo50Modal isOpen={showPromoModal} onClose={() => setShowPromoModal(false)} walletAddress={sc.state.tonWallet || sc.state.walletAddress} t={t} addToast={sc.addToast} />
         </div>
       );
     };
@@ -1139,8 +1007,8 @@
       const [promoterAvailable, setPromoterAvailable] = useState(450.00);
       const [promoterLifetime, setPromoterLifetime] = useState(3250.00);
       
-      const [globalWeeklyVolume, setGlobalWeeklyVolume] = useState(85420.00); // Rimane a 85k per mostrare ora il target sbloccato
-      const [globalWeeklyTarget, setGlobalWeeklyTarget] = useState(10000.00); // Modificato da 100k a 10k
+      const [globalWeeklyVolume, setGlobalWeeklyVolume] = useState(85420.00);
+      const [globalWeeklyTarget, setGlobalWeeklyTarget] = useState(10000.00);
 
       const [claimHistory, setClaimHistory] = useState([ { date: '12 May 2026', amount: 120.00, tx: '0xTX...4f2' } ]);
 
@@ -1272,7 +1140,6 @@
               <PromoterDashboard sc={sc} t={t} lang={lang} />
             )}
             
-            {/* Mobile Bottom Navigation */}
             {sc.state.walletConnected && (
               <div className="md:hidden fixed bottom-3 left-3 right-3 bg-surface-950/95 backdrop-blur-xl border border-surface-800 rounded-xl p-1.5 flex shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-40 gap-1.5 shrink-0">
                 <button onClick={() => setView('user')} className={`flex-1 py-3 rounded-lg text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-all ${view === 'user' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}>{t('user_dash')}</button>
@@ -1290,3 +1157,5 @@
   </script>
 </body>
 </html>
+
+```
