@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Official Brand Shop</title>
+    <title>Black T-Shirt - Official Shop</title>
+    <!-- Preconnect per caricare istantaneamente le bandiere -->
     <link rel="preconnect" href="https://flagcdn.com">
     
     <style>
@@ -35,8 +36,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100svh; /* svh è essenziale per Safari su iOS */
-            overflow: hidden; /* Evita lo scroll orizzontale */
+            min-height: 100svh; /* svh garantisce l'altezza perfetta anche su Safari/iOS */
+            overflow: hidden; /* Evita lo scroll orizzontale e verticale non necessario */
         }
 
         /* ==========================================
@@ -51,7 +52,6 @@
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.08);
             overflow: hidden;
-            /* Su mobile, l'altezza si adatta al contenuto ma non supera lo schermo */
             max-height: 95svh; 
         }
 
@@ -68,7 +68,7 @@
            ========================================== */
         .image-area {
             flex: 1;
-            background-color: #eaeaea; /* Colore di sfondo provvisorio */
+            background-color: #f0f0f0; /* Sfondo neutro per far risaltare il nero */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -79,9 +79,9 @@
         .image-area img {
             width: 100%;
             height: 100%;
-            max-height: 40vh; /* Limite per mobile */
-            object-fit: contain;
-            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));
+            max-height: 40vh; /* Limite rigoroso per mobile */
+            object-fit: contain; /* Non taglia mai l'immagine */
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.1));
             transition: transform 0.3s ease;
         }
 
@@ -97,14 +97,14 @@
            ========================================== */
         .content-area {
             flex: 1;
-            padding: clamp(1.5rem, 4vw, 4rem); /* Padding fluido */
+            padding: clamp(1.5rem, 4vw, 4rem);
             display: flex;
             flex-direction: column;
             justify-content: center;
             position: relative;
         }
 
-        /* Selettore Lingue */
+        /* Selettore Lingue con le bandierine Flagcdn */
         .language-selector {
             position: absolute;
             top: 1.5rem;
@@ -130,14 +130,14 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
-        /* Tipografia Fluida (si ridimensiona da sola) */
+        /* Tipografia Fluida */
         .brand-badge {
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             color: var(--text-muted);
             margin-bottom: 0.5rem;
-            margin-top: 2rem; /* Spazio per le bandiere su mobile */
+            margin-top: 2rem; /* Spazio extra per mobile per non toccare le bandiere */
         }
 
         h1 {
@@ -154,7 +154,7 @@
             margin-bottom: 2rem;
         }
 
-        /* Pulsante Acquista */
+        /* Pulsante Acquista col Link a Fourthwall */
         .cta-button {
             display: inline-flex;
             justify-content: center;
@@ -177,7 +177,7 @@
         .cta-button:hover {
             background-color: var(--btn-hover);
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
         }
     </style>
 </head>
@@ -185,12 +185,16 @@
 
     <div class="container">
         
+        <!-- Area Immagine -->
         <div class="image-area">
-            <img src="https://via.placeholder.com/600x800.png?text=La+Tua+T-Shirt" alt="Product Image">
+            <!-- IMMAGINE PROVVISORIA: Usa un URL reale per il mockup della tua t-shirt -->
+            <img src="https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=600&q=80" alt="Black T-Shirt">
         </div>
 
+        <!-- Area Contenuto -->
         <div class="content-area">
             
+            <!-- Bandierine Ordinate: EN, ES, PT, IT -->
             <div class="language-selector">
                 <img src="https://flagcdn.com/w40/gb.png" alt="English" data-lang="en" class="flag" onclick="setLanguage('en')">
                 <img src="https://flagcdn.com/w40/es.png" alt="Español" data-lang="es" class="flag" onclick="setLanguage('es')">
@@ -198,39 +202,43 @@
                 <img src="https://flagcdn.com/w40/it.png" alt="Italiano" data-lang="it" class="flag" onclick="setLanguage('it')">
             </div>
 
-            <div class="brand-badge" id="badge">Exclusive Drop</div>
-            <h1 id="title">Official Brand Shop</h1>
+            <div class="brand-badge" id="badge">Official Merchandise</div>
+            <h1 id="title">Black T-Shirt</h1>
             <p id="desc">Premium quality apparel. Worldwide shipping available directly to your door.</p>
             
-            <a href="https://il-tuo-shop.creator-spring.com" class="cta-button" id="btn" target="_blank" rel="noopener noreferrer">Shop Now</a>
+            <!-- LINK ESATTO A FOURTHWALL -->
+            <a href="https://bettingexchangeroom-shop.fourthwall.com/products/black-t-shirt" class="cta-button" id="btn" target="_blank" rel="noopener noreferrer">Shop Now</a>
             
         </div>
     </div>
 
+    <!-- ==========================================
+         SCRIPT: GESTIONE LINGUE E TRADUZIONI
+         ========================================== -->
     <script>
-        // Dizionario delle traduzioni per "zero allucinazioni"
+        // Dizionario delle traduzioni esatte per la T-Shirt
         const translations = {
             en: {
-                badge: "Exclusive Drop",
-                title: "Official Brand Shop",
+                badge: "Official Merchandise",
+                title: "Black T-Shirt",
                 desc: "Premium quality apparel. Worldwide shipping available directly to your door.",
                 btn: "Shop Now"
             },
             es: {
-                badge: "Lanzamiento Exclusivo",
-                title: "Tienda Oficial de la Marca",
+                badge: "Mercancía Oficial",
+                title: "Camiseta Negra",
                 desc: "Ropa de calidad premium. Envío mundial disponible directamente a tu puerta.",
                 btn: "Comprar Ahora"
             },
             pt: {
-                badge: "Lançamento Exclusivo",
-                title: "Loja Oficial da Marca",
+                badge: "Mercadoria Oficial",
+                title: "Camiseta Preta",
                 desc: "Vestuário de qualidade premium. Envio mundial disponível diretamente para sua porta.",
                 btn: "Compre Agora"
             },
             it: {
-                badge: "Lancio Esclusivo",
-                title: "Shop Ufficiale",
+                badge: "Merchandising Ufficiale",
+                title: "T-Shirt Nera",
                 desc: "Abbigliamento di qualità premium. Spedizione in tutto il mondo direttamente a casa tua.",
                 btn: "Acquista Ora"
             }
@@ -239,32 +247,32 @@
         const supportedLangs = ['en', 'es', 'pt', 'it'];
 
         function initLanguage() {
-            // Rileva la lingua del browser (es. "it-IT" diventa "it")
+            // Rileva la lingua di default del dispositivo dell'utente
             const userLang = navigator.language.slice(0, 2).toLowerCase();
             
-            // Imposta la lingua se supportata, altrimenti usa l'inglese
+            // Imposta la lingua se è tra quelle supportate (en, es, pt, it), altrimenti usa l'inglese di default
             const targetLang = supportedLangs.includes(userLang) ? userLang : 'en';
             setLanguage(targetLang);
         }
 
         function setLanguage(lang) {
-            // Aggiorna i testi
+            // Aggiorna i testi nella pagina
             document.getElementById('badge').innerText = translations[lang].badge;
             document.getElementById('title').innerText = translations[lang].title;
             document.getElementById('desc').innerText = translations[lang].desc;
             document.getElementById('btn').innerText = translations[lang].btn;
 
-            // Aggiorna l'attributo lang dell'HTML per la SEO/Accessibilità
+            // Imposta l'attributo lang del documento per i motori di ricerca e l'accessibilità
             document.documentElement.lang = lang;
 
-            // Gestisci l'opacità e l'ingrandimento delle bandierine
+            // Gestisci l'aspetto delle bandierine (attiva/disattiva)
             document.querySelectorAll('.flag').forEach(flag => {
                 flag.classList.remove('active');
             });
             document.querySelector(`.flag[data-lang="${lang}"]`).classList.add('active');
         }
 
-        // Avvia la funzione appena la pagina si carica
+        // Esegue il rilevamento appena la pagina viene caricata
         window.onload = initLanguage;
     </script>
 </body>
