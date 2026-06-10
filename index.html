@@ -16,12 +16,11 @@
     body, html {
       margin: 0; padding: 0;
       background-color: #09090b !important; color: #f4f4f5 !important;
-      font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      overflow: hidden; /* Prevent body scroll, handle inside components */
-      height: 100%;
-      width: 100%;
+      overflow: hidden; /* App feels like a native app */
+      height: 100%; width: 100%;
     }
     
     #root { height: 100vh; height: 100dvh; display: flex; flex-direction: column; position: relative; overflow: hidden; }
@@ -36,9 +35,7 @@
       position: relative;
     }
     .bg-grid-pattern::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 50%; transform: translateX(-50%);
+      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
       width: 100%; max-width: 1000px; height: 600px;
       background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, rgba(9, 9, 11, 0) 70%);
       pointer-events: none; z-index: 0;
@@ -46,50 +43,29 @@
 
     .text-gold-gradient {
       background: linear-gradient(135deg, #fef08a 0%, #d4af37 50%, #92400e 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-    .bg-gold-gradient {
-      background: linear-gradient(135deg, #fcd34d 0%, #d4af37 50%, #b45309 100%);
-    }
+    .bg-gold-gradient { background: linear-gradient(135deg, #fcd34d 0%, #d4af37 50%, #b45309 100%); }
 
-    .initial-loader {
-      display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; height: 100dvh;
-      background: #09090b; color: #d4af37; font-weight: 500; z-index: 9999;
-    }
-    .spinner-ring {
-      width: 48px; height: 48px; border: 3px solid rgba(212, 175, 55, 0.1);
-      border-radius: 50%; border-top-color: #d4af37; animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-      margin-bottom: 24px;
-    }
+    .initial-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; height: 100dvh; background: #09090b; color: #d4af37; font-weight: 500; z-index: 9999; }
+    .spinner-ring { width: 48px; height: 48px; border: 3px solid rgba(212, 175, 55, 0.1); border-radius: 50%; border-top-color: #d4af37; animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite; margin-bottom: 24px; }
+    
     @keyframes spin { to { transform: rotate(360deg); } }
-
+    @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
     .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
     .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d4af37; }
 
-    @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes pulseGoldGlow { 0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); } 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); } }
-    @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    
     .toast-enter { animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    .coin-glow { animation: pulseGoldGlow 2s infinite; }
-    .coin-spin { animation: spinSlow 10s linear infinite; }
     
-    .glass-panel {
-      background: rgba(24, 24, 27, 0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    .coin-unqualified { filter: grayscale(100%) opacity(0.5); transition: filter 0.5s ease-in-out; }
-    .coin-qualified { filter: grayscale(0%) opacity(1); transition: filter 0.5s ease-in-out; box-shadow: 0 0 25px rgba(212, 175, 55, 0.5); }
+    .glass-panel { background: rgba(24, 24, 27, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
     
-    .flag-icon { width: 22px; height: 15px; object-fit: cover; border-radius: 2px; box-shadow: 0 0 3px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; }
+    /* Small HD Flags */
+    .flag-icon { width: 16px; height: 11px; object-fit: cover; border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.5); flex-shrink: 0; }
   </style>
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -101,22 +77,22 @@
         success: { 500: '#10b981', 400: '#34d399', 600: '#059669' },
         surface: { 950: '#09090b', 900: '#18181b', 800: '#27272a', 700: '#3f3f46' },
         zinc: { 400: '#a1a1aa', 500: '#71717a' }
-      }, fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'], mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'] } } }
+      }, fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'], mono: ['ui-monospace', 'monospace'] } } }
     }
   </script>
   
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
   <script src="https://unpkg.com/recharts@2.1.12/umd/Recharts.js"></script>
 </head>
 <body class="bg-surface-950 text-zinc-300 selection:bg-brand-500/30">
   <div id="root">
     <div class="initial-loader">
       <div class="spinner-ring"></div>
-      <div class="text-xs text-zinc-500 mt-2 font-bold tracking-widest uppercase" id="loading-text">INITIALIZING ELITE ENVIRONMENT...</div>
+      <div class="text-[10px] text-zinc-500 mt-2 font-black tracking-widest uppercase" id="loading-text">Initializing Systems...</div>
     </div>
   </div>
 
@@ -124,17 +100,12 @@
     const { useState, useEffect, useCallback, useRef, useMemo } = React;
     const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } = window.Recharts; 
 
-    // Safe Icon Component
     const Icon = ({ name, size = 24, className = '', ...props }) => {
       const spanRef = useRef(null);
       useEffect(() => {
         if (spanRef.current && window.lucide) {
           spanRef.current.innerHTML = `<i data-lucide="${name}"></i>`;
-          window.lucide.createIcons({
-            root: spanRef.current,
-            nameAttr: 'data-lucide',
-            attrs: { width: size, height: size, class: className, ...props }
-          });
+          window.lucide.createIcons({ root: spanRef.current, attrs: { width: size, height: size, class: className, ...props } });
         }
       }, [name, size, className, props]);
       return <span ref={spanRef} className={`inline-flex items-center justify-center shrink-0 ${className}`}></span>;
@@ -171,7 +142,8 @@
         funnel_2: "FUNNEL 2: MASTERCLASS", funnel_2_desc: "Free Live Masterclass invite + free signals + Academy Lesson 1.",
         funnel_3: "FUNNEL 3: VIRAL LOOP", funnel_3_desc: "Offers 1 Free Premium Week by unlocking the friend invite task.",
         elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "Live Event", viral_task_tag: "VIRAL TASK",
-        welcome_title: "OPERATIONS HUB", system_status_ok: "SYSTEM STATUS: OPTIMAL", sign_tx: "Sign transaction in your wallet.", users_label: "Users", elite_platform: "Elite Platform", init_env: "Initializing Elite Environment..."
+        welcome_title: "OPERATIONS HUB", system_status_ok: "SYSTEM STATUS: OPTIMAL", sign_tx: "Sign transaction in your wallet.", users_label: "Users", elite_platform: "Elite Platform", init_env: "Initializing Elite Environment...",
+        realtime_leaderboard: "Live Leaderboard", bot_managed: "Auto-updated by Python Bot", training_setup: "Training & Setup", signals_access: "Premium Signals", merch_store: "Merch Store"
       },
       es: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programa de Afiliados", user_dash: "Área Usuario", partner_dash: "Área Socios", company_dash: "Tesorería",
@@ -196,7 +168,8 @@
         funnel_2: "FUNNEL 2: MASTERCLASS", funnel_2_desc: "Invitación a Masterclass en vivo + señales gratis + Lección 1 Academy.",
         funnel_3: "FUNNEL 3: VIRAL LOOP", funnel_3_desc: "Ofrece 1 Semana Premium Gratis completando la tarea de invitación.",
         elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "En Vivo", viral_task_tag: "TAREA VIRAL",
-        welcome_title: "CENTRO DE OPERACIONES", system_status_ok: "ESTADO SISTEMA: ÓPTIMO", sign_tx: "Firma la transacción en tu billetera.", users_label: "Usuarios", elite_platform: "Plataforma Élite", init_env: "Inicializando Entorno..."
+        welcome_title: "CENTRO DE OPERACIONES", system_status_ok: "ESTADO SISTEMA: ÓPTIMO", sign_tx: "Firma la transacción en tu billetera.", users_label: "Usuarios", elite_platform: "Plataforma Élite", init_env: "Inicializando Entorno...",
+        realtime_leaderboard: "Clasificación en Vivo", bot_managed: "Actualizado por Bot Python", training_setup: "Formación y Setup", signals_access: "Señales Premium", merch_store: "Tienda Oficial"
       },
       pt: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programa Afiliados", user_dash: "Área Usuário", partner_dash: "Área Sócios", company_dash: "Tesouraria",
@@ -221,7 +194,8 @@
         funnel_2: "FUNIL 2: MASTERCLASS", funnel_2_desc: "Convite Masterclass ao vivo + sinais grátis + Lição 1 Academy.",
         funnel_3: "FUNIL 3: VIRAL LOOP", funnel_3_desc: "Oferece 1 Semana Premium Grátis desbloqueando a tarefa de convite.",
         elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "Ao Vivo", viral_task_tag: "TAREFA VIRAL",
-        welcome_title: "CENTRAL DE OPERAÇÕES", system_status_ok: "STATUS SISTEMA: IDEAL", sign_tx: "Assine a transação na sua carteira.", users_label: "Usuários", elite_platform: "Plataforma Elite", init_env: "Inicializando Ambiente..."
+        welcome_title: "CENTRAL DE OPERAÇÕES", system_status_ok: "STATUS SISTEMA: IDEAL", sign_tx: "Assine a transação na sua carteira.", users_label: "Usuários", elite_platform: "Plataforma Elite", init_env: "Inicializando Ambiente...",
+        realtime_leaderboard: "Classificação ao Vivo", bot_managed: "Atualizado por Bot Python", training_setup: "Treinamento e Setup", signals_access: "Sinais Premium", merch_store: "Loja Oficial"
       },
       it: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programma Affiliati", user_dash: "Area Utente", partner_dash: "Area Partner", company_dash: "Tesoreria",
@@ -246,7 +220,8 @@
         funnel_2: "FUNNEL 2: MASTERCLASS", funnel_2_desc: "Invito Masterclass Live + segnali gratis + 1° lezione Academy.",
         funnel_3: "FUNNEL 3: VIRAL LOOP", funnel_3_desc: "Offre 1 Settimana Premium gratis completando il task di invito.",
         elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "Evento Live", viral_task_tag: "TASK VIRALE",
-        welcome_title: "HUB OPERATIVO", system_status_ok: "STATO SISTEMA: OTTIMALE", sign_tx: "Firma la transazione nel tuo wallet.", users_label: "Utenti", elite_platform: "Piattaforma Elite", init_env: "Inizializzazione Ambiente..."
+        welcome_title: "HUB OPERATIVO", system_status_ok: "STATO SISTEMA: OTTIMALE", sign_tx: "Firma la transazione nel tuo wallet.", users_label: "Utenti", elite_platform: "Piattaforma Elite", init_env: "Inizializzazione Ambiente...",
+        realtime_leaderboard: "Classifica in Tempo Reale", bot_managed: "Gestita da Bot Python", training_setup: "Formazione e Setup", signals_access: "Segnali Premium", merch_store: "Store Ufficiale"
       }
     };
 
@@ -275,18 +250,32 @@
       { id: 10, username: '@newbie_trader', typeKey: 'action_join', timeKey: 'time_2w', statusKey: 'status_inactive', total_vol: 0, flag: 'es' }
     ];
 
+    const TOP_10_LEADERS = [
+      { rank: 1, name: 'Crypto King', vol: 45000, isMe: false },
+      { rank: 2, name: 'Sarah_FX', vol: 38200, isMe: false },
+      { rank: 3, name: 'Marcus Bull', vol: 31000, isMe: false },
+      { rank: 4, name: 'Elena_Trading', vol: 28500, isMe: false },
+      { rank: 5, name: 'John_Doe99', vol: 24000, isMe: false },
+      { rank: 6, name: 'TradeMaster', vol: 21000, isMe: false },
+      { rank: 7, name: 'Luna_Crypto', vol: 19500, isMe: false },
+      { rank: 8, name: 'David_G', vol: 18000, isMe: false },
+      { rank: 9, name: 'Paul_Smith', vol: 16500, isMe: false },
+      { rank: 10, name: 'Mike_T', vol: 15000, isMe: false },
+      { rank: 11, name: 'Alex De Souza', vol: 14500, isMe: true }, // Fuori dai top 10
+    ];
+
     const TgLink = ({ username, className = "" }) => {
       const cleanUsername = username.replace('@', '');
       return (
         <a href={`https://t.me/${cleanUsername}`} target="_blank" rel="noopener noreferrer" 
            className={`text-brand-400 hover:text-brand-300 font-mono font-bold hover:underline transition-colors flex items-center gap-1 ${className}`}>
-          {username} <Icon name="external-link" size={12} className="opacity-70" />
+          {username} <Icon name="external-link" size={10} className="opacity-70" />
         </a>
       );
     };
 
     const Card = ({ children, className = '', padding = 'p-3 sm:p-4' }) => (
-      <div className={`glass-panel rounded-2xl ${padding} shadow-lg flex flex-col ${className}`}>
+      <div className={`glass-panel rounded-xl sm:rounded-2xl ${padding} shadow-lg flex flex-col ${className}`}>
         {children}
       </div>
     );
@@ -296,28 +285,28 @@
         <div className="flex justify-between items-start gap-2 h-full">
           <div className="flex-1 min-w-0 flex flex-col justify-center">
             <p className="text-zinc-500 font-bold mb-1 text-[9px] sm:text-[10px] lg:text-xs uppercase tracking-widest leading-tight">{title}</p>
-            <h3 className="text-lg sm:text-xl lg:text-2xl font-black text-zinc-100 mb-1 tracking-tight drop-shadow-sm truncate">{value}</h3>
+            <h3 className="text-lg sm:text-xl font-black text-zinc-100 mb-1 tracking-tight drop-shadow-sm truncate">{value}</h3>
             <div className={`text-[9px] sm:text-[10px] font-bold ${colorClass} uppercase tracking-wider leading-tight truncate`}>
               {subtext}
             </div>
           </div>
-          <div className={`p-2 rounded-lg sm:rounded-xl bg-surface-950 border border-surface-800 flex-shrink-0 ${colorClass} shadow-inner`}>
-            <Icon name={icon} size={18} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+          <div className={`p-2 rounded-lg bg-surface-950 border border-surface-800 flex-shrink-0 ${colorClass} shadow-inner`}>
+            <Icon name={icon} size={16} className="sm:w-5 sm:h-5" />
           </div>
         </div>
       </Card>
     );
 
     const ToastContainer = ({ toasts }) => (
-      <div className="fixed top-4 right-4 sm:top-6 sm:right-6 z-[200] flex flex-col gap-3 pointer-events-none max-w-[calc(100vw-32px)] w-80">
+      <div className="fixed top-4 right-4 sm:top-6 sm:right-6 z-[200] flex flex-col gap-2 pointer-events-none max-w-[calc(100vw-32px)] w-72">
         {toasts.map(toast => (
-          <div key={toast.id} className="toast-enter pointer-events-auto flex items-start gap-3 bg-surface-900/95 backdrop-blur-md border border-surface-700 text-zinc-100 px-4 py-4 rounded-xl shadow-2xl">
+          <div key={toast.id} className="toast-enter pointer-events-auto flex items-start gap-3 bg-surface-900/95 backdrop-blur-md border border-surface-700 text-zinc-100 px-4 py-3 rounded-xl shadow-2xl">
             <div className={`mt-0.5 flex-shrink-0 ${toast.type === 'success' ? 'text-success-400' : toast.type === 'error' ? 'text-red-400' : 'text-brand-400'}`}>
-              <Icon name={toast.type === 'success' ? 'check-circle' : toast.type === 'error' ? 'alert-circle' : 'info'} size={20} />
+              <Icon name={toast.type === 'success' ? 'check-circle' : toast.type === 'error' ? 'alert-circle' : 'info'} size={18} />
             </div>
             <div className="overflow-hidden min-w-0 flex-1">
-              <p className="text-sm font-bold truncate">{toast.title}</p>
-              {toast.message && <p className="text-xs text-zinc-400 mt-1 leading-snug">{toast.message}</p>}
+              <p className="text-xs font-bold truncate">{toast.title}</p>
+              {toast.message && <p className="text-[10px] text-zinc-400 mt-0.5 leading-snug">{toast.message}</p>}
             </div>
           </div>
         ))}
@@ -344,9 +333,9 @@
           {isOpen && (
             <div className="absolute right-0 mt-2 w-32 sm:w-36 bg-surface-900 border border-surface-700 rounded-xl shadow-2xl overflow-hidden z-50 fade-in">
               {LANGUAGES.map((l) => (
-                <button key={l.code} onClick={() => { setLang(l.code); setIsOpen(false); }} className={`w-full flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 text-left hover:bg-surface-800 transition-colors ${lang === l.code ? 'bg-surface-800/80 text-brand-400' : 'text-zinc-300'}`}>
+                <button key={l.code} onClick={() => { setLang(l.code); setIsOpen(false); }} className={`w-full flex items-center gap-3 px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-surface-800 transition-colors ${lang === l.code ? 'bg-surface-800/80 text-brand-400' : 'text-zinc-300'}`}>
                   <img src={`https://flagcdn.com/${l.flag}.svg`} alt={l.name} className="flag-icon" />
-                  <span className="text-[11px] sm:text-xs font-bold tracking-wider">{l.name}</span>
+                  <span className="text-[10px] sm:text-xs font-bold tracking-wider">{l.name}</span>
                 </button>
               ))}
             </div>
@@ -365,14 +354,14 @@
       const isEditing = !!currentWallet;
       return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-surface-950/90 backdrop-blur-md p-4 fade-in">
-          <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-md shadow-[0_0_50px_rgba(212,175,55,0.1)] p-6 sm:p-8">
-            <div className="w-12 h-12 bg-brand-500/10 rounded-full flex items-center justify-center text-brand-400 mb-6 border border-brand-500/20 mx-auto"><Icon name="wallet" size={24} /></div>
-            <h3 className="text-xl font-black text-zinc-100 mb-2 text-center uppercase tracking-wide">{isEditing ? t('change_wallet') : t('setup_wallet')}</h3>
-            <p className="text-zinc-400 text-xs mb-6 text-center leading-relaxed">{isEditing ? t('edit_wallet_desc') : t('setup_wallet_desc')}</p>
-            <input type="text" value={val} onChange={e=>setVal(e.target.value)} placeholder="UQ... o EQ..." className="w-full bg-surface-950 border border-surface-700 rounded-xl px-4 py-4 text-zinc-100 mb-6 font-mono focus:outline-none focus:border-brand-500 transition-colors shadow-inner text-sm" />
-            <div className="flex gap-3">
-              <button onClick={onClose} className="flex-1 py-3 rounded-xl font-bold text-zinc-400 bg-surface-800 hover:bg-surface-700 transition-colors text-sm">{t('cancel')}</button>
-              <button onClick={()=>{onSave(val); onClose();}} disabled={val.length < 10} className="flex-[2] py-3 rounded-xl font-black text-surface-950 bg-gold-gradient hover:opacity-90 transition-opacity disabled:opacity-50 shadow-lg uppercase tracking-wider text-sm">{t('save_wallet')}</button>
+          <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-sm shadow-[0_0_50px_rgba(212,175,55,0.1)] p-6">
+            <div className="w-10 h-10 bg-brand-500/10 rounded-full flex items-center justify-center text-brand-400 mb-4 border border-brand-500/20 mx-auto"><Icon name="wallet" size={20} /></div>
+            <h3 className="text-lg font-black text-zinc-100 mb-1 text-center uppercase tracking-wide">{isEditing ? t('change_wallet') : t('setup_wallet')}</h3>
+            <p className="text-zinc-400 text-[10px] mb-4 text-center leading-relaxed">{isEditing ? t('edit_wallet_desc') : t('setup_wallet_desc')}</p>
+            <input type="text" value={val} onChange={e=>setVal(e.target.value)} placeholder="UQ... o EQ..." className="w-full bg-surface-950 border border-surface-700 rounded-lg px-3 py-2.5 text-zinc-100 mb-4 font-mono focus:outline-none focus:border-brand-500 transition-colors shadow-inner text-xs" />
+            <div className="flex gap-2">
+              <button onClick={onClose} className="flex-1 py-2.5 rounded-lg font-bold text-zinc-400 bg-surface-800 hover:bg-surface-700 transition-colors text-xs">{t('cancel')}</button>
+              <button onClick={()=>{onSave(val); onClose();}} disabled={val.length < 10} className="flex-[2] py-2.5 rounded-lg font-black text-surface-950 bg-gold-gradient hover:opacity-90 transition-opacity disabled:opacity-50 shadow-lg uppercase tracking-wider text-xs">{t('save_wallet')}</button>
             </div>
           </div>
         </div>
@@ -386,28 +375,28 @@
       
       return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-surface-950/90 backdrop-blur-md p-4 fade-in">
-          <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-md shadow-[0_0_50px_rgba(212,175,55,0.1)] overflow-hidden min-w-0">
-            <div className="p-6 text-center border-b border-surface-800">
-              <div className="w-12 h-12 bg-surface-950 rounded-full flex items-center justify-center text-brand-400 mx-auto mb-4 border border-surface-800"><Icon name="shield-check" size={24} /></div>
-              <h3 className="text-lg font-black text-zinc-100 uppercase tracking-wider">{t('security_auth')}</h3>
-              <p className="text-sm text-zinc-400 mt-2">{t('sign_tx')}</p>
+          <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-sm shadow-[0_0_50px_rgba(212,175,55,0.1)] overflow-hidden min-w-0">
+            <div className="p-5 text-center border-b border-surface-800">
+              <div className="w-10 h-10 bg-surface-950 rounded-full flex items-center justify-center text-brand-400 mx-auto mb-3 border border-surface-800"><Icon name="shield-check" size={20} /></div>
+              <h3 className="text-base font-black text-zinc-100 uppercase tracking-wider">{t('security_auth')}</h3>
+              <p className="text-[10px] text-zinc-400 mt-1">{t('sign_tx')}</p>
             </div>
-            <div className="p-6 space-y-6">
-              <div className="bg-surface-950 p-4 rounded-xl border border-surface-800 text-sm shadow-inner">
-                <div className="flex justify-between items-center mb-3 pb-3 border-b border-surface-800">
-                  <span className="text-zinc-500 font-bold uppercase tracking-wider text-xs">{t('requested_amount')}</span>
-                  <span className="text-brand-400 font-black text-lg">{amount.toLocaleString('en-US', {minimumFractionDigits:2})} USDT</span>
+            <div className="p-5 space-y-4">
+              <div className="bg-surface-950 p-3 rounded-xl border border-surface-800 text-xs shadow-inner">
+                <div className="flex justify-between items-center mb-2 pb-2 border-b border-surface-800">
+                  <span className="text-zinc-500 font-bold uppercase tracking-wider text-[10px]">{t('requested_amount')}</span>
+                  <span className="text-brand-400 font-black text-sm">{amount.toLocaleString('en-US', {minimumFractionDigits:2})} USDT</span>
                 </div>
                 <div className="flex justify-between items-center overflow-hidden">
-                  <span className="text-zinc-500 font-bold uppercase tracking-wider text-xs flex-shrink-0">{t('dest_wallet')}</span>
-                  <span className="text-zinc-300 font-mono text-xs truncate ml-3 bg-surface-800 px-2 py-0.5 rounded border border-surface-700">{walletAddress}</span>
+                  <span className="text-zinc-500 font-bold uppercase tracking-wider text-[10px] flex-shrink-0">{t('dest_wallet')}</span>
+                  <span className="text-zinc-300 font-mono text-[10px] truncate ml-2 bg-surface-800 px-1.5 py-0.5 rounded border border-surface-700">{walletAddress}</span>
                 </div>
               </div>
-              <div className="flex gap-3">
-                <button onClick={onClose} disabled={isSigning} className="flex-1 py-3 rounded-xl font-bold text-zinc-400 bg-surface-800 hover:bg-surface-700 transition-colors disabled:opacity-50 text-sm">{t('cancel')}</button>
-                <button onClick={handleConfirm} disabled={isSigning} className="flex-[2] py-3 rounded-xl font-black text-surface-950 bg-gold-gradient hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg">
-                  {isSigning ? <Icon name="loader-2" size={18} className="animate-spin" /> : <Icon name="check" size={18} />}
-                  <span className="uppercase tracking-wider text-xs sm:text-sm">{isSigning ? t('signing_btn') : t('sign_withdraw_btn')}</span>
+              <div className="flex gap-2">
+                <button onClick={onClose} disabled={isSigning} className="flex-1 py-2.5 rounded-lg font-bold text-zinc-400 bg-surface-800 hover:bg-surface-700 transition-colors disabled:opacity-50 text-xs">{t('cancel')}</button>
+                <button onClick={handleConfirm} disabled={isSigning} className="flex-[2] py-2.5 rounded-lg font-black text-surface-950 bg-gold-gradient hover:opacity-90 transition-opacity flex items-center justify-center gap-1.5 disabled:opacity-50 shadow-lg">
+                  {isSigning ? <Icon name="loader-2" size={14} className="animate-spin" /> : <Icon name="check" size={14} />}
+                  <span className="uppercase tracking-wider text-[10px]">{isSigning ? t('signing_btn') : t('sign_withdraw_btn')}</span>
                 </button>
               </div>
             </div>
@@ -419,50 +408,45 @@
     const UserDashboard = ({ t }) => {
       return (
         <div className="flex-1 flex flex-col h-full min-h-0 py-2 sm:py-4 fade-in">
-          <div className="w-full flex flex-col h-full gap-4 max-w-6xl mx-auto">
-            {/* Top Operational Status Bar */}
-            <div className="shrink-0 p-4 sm:p-6 glass-panel rounded-2xl border-l-4 border-l-brand-500 flex items-center justify-between shadow-lg">
+          <div className="w-full flex flex-col h-full gap-4 max-w-5xl mx-auto">
+            
+            <div className="shrink-0 p-4 sm:p-5 glass-panel rounded-xl border-l-4 border-l-brand-500 flex items-center justify-between shadow-lg">
               <div>
-                <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-zinc-100 uppercase tracking-widest">{t('welcome_title')}</h2>
-                <p className="text-success-400 font-mono text-xs mt-1 font-bold flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-success-500 animate-pulse"></span>
+                <h2 className="text-xl sm:text-2xl font-black text-zinc-100 uppercase tracking-widest leading-none">{t('welcome_title')}</h2>
+                <p className="text-success-400 font-mono text-[10px] sm:text-xs mt-1.5 font-bold flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-success-500 animate-pulse"></span>
                   {t('system_status_ok')}
                 </p>
               </div>
-              <Icon name="activity" className="text-brand-500" size={32} />
+              <Icon name="activity" className="text-brand-500 opacity-80" size={28} />
             </div>
 
-            {/* Modules Grid - filling remaining height nicely */}
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 min-h-0 overflow-y-auto custom-scrollbar lg:overflow-hidden">
-              <a href="SummaryZeroToHeroAcademy.html" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-6 lg:p-8 rounded-2xl glass-panel hover:bg-surface-800 transition-all shadow-lg group border border-brand-500/30 hover:border-brand-500 hover:-translate-y-1 h-full min-h-[200px]">
-                <div className="absolute inset-0 bg-gradient-to-br from-brand-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
-                <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-surface-900 border border-brand-500/40 flex items-center justify-center mb-4 lg:mb-6 shadow-[0_0_20px_rgba(212,175,55,0.2)] group-hover:scale-110 transition-transform duration-500 ease-out shrink-0">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 lg:w-10 lg:h-10">
-                    <defs><linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#fef08a" /><stop offset="50%" stopColor="#d4af37" /><stop offset="100%" stopColor="#92400e" /></linearGradient></defs>
-                    <path d="M12 3L1 9L12 15L21 10.09V17H23V9L12 3Z" fill="url(#goldGrad)"/><path d="M5 13.18V17.18C5 17.18 8.5 21 12 21C15.5 21 19 17.18 19 17.18V13.18L12 17L5 13.18Z" fill="url(#goldGrad)" opacity="0.8"/><circle cx="12" cy="12" r="3" fill="#09090b" /><path d="M12 10.5L13.5 13.5H10.5L12 10.5Z" fill="url(#goldGrad)"/>
-                  </svg>
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 min-h-0">
+              <a href="SummaryZeroToHeroAcademy.html" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-5 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-brand-500/20 hover:border-brand-500 hover:-translate-y-1">
+                <div className="absolute inset-0 bg-gradient-to-br from-brand-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-surface-900 border border-brand-500/40 flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(212,175,55,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0">
+                  <Icon name="graduation-cap" size={24} className="text-brand-400" />
                 </div>
-                <h3 className="text-sm lg:text-base font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('academy_btn')}</h3>
+                <h3 className="text-xs sm:text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('academy_btn')}</h3>
+                <p className="text-[9px] sm:text-[10px] text-zinc-500 mt-1 uppercase tracking-widest font-bold">{t('training_setup')}</p>
               </a>
               
-              <a href="https://t.me/BettingExchangeRoom" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-6 lg:p-8 rounded-2xl glass-panel hover:bg-surface-800 transition-all shadow-lg group border border-[#2AABEE]/30 hover:border-[#2AABEE] hover:-translate-y-1 h-full min-h-[200px]">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#2AABEE]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
-                <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-surface-900 border border-[#2AABEE]/40 flex items-center justify-center mb-4 lg:mb-6 shadow-[0_0_20px_rgba(42,171,238,0.2)] group-hover:scale-110 transition-transform duration-500 ease-out shrink-0">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 lg:w-10 lg:h-10">
-                    <path d="M12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12z" fill="#2AABEE"/><path d="M5.432 12.333l10.87-4.18c.513-.19.957.123.774.887l-1.854 8.742c-.156.697-.568.868-1.15.542l-3.18-2.344-1.533 1.478c-.17.17-.312.312-.642.312l.228-3.238 5.894-5.32c.256-.228-.056-.355-.397-.127L7.15 13.68l-3.136-.98c-.682-.213-.697-.683.143-1.013z" fill="#fff"/>
-                  </svg>
+              <a href="https://t.me/BettingExchangeRoom" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-5 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#2AABEE]/20 hover:border-[#2AABEE] hover:-translate-y-1">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#2AABEE]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-surface-900 border border-[#2AABEE]/40 flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(42,171,238,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0">
+                  <Icon name="send" size={24} className="text-[#2AABEE]" />
                 </div>
-                <h3 className="text-sm lg:text-base font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('signals_btn')}</h3>
+                <h3 className="text-xs sm:text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('signals_btn')}</h3>
+                <p className="text-[9px] sm:text-[10px] text-zinc-500 mt-1 uppercase tracking-widest font-bold">{t('signals_access')}</p>
               </a>
 
-              <a href="brandshop.html" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-6 lg:p-8 rounded-2xl glass-panel hover:bg-surface-800 transition-all shadow-lg group border border-[#ec4899]/30 hover:border-[#ec4899] hover:-translate-y-1 h-full min-h-[200px]">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#ec4899]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
-                <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-surface-900 border border-[#ec4899]/40 flex items-center justify-center mb-4 lg:mb-6 shadow-[0_0_20px_rgba(236,72,153,0.2)] group-hover:scale-110 transition-transform duration-500 ease-out shrink-0">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 lg:w-10 lg:h-10">
-                      <path d="M16 11V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V11M5 9H19L20 21H4L5 9Z" stroke="#ec4899" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
+              <a href="brandshop.html" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-5 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#ec4899]/20 hover:border-[#ec4899] hover:-translate-y-1">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#ec4899]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-surface-900 border border-[#ec4899]/40 flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(236,72,153,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0">
+                  <Icon name="shopping-bag" size={24} className="text-[#ec4899]" />
                 </div>
-                <h3 className="text-sm lg:text-base font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('brand_shop')}</h3>
+                <h3 className="text-xs sm:text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('brand_shop')}</h3>
+                <p className="text-[9px] sm:text-[10px] text-zinc-500 mt-1 uppercase tracking-widest font-bold">{t('merch_store')}</p>
               </a>
             </div>
           </div>
@@ -492,82 +476,71 @@
         else setStatusSort('activeFirst');
       };
 
-      const handleDeposit = async () => { 
-        setIsSimulating(true); 
-        await sc.simulateDeposit(t);
-        setIsSimulating(false); 
-      };
-
       return (
         <div className="flex flex-col flex-1 h-full fade-in min-h-0 pt-2 lg:pt-0">
           
-          {/* Top Navbar specifically for Treasury actions */}
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 shrink-0 mb-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shrink-0 mb-3 sm:mb-4 bg-surface-900/50 p-3 sm:p-4 rounded-xl border border-surface-800">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-brand-500/10 rounded-lg flex items-center justify-center text-brand-400 shrink-0 border border-brand-500/20"><Icon name="building" size={20} /></div>
-              <h2 className="text-lg sm:text-xl font-black text-zinc-100 truncate uppercase tracking-widest">{t('treasury_center')}</h2>
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-brand-500/10 rounded-lg flex items-center justify-center text-brand-400 shrink-0 border border-brand-500/20"><Icon name="building" size={18} /></div>
+              <h2 className="text-base sm:text-lg font-black text-zinc-100 truncate uppercase tracking-widest">{t('treasury_center')}</h2>
             </div>
-            <div className="w-full lg:w-auto shrink-0 flex flex-col sm:flex-row gap-2 sm:gap-3">
-              <a href="pricing.html" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto px-5 py-2.5 bg-surface-950 hover:bg-surface-800 border border-surface-700 text-brand-400 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition-colors uppercase tracking-wide shadow-lg">
-                <Icon name="file-text" size={16} /> {t('pricing_docs')}
+            <div className="w-full sm:w-auto shrink-0 flex gap-2">
+              <a href="pricing.html" target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none px-4 py-2 sm:py-2.5 bg-surface-950 hover:bg-surface-800 border border-surface-700 text-brand-400 rounded-lg text-[10px] sm:text-xs font-black flex items-center justify-center gap-1.5 transition-colors uppercase tracking-wide shadow-sm">
+                <Icon name="file-text" size={14} /> <span className="hidden sm:inline">{t('pricing_docs')}</span><span className="sm:hidden">Docs</span>
               </a>
-              <button onClick={handleDeposit} disabled={isSimulating} className="w-full sm:w-auto px-5 py-2.5 bg-gold-gradient hover:opacity-90 text-surface-950 rounded-xl text-xs font-black flex items-center justify-center gap-2 disabled:opacity-50 transition-opacity uppercase tracking-wide shadow-lg">
-                {isSimulating ? <Icon name="loader-2" size={16} className="animate-spin" /> : <Icon name="plus" size={16} />} {t('simulate_deposit')}
+              <button onClick={async () => { setIsSimulating(true); await sc.simulateDeposit(t); setIsSimulating(false); }} disabled={isSimulating} className="flex-[2] sm:flex-none px-4 py-2 sm:py-2.5 bg-gold-gradient hover:opacity-90 text-surface-950 rounded-lg text-[10px] sm:text-xs font-black flex items-center justify-center gap-1.5 disabled:opacity-50 transition-opacity uppercase tracking-wide shadow-sm">
+                {isSimulating ? <Icon name="loader-2" size={14} className="animate-spin" /> : <Icon name="plus" size={14} />} <span className="hidden sm:inline">{t('simulate_deposit')}</span><span className="sm:hidden">Deposit</span>
               </button>
             </div>
           </div>
 
-          {/* Main Grid fitting 100vh */}
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 lg:grid-rows-[auto_minmax(0,1fr)] gap-4 min-h-0 overflow-y-auto custom-scrollbar pb-4 lg:pb-2 lg:pr-2">
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 lg:grid-rows-[auto_minmax(0,1fr)] gap-3 sm:gap-4 min-h-0 overflow-y-auto custom-scrollbar lg:pr-2 pb-4">
             
-            {/* Top Row: 4 Metric Cards */}
-            <div className="lg:col-span-4 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 shrink-0">
+            <div className="lg:col-span-4 grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 shrink-0">
               <StatCard title={t('processed_volume')} value={formatCurrency(sc.state.totalProcessed, sc.state.isHidden)} subtext={t('real_usdt')} icon="bar-chart-2" colorClass="text-brand-400" />
               <StatCard title={t('company_reserve')} value={formatCurrency(sc.state.contractBalance, sc.state.isHidden)} subtext={t('withdrawable_funds')} icon="wallet" colorClass="text-success-400" highlight={true} />
               <StatCard title={t('active_nodes')} value={sc.state.activePromoters.toString()} subtext={t('registered_pools')} icon="users" colorClass="text-blue-400" />
               
-              <Card padding="p-3 sm:p-4" className="flex flex-col h-full min-h-[120px]">
-                <h3 className="text-[10px] sm:text-xs font-bold text-zinc-100 mb-1 uppercase tracking-widest flex items-center gap-2 shrink-0"><Icon name="globe-2" size={14} className="text-brand-500" /> {t('geo_dist')}</h3>
-                <div className="flex-1 w-full relative min-h-0">
-                  <div className="absolute inset-0 flex">
-                    <ResponsiveContainer width="50%" height="100%">
+              <Card padding="p-2 sm:p-3" className="flex flex-col h-full min-h-[100px]">
+                <h3 className="text-[9px] sm:text-[10px] font-bold text-zinc-100 mb-1 uppercase tracking-widest flex items-center gap-1.5 shrink-0"><Icon name="globe-2" size={12} className="text-brand-500" /> {t('geo_dist')}</h3>
+                <div className="flex-1 w-full relative min-h-0 flex items-center">
+                  <div className="w-1/2 h-full absolute left-0">
+                    <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
-                        <Pie data={GEO_DATA} cx="50%" cy="50%" innerRadius="65%" outerRadius="90%" paddingAngle={5} dataKey="value" stroke="none">
+                        <Pie data={GEO_DATA} cx="50%" cy="50%" innerRadius="60%" outerRadius="90%" paddingAngle={2} dataKey="value" stroke="none">
                           {GEO_DATA.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
                         </Pie>
-                        <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '8px', padding: '4px 8px', fontSize: '12px' }} itemStyle={{ fontWeight: 'bold', color:'#fff' }} formatter={(value) => [`${value}%`, t('users_label')]}/>
                       </PieChart>
                     </ResponsiveContainer>
-                    <div className="w-1/2 flex flex-col justify-center gap-1 pl-2">
-                      {GEO_DATA.map((item, idx) => (
-                        <div key={idx} className="flex items-center gap-1.5 text-[9px] 2xl:text-[10px]">
-                          <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: item.color }}></div>
-                          <span className="text-zinc-300 font-bold truncate">{item.name}</span>
-                          <span className="text-zinc-500 ml-auto font-mono">{item.value}%</span>
-                        </div>
-                      ))}
-                    </div>
+                  </div>
+                  <div className="w-1/2 ml-auto flex flex-col justify-center gap-1 pl-1">
+                    {GEO_DATA.map((item, idx) => (
+                      <div key={idx} className="flex items-center gap-1 text-[8px] sm:text-[9px]">
+                        <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: item.color }}></div>
+                        <span className="text-zinc-300 font-bold truncate">{item.name}</span>
+                        <span className="text-zinc-500 ml-auto font-mono">{item.value}%</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </Card>
             </div>
 
-            {/* Bottom Row: Cash Flow Chart + Network Dir */}
-            <div className="lg:col-span-2 flex flex-col gap-4 min-h-[300px] lg:min-h-0 h-full">
-              <Card className="flex flex-col flex-1 h-full min-h-0" padding="p-4">
-                <div className="flex justify-between items-center mb-4 shrink-0">
-                  <h3 className="text-[10px] sm:text-xs font-bold text-zinc-100 flex items-center gap-2 uppercase tracking-widest"><Icon name="activity" size={16} className="text-brand-500"/> {t('cash_flow')}</h3>
+            <div className="lg:col-span-2 flex flex-col gap-3 min-h-[250px] lg:min-h-0 h-full">
+              <Card className="flex flex-col flex-1 h-full min-h-0" padding="p-3 sm:p-4">
+                <div className="flex justify-between items-center mb-2 sm:mb-4 shrink-0">
+                  <h3 className="text-[10px] sm:text-xs font-bold text-zinc-100 flex items-center gap-2 uppercase tracking-widest"><Icon name="activity" size={14} className="text-brand-500"/> {t('cash_flow')}</h3>
                 </div>
                 <div className="flex-1 w-full relative min-h-0">
                   <div className="absolute inset-0">
                     <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -20, bottom: 0}}>
+                      <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -25, bottom: 0}}>
                         <defs><linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#d4af37" stopOpacity={0.4}/><stop offset="95%" stopColor="#d4af37" stopOpacity={0}/></linearGradient></defs>
                         <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
-                        <XAxis dataKey="name" stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700, textTransform:'uppercase'}} axisLine={false} tickLine={false} dy={10} />
-                        <YAxis stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700}} axisLine={false} tickLine={false} dx={-10} width={50} />
-                        <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '12px', color: '#fff' }} itemStyle={{ color: '#fcd34d', fontWeight: 'bold' }} />
-                        <Area type="monotone" dataKey="amount" stroke="#d4af37" strokeWidth={2} fillOpacity={1} fill="url(#colorAmount)" activeDot={{r: 5, fill: '#d4af37', stroke: '#fff', strokeWidth: 2}} />
+                        <XAxis dataKey="name" stroke="#71717a" tick={{fill: '#71717a', fontSize: 9, fontWeight: 700, textTransform:'uppercase'}} axisLine={false} tickLine={false} dy={10} />
+                        <YAxis stroke="#71717a" tick={{fill: '#71717a', fontSize: 9, fontWeight: 700}} axisLine={false} tickLine={false} dx={-10} width={40} />
+                        <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '8px', color: '#fff', fontSize:'10px' }} itemStyle={{ color: '#fcd34d', fontWeight: 'bold' }} />
+                        <Area type="monotone" dataKey="amount" stroke="#d4af37" strokeWidth={2} fillOpacity={1} fill="url(#colorAmount)" />
                       </AreaChart>
                     </ResponsiveContainer>
                   </div>
@@ -575,39 +548,37 @@
               </Card>
             </div>
 
-            <div className="lg:col-span-2 flex flex-col gap-4 min-h-[300px] lg:min-h-0 h-full">
+            <div className="lg:col-span-2 flex flex-col gap-3 min-h-[250px] lg:min-h-0 h-full">
               <Card padding="p-0" className="flex flex-col flex-1 h-full min-h-0">
-                <div className="p-3 border-b border-surface-800 bg-surface-900/50 flex justify-between items-center shrink-0">
-                  <h3 className="text-zinc-100 font-bold uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2"><Icon name="users-2" size={16} className="text-brand-500" /> {t('network_dir')}</h3>
+                <div className="p-2.5 sm:p-3 border-b border-surface-800 bg-surface-900/50 flex justify-between items-center shrink-0">
+                  <h3 className="text-zinc-100 font-bold uppercase tracking-widest text-[9px] sm:text-[10px] flex items-center gap-1.5"><Icon name="users-2" size={14} className="text-brand-500" /> {t('network_dir')}</h3>
                 </div>
                 <div className="flex-1 w-full overflow-y-auto custom-scrollbar relative bg-surface-950/30 min-h-0">
                   <table className="w-full text-left border-collapse">
                     <thead className="sticky top-0 z-10 bg-surface-900 shadow-md">
-                      <tr className="text-[9px] sm:text-[10px] uppercase tracking-wider text-zinc-500 border-b border-surface-800">
-                        <th className="px-3 py-2.5 font-bold">{t('promoter')}</th>
-                        <th className="px-3 py-2.5 font-bold text-right">{t('volume')}</th>
-                        <th className="px-3 py-2.5 font-bold cursor-pointer hover:text-brand-400 transition-colors select-none group text-center" onClick={handleSortClick}>
-                          <div className="flex items-center justify-center gap-1">
-                            {t('status')} <Icon name={statusSort === 'none' ? 'chevrons-up-down' : statusSort === 'inactiveFirst' ? 'chevron-down' : 'chevron-up'} size={10} className="opacity-50 group-hover:opacity-100 transition-opacity" />
-                          </div>
+                      <tr className="text-[8px] sm:text-[9px] uppercase tracking-wider text-zinc-500 border-b border-surface-800">
+                        <th className="px-2 sm:px-3 py-2 font-bold">{t('promoter')}</th>
+                        <th className="px-2 sm:px-3 py-2 font-bold text-right">{t('volume')}</th>
+                        <th className="px-2 sm:px-3 py-2 font-bold cursor-pointer hover:text-brand-400 transition-colors text-center" onClick={handleSortClick}>
+                          <div className="flex items-center justify-center gap-1">{t('status')} <Icon name={statusSort === 'none' ? 'chevrons-up-down' : statusSort === 'inactiveFirst' ? 'chevron-down' : 'chevron-up'} size={10} className="opacity-50" /></div>
                         </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-surface-800/50">
                       {sortedMembers.map(member => (
                         <tr key={member.id} className="hover:bg-surface-900/50 transition-colors">
-                          <td className="px-3 py-2.5">
-                            <div className="flex items-center gap-2">
+                          <td className="px-2 sm:px-3 py-2">
+                            <div className="flex items-center gap-1.5">
                               {member.flag && <img src={`https://flagcdn.com/${member.flag}.svg`} alt="flag" className="flag-icon" />}
                               <div className="flex flex-col min-w-0">
-                                <span className="text-zinc-100 font-bold text-[10px] sm:text-xs truncate max-w-[100px] sm:max-w-[150px]">{member.name}</span>
-                                <TgLink username={member.username} className="text-[9px] sm:text-[10px] mt-0.5 truncate" />
+                                <span className="text-zinc-100 font-bold text-[9px] sm:text-[10px] truncate max-w-[100px]">{member.name}</span>
+                                <TgLink username={member.username} className="text-[8px] mt-0.5 truncate" />
                               </div>
                             </div>
                           </td>
-                          <td className="px-3 py-2.5 font-mono text-success-400 font-bold text-[10px] sm:text-xs text-right whitespace-nowrap">{formatCurrency(member.volume, false)}</td>
-                          <td className="px-3 py-2.5 text-center">
-                            <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider border ${member.statusKey === 'status_active' ? 'bg-success-500/10 text-success-400 border-success-500/20' : 'bg-surface-800 text-zinc-500 border-surface-700'}`}>
+                          <td className="px-2 sm:px-3 py-2 font-mono text-success-400 font-bold text-[9px] sm:text-[10px] text-right whitespace-nowrap">{formatCurrency(member.volume, false)}</td>
+                          <td className="px-2 sm:px-3 py-2 text-center">
+                            <span className={`inline-flex items-center px-1 py-0.5 rounded text-[7px] font-black uppercase tracking-wider border ${member.statusKey === 'status_active' ? 'bg-success-500/10 text-success-400 border-success-500/20' : 'bg-surface-800 text-zinc-500 border-surface-700'}`}>
                               {t(member.statusKey)}
                             </span>
                           </td>
@@ -629,6 +600,7 @@
       const [copied, setCopied] = useState(false);
       const [showSecureModal, setShowSecureModal] = useState(false);
       const [showWalletModal, setShowWalletModal] = useState(false);
+      const [activeTab, setActiveTab] = useState('top10'); // Tabs per colonna di destra
       
       const localizedChartData = useMemo(() => PROMOTER_CHART_DATA.map(d => ({...d, name: t(d.rawKey)||d.rawKey})), [t]);
       const tgUser = { first_name: "Alex", last_name: "De Souza", username: "@alex_crypto_pro" };
@@ -645,17 +617,14 @@
       const isQualified = pVol >= pTarget;
       const poolTotal = sc.state.weeklyPoolTotal; 
 
-      const refId = sc.state.tonWallet ? sc.state.tonWallet.substring(0, 10) : "ALEX99";
+      const displayAddress = sc.state.walletAddress ? sc.state.walletAddress.substring(0,8) : "ABCDEF";
 
       const copyReferral = () => {
-        const addrToCopy = sc.state.walletAddress ? sc.state.walletAddress.substring(0,8) : "ABCDEF";
-        navigator.clipboard.writeText(`https://tonpull.app/ref/${addrToCopy}`).then(() => {
+        navigator.clipboard.writeText(`https://tonpull.app/ref/${displayAddress}`).then(() => {
           setCopied(true); sc.addToast(t('copied'), '', "success");
           setTimeout(() => setCopied(false), 2000);
         }).catch(() => sc.addToast(t('copy_error'), "", "error"));
       };
-
-      const displayAddress = sc.state.walletAddress ? sc.state.walletAddress.substring(0,8) : "ABCDEF";
 
       const copyFunnelLink = (path, nameKey) => {
         const fullUrl = `https://tonpull.app/${path}?ref=${displayAddress}`;
@@ -664,14 +633,20 @@
         }).catch(() => sc.addToast(t('copy_error'), "", "error"));
       };
 
+      const FUNNELS = [
+        { id: 1, title: t('funnel_1'), tag: t('promo_50_tag'), link: 'promo-50.html', colorClass: 'text-emerald-400', borderClass: 'border-emerald-500/20 hover:border-emerald-500/40', bgClass: 'bg-emerald-500/10 hover:bg-emerald-500/20', icon: 'sparkles' },
+        { id: 2, title: t('funnel_2'), tag: t('live_event_tag'), link: 'promo-masterclass.html', colorClass: 'text-purple-400', borderClass: 'border-purple-500/20 hover:border-purple-500/40', bgClass: 'bg-purple-500/10 hover:bg-purple-500/20', icon: 'graduation-cap' },
+        { id: 3, title: t('funnel_3'), tag: t('viral_task_tag'), link: 'taskfreeweek.html', colorClass: 'text-brand-400', borderClass: 'border-brand-500/30 hover:border-brand-500/50', bgClass: 'bg-brand-500/10 hover:bg-brand-500/20', icon: 'infinity' }
+      ];
+
       return (
         <div className="flex flex-col flex-1 h-full fade-in min-h-0 pt-2 lg:pt-0 pb-4">
           
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 lg:grid-rows-[minmax(0,1fr)_minmax(0,1fr)] gap-3 sm:gap-4 min-h-0 overflow-y-auto custom-scrollbar lg:pr-2 lg:pb-2">
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 lg:grid-rows-[minmax(0,1fr)_minmax(0,1fr)] gap-3 sm:gap-4 min-h-0 overflow-y-auto lg:overflow-hidden custom-scrollbar lg:pr-1">
             
-            {/* Left Col (3) */}
+            {/* Left Col (3) - Funnels Compatti */}
             <div className="lg:col-span-3 flex flex-col gap-3 sm:gap-4 min-h-0 lg:row-span-2">
-              <Card className="flex flex-col justify-between border-l-2 border-l-brand-500 shrink-0" padding="p-3 sm:p-4">
+              <Card className="flex flex-col border-l-2 border-l-brand-500 shrink-0" padding="p-3 sm:p-4">
                 <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
                   <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-surface-950 flex items-center justify-center shrink-0 border-2 border-brand-500/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] overflow-hidden">
                      <img src={`https://ui-avatars.com/api/?name=${tgUser.first_name}+${tgUser.last_name}&background=18181b&color=d4af37&size=128`} alt="Profile" loading="lazy" className="absolute inset-0 w-full h-full object-cover z-10" />
@@ -692,99 +667,27 @@
                   </button>
                 </div>
 
-                <div className="flex flex-col gap-2 w-full mt-1 border-t border-surface-800/60 pt-3">
-                  <h4 className="text-[9px] font-bold uppercase tracking-widest text-zinc-400 mb-0.5 flex items-center gap-1.5">
+                <div className="flex flex-col gap-1.5 w-full mt-1 border-t border-surface-800/60 pt-3">
+                  <h4 className="text-[9px] font-bold uppercase tracking-widest text-zinc-400 mb-1 flex items-center gap-1.5">
                     <Icon name="megaphone" size={12} className="text-brand-500" /> {t('marketing_funnels')}
                   </h4>
                   
-                  {/* FUNNEL 1 */}
-                  <div className="relative w-full p-2 sm:p-2.5 rounded-xl border border-emerald-500/20 bg-surface-900/30 shadow-md flex flex-col gap-1.5 hover:border-emerald-500/40 transition-colors">
-                    <div className="flex justify-between items-start">
-                      <div className="flex items-center gap-1 text-emerald-400">
-                        <Icon name="sparkles" size={12} className="shrink-0" />
-                        <span className="font-black text-[9px] uppercase tracking-wider">{t('funnel_1')}</span>
+                  {FUNNELS.map(f => (
+                    <div key={f.id} className={`flex items-center justify-between p-2 rounded-lg border bg-surface-900/30 shadow-sm transition-colors ${f.borderClass}`}>
+                      <div className="flex flex-col min-w-0 pr-2">
+                        <div className={`flex items-center gap-1 ${f.colorClass}`}>
+                          <Icon name={f.icon} size={10} className="shrink-0" />
+                          <span className="font-black text-[8px] sm:text-[9px] uppercase tracking-wider truncate">{f.title}</span>
+                        </div>
+                        <span className="text-[7px] text-zinc-500 mt-0.5 font-bold uppercase tracking-wider">{f.tag}</span>
                       </div>
-                      <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-400/20 px-1 py-0.5 rounded text-[7px] font-black uppercase shrink-0">
-                        {t('promo_50_tag')}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button onClick={() => copyFunnelLink('promo-50.html', 'funnel_1')} className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-surface-800 hover:bg-surface-700 text-zinc-200 rounded-lg text-[8px] font-bold uppercase transition-colors shadow-sm">
-                        <Icon name="copy" size={10} /> {t('copy_link')}
-                      </button>
-                      <a href={`promo-50.html?ref=${displayAddress}`} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-lg flex items-center justify-center transition-colors">
-                        <Icon name="external-link" size={10} />
-                      </a>
-                    </div>
-                  </div>
-                  
-                  {/* FUNNEL 2 */}
-                  <div className="relative w-full p-2 sm:p-2.5 rounded-xl border border-purple-500/20 bg-surface-900/30 shadow-md flex flex-col gap-1.5 hover:border-purple-500/40 transition-colors">
-                    <div className="flex justify-between items-start">
-                      <div className="flex items-center gap-1 text-purple-400">
-                        <Icon name="graduation-cap" size={12} className="shrink-0" />
-                        <span className="font-black text-[9px] uppercase tracking-wider">{t('funnel_2')}</span>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <button onClick={() => copyFunnelLink(f.link, `funnel_${f.id}`)} className="p-1.5 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded text-[9px] transition-colors"><Icon name="copy" size={10} /></button>
+                        <a href={`${f.link}?ref=${displayAddress}`} target="_blank" rel="noopener noreferrer" className={`p-1.5 ${f.bgClass} ${f.colorClass} rounded transition-colors`}><Icon name="external-link" size={10} /></a>
                       </div>
-                      <span className="bg-purple-500/10 text-purple-400 border border-purple-400/20 px-1 py-0.5 rounded text-[7px] font-black uppercase shrink-0">
-                        {t('live_event_tag')}
-                      </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <button onClick={() => copyFunnelLink('promo-masterclass.html', 'funnel_2')} className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-surface-800 hover:bg-surface-700 text-zinc-200 rounded-lg text-[8px] font-bold uppercase transition-colors shadow-sm">
-                        <Icon name="copy" size={10} /> {t('copy_link')}
-                      </button>
-                      <a href={`promo-masterclass.html?ref=${displayAddress}`} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/20 rounded-lg flex items-center justify-center transition-colors">
-                        <Icon name="external-link" size={10} />
-                      </a>
-                    </div>
-                  </div>
-
-                  {/* FUNNEL 3 */}
-                  <div className="relative w-full p-2 sm:p-2.5 rounded-xl border border-brand-500/30 bg-surface-900/30 shadow-md flex flex-col gap-1.5 hover:border-brand-500/50 transition-colors">
-                    <div className="flex justify-between items-start">
-                      <div className="flex items-center gap-1 text-brand-400">
-                        <Icon name="infinity" size={12} className="text-yellow-400 shrink-0" />
-                        <span className="font-black text-[9px] uppercase tracking-wider text-gold-gradient">{t('funnel_3')}</span>
-                      </div>
-                      <span className="bg-brand-500/10 text-brand-400 border border-brand-400/20 px-1 py-0.5 rounded text-[7px] font-black uppercase shrink-0">
-                        {t('viral_task_tag')}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button onClick={() => copyFunnelLink('taskfreeweek.html', 'funnel_3')} className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-surface-800 hover:bg-surface-700 text-zinc-200 rounded-lg text-[8px] font-bold uppercase transition-colors shadow-sm">
-                        <Icon name="copy" size={10} /> {t('copy_link')}
-                      </button>
-                      <a href={`taskfreeweek.html?ref=${displayAddress}`} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 border border-brand-500/20 rounded-lg flex items-center justify-center transition-colors">
-                        <Icon name="external-link" size={10} />
-                      </a>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              </Card>
-
-              <Card className={`relative overflow-hidden flex flex-col items-center justify-center text-center p-3 sm:p-4 border-b-4 shrink-0 flex-1 min-h-[160px] ${isQualified ? 'border-brand-500 bg-gradient-to-t from-brand-500/10 to-surface-900' : 'border-surface-700'}`}>
-                 <h3 className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-1.5 text-zinc-300"><Icon name="award" size={12} className={isQualified ? 'text-brand-500' : 'text-zinc-500'}/> {t('global_pool')}</h3>
-                 <div className="relative mb-2 sm:mb-3">
-                   {isQualified && <div className="absolute inset-0 bg-brand-500/30 blur-[20px] rounded-full"></div>}
-                   <div className={`w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-full border-[2px] sm:border-[3px] flex items-center justify-center overflow-hidden relative z-10 ${isQualified ? 'border-brand-400 coin-glow coin-qualified' : 'border-zinc-600 coin-unqualified'}`}>
-                      {isQualified && <div className="absolute inset-0 bg-gradient-to-br from-brand-300/30 to-brand-700/30 mix-blend-overlay coin-spin z-20 pointer-events-none"></div>}
-                      <img src="logo-tondo.jpeg" alt="Coin" loading="lazy" className="w-full h-full object-cover" onError={(e)=>{e.target.src='https://ui-avatars.com/api/?name=ER&background=000&color=d4af37'}} />
-                   </div>
-                 </div>
-                 <div className="w-full mb-2 max-w-[180px]">
-                    <div className="flex justify-between text-[7px] sm:text-[8px] font-black uppercase tracking-wider mb-1">
-                      <span className="text-zinc-400">{t('target')}: {formatCurrency(pTarget, sc.state.isHidden)}</span>
-                      <span className={isQualified ? 'text-brand-400' : 'text-zinc-100'}>{formatCurrency(pVol, sc.state.isHidden)}</span>
-                    </div>
-                    <div className="h-1 sm:h-1.5 w-full bg-surface-950 rounded-full overflow-hidden shadow-inner">
-                      <div className={`h-full rounded-full transition-all duration-1000 ${isQualified ? 'bg-brand-500' : 'bg-zinc-600'}`} style={{width: `${Math.min((pVol/pTarget)*100, 100)}%`}}></div>
-                    </div>
-                 </div>
-                 <p className={`text-[8px] sm:text-[9px] font-black uppercase tracking-widest mt-0.5 ${isQualified ? 'text-brand-400' : 'text-zinc-500'}`}>{isQualified ? t('pool_qualified') : t('pool_unqualified')}</p>
-                 <div className="mt-auto pt-2 border-t border-surface-800/50 w-full">
-                   <p className="text-sm sm:text-base font-mono font-black text-zinc-200 leading-none">{formatCurrency(poolTotal, sc.state.isHidden)} <span className="text-[8px] sm:text-[9px] text-zinc-500">USDT</span></p>
-                   <p className="text-[7px] sm:text-[8px] text-brand-500/70 mt-1 uppercase font-bold tracking-widest">{t('ends_sat')}</p>
-                 </div>
               </Card>
             </div>
 
@@ -840,69 +743,127 @@
               </Card>
             </div>
 
-            {/* Right Col (4) */}
+            {/* Right Col (4) - TABBED INTERFACE COMPATTA E SCORREVOLE */}
             <div className="lg:col-span-4 flex flex-col gap-3 sm:gap-4 min-h-0 lg:row-span-2">
-              <Card padding="p-0" className="flex flex-col flex-1 min-h-[250px] lg:min-h-0">
-                <div className="p-3 border-b border-surface-800 bg-surface-900/50 flex justify-between items-center shrink-0">
-                  <h3 className="text-zinc-100 font-bold uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2"><Icon name="network" size={16} className="text-brand-500" /> {t('my_network')}</h3>
+              <Card padding="p-0" className="flex flex-col flex-1 min-h-[350px] lg:min-h-0 shrink-0">
+                <div className="flex border-b border-surface-800 bg-surface-900/50 shrink-0">
+                  <button onClick={() => setActiveTab('top10')} className={`flex-1 p-2.5 sm:p-3 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'top10' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="trophy" size={14} /> Top 10</button>
+                  <button onClick={() => setActiveTab('network')} className={`flex-1 p-2.5 sm:p-3 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'network' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="users" size={14} /> {t('my_network')}</button>
+                  <button onClick={() => setActiveTab('history')} className={`flex-1 p-2.5 sm:p-3 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'history' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="history" size={14} /> Audit</button>
                 </div>
-                <div className="flex-1 w-full overflow-y-auto custom-scrollbar relative bg-surface-950/30">
-                  <table className="w-full text-left border-collapse">
-                    <thead className="sticky top-0 z-10 bg-surface-900 shadow-md">
-                      <tr className="text-[8px] sm:text-[9px] uppercase tracking-wider text-zinc-500 border-b border-surface-800">
-                        <th className="px-3 py-2 font-bold">{t('user_col')}</th>
-                        <th className="px-3 py-2 font-bold">{t('action_col')}</th>
-                        <th className="px-3 py-2 font-bold text-right">{t('vol_col')}</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-surface-800/50">
-                      {sortedNetworkData.map((lead, idx) => (
-                        <tr key={idx} className="hover:bg-surface-900/50 transition-colors">
-                          <td className="px-3 py-2">
-                            <div className="flex items-center gap-2">
-                               <div className={`p-1.5 rounded-lg shrink-0 border hidden sm:block ${lead.typeKey === 'action_deposit' ? 'bg-success-500/10 text-success-400 border-success-500/30' : 'bg-brand-500/10 text-brand-400 border-brand-500/30'}`}><Icon name={lead.typeKey === 'action_deposit' ? 'coins' : 'user-plus'} size={12} /></div>
-                               {lead.flag && <img src={`https://flagcdn.com/${lead.flag}.svg`} alt="flag" className="flag-icon" />}
-                               <div className="min-w-0">
-                                 <TgLink username={lead.username} className="text-[9px] sm:text-[10px] truncate" />
-                                 <p className="text-[7px] sm:text-[8px] text-zinc-500 uppercase tracking-wider font-bold mt-0.5">{t(lead.timeKey)}</p>
-                               </div>
-                            </div>
-                          </td>
-                          <td className="px-3 py-2 text-xs text-zinc-400">
-                            <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[7px] sm:text-[8px] font-black uppercase tracking-wider border ${lead.statusKey === 'status_active' ? 'bg-success-500/10 text-success-400 border-success-500/20' : 'bg-surface-800 text-zinc-500 border-surface-700'}`}>
-                              {t(lead.statusKey)}
-                            </span>
-                          </td>
-                          <td className="px-3 py-2 text-right">
-                            <span className={`font-mono text-[8px] sm:text-[9px] font-bold ${lead.total_vol > 0 ? 'text-brand-400' : 'text-zinc-500'} whitespace-nowrap`}>
-                              {lead.total_vol > 0 ? `${lead.total_vol} USDT` : '-'}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </Card>
-              
-              <Card padding="p-0" className="flex flex-col flex-1 min-h-[180px] lg:min-h-0 shrink-0">
-                <div className="p-3 border-b border-surface-800 bg-surface-900/50 flex justify-between items-center shrink-0">
-                  <h3 className="text-zinc-100 font-bold uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2"><Icon name="history" size={16} className="text-zinc-500" /> {t('audit_trail')}</h3>
-                </div>
-                <div className="flex-1 p-3 overflow-y-auto custom-scrollbar min-h-0">
-                  {sc.state.claimHistory.length === 0 ? (
-                    <div className="h-full flex flex-col items-center justify-center text-zinc-600"><Icon name="history" size={20} className="mb-2 opacity-50" /><p className="text-[9px] font-bold uppercase tracking-widest">{t('no_tx')}</p></div>
-                  ) : (
-                    <div className="space-y-2">
-                      {sc.state.claimHistory.map((item, idx) => (
-                        <div key={idx} className="flex justify-between items-center bg-surface-950 p-2 sm:p-2.5 rounded-lg border border-surface-800 hover:border-surface-700 transition-colors">
+                
+                <div className="flex-1 w-full overflow-y-auto custom-scrollbar relative bg-surface-950/30 flex flex-col min-h-0">
+                  {activeTab === 'top10' && (
+                    <div className="flex flex-col h-full fade-in">
+                      {/* Top 10 Graphic Header */}
+                      <div className={`p-3 sm:p-4 border-b border-surface-800 shrink-0 ${isQualified ? 'bg-brand-500/5' : 'bg-surface-900/30'}`}>
+                        <div className="flex justify-between items-end mb-3">
                           <div>
-                            <p className="text-zinc-200 text-[9px] sm:text-[10px] font-bold">{item.date}</p>
-                            <p className="text-[7px] sm:text-[8px] text-zinc-500 mt-0.5 font-mono uppercase tracking-widest flex items-center gap-1"><Icon name="check-circle-2" size={8} className="text-success-500"/> {item.tx}</p>
+                            <p className="text-[9px] text-zinc-500 uppercase font-bold tracking-widest mb-0.5">{t('global_pool')}</p>
+                            <p className="text-lg sm:text-xl font-mono font-black text-brand-400 leading-none">{formatCurrency(poolTotal, sc.state.isHidden)} <span className="text-[9px] sm:text-[10px] text-zinc-500 font-sans tracking-widest">USDT</span></p>
                           </div>
-                          <span className="text-success-400 font-black text-[9px] sm:text-[10px] font-mono bg-success-500/10 px-1.5 py-0.5 rounded border border-success-500/20">+{formatCurrency(item.amount, sc.state.isHidden)}</span>
+                          <div className="text-right">
+                            <p className="text-[8px] text-zinc-500 uppercase font-bold tracking-widest mb-1">{t('ends_sat')}</p>
+                            <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[7px] sm:text-[8px] font-black uppercase tracking-wider border ${isQualified ? 'bg-brand-500/10 text-brand-400 border-brand-500/30 shadow-[0_0_10px_rgba(212,175,55,0.2)]' : 'bg-surface-800 text-zinc-500 border-surface-700'}`}>
+                              {isQualified ? t('pool_qualified') : t('pool_unqualified')}
+                            </span>
+                          </div>
                         </div>
-                      ))}
+                        <div className="w-full">
+                          <div className="flex justify-between text-[7px] sm:text-[8px] font-black uppercase tracking-wider mb-1.5">
+                            <span className="text-zinc-400">{t('target')}: {formatCurrency(pTarget, sc.state.isHidden)}</span>
+                            <span className={isQualified ? 'text-brand-400' : 'text-zinc-100'}>{formatCurrency(pVol, sc.state.isHidden)}</span>
+                          </div>
+                          <div className="h-1.5 sm:h-2 w-full bg-surface-950 rounded-full overflow-hidden shadow-inner border border-surface-800/50">
+                            <div className={`h-full rounded-full transition-all duration-1000 ${isQualified ? 'bg-brand-500 shadow-[0_0_10px_rgba(212,175,55,0.5)]' : 'bg-zinc-600'}`} style={{width: `${Math.min((pVol/pTarget)*100, 100)}%`}}></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Live Leaderboard List */}
+                      <div className="flex-1 overflow-y-auto custom-scrollbar p-2">
+                        <div className="flex items-center justify-between px-2 mb-2 mt-1">
+                          <span className="text-[8px] sm:text-[9px] font-bold text-zinc-400 uppercase tracking-widest">{t('realtime_leaderboard')}</span>
+                          <span className="text-[7px] font-mono text-success-500 font-bold flex items-center gap-1 bg-success-500/10 px-1.5 py-0.5 rounded border border-success-500/20"><Icon name="bot" size={10}/> {t('bot_managed')}</span>
+                        </div>
+                        <table className="w-full text-left border-separate border-spacing-y-1">
+                          <tbody>
+                            {TOP_10_LEADERS.map((leader) => (
+                              <tr key={leader.rank} className={`flex items-center p-2 rounded-lg ${leader.isMe ? 'bg-brand-500/10 border border-brand-500/30 shadow-[0_0_15px_rgba(212,175,55,0.1)]' : 'bg-surface-950 border border-surface-800'}`}>
+                                <td className={`w-6 sm:w-8 text-center font-black text-[10px] sm:text-xs ${leader.rank <= 3 ? 'text-brand-400' : 'text-zinc-500'}`}>{leader.rank}</td>
+                                <td className="flex-1 px-1 sm:px-2 min-w-0">
+                                  <span className={`font-bold text-[9px] sm:text-[10px] truncate block uppercase tracking-wider ${leader.isMe ? 'text-brand-400' : 'text-zinc-200'}`}>
+                                    {leader.name} {leader.isMe && <span className="text-[7px] ml-1 bg-brand-500 text-surface-950 px-1 py-0.5 rounded-sm">(TU)</span>}
+                                  </span>
+                                </td>
+                                <td className="text-right font-mono text-[9px] sm:text-[10px] font-bold text-success-400 shrink-0">
+                                  {formatCurrency(leader.vol, false)}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === 'network' && (
+                    <div className="flex-1 overflow-y-auto custom-scrollbar fade-in p-1">
+                      <table className="w-full text-left border-collapse">
+                        <thead className="sticky top-0 z-10 bg-surface-900 shadow-md">
+                          <tr className="text-[8px] sm:text-[9px] uppercase tracking-wider text-zinc-500 border-b border-surface-800">
+                            <th className="px-3 py-2 font-bold">{t('user_col')}</th>
+                            <th className="px-3 py-2 font-bold">{t('action_col')}</th>
+                            <th className="px-3 py-2 font-bold text-right">{t('vol_col')}</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-surface-800/50">
+                          {sortedNetworkData.map((lead, idx) => (
+                            <tr key={idx} className="hover:bg-surface-900/50 transition-colors">
+                              <td className="px-3 py-2">
+                                <div className="flex items-center gap-2">
+                                   <div className={`p-1.5 rounded-lg shrink-0 border hidden sm:block ${lead.typeKey === 'action_deposit' ? 'bg-success-500/10 text-success-400 border-success-500/30' : 'bg-brand-500/10 text-brand-400 border-brand-500/30'}`}><Icon name={lead.typeKey === 'action_deposit' ? 'coins' : 'user-plus'} size={12} /></div>
+                                   {lead.flag && <img src={`https://flagcdn.com/${lead.flag}.svg`} alt="flag" className="flag-icon" />}
+                                   <div className="min-w-0">
+                                     <TgLink username={lead.username} className="text-[9px] sm:text-[10px] truncate" />
+                                     <p className="text-[7px] sm:text-[8px] text-zinc-500 uppercase tracking-wider font-bold mt-0.5">{t(lead.timeKey)}</p>
+                                   </div>
+                                </div>
+                              </td>
+                              <td className="px-3 py-2 text-xs text-zinc-400">
+                                <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[7px] sm:text-[8px] font-black uppercase tracking-wider border ${lead.statusKey === 'status_active' ? 'bg-success-500/10 text-success-400 border-success-500/20' : 'bg-surface-800 text-zinc-500 border-surface-700'}`}>
+                                  {t(lead.statusKey)}
+                                </span>
+                              </td>
+                              <td className="px-3 py-2 text-right">
+                                <span className={`font-mono text-[8px] sm:text-[9px] font-bold ${lead.total_vol > 0 ? 'text-brand-400' : 'text-zinc-500'} whitespace-nowrap`}>
+                                  {lead.total_vol > 0 ? `${lead.total_vol} USDT` : '-'}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
+                  {activeTab === 'history' && (
+                    <div className="flex-1 p-3 overflow-y-auto custom-scrollbar fade-in">
+                      {sc.state.claimHistory.length === 0 ? (
+                        <div className="h-full flex flex-col items-center justify-center text-zinc-600"><Icon name="history" size={20} className="mb-2 opacity-50" /><p className="text-[9px] font-bold uppercase tracking-widest">{t('no_tx')}</p></div>
+                      ) : (
+                        <div className="space-y-2">
+                          {sc.state.claimHistory.map((item, idx) => (
+                            <div key={idx} className="flex justify-between items-center bg-surface-950 p-2 sm:p-2.5 rounded-lg border border-surface-800 hover:border-surface-700 transition-colors">
+                              <div>
+                                <p className="text-zinc-200 text-[9px] sm:text-[10px] font-bold">{item.date}</p>
+                                <p className="text-[7px] sm:text-[8px] text-zinc-500 mt-0.5 font-mono uppercase tracking-widest flex items-center gap-1"><Icon name="check-circle-2" size={8} className="text-success-500"/> {item.tx}</p>
+                              </div>
+                              <span className="text-success-400 font-black text-[9px] sm:text-[10px] font-mono bg-success-500/10 px-1.5 py-0.5 rounded border border-success-500/20">+{formatCurrency(item.amount, sc.state.isHidden)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -998,11 +959,8 @@
       const t = useCallback((key) => translations[lang]?.[key] || translations['en'][key] || key, [lang]);
 
       useEffect(() => {
-        // Initial setup for the static loader based on browser lang
         const loadingEl = document.getElementById('loading-text');
-        if (loadingEl) {
-           loadingEl.innerText = t('init_env');
-        }
+        if (loadingEl) loadingEl.innerText = t('init_env');
         setTimeout(() => setIsInitLoad(false), 800); 
       }, [t]);
 
@@ -1015,14 +973,14 @@
         }
       };
 
-      if (isInitLoad) return null; // Controlled strictly by index.html until effect clears it
+      if (isInitLoad) return null; 
 
       return (
         <div className="bg-grid-pattern h-full flex flex-col overflow-hidden">
           <ToastContainer toasts={sc.state.toasts} />
           
           <nav className="glass-panel border-b border-surface-800 z-40 shadow-sm shrink-0">
-            <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-12 sm:h-14 flex items-center justify-between gap-2 sm:gap-4">
+            <div className="max-w-[1400px] mx-auto px-3 sm:px-6 h-12 sm:h-14 flex items-center justify-between gap-2 sm:gap-4">
               <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
                 <div className="relative w-7 h-7 sm:w-9 sm:h-9 rounded-full overflow-hidden shrink-0 border border-brand-500/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] p-0.5 bg-surface-950">
                    <img src="logo-tondo.jpeg" alt="Logo" loading="lazy" className="w-full h-full object-cover rounded-full" onError={(e)=>{e.target.src='https://ui-avatars.com/api/?name=ER&background=18181b&color=d4af37'}} />
@@ -1050,7 +1008,7 @@
             </div>
           </nav>
 
-          <main className={`max-w-[1400px] mx-auto px-3 sm:px-6 flex-1 flex flex-col w-full min-h-0 relative z-10 ${sc.state.walletConnected ? 'pb-16 md:pb-4' : 'py-4'}`}>
+          <main className={`max-w-[1400px] mx-auto px-2 sm:px-6 flex-1 flex flex-col w-full min-h-0 relative z-10 ${sc.state.walletConnected ? 'pb-16 md:pb-4' : 'py-4'}`}>
             {!sc.state.walletConnected ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6 fade-in h-full min-h-0">
                 <div className="w-20 h-20 sm:w-24 sm:h-24 bg-surface-900 text-brand-400 rounded-3xl flex items-center justify-center border border-brand-500/50 mb-2 shadow-[0_0_40px_rgba(212,175,55,0.2)] relative shrink-0">
