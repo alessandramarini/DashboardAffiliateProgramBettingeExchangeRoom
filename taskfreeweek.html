@@ -31,12 +31,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
-    <!-- Preload Assets for Vercel/GitHub Speed -->
+    <!-- Preload Assets for Speed -->
     <link rel="preload" as="image" href="logo-tondo.jpeg" fetchpriority="high">
     <link rel="preload" as="image" href="https://flagcdn.com/gb.svg" fetchpriority="high">
     <link rel="preload" as="image" href="https://flagcdn.com/es.svg" fetchpriority="high">
-    <link rel="preload" as="image" href="https://flagcdn.com/pt.svg" fetchpriority="high">
-    <link rel="preload" as="image" href="https://flagcdn.com/it.svg" fetchpriority="high">
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -98,9 +96,11 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        .pt-safe { padding-top: max(1rem, env(safe-area-inset-top)); }
-        .pb-safe { padding-bottom: calc(110px + env(safe-area-inset-bottom)); }
+        /* Safe areas for floating bars */
+        .pt-safe { padding-top: max(80px, env(safe-area-inset-top)); }
+        .pb-safe { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
         
+        /* Glassmorphism */
         .glass-panel { background-color: rgba(13,19,28,0.7); border: 1px solid rgba(255,255,255,0.08); transform: translateZ(0); }
         @supports (backdrop-filter: blur(16px)) or (-webkit-backdrop-filter: blur(16px)) {
             .glass-panel { background-color: rgba(13,19,28,0.4); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
@@ -114,31 +114,31 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
 
-        /* High Definition Rectangular Flags */
+        /* Small Rectangular HD Flags */
         .lang-flag { 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            filter: grayscale(60%) opacity(0.6); 
-            border-radius: 3px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            width: 32px;
-            height: 22px;
+            filter: grayscale(40%) opacity(0.7); 
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+            width: 24px;
+            height: 16px;
             object-fit: cover;
             cursor: pointer;
             display: block;
         }
-        @media (min-width: 640px) { .lang-flag { width: 38px; height: 26px; border-radius: 4px; } }
+        @media (min-width: 640px) { .lang-flag { width: 28px; height: 18px; border-radius: 3px; } }
         .lang-flag:hover { filter: grayscale(0%) opacity(1); transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.6); }
         .lang-flag.active { 
             filter: grayscale(0%) opacity(1); 
             transform: translateY(-2px);
-            box-shadow: 0 0 0 2px #05070a, 0 0 0 4px #A3E635;
+            box-shadow: 0 0 0 2px #05070a, 0 0 0 3px #A3E635;
         }
 
-        .menu-video-container { width: 100%; max-width: 50rem; aspect-ratio: 16/9; margin: 0 auto; border-radius: 1.5rem; border: 1px solid rgba(255,255,255,0.15); background: #000; position: relative; box-shadow: 0 30px 60px -15px rgba(0,0,0,0.7), 0 0 30px rgba(163,230,53,0.1); overflow: hidden; transform: translateZ(0); }
+        /* Video / FB / Phone Mocks */
+        .menu-video-container { width: 100%; aspect-ratio: 16/9; margin: 0 auto; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.15); background: #000; position: relative; box-shadow: 0 30px 60px -15px rgba(0,0,0,0.7), 0 0 30px rgba(163,230,53,0.1); overflow: hidden; transform: translateZ(0); }
         .menu-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
         .watermark-cover { position: absolute; bottom: 0; right: 0; width: 44px; height: 44px; z-index: 2; border-radius: 12px 0 0 0; background-color: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; padding: 4px; border-top: 1px solid rgba(255,255,255,0.15); border-left: 1px solid rgba(255,255,255,0.15); }
 
-        /* Fake Facebook Components */
         .mobile-container { position: relative; background-color: #ffffff; width: 100%; max-width: 420px; border-radius: 20px; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.7), 0 0 0 4px #1c1c1c; margin: 0 auto; color: #050505; }
         .privacy-blur-img { filter: blur(5px); transform: translateZ(0); opacity: 0.9; }
         .privacy-blur-text { color: transparent !important; text-shadow: 0 0 8px rgba(0,0,0,0.5); user-select: none; }
@@ -147,7 +147,6 @@
         .fb-comment-wrapper { flex: 1; display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
         .fb-comment-bubble { background-color: #f0f2f5; border-radius: 18px; padding: 10px 14px; display: inline-block; max-width: 100%; }
         
-        /* Dashboard Styles */
         .screen { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: flex-start; animation: fadeIn 0.4s ease forwards; }
         .screen.active { display: flex; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -171,181 +170,186 @@
 
     <div id="screen-landing" class="block w-full">
         
-        <header class="fixed w-full z-50 top-0 glass-panel border-b-0 transition-all duration-300 pt-safe" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <!-- Fixed Header -->
+        <header class="fixed w-full z-50 top-0 glass-panel border-b-0 transition-all duration-300" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-top: env(safe-area-inset-top);">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 h-[60px] sm:h-[70px] flex items-center justify-between">
-                <a href="#" onclick="window.scrollTo(0,0); return false;" class="flex items-center gap-3 shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue rounded-xl transition-transform hover:scale-[1.02] active:scale-95 group">
-                    <img src="logo-tondo.jpeg" onerror="this.src='https://placehold.co/44x44/0d131c/A3E635?text=BER'" alt="Betting Exchange Room Logo" class="w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-full object-cover border border-white/10 group-hover:border-white/30 transition-colors shadow-lg">
+                <a href="#" onclick="window.scrollTo(0,0); return false;" class="flex items-center gap-3 shrink-0 focus:outline-none rounded-xl transition-transform hover:scale-[1.02] active:scale-95 group">
+                    <img src="logo-tondo.jpeg" onerror="this.src='https://placehold.co/44x44/0d131c/A3E635?text=BER'" alt="Betting Exchange Room" class="w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-full object-cover border border-white/10 group-hover:border-white/30 transition-colors shadow-lg">
                     <span class="font-heading font-extrabold text-[clamp(11px,1.5vw,16px)] tracking-wider text-white uppercase whitespace-nowrap bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 hidden xs:block">
                         Betting Exchange Room
                     </span>
                 </a>
                 
-                <div class="flex items-center gap-3 sm:gap-4 shrink-0">
-                    <button onclick="setLang('en')" class="focus:outline-none hover:scale-105 transition-transform" aria-label="English"><img src="https://flagcdn.com/gb.svg" alt="EN" class="lang-flag" data-lang="en"></button>
-                    <button onclick="setLang('es')" class="focus:outline-none hover:scale-105 transition-transform" aria-label="Español"><img src="https://flagcdn.com/es.svg" alt="ES" class="lang-flag" data-lang="es"></button>
-                    <button onclick="setLang('pt')" class="focus:outline-none hover:scale-105 transition-transform" aria-label="Português"><img src="https://flagcdn.com/pt.svg" alt="PT" class="lang-flag" data-lang="pt"></button>
-                    <button onclick="setLang('it')" class="focus:outline-none hover:scale-105 transition-transform" aria-label="Italiano"><img src="https://flagcdn.com/it.svg" alt="IT" class="lang-flag" data-lang="it"></button>
+                <!-- Language Flags -->
+                <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                    <button onclick="setLang('en')" class="focus:outline-none" aria-label="English"><img src="https://flagcdn.com/gb.svg" alt="EN" class="lang-flag" data-lang="en"></button>
+                    <button onclick="setLang('es')" class="focus:outline-none" aria-label="Español"><img src="https://flagcdn.com/es.svg" alt="ES" class="lang-flag" data-lang="es"></button>
+                    <button onclick="setLang('pt')" class="focus:outline-none" aria-label="Português"><img src="https://flagcdn.com/pt.svg" alt="PT" class="lang-flag" data-lang="pt"></button>
+                    <button onclick="setLang('it')" class="focus:outline-none" aria-label="Italiano"><img src="https://flagcdn.com/it.svg" alt="IT" class="lang-flag" data-lang="it"></button>
                 </div>
             </div>
         </header>
 
-        <main class="pb-safe">
-            <!-- Hero Fullscreen Block -->
-            <section class="relative min-h-[100dvh] flex flex-col justify-center items-center text-center px-4 pt-20 pb-10 max-w-6xl mx-auto w-full">
-                
-                <div class="flex items-center justify-center gap-2 mb-6 sm:mb-8 cursor-default opacity-90 hover:opacity-100 transition-opacity">
-                    <span class="relative flex h-2.5 w-2.5">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-neon opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-neon"></span>
-                    </span>
-                    <span class="text-[10px] sm:text-xs font-bold text-brand-neon uppercase tracking-[0.2em]" data-i18n="hero_badge">VIRAL LOOP ACTIVATED</span>
-                </div>
+        <!-- Main Content wrapped with Safe Paddings to avoid overlap -->
+        <main class="pt-safe pb-safe">
+            
+            <!-- Hero Block -->
+            <section class="relative min-h-[90vh] lg:min-h-[80vh] flex flex-col justify-center items-center text-center px-4 py-10 max-w-6xl mx-auto w-full">
+                <div class="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 w-full">
+                    
+                    <div class="flex-1 flex flex-col items-center lg:items-start text-center lg:text-left z-10 w-full">
+                        <div class="flex items-center justify-center lg:justify-start gap-2 mb-4 cursor-default opacity-90 hover:opacity-100 transition-opacity">
+                            <span class="relative flex h-2 w-2">
+                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-neon opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-neon"></span>
+                            </span>
+                            <span class="text-[10px] sm:text-xs font-bold text-brand-neon uppercase tracking-[0.2em]" data-i18n="hero_badge">VIRAL LOOP ACTIVATED</span>
+                        </div>
 
-                <h1 class="font-heading font-black mb-8 sm:mb-10 tracking-tight flex flex-col items-center w-full drop-shadow-2xl">
-                    <span class="text-[clamp(2.2rem,6vw,4.5rem)] leading-[1.05] text-white uppercase tracking-tighter" data-i18n="hero_title_1">UNLOCK YOUR</span>
-                    <span class="text-[clamp(1.8rem,5.5vw,4rem)] leading-[1.1] text-transparent bg-clip-text bg-gradient-to-r from-brand-neon to-[#65a30d] uppercase tracking-tighter mt-1" data-i18n="hero_title_2">FREE WEEK</span>
-                </h1>
+                        <h1 class="font-heading font-black mb-6 tracking-tight flex flex-col drop-shadow-2xl">
+                            <span class="text-[clamp(1.8rem,5vw,3.5rem)] leading-[1.05] text-white uppercase tracking-tighter" data-i18n="hero_title_1">UNLOCK YOUR</span>
+                            <span class="text-[clamp(1.5rem,4.5vw,3rem)] leading-[1.1] text-transparent bg-clip-text bg-gradient-to-r from-brand-neon to-[#65a30d] uppercase tracking-tighter mt-1" data-i18n="hero_title_2">FREE WEEK</span>
+                        </h1>
 
-                <div class="menu-video-container mb-8 w-full shadow-2xl">
-                    <video class="menu-video" autoplay muted playsinline webkit-playsinline loop preload="auto">
-                        <source src="spot1.mp4" type="video/mp4">
-                    </video>
-                    <div class="watermark-cover">
-                        <img src="logo-tondo.jpeg" onerror="this.src='https://placehold.co/40x40/000/fff?text=BER'" alt="Logo" width="36" height="36" class="rounded-full">
+                        <p class="text-gray-300 text-[clamp(0.9rem,1.2vw,1.1rem)] max-w-lg leading-relaxed font-medium mb-8" data-i18n="hero_subtitle">
+                            Forget gambling. Enter the Infinity Loop to extract true <strong class="text-white font-bold">Expected Value</strong> from the Exchange for 7 days, 100% Free.
+                        </p>
+                    </div>
+
+                    <div class="flex-1 w-full max-w-lg">
+                        <div class="menu-video-container shadow-2xl">
+                            <video class="menu-video" autoplay muted playsinline webkit-playsinline loop preload="auto">
+                                <source src="spot1.mp4" type="video/mp4">
+                            </video>
+                            <div class="watermark-cover">
+                                <img src="logo-tondo.jpeg" onerror="this.src='https://placehold.co/40x40/000/fff?text=BER'" alt="Logo" width="36" height="36" class="rounded-full">
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <p class="text-gray-300 text-[clamp(0.95rem,1.5vw,1.2rem)] max-w-2xl mx-auto leading-relaxed px-2 font-medium" data-i18n="hero_subtitle">
-                    Forget gambling. Enter the Infinity Loop to extract true <strong class="text-white font-bold">Expected Value</strong> from the Exchange for 7 days, 100% Free.
-                </p>
-
             </section>
 
             <!-- 3 Steps Viral Loop Block -->
-            <section class="relative min-h-[100dvh] flex flex-col justify-center py-16 px-4 max-w-7xl mx-auto w-full lazy-reveal" id="tasks">
-                <div class="text-center mb-10 sm:mb-16">
-                    <h2 class="text-[clamp(1.8rem,4vw,3rem)] font-heading font-black text-white uppercase tracking-tighter mb-3 leading-tight" data-i18n="task_main_title">HOW TO UNLOCK</h2>
-                    <p class="text-gray-400 text-[clamp(0.9rem,1.2vw,1.1rem)] max-w-xl mx-auto px-2 font-medium" data-i18n="task_main_desc">Complete these 3 simple steps to get your 7-Day Premium Pass.</p>
+            <section class="relative min-h-auto lg:min-h-[70vh] flex flex-col justify-center py-16 px-4 max-w-7xl mx-auto w-full lazy-reveal" id="tasks">
+                <div class="text-center mb-10 sm:mb-12">
+                    <h2 class="text-[clamp(1.5rem,3.5vw,2.5rem)] font-heading font-black text-white uppercase tracking-tighter mb-3 leading-tight" data-i18n="task_main_title">HOW TO UNLOCK</h2>
+                    <p class="text-gray-400 text-[clamp(0.85rem,1vw,1rem)] max-w-xl mx-auto px-2 font-medium" data-i18n="task_main_desc">Complete these 3 simple steps to get your 7-Day Premium Pass.</p>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch w-full max-w-6xl mx-auto">
-                    
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-8 items-stretch w-full mx-auto">
                     <!-- STEP 1 -->
-                    <div class="glass-panel rounded-[1.5rem] sm:rounded-[2rem] p-6 sm:p-8 text-center relative w-full flex flex-col h-full hover:border-brand-neon/30 transition-all duration-300 group">
-                        <div class="absolute -top-4 -right-4 w-16 h-16 bg-brand-neon/10 rounded-full blur-xl group-hover:bg-brand-neon/20 transition-all pointer-events-none"></div>
-                        <h2 class="text-lg sm:text-xl font-heading font-black text-white uppercase tracking-widest mb-1 mt-2 relative z-10" data-i18n="step1_title">CONNECT WALLET</h2>
-                        <p class="text-brand-neon text-[10px] sm:text-xs mb-6 font-bold tracking-wider uppercase relative z-10" data-i18n="step1_badge">STEP 1</p>
-
-                        <div class="flex flex-col items-center justify-center mb-6 flex-1 relative z-10">
-                            <div class="flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/5 border border-white/10 mb-4 shadow-inner group-hover:scale-110 transition-transform">
-                                <i class="fa-solid fa-wallet text-xl sm:text-2xl text-gray-400 group-hover:text-brand-neon transition-colors"></i>
+                    <div class="glass-panel rounded-2xl p-6 text-center relative flex flex-col h-full hover:border-brand-neon/30 transition-all duration-300 group">
+                        <h2 class="text-base sm:text-lg font-heading font-black text-white uppercase tracking-widest mb-1 relative z-10" data-i18n="step1_title">CONNECT WALLET</h2>
+                        <p class="text-brand-neon text-[10px] sm:text-xs mb-4 font-bold tracking-wider uppercase relative z-10" data-i18n="step1_badge">STEP 1</p>
+                        <div class="flex flex-col items-center justify-center flex-1 relative z-10">
+                            <div class="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 border border-white/10 mb-3 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-wallet text-lg text-gray-400 group-hover:text-brand-neon transition-colors"></i>
                             </div>
-                            <p class="text-gray-300 text-xs sm:text-sm px-2 leading-relaxed" data-i18n="step1_desc">Connect your Web3 Wallet to establish your secure identity on the blockchain.</p>
+                            <p class="text-gray-300 text-xs px-2 leading-relaxed" data-i18n="step1_desc">Connect your Web3 Wallet to establish your secure identity on the blockchain.</p>
                         </div>
                     </div>
 
                     <!-- STEP 2 -->
-                    <div class="glass-panel rounded-[1.5rem] sm:rounded-[2rem] p-6 sm:p-8 text-center relative w-full flex flex-col h-full hover:border-[#3390ec]/40 transition-all duration-300 group">
-                        <div class="absolute -top-4 -right-4 w-16 h-16 bg-[#3390ec]/10 rounded-full blur-xl group-hover:bg-[#3390ec]/20 transition-all pointer-events-none"></div>
-                        <h2 class="text-lg sm:text-xl font-heading font-black text-white uppercase tracking-widest mb-1 mt-2 relative z-10" data-i18n="step2_title">JOIN TELEGRAM</h2>
-                        <p class="text-[#3390ec] text-[10px] sm:text-xs mb-6 font-bold tracking-wider uppercase relative z-10" data-i18n="step2_badge">STEP 2</p>
-
-                        <div class="flex flex-col items-center justify-center mb-6 flex-1 relative z-10">
-                            <div class="flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/5 border border-white/10 mb-4 shadow-inner group-hover:scale-110 transition-transform">
-                                <i class="fa-brands fa-telegram text-xl sm:text-2xl text-gray-400 group-hover:text-[#3390ec] transition-colors"></i>
+                    <div class="glass-panel rounded-2xl p-6 text-center relative flex flex-col h-full hover:border-[#3390ec]/40 transition-all duration-300 group">
+                        <h2 class="text-base sm:text-lg font-heading font-black text-white uppercase tracking-widest mb-1 relative z-10" data-i18n="step2_title">JOIN TELEGRAM</h2>
+                        <p class="text-[#3390ec] text-[10px] sm:text-xs mb-4 font-bold tracking-wider uppercase relative z-10" data-i18n="step2_badge">STEP 2</p>
+                        <div class="flex flex-col items-center justify-center flex-1 relative z-10">
+                            <div class="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 border border-white/10 mb-3 group-hover:scale-110 transition-transform">
+                                <i class="fa-brands fa-telegram text-lg text-gray-400 group-hover:text-[#3390ec] transition-colors"></i>
                             </div>
-                            <p class="text-gray-300 text-xs sm:text-sm px-2 leading-relaxed" data-i18n="step2_desc">Join our official Telegram community to access the operational signals.</p>
+                            <p class="text-gray-300 text-xs px-2 leading-relaxed" data-i18n="step2_desc">Join our official Telegram community to access the operational signals.</p>
                         </div>
                     </div>
 
-                    <!-- STEP 3 (Main CTA) -->
-                    <div class="glass-panel rounded-[1.5rem] sm:rounded-[2rem] p-6 sm:p-8 text-center border-brand-neon/50 relative shadow-neon-strong w-full flex flex-col h-full lg:scale-105 z-10 bg-[#0d131c]">
-                        <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-brand-neon to-[#65a30d] text-brand-dark font-black uppercase tracking-widest text-[8px] sm:text-[9px] px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap">
+                    <!-- STEP 3 -->
+                    <div class="glass-panel rounded-2xl p-6 text-center border-brand-neon/50 relative shadow-neon-strong flex flex-col h-full lg:scale-105 z-10 bg-[#0d131c]">
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-brand-neon to-[#65a30d] text-brand-dark font-black uppercase tracking-widest text-[8px] sm:text-[9px] px-4 py-1 rounded-full shadow-lg whitespace-nowrap">
                             <i class="fa-solid fa-infinity mr-1"></i> <span data-i18n="stat_free">ENTER THE LOOP</span>
                         </div>
-                        <h2 class="text-xl sm:text-2xl font-heading font-black text-white uppercase tracking-widest mb-1 mt-3 relative z-10" data-i18n="step3_title">INVITE 2 FRIENDS</h2>
-                        <p class="text-brand-neon text-[10px] sm:text-xs mb-6 font-bold tracking-wider uppercase relative z-10" data-i18n="step3_badge">STEP 3</p>
-
-                        <div class="flex flex-col items-center justify-center mb-6 flex-1 relative z-10">
-                            <div class="flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-brand-neon/10 border border-brand-neon/30 mb-4 shadow-[0_0_15px_rgba(163,230,53,0.2)]">
-                                <i class="fa-solid fa-users text-xl sm:text-2xl text-brand-neon"></i>
+                        <h2 class="text-base sm:text-lg font-heading font-black text-white uppercase tracking-widest mb-1 mt-2 relative z-10" data-i18n="step3_title">INVITE 2 FRIENDS</h2>
+                        <p class="text-brand-neon text-[10px] sm:text-xs mb-4 font-bold tracking-wider uppercase relative z-10" data-i18n="step3_badge">STEP 3</p>
+                        <div class="flex flex-col items-center justify-center flex-1 relative z-10 mb-4">
+                            <div class="flex items-center justify-center w-12 h-12 rounded-full bg-brand-neon/10 border border-brand-neon/30 mb-3">
+                                <i class="fa-solid fa-users text-lg text-brand-neon"></i>
                             </div>
-                            <p class="text-gray-300 text-xs sm:text-sm px-2 leading-relaxed" data-i18n="step3_desc">Share your unique link. When 2 friends complete the loop, you all get 7 days free!</p>
+                            <p class="text-gray-300 text-xs px-2 leading-relaxed" data-i18n="step3_desc">Share your unique link. When 2 friends complete the loop, you all get 7 days free!</p>
                         </div>
-                        <button onclick="openViralDashboard()" type="button" class="inline-flex items-center justify-center w-full bg-brand-neon hover:bg-[#86d611] text-brand-dark font-black py-3 sm:py-3.5 px-4 rounded-xl text-[11px] sm:text-xs uppercase tracking-widest transition-all duration-300 hover:scale-105 active:scale-95 outline-none shadow-neon mt-auto border-none cursor-pointer">
+                        <button onclick="openViralDashboard()" type="button" class="inline-flex items-center justify-center w-full bg-brand-neon hover:bg-[#86d611] text-brand-dark font-black py-3 px-4 rounded-xl text-[10px] sm:text-xs uppercase tracking-widest transition-all duration-300 hover:scale-105 active:scale-95 shadow-neon border-none cursor-pointer">
                             <i class="fa-solid fa-bolt mr-2 opacity-80"></i> <span data-i18n="btn_start_loop">START LOOP NOW</span>
                         </button>
                     </div>
-
                 </div>
             </section>
 
-            <!-- Telegram / Proof Section Fullscreen Block -->
-            <section class="relative min-h-[100dvh] flex flex-col justify-center items-center py-16 px-4 max-w-6xl mx-auto w-full lazy-reveal">
-                <div class="text-center mb-10">
-                    <h2 class="font-heading text-[clamp(1.8rem,4vw,3rem)] font-black text-white tracking-tighter mb-4 uppercase leading-tight" data-i18n="trans_title_1">COPY. PASTE. CASH OUT.</h2>
-                    <p class="text-gray-300 text-[clamp(0.9rem,1.2vw,1.1rem)] max-w-xl mx-auto font-medium leading-relaxed" data-i18n="trans_desc">Receive clear and precise signals, with pre-set stop loss and money management.</p>
-                </div>
+            <!-- Telegram / Proof Section Block -->
+            <section class="relative min-h-auto lg:min-h-[70vh] flex flex-col justify-center items-center py-16 px-4 max-w-6xl mx-auto w-full lazy-reveal">
+                <div class="flex flex-col lg:flex-row items-center justify-center gap-10 w-full">
+                    
+                    <div class="flex-1 text-center lg:text-left w-full">
+                        <h2 class="font-heading text-[clamp(1.5rem,3.5vw,2.5rem)] font-black text-white tracking-tighter mb-4 uppercase leading-tight" data-i18n="trans_title_1">COPY. PASTE. CASH OUT.</h2>
+                        <p class="text-gray-300 text-[clamp(0.85rem,1vw,1rem)] max-w-md mx-auto lg:mx-0 font-medium leading-relaxed" data-i18n="trans_desc">Receive clear and precise signals, with pre-set stop loss and money management.</p>
+                    </div>
 
-                <div class="relative bg-[#E1EDD5] w-full max-w-[400px] rounded-[20px] overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.7),0_0_0_4px_#1c1c1c] text-left font-sans select-none pointer-events-none transform transition hover:-translate-y-1 duration-500">
-                    <div class="absolute inset-0 z-50 bg-transparent"></div>
+                    <div class="flex-1 flex justify-center w-full">
+                        <div class="relative bg-[#E1EDD5] w-full max-w-[360px] rounded-[20px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_0_4px_#1c1c1c] text-left font-sans select-none pointer-events-none transform transition hover:-translate-y-1 duration-500">
+                            <div class="bg-white px-3 py-2.5 flex items-center justify-between shadow-sm relative z-10">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-[#1c1c1c] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4M4 12L10 6M4 12L10 18"/></svg>
+                                    <div class="flex items-center gap-2 min-w-0">
+                                        <img src="logo-tondo.jpeg" onerror="this.src='https://placehold.co/36x36/ccc/000?text=BER'" alt="Channel" class="w-8 h-8 rounded-full object-cover border border-gray-100 shrink-0">
+                                        <div class="flex flex-col justify-center min-w-0">
+                                            <span class="text-[#000000] font-semibold text-[12px] leading-tight whitespace-nowrap tracking-tight">BETTING EXCHANGE ROOM</span>
+                                            <span class="text-[#707579] text-[10px] leading-tight privacy-blur-text" data-i18n="tg_subscribers">8 subscribers</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                    <div class="bg-white px-4 py-3 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.1)] relative z-10">
-                        <div class="flex items-center gap-2 xs:gap-3">
-                            <svg class="w-5 h-5 text-[#1c1c1c] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4M4 12L10 6M4 12L10 18"/></svg>
-                            <div class="flex items-center gap-2.5 min-w-0">
-                                <img src="logo-tondo.jpeg" onerror="this.src='https://placehold.co/40x40/ccc/000?text=BER'" alt="Channel" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border border-gray-100 shrink-0">
-                                <div class="flex flex-col justify-center min-w-0">
-                                    <span class="text-[#000000] font-semibold text-[13px] sm:text-[15px] leading-tight whitespace-nowrap tracking-tight">BETTING EXCHANGE ROOM</span>
-                                    <span class="text-[#707579] text-[11px] leading-tight privacy-blur-text" data-i18n="tg_subscribers">8 subscribers</span>
+                            <div class="p-3 relative bg-[#E1EDD5] pb-4">
+                                <div class="bg-[#DCF8C6] rounded-[14px] rounded-tl-sm p-3 shadow-sm relative z-10 w-[95%]">
+                                    <svg class="absolute top-0 -left-[6px] w-2 h-3 text-[#DCF8C6]" viewBox="0 0 8 12"><path fill="currentColor" d="M8 0H0C0 0 5 0 6 5V12C6 12 8 6 8 0Z"/></svg>
+
+                                    <div class="text-[#000000] text-[11px] sm:text-[12px] leading-[1.4] flex flex-col gap-1 break-words">
+                                        <div data-i18n="tg_msg_title" class="text-[#35a541] font-bold tracking-tight mb-1">BETTING EXCHANGE ROOM</div>
+                                        <div data-i18n="tg_msg_1" class="font-bold text-red-600">🔴 LIVE ALERT</div>
+                                        <div data-i18n="tg_msg_2">⚽ Match: Stupčanica Olovo vs Bratstvo Gračanica</div>
+                                        <div data-i18n="tg_msg_3">🏆 League: 1st League - FBiH</div>
+                                        <div data-i18n="tg_msg_4">⏱️ Minute: 43' | Score: 0-0</div>
+
+                                        <div data-i18n="tg_msg_5" class="mt-2 font-bold">⚡ OPERATIONAL ACTION</div>
+                                        <div data-i18n="tg_msg_6">🎯 STRATEGY: Lay Draw</div>
+                                        <div data-i18n="tg_msg_7">💶 Target Odds: @1.67</div>
+                                        <div data-i18n="tg_msg_8">💼 Stake: 2.0%</div>
+                                        <div data-i18n="tg_msg_9">✅ Exit: Signal oriented to goal within the 65th minute. Exit in profit (Green Up) at the first goal.</div>
+
+                                        <div data-i18n="tg_msg_10" class="mt-2 font-bold">🧠 QUANTITATIVE ANALYSIS</div>
+                                        <div data-i18n="tg_msg_11">📈 Pressure Index (H/A): 2.15 / 1.52 | Attacks Delta: +7</div>
+                                        <div data-i18n="tg_msg_12">💧 Liquidity: HIGH | 🤖 Model Prob: 76%</div>
+                                    </div>
+
+                                    <div class="flex justify-end items-center gap-1 text-[#8fa281] text-[10px] font-medium mt-1 float-right">
+                                        <svg class="w-[12px] h-[12px]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5 5 5zM12 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                                        <span class="privacy-blur-text">1</span>
+                                        <span class="ml-0.5">14:19</span>
+                                    </div>
+                                    <div class="clear-both"></div>
                                 </div>
                             </div>
                         </div>
-                        <svg class="w-5 h-5 text-[#1c1c1c] shrink-0 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                    </div>
-
-                    <div class="p-4 relative bg-[#E1EDD5] pb-5">
-                        <div class="bg-[#DCF8C6] rounded-[16px] rounded-tl-sm p-3.5 shadow-sm relative z-10 w-[96%] max-w-[96%]">
-                            <svg class="absolute top-0 -left-[8px] w-2 h-3 text-[#DCF8C6]" viewBox="0 0 8 12"><path fill="currentColor" d="M8 0H0C0 0 5 0 6 5V12C6 12 8 6 8 0Z"/></svg>
-
-                            <div class="text-[#000000] text-[12px] sm:text-[14px] leading-[1.4] flex flex-col gap-[6px] break-words">
-                                <div data-i18n="tg_msg_title" class="text-[#35a541] font-bold tracking-tight mb-1">BETTING EXCHANGE ROOM</div>
-                                <div data-i18n="tg_msg_1" class="font-bold text-red-600">🔴 LIVE ALERT</div>
-                                <div data-i18n="tg_msg_2">⚽ Match: Stupčanica Olovo vs Bratstvo Gračanica</div>
-                                <div data-i18n="tg_msg_3">🏆 League: 1st League - FBiH</div>
-                                <div data-i18n="tg_msg_4">⏱️ Minute: 43' | Score: 0-0</div>
-
-                                <div data-i18n="tg_msg_5" class="mt-2 font-bold">⚡ OPERATIONAL ACTION</div>
-                                <div data-i18n="tg_msg_6">🎯 STRATEGY: Lay Draw</div>
-                                <div data-i18n="tg_msg_7">💶 Target Odds: @1.67</div>
-                                <div data-i18n="tg_msg_8">💼 Stake: 2.0%</div>
-                                <div data-i18n="tg_msg_9">✅ Exit: Signal oriented to goal within the 65th minute. Exit in profit (Green Up) at the first goal.</div>
-
-                                <div data-i18n="tg_msg_10" class="mt-2 font-bold">🧠 QUANTITATIVE ANALYSIS</div>
-                                <div data-i18n="tg_msg_11">📈 Pressure Index (H/A): 2.15 / 1.52 | Attacks Delta: +7</div>
-                                <div data-i18n="tg_msg_12">💧 Liquidity: HIGH | 🤖 Model Prob: 76%</div>
-                            </div>
-
-                            <div class="flex justify-end items-center gap-[5px] text-[#8fa281] text-[11px] font-medium mt-2 float-right">
-                                <svg class="w-[14px] h-[14px]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5 5 5zM12 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-                                <span class="privacy-blur-text">1</span>
-                                <span class="ml-0.5">14:19</span>
-                            </div>
-                            <div class="clear-both"></div>
-                        </div>
                     </div>
                 </div>
             </section>
 
-            <section class="py-12 sm:py-20 px-4 pl-safe pr-safe max-w-6xl mx-auto content-vis lazy-reveal" aria-label="Recensioni Facebook">
-                <h2 class="font-heading text-[clamp(1.8rem,4vw,3rem)] text-center text-white font-black mb-10 sm:mb-12 tracking-tighter uppercase leading-tight" data-i18n="fb_section_title">JOIN THE COMMUNITY</h2>
+            <!-- Facebook Reviews -->
+            <section class="py-16 px-4 max-w-6xl mx-auto lazy-reveal" aria-label="Community">
+                <h2 class="font-heading text-[clamp(1.5rem,3.5vw,2.5rem)] text-center text-white font-black mb-10 tracking-tighter uppercase leading-tight" data-i18n="fb_section_title">JOIN THE COMMUNITY</h2>
                 
                 <div class="mobile-container mx-auto">
                     <div style="width: 36px; height: 4px; background-color: #bcc0c4; border-radius: 2px; margin: 12px auto;"></div>
                     
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 16px 12px 16px; font-size: 13px; color: #65676b;">
                         <div style="display: flex; align-items: center; gap: 6px;">
-                            <svg viewBox="0 0 16 16" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="8" cy="8" r="8" fill="#0866FF"/>
                                 <path d="M11.603 6.945h-2.146l.321-1.551.01-.157c0-.203-.082-.387-.215-.521L9.052 4.2 6.027 7.226a.75.75 0 0 0-.219.53v4.5A.75.75 0 0 0 6.557 13h3.428c.311 0 .584-.191.698-.471l1.35-3.15a.735.735 0 0 0 .043-.245V7.689a.75.75 0 0 0-.473-.744zM3.557 7.756h1.5v5.244h-1.5z" fill="#fff"/>
                             </svg>
@@ -362,31 +366,31 @@
                     </div>
 
                     <div class="fb-comment">
-                        <img src="https://i.pravatar.cc/150?img=11" alt="User" width="36" height="36" loading="lazy" class="fb-avatar privacy-blur-img" draggable="false">
+                        <img src="https://i.pravatar.cc/150?img=11" alt="User" width="32" height="32" loading="lazy" class="fb-avatar privacy-blur-img" draggable="false">
                         <div class="fb-comment-wrapper">
                             <div class="fb-comment-bubble">
-                                <div style="margin-bottom: 2px;"><span class="fb-name privacy-blur-text">Marco Ferrari</span></div>
-                                <p class="fb-text text-sm" data-i18n="fb_c1_text">Guys seriously, I never understood a damn thing about this stuff 😅. Binge-watched some Academy videos and podcasts and wow, miracle, it finally makes sense! The demo account is a lifesaver: you practice without burning real money at first... 📉🚫 Awesome stuff. 🚀🔥</p>
+                                <div style="margin-bottom: 2px;"><span class="font-semibold text-sm privacy-blur-text">Marco Ferrari</span></div>
+                                <p class="text-[13px] leading-snug" data-i18n="fb_c1_text">Guys seriously, I never understood a damn thing about this stuff 😅. Binge-watched some Academy videos and podcasts and wow, miracle, it finally makes sense! The demo account is a lifesaver: you practice without burning real money at first... 📉🚫 Awesome stuff. 🚀🔥</p>
                             </div>
-                            <div class="fb-actions-row">
-                                <span data-i18n="fb_time_1" style="font-weight: normal;">2 h</span>
-                                <span data-i18n="fb_like">Like</span>
-                                <span data-i18n="fb_reply">Reply</span>
+                            <div class="flex gap-3 text-xs text-gray-500 mt-1 pl-2 font-semibold">
+                                <span data-i18n="fb_time_1" class="font-normal">2 h</span>
+                                <span data-i18n="fb_like" class="cursor-pointer hover:underline">Like</span>
+                                <span data-i18n="fb_reply" class="cursor-pointer hover:underline">Reply</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="fb-comment">
-                        <img src="https://i.pravatar.cc/150?img=33" alt="User" width="36" height="36" loading="lazy" class="fb-avatar privacy-blur-img" draggable="false">
+                        <img src="https://i.pravatar.cc/150?img=33" alt="User" width="32" height="32" loading="lazy" class="fb-avatar privacy-blur-img" draggable="false">
                         <div class="fb-comment-wrapper">
                             <div class="fb-comment-bubble">
-                                <div style="margin-bottom: 2px;"><span class="fb-name privacy-blur-text">Alessio Costa</span></div>
-                                <p class="fb-text text-sm" data-i18n="fb_c2_text">Can we talk about how insanely well it's translated into so many languages? 🌍 Got my bros in London and Mexico to download the app, everyone uses it in their own language but we follow the exact same things. Top tier level! 🔝</p>
+                                <div style="margin-bottom: 2px;"><span class="font-semibold text-sm privacy-blur-text">Alessio Costa</span></div>
+                                <p class="text-[13px] leading-snug" data-i18n="fb_c2_text">Can we talk about how insanely well it's translated into so many languages? 🌍 Got my bros in London and Mexico to download the app, everyone uses it in their own language but we follow the exact same things. Top tier level! 🔝</p>
                             </div>
-                            <div class="fb-actions-row">
-                                <span data-i18n="fb_time_2" style="font-weight: normal;">5 h</span>
-                                <span data-i18n="fb_like">Like</span>
-                                <span data-i18n="fb_reply">Reply</span>
+                            <div class="flex gap-3 text-xs text-gray-500 mt-1 pl-2 font-semibold">
+                                <span data-i18n="fb_time_2" class="font-normal">5 h</span>
+                                <span data-i18n="fb_like" class="cursor-pointer hover:underline">Like</span>
+                                <span data-i18n="fb_reply" class="cursor-pointer hover:underline">Reply</span>
                             </div>
                         </div>
                     </div>
@@ -402,18 +406,20 @@
 
         </main>
 
-        <footer class="pt-8 px-4 pl-safe pr-safe max-w-4xl mx-auto text-center border-t border-white/5 mb-32">
-            <div class="text-[clamp(1.2rem,3vw,2rem)] font-heading font-black text-brand-neon uppercase tracking-widest drop-shadow-neon-strong animate-pulse-soft mb-8" data-i18n="slogan">
+        <!-- Footer Info -->
+        <footer class="px-4 max-w-4xl mx-auto text-center pb-[140px]">
+            <div class="text-[clamp(1.1rem,2vw,1.5rem)] font-heading font-black text-brand-neon uppercase tracking-widest drop-shadow-neon-strong animate-pulse-soft mb-6" data-i18n="slogan">
                 BET ON YOURSELF 🫵
             </div>
-            <p class="text-[clamp(9px,1vw,11px)] font-bold text-gray-500 uppercase tracking-[0.2em] mb-3" data-i18n="ft_copyright">&copy; 2026 BETTING EXCHANGE ROOM</p>
-            <p class="text-[clamp(10px,1.2vw,12px)] text-gray-600 max-w-xl mx-auto leading-relaxed" data-i18n="ft_disclaimer">Sports trading involves risks. Gambling is strictly prohibited for minors. Play responsibly.</p>
+            <p class="text-[clamp(9px,1vw,11px)] font-bold text-gray-500 uppercase tracking-[0.2em] mb-2" data-i18n="ft_copyright">&copy; 2026 BETTING EXCHANGE ROOM</p>
+            <p class="text-[clamp(10px,1.2vw,12px)] text-gray-600 max-w-md mx-auto leading-relaxed" data-i18n="ft_disclaimer">Sports trading involves risks. Gambling is strictly prohibited for minors. Play responsibly.</p>
         </footer>
 
-        <div class="fixed bottom-0 left-0 w-full z-40 glass-panel border-t border-brand-neon/30 px-4 pl-safe pr-safe py-3 sm:py-4" style="padding-bottom: max(16px, env(safe-area-inset-bottom));">
+        <!-- Fixed CTA Bottom Bar -->
+        <div class="fixed bottom-0 left-0 w-full z-40 glass-panel border-t border-brand-neon/30 px-4 py-3" style="padding-bottom: max(16px, env(safe-area-inset-bottom));">
             <div class="max-w-4xl mx-auto flex flex-col items-center">
-                <button onclick="openViralDashboard()" class="group relative w-full bg-brand-neon hover:bg-[#86d611] text-brand-dark py-3.5 sm:py-4 rounded-xl sm:rounded-2xl font-black text-[clamp(0.9rem,1.5vw,1.1rem)] flex items-center justify-center gap-2 sm:gap-3 transition-all duration-300 outline-none overflow-hidden shadow-neon-strong animate-pulse-soft cursor-pointer border-none no-underline">
-                    <i class="fa-solid fa-play-circle text-lg sm:text-xl relative z-10 opacity-90"></i>
+                <button onclick="openViralDashboard()" class="group relative w-full bg-brand-neon hover:bg-[#86d611] text-brand-dark py-3 sm:py-4 rounded-xl font-black text-[clamp(0.9rem,1.5vw,1.1rem)] flex items-center justify-center gap-2 transition-all duration-300 outline-none shadow-neon-strong animate-pulse-soft cursor-pointer border-none">
+                    <i class="fa-solid fa-play-circle text-lg relative z-10 opacity-90"></i>
                     <span class="uppercase tracking-widest relative z-10" data-i18n="cta_button">START YOUR FREE WEEK</span>
                 </button>
                 <span class="text-[9px] sm:text-[10px] text-gray-400 mt-2 font-semibold uppercase tracking-wider" data-i18n="cta_sub">NO CREDIT CARD REQUIRED</span>
@@ -422,12 +428,12 @@
     </div> 
 
 
-    <!-- Viral Loop Action Dashboard -->
-    <div id="viral-container" class="hidden w-full h-[100vh] h-[100svh] flex-col items-center justify-start overflow-hidden px-3 sm:px-4 pt-3 sm:pt-5 bg-[#07090f] z-[60] fixed inset-0">
+    <!-- Viral Loop Action Dashboard Modal -->
+    <div id="viral-container" class="hidden w-full h-[100vh] h-[100svh] flex-col items-center justify-start overflow-hidden px-4 pt-4 bg-[#07090f] z-[60] fixed inset-0" style="padding-top: max(16px, env(safe-area-inset-top));">
         
-        <div class="flex flex-col items-center justify-center shrink-0 w-full mb-3 pt-safe relative">
-            <img src="logo-tondo.jpeg" onerror="this.src='https://ui-avatars.com/api/?name=BE&background=111827&color=D4AF37&rounded=true'" alt="Logo" class="w-10 h-10 sm:w-14 sm:h-14 rounded-full border border-gray-700 shadow-[0_4px_15px_rgba(0,0,0,0.3)] object-cover mb-2">
-            <h1 class="text-[11px] sm:text-[13px] font-bold tracking-[0.2em] text-center text-gray-300 leading-tight">
+        <div class="flex flex-col items-center justify-center shrink-0 w-full mb-3 relative">
+            <img src="logo-tondo.jpeg" onerror="this.src='https://ui-avatars.com/api/?name=BE&background=111827&color=D4AF37&rounded=true'" alt="Logo" class="w-12 h-12 rounded-full border border-gray-700 shadow-lg object-cover mb-2">
+            <h1 class="text-[11px] sm:text-[12px] font-bold tracking-[0.2em] text-center text-gray-300 leading-tight">
                 BETTING EXCHANGE <span class="text-brand-neon">ROOM</span>
             </h1>
         </div>
@@ -436,104 +442,101 @@
 
             <!-- Screen Viral Loop Checklist -->
             <div id="screen-viral-checklist" class="screen active">
-                <div class="scroll-container justify-start w-full pb-[80px]">
+                <div class="scroll-container justify-start w-full pb-[40px]">
                     
-                    <div class="bg-panel-bg rounded-2xl sm:rounded-3xl border border-gray-800 p-4 sm:p-5 w-full relative flex flex-col items-center shadow-2xl flex-shrink-0 mb-4">
+                    <div class="bg-panel-bg rounded-2xl border border-gray-800 p-4 w-full relative flex flex-col items-center shadow-2xl shrink-0 mb-4">
+                        <h2 data-i18n="viral_dash_title" class="text-white font-black text-sm sm:text-base mb-1 uppercase tracking-widest text-center">VIRAL LOOP DASHBOARD</h2>
+                        <p data-i18n="viral_dash_sub" class="text-gray-400 text-[10px] sm:text-[11px] text-center mb-4">Complete the tasks below to automatically unlock your access.</p>
                         
-                        <h2 data-i18n="viral_dash_title" class="text-white font-black text-base sm:text-lg mb-1 uppercase tracking-widest text-center">VIRAL LOOP DASHBOARD</h2>
-                        <p data-i18n="viral_dash_sub" class="text-gray-400 text-[10px] sm:text-[11px] text-center mb-4 px-2">Complete the tasks below to automatically unlock your access.</p>
-                        
-                        <!-- Referral Info Badge -->
-                        <div class="bg-[#1c242f] rounded-xl py-2 px-4 mb-5 border border-gray-700 w-full flex items-center justify-between shrink-0">
+                        <div class="bg-[#1c242f] rounded-xl py-2 px-4 mb-4 border border-gray-700 w-full flex items-center justify-between">
                             <span data-i18n="invited_by" class="text-[9px] sm:text-[10px] text-gray-500 font-semibold uppercase tracking-widest">Invited by:</span>
-                            <span id="ref-id-display" class="text-[11px] sm:text-xs font-mono font-bold text-brand-neon truncate max-w-[150px]">None</span>
+                            <span id="ref-id-display" class="text-[10px] sm:text-xs font-mono font-bold text-brand-neon truncate max-w-[150px]">None</span>
                         </div>
 
                         <!-- Task 1 -->
-                        <div class="w-full bg-[#0d131c] border border-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 mb-3 shadow-inner flex items-center gap-3 sm:gap-4">
-                            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
-                                <i class="fa-solid fa-wallet text-sm sm:text-base text-gray-400"></i>
+                        <div class="w-full bg-[#0d131c] border border-gray-800 rounded-xl p-3 mb-3 shadow-inner flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-wallet text-sm text-gray-400"></i>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <h4 class="text-white font-bold text-xs sm:text-sm uppercase tracking-wide truncate" data-i18n="step1_title">CONNECT WALLET</h4>
-                                <div id="user-wallet" class="text-[9px] sm:text-[10px] text-gray-500 font-mono truncate hidden mt-0.5"></div>
+                                <h4 class="text-white font-bold text-xs uppercase tracking-wide truncate" data-i18n="step1_title">CONNECT WALLET</h4>
+                                <div id="user-wallet" class="text-[9px] text-gray-500 font-mono truncate hidden mt-0.5"></div>
                             </div>
-                            <button id="wallet-btn" onclick="connectWallet()" class="shrink-0 bg-brand-neon hover:bg-[#86d611] text-brand-dark px-3 py-2 sm:px-4 rounded-lg font-black text-[9px] sm:text-[10px] uppercase tracking-widest transition-all">
+                            <button id="wallet-btn" onclick="connectWallet()" class="shrink-0 bg-brand-neon hover:bg-[#86d611] text-brand-dark px-3 py-2 rounded-lg font-black text-[9px] uppercase tracking-widest transition-all">
                                 <span data-i18n="btn_wallet">CONNECT</span>
                             </button>
                         </div>
 
                         <!-- Task 2 -->
-                        <div class="w-full bg-[#0d131c] border border-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 mb-3 shadow-inner flex items-center gap-3 sm:gap-4">
-                            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#3390ec]/10 border border-[#3390ec]/30 flex items-center justify-center shrink-0">
-                                <i class="fa-brands fa-telegram text-sm sm:text-base text-[#3390ec]"></i>
+                        <div class="w-full bg-[#0d131c] border border-gray-800 rounded-xl p-3 mb-3 shadow-inner flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-[#3390ec]/10 border border-[#3390ec]/30 flex items-center justify-center shrink-0">
+                                <i class="fa-brands fa-telegram text-sm text-[#3390ec]"></i>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <h4 class="text-white font-bold text-xs sm:text-sm uppercase tracking-wide truncate" data-i18n="step2_title">JOIN TELEGRAM</h4>
+                                <h4 class="text-white font-bold text-xs uppercase tracking-wide truncate" data-i18n="step2_title">JOIN TELEGRAM</h4>
                             </div>
-                            <a href="https://t.me/BettingExchangeRoom" target="_blank" rel="noopener noreferrer" class="shrink-0 bg-[#3390ec] hover:bg-[#2AABEE] text-white px-3 py-2 sm:px-4 rounded-lg font-black text-[9px] sm:text-[10px] uppercase tracking-widest transition-all no-underline text-center">
+                            <a href="https://t.me/BettingExchangeRoom" target="_blank" rel="noopener noreferrer" class="shrink-0 bg-[#3390ec] hover:bg-[#2AABEE] text-white px-3 py-2 rounded-lg font-black text-[9px] uppercase tracking-widest transition-all no-underline text-center">
                                 <span data-i18n="btn_telegram">JOIN NOW</span>
                             </a>
                         </div>
 
                         <!-- Task 3 -->
-                        <div class="w-full bg-[#0d131c] border border-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 mb-2 shadow-inner flex flex-col gap-3">
-                            <div class="flex items-center gap-3 sm:gap-4">
-                                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-brand-neon/10 border border-brand-neon/30 flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(163,230,53,0.2)]">
-                                    <i class="fa-solid fa-users text-sm sm:text-base text-brand-neon"></i>
+                        <div class="w-full bg-[#0d131c] border border-gray-800 rounded-xl p-3 mb-2 shadow-inner flex flex-col gap-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-brand-neon/10 border border-brand-neon/30 flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(163,230,53,0.2)]">
+                                    <i class="fa-solid fa-users text-sm text-brand-neon"></i>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <h4 class="text-brand-neon font-black text-xs sm:text-sm uppercase tracking-wide truncate" data-i18n="step3_title">INVITE 2 FRIENDS</h4>
-                                    <p class="text-[8px] sm:text-[9px] text-gray-400 mt-0.5 truncate" data-i18n="generate_link">Generate your link to start.</p>
+                                    <h4 class="text-brand-neon font-black text-xs uppercase tracking-wide truncate" data-i18n="step3_title">INVITE 2 FRIENDS</h4>
+                                    <p class="text-[8px] text-gray-400 mt-0.5 truncate" data-i18n="generate_link">Generate your link to start.</p>
                                 </div>
                             </div>
                             
                             <div class="relative w-full flex gap-2">
-                                <input type="text" id="affiliate-link" readonly data-i18n-placeholder="link_placeholder" placeholder="Connect wallet to generate link" class="flex-1 bg-black/50 border border-gray-700 p-2 sm:p-2.5 rounded-lg text-brand-neon text-[10px] sm:text-[11px] font-mono focus:outline-none placeholder:text-gray-600 truncate w-full min-w-0">
-                                <button id="copy-btn" disabled onclick="copyAffiliateLink()" class="shrink-0 bg-surface-800 border border-surface-700 hover:bg-surface-700 text-white px-3 rounded-lg font-bold text-[9px] sm:text-[10px] uppercase transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5">
+                                <input type="text" id="affiliate-link" readonly data-i18n-placeholder="link_placeholder" placeholder="Connect wallet to generate link" class="flex-1 bg-black/50 border border-gray-700 p-2 rounded-lg text-brand-neon text-[10px] font-mono focus:outline-none placeholder:text-gray-600 truncate w-full min-w-0">
+                                <button id="copy-btn" disabled onclick="copyAffiliateLink()" class="shrink-0 bg-gray-800 border border-gray-700 hover:bg-gray-700 text-white px-3 rounded-lg font-bold text-[9px] uppercase transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5">
                                     <i class="fa-solid fa-copy"></i> <span id="copy-btn-text" data-i18n="copy_link">COPY</span>
                                 </button>
                             </div>
 
                             <div class="w-full bg-black/30 rounded-xl p-3 border border-gray-800/50 mt-1">
                                 <div class="flex justify-between items-center mb-1">
-                                    <span class="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-wider" data-i18n="invites_count">Current Invites: 0 / 2</span>
-                                    <span class="text-[9px] sm:text-[10px] text-gray-500"><i class="fa-solid fa-lock"></i></span>
+                                    <span class="text-[9px] text-gray-400 font-bold uppercase tracking-wider" data-i18n="invites_count">Current Invites: 0 / 2</span>
+                                    <span class="text-[9px] text-gray-500"><i class="fa-solid fa-lock"></i></span>
                                 </div>
                                 <div class="progress-bar-container">
                                     <div class="progress-bar-fill" style="width: 5%;"></div>
                                 </div>
-                                <p class="text-[7px] sm:text-[8px] text-gray-600 mt-2 text-center" data-i18n="system_tracks">The smart contract automatically tracks your invites.</p>
+                                <p class="text-[7px] text-gray-600 mt-2 text-center" data-i18n="system_tracks">The smart contract automatically tracks your invites.</p>
                             </div>
                         </div>
-
                     </div>
 
-                    <div class="w-full flex flex-col items-center flex-shrink-0 px-1 mt-2">
+                    <div class="w-full flex flex-col items-center shrink-0 px-1 mt-2">
                         <div class="flex items-center gap-3 w-full mb-3">
                             <div class="h-px bg-gray-800 flex-1"></div>
-                            <span data-i18n="need_help" class="text-[9px] sm:text-[10px] text-gray-500 font-bold uppercase tracking-widest text-center">Need help?</span>
+                            <span data-i18n="need_help" class="text-[9px] text-gray-500 font-bold uppercase tracking-widest text-center">Need help?</span>
                             <div class="h-px bg-gray-800 flex-1"></div>
                         </div>
                         
                         <div class="flex flex-col sm:flex-row gap-2 w-full">
-                            <button onclick="openTutorial('wallet')" class="flex-1 glass-panel hover:bg-white/5 py-2 px-3 rounded-xl flex items-center gap-2.5 transition-colors text-left shadow-sm active:scale-95 cursor-pointer border-gray-800 w-full min-w-0">
-                                <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 text-white font-black text-[11px] sm:text-[13px] border border-gray-700 shadow-inner"><i class="fa-solid fa-1"></i></div>
+                            <button onclick="openTutorial('wallet')" class="flex-1 glass-panel hover:bg-white/5 py-2 px-3 rounded-xl flex items-center gap-2 transition-colors text-left shadow-sm active:scale-95 cursor-pointer border-gray-800 w-full min-w-0">
+                                <div class="w-6 h-6 rounded-full bg-gray-800 flex items-center justify-center shrink-0 text-white font-black text-[10px] border border-gray-700 shadow-inner"><i class="fa-solid fa-1"></i></div>
                                 <div class="min-w-0">
-                                    <div data-i18n="verify_tut1" class="text-[10px] sm:text-[12px] font-bold text-tg-blue truncate">How to setup Wallet</div>
-                                    <div data-i18n="how_wallet_sub" class="text-[8px] sm:text-[10px] text-gray-500 mt-0.5 font-medium truncate">Takes 1 minute</div>
+                                    <div data-i18n="verify_tut1" class="text-[10px] font-bold text-tg-blue truncate">How to setup Wallet</div>
+                                    <div data-i18n="how_wallet_sub" class="text-[8px] text-gray-500 mt-0.5 font-medium truncate">Takes 1 minute</div>
                                 </div>
                             </button>
-                            <button onclick="openTutorial('loop')" class="flex-1 glass-panel hover:bg-white/5 py-2 px-3 rounded-xl flex items-center gap-2.5 transition-colors text-left shadow-sm active:scale-95 cursor-pointer border-gray-800 w-full min-w-0">
-                                <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 text-white font-black text-[11px] sm:text-[13px] border border-gray-700 shadow-inner"><i class="fa-solid fa-2"></i></div>
+                            <button onclick="openTutorial('loop')" class="flex-1 glass-panel hover:bg-white/5 py-2 px-3 rounded-xl flex items-center gap-2 transition-colors text-left shadow-sm active:scale-95 cursor-pointer border-gray-800 w-full min-w-0">
+                                <div class="w-6 h-6 rounded-full bg-gray-800 flex items-center justify-center shrink-0 text-white font-black text-[10px] border border-gray-700 shadow-inner"><i class="fa-solid fa-2"></i></div>
                                 <div class="min-w-0">
-                                    <div data-i18n="verify_tut2" class="text-[10px] sm:text-[12px] font-bold text-tg-blue truncate">How the Loop works</div>
-                                    <div data-i18n="how_loop_sub" class="text-[8px] sm:text-[10px] text-gray-500 mt-0.5 font-medium truncate">Step-by-step guide</div>
+                                    <div data-i18n="verify_tut2" class="text-[10px] font-bold text-tg-blue truncate">How the Loop works</div>
+                                    <div data-i18n="how_loop_sub" class="text-[8px] text-gray-500 mt-0.5 font-medium truncate">Step-by-step guide</div>
                                 </div>
                             </button>
                         </div>
 
-                        <button onclick="backToHome()" class="mt-6 sm:mt-8 text-gray-600 hover:text-white transition-colors text-[10px] sm:text-[11px] uppercase tracking-widest font-bold cursor-pointer bg-transparent border-none pb-8">
+                        <button onclick="backToHome()" class="mt-6 text-gray-600 hover:text-white transition-colors text-[10px] uppercase tracking-widest font-bold cursor-pointer bg-transparent border-none">
                             <i class="fa-solid fa-arrow-left"></i> <span data-i18n="back_home">BACK TO HOME</span>
                         </button>
                     </div>
@@ -542,99 +545,97 @@
 
             <!-- Tutorial Wallet -->
             <div id="screen-tutorial-wallet" class="screen">
-                <div class="scroll-container no-scrollbar pb-[60px]">
-                    <div class="bg-gray-800/50 border border-gray-700 text-gray-300 text-[9px] sm:text-[10px] font-semibold uppercase tracking-widest px-3 py-1.5 rounded-full mb-3 flex items-center gap-2 shrink-0">
-                        <i class="fa-solid fa-info-circle"></i> <span data-i18n="tut_badge">Tutorial - Simulazione non operativa</span>
+                <div class="scroll-container no-scrollbar pb-[40px]">
+                    <div class="bg-gray-800/50 border border-gray-700 text-gray-300 text-[9px] font-semibold uppercase tracking-widest px-3 py-1.5 rounded-full mb-3 flex items-center gap-2 shrink-0">
+                        <i class="fa-solid fa-info-circle"></i> <span data-i18n="tut_badge">Tutorial - Not operational</span>
                     </div>
 
-                    <div class="sim-phone mb-3 sm:mb-4">
+                    <div class="sim-phone mb-3">
                         <div class="phone-notch"></div>
                         <div id="sim-tw-1" class="sim-screen active">
-                            <div class="flex-1 p-4 flex flex-col justify-center items-center bg-[#0f1621] text-center min-h-0">
-                                <i class="fa-solid fa-search text-brand-neon text-3xl sm:text-4xl mb-3 sm:mb-4"></i>
-                                <div data-i18n="sim_w_open" class="text-white text-[13px] sm:text-[14px] font-bold mb-2">Open @wallet</div>
-                                <div data-i18n="sim_w_open_desc" class="text-gray-400 text-[10px] sm:text-[11px] leading-snug">Search for @wallet in the top Telegram search bar and click Start.</div>
+                            <div class="flex-1 p-4 flex flex-col justify-center items-center bg-[#0f1621] text-center">
+                                <i class="fa-solid fa-search text-brand-neon text-3xl mb-3"></i>
+                                <div data-i18n="sim_w_open" class="text-white text-[13px] font-bold mb-2">Open @wallet</div>
+                                <div data-i18n="sim_w_open_desc" class="text-gray-400 text-[10px] leading-snug">Search for @wallet in the top Telegram search bar and click Start.</div>
                             </div>
                         </div>
                         <div id="sim-tw-2" class="sim-screen">
-                            <div class="flex-1 p-4 flex flex-col justify-center items-center bg-[#0f1621] text-center min-h-0">
-                                <i class="fa-solid fa-toggle-on text-brand-neon text-3xl sm:text-4xl mb-3 sm:mb-4"></i>
-                                <div data-i18n="sim_w_space" class="text-white text-[13px] sm:text-[14px] font-bold mb-2">Enable TON Space</div>
-                                <div data-i18n="sim_w_space_desc" class="text-gray-400 text-[10px] sm:text-[11px] leading-snug">Go to settings and toggle ON TON Space Beta. This is your personal vault.</div>
+                            <div class="flex-1 p-4 flex flex-col justify-center items-center bg-[#0f1621] text-center">
+                                <i class="fa-solid fa-toggle-on text-brand-neon text-3xl mb-3"></i>
+                                <div data-i18n="sim_w_space" class="text-white text-[13px] font-bold mb-2">Enable TON Space</div>
+                                <div data-i18n="sim_w_space_desc" class="text-gray-400 text-[10px] leading-snug">Go to settings and toggle ON TON Space Beta. This is your personal vault.</div>
                             </div>
                         </div>
                         <div id="sim-tw-3" class="sim-screen">
-                            <div class="flex-1 p-4 flex flex-col justify-center items-center bg-[#0f1621] text-center min-h-0">
-                                <i class="fa-solid fa-shield-halved text-brand-neon text-3xl sm:text-4xl mb-3 sm:mb-4"></i>
-                                <div data-i18n="sim_w_backup" class="text-white text-[13px] sm:text-[14px] font-bold mb-2">Backup Phrase</div>
-                                <div data-i18n="sim_w_backup_desc" class="text-gray-400 text-[10px] sm:text-[11px] leading-snug">Write down the 24 secret words on paper. Never share them!</div>
+                            <div class="flex-1 p-4 flex flex-col justify-center items-center bg-[#0f1621] text-center">
+                                <i class="fa-solid fa-shield-halved text-brand-neon text-3xl mb-3"></i>
+                                <div data-i18n="sim_w_backup" class="text-white text-[13px] font-bold mb-2">Backup Phrase</div>
+                                <div data-i18n="sim_w_backup_desc" class="text-gray-400 text-[10px] leading-snug">Write down the 24 secret words on paper. Never share them!</div>
                             </div>
                         </div>
-                        <div class="phone-home-indicator"></div>
                     </div>
 
-                    <div class="bg-panel-bg w-full p-3 sm:p-4 rounded-2xl border border-gray-800 shadow-xl flex flex-col justify-between relative shrink-0">
+                    <div class="bg-panel-bg w-full p-3 rounded-2xl border border-gray-800 shadow-xl flex flex-col justify-between shrink-0">
                         <div class="flex justify-between items-center mb-2">
-                            <h3 id="tw-title" class="font-bold text-[11px] sm:text-[13px] text-white">...</h3>
-                            <span class="text-gray-400 font-medium text-[9px] sm:text-[10px]"><span data-i18n="step">Step</span> <span id="tw-step-num">1</span>/3</span>
+                            <h3 id="tw-title" class="font-bold text-[11px] text-white">...</h3>
+                            <span class="text-gray-400 font-medium text-[9px]"><span data-i18n="step">Step</span> <span id="tw-step-num">1</span>/3</span>
                         </div>
-                        <p id="tw-desc" class="text-[10px] sm:text-[12px] text-gray-400 leading-snug min-h-[45px] sm:min-h-[50px] mb-3">...</p>
-                        <div class="flex justify-between items-center pt-3 border-t border-gray-800/50">
-                            <button id="tw-btn-prev" onclick="navTutorial('wallet', -1)" class="text-gray-500 hover:text-white text-[10px] sm:text-[11px] flex items-center gap-1 font-medium bg-transparent border-none cursor-pointer"><i class="fa-solid fa-chevron-left"></i> <span data-i18n="prev">Prev</span></button>
+                        <p id="tw-desc" class="text-[10px] text-gray-400 leading-snug min-h-[40px] mb-3">...</p>
+                        <div class="flex justify-between items-center pt-2 border-t border-gray-800/50">
+                            <button id="tw-btn-prev" onclick="navTutorial('wallet', -1)" class="text-gray-500 hover:text-white text-[10px] flex items-center gap-1 font-medium bg-transparent border-none cursor-pointer"><i class="fa-solid fa-chevron-left"></i> <span data-i18n="prev">Prev</span></button>
                             <div class="flex gap-1.5" id="tw-dots-container"></div>
-                            <button id="tw-btn-next" onclick="navTutorial('wallet', 1)" class="text-brand-neon font-semibold text-[10px] sm:text-[11px] flex items-center gap-1 bg-transparent border-none cursor-pointer"><span id="tw-next-text" data-i18n="next">Next</span> <i id="tw-next-icon" class="fa-solid fa-chevron-right text-[9px] sm:text-[10px]"></i></button>
+                            <button id="tw-btn-next" onclick="navTutorial('wallet', 1)" class="text-brand-neon font-semibold text-[10px] flex items-center gap-1 bg-transparent border-none cursor-pointer"><span id="tw-next-text" data-i18n="next">Next</span> <i id="tw-next-icon" class="fa-solid fa-chevron-right text-[9px]"></i></button>
                         </div>
                     </div>
-                    <button onclick="showScreen('screen-viral-checklist')" class="mt-4 sm:mt-5 text-gray-500 hover:text-white text-[11px] sm:text-[12px] underline underline-offset-4 bg-transparent border-none cursor-pointer mb-2"><span data-i18n="close_tut">Close Tutorial</span></button>
+                    <button onclick="showScreen('screen-viral-checklist')" class="mt-4 text-gray-500 hover:text-white text-[10px] underline underline-offset-4 bg-transparent border-none cursor-pointer"><span data-i18n="close_tut">Close Tutorial</span></button>
                 </div>
             </div>
 
             <!-- Tutorial Loop Explanation -->
             <div id="screen-tutorial-loop" class="screen">
-                <div class="scroll-container no-scrollbar pb-[60px]">
-                    <div class="bg-gray-800/50 border border-gray-700 text-gray-300 text-[9px] sm:text-[10px] font-semibold uppercase tracking-widest px-3 py-1.5 rounded-full mb-3 flex items-center gap-2 shrink-0">
-                        <i class="fa-solid fa-info-circle"></i> <span data-i18n="tut_badge">Tutorial - Simulazione non operativa</span>
+                <div class="scroll-container no-scrollbar pb-[40px]">
+                    <div class="bg-gray-800/50 border border-gray-700 text-gray-300 text-[9px] font-semibold uppercase tracking-widest px-3 py-1.5 rounded-full mb-3 flex items-center gap-2 shrink-0">
+                        <i class="fa-solid fa-info-circle"></i> <span data-i18n="tut_badge">Tutorial - Not operational</span>
                     </div>
 
-                    <div class="sim-phone mb-3 sm:mb-4">
+                    <div class="sim-phone mb-3">
                         <div class="phone-notch"></div>
                         <div id="sim-tl-1" class="sim-screen active">
-                            <div class="flex-1 p-4 flex flex-col justify-center items-center bg-[#0f1621] text-center min-h-0">
-                                <i class="fa-solid fa-link text-brand-neon text-3xl sm:text-4xl mb-3 sm:mb-4"></i>
-                                <div data-i18n="sim_l_get" class="text-white text-[13px] sm:text-[14px] font-bold mb-2">Get Your Link</div>
-                                <div data-i18n="sim_l_get_desc" class="text-gray-400 text-[10px] sm:text-[11px] leading-snug">Connect your wallet to instantly generate your unique referral URL.</div>
+                            <div class="flex-1 p-4 flex flex-col justify-center items-center bg-[#0f1621] text-center">
+                                <i class="fa-solid fa-link text-brand-neon text-3xl mb-3"></i>
+                                <div data-i18n="sim_l_get" class="text-white text-[13px] font-bold mb-2">Get Your Link</div>
+                                <div data-i18n="sim_l_get_desc" class="text-gray-400 text-[10px] leading-snug">Connect your wallet to instantly generate your unique referral URL.</div>
                             </div>
                         </div>
                         <div id="sim-tl-2" class="sim-screen">
-                            <div class="flex-1 p-4 flex flex-col justify-center items-center bg-[#0f1621] text-center min-h-0">
-                                <i class="fa-solid fa-share-nodes text-brand-neon text-3xl sm:text-4xl mb-3 sm:mb-4"></i>
-                                <div data-i18n="sim_l_share" class="text-white text-[13px] sm:text-[14px] font-bold mb-2">Share with Friends</div>
-                                <div data-i18n="sim_l_share_desc" class="text-gray-400 text-[10px] sm:text-[11px] leading-snug">Send the link to 2 friends. They follow the same exact steps.</div>
+                            <div class="flex-1 p-4 flex flex-col justify-center items-center bg-[#0f1621] text-center">
+                                <i class="fa-solid fa-share-nodes text-brand-neon text-3xl mb-3"></i>
+                                <div data-i18n="sim_l_share" class="text-white text-[13px] font-bold mb-2">Share with Friends</div>
+                                <div data-i18n="sim_l_share_desc" class="text-gray-400 text-[10px] leading-snug">Send the link to 2 friends. They follow the same exact steps.</div>
                             </div>
                         </div>
                         <div id="sim-tl-3" class="sim-screen">
-                            <div class="flex-1 p-4 flex flex-col justify-center items-center bg-[#0f1621] text-center min-h-0">
-                                <i class="fa-solid fa-unlock-keyhole text-brand-neon text-3xl sm:text-4xl mb-3 sm:mb-4"></i>
-                                <div data-i18n="sim_l_unlock" class="text-white text-[13px] sm:text-[14px] font-bold mb-2">Automatic Unlock</div>
-                                <div data-i18n="sim_l_unlock_desc" class="text-gray-400 text-[10px] sm:text-[11px] leading-snug">Once they connect, the blockchain verifies it. You all get 7 days free!</div>
+                            <div class="flex-1 p-4 flex flex-col justify-center items-center bg-[#0f1621] text-center">
+                                <i class="fa-solid fa-unlock-keyhole text-brand-neon text-3xl mb-3"></i>
+                                <div data-i18n="sim_l_unlock" class="text-white text-[13px] font-bold mb-2">Automatic Unlock</div>
+                                <div data-i18n="sim_l_unlock_desc" class="text-gray-400 text-[10px] leading-snug">Once they connect, the blockchain verifies it. You all get 7 days free!</div>
                             </div>
                         </div>
-                        <div class="phone-home-indicator"></div>
                     </div>
 
-                    <div class="bg-panel-bg w-full p-3 sm:p-4 rounded-2xl border border-gray-800 shadow-xl flex flex-col justify-between relative shrink-0">
+                    <div class="bg-panel-bg w-full p-3 rounded-2xl border border-gray-800 shadow-xl flex flex-col justify-between shrink-0">
                         <div class="flex justify-between items-center mb-2">
-                            <h3 id="tl-title" class="font-bold text-[11px] sm:text-[13px] text-white">...</h3>
-                            <span class="text-gray-400 font-medium text-[9px] sm:text-[10px]"><span data-i18n="step">Step</span> <span id="tl-step-num">1</span>/3</span>
+                            <h3 id="tl-title" class="font-bold text-[11px] text-white">...</h3>
+                            <span class="text-gray-400 font-medium text-[9px]"><span data-i18n="step">Step</span> <span id="tl-step-num">1</span>/3</span>
                         </div>
-                        <p id="tl-desc" class="text-[10px] sm:text-[12px] text-gray-400 leading-snug min-h-[45px] sm:min-h-[50px] mb-3">...</p>
-                        <div class="flex justify-between items-center pt-3 border-t border-gray-800/50">
-                            <button id="tl-btn-prev" onclick="navTutorial('loop', -1)" class="text-gray-500 hover:text-white text-[10px] sm:text-[11px] flex items-center gap-1 font-medium bg-transparent border-none cursor-pointer"><i class="fa-solid fa-chevron-left"></i> <span data-i18n="prev">Prev</span></button>
+                        <p id="tl-desc" class="text-[10px] text-gray-400 leading-snug min-h-[40px] mb-3">...</p>
+                        <div class="flex justify-between items-center pt-2 border-t border-gray-800/50">
+                            <button id="tl-btn-prev" onclick="navTutorial('loop', -1)" class="text-gray-500 hover:text-white text-[10px] flex items-center gap-1 font-medium bg-transparent border-none cursor-pointer"><i class="fa-solid fa-chevron-left"></i> <span data-i18n="prev">Prev</span></button>
                             <div class="flex gap-1.5" id="tl-dots-container"></div>
-                            <button id="tl-btn-next" onclick="navTutorial('loop', 1)" class="text-brand-neon font-semibold text-[10px] sm:text-[11px] flex items-center gap-1 bg-transparent border-none cursor-pointer"><span id="tl-next-text" data-i18n="next">Next</span> <i id="tl-next-icon" class="fa-solid fa-chevron-right text-[9px] sm:text-[10px]"></i></button>
+                            <button id="tl-btn-next" onclick="navTutorial('loop', 1)" class="text-brand-neon font-semibold text-[10px] flex items-center gap-1 bg-transparent border-none cursor-pointer"><span id="tl-next-text" data-i18n="next">Next</span> <i id="tl-next-icon" class="fa-solid fa-chevron-right text-[9px]"></i></button>
                         </div>
                     </div>
-                    <button onclick="showScreen('screen-viral-checklist')" class="mt-4 sm:mt-5 text-gray-500 hover:text-white text-[11px] sm:text-[12px] underline underline-offset-4 bg-transparent border-none cursor-pointer mb-2"><span data-i18n="close_tut">Close Tutorial</span></button>
+                    <button onclick="showScreen('screen-viral-checklist')" class="mt-4 text-gray-500 hover:text-white text-[10px] underline underline-offset-4 bg-transparent border-none cursor-pointer"><span data-i18n="close_tut">Close Tutorial</span></button>
                 </div>
             </div>
 
@@ -747,7 +748,7 @@
                 tg_msg_7:"💶 Cuota Target: @1.67",
                 tg_msg_8:"💼 Stake: 2.0%",
                 tg_msg_9:"✅ Salida: Señal orientada al gol antes del minuto 65. Salida en ganancias (Green Up) al primer gol.",
-                tg_msg_10:"🧠 ANÁLISIS CUANTITATIVO",
+                tg_msg_10:"🧠 ANÁLISIS CUANTITATIVA",
                 tg_msg_11:"📈 Pressure Index (H/A): 2.15 / 1.52 | Delta Ataques: +7",
                 tg_msg_12:"💧 Liquidez: ALTA | 🤖 Prob. Modelo: 76%",
                 tg_msg_13:"🛑 NOTA RISK MANAGEMENT: Presión interna neta a favor del equipo local. El partido muestra alta volatilidad, mantener el stop loss en @2.20 en caso de ausencia prolongada de goles.",
@@ -780,7 +781,7 @@
                 
                 verify_tut1: "Cómo crear Wallet", verify_tut2: "Cómo funciona el Loop",
                 how_wallet_sub: "Toma 1 minuto", how_loop_sub: "Guía paso a paso",
-                close_tut: "Cerrar Tutorial", tut_badge: "Tutorial - No operativo",
+                close_tut: "Cerrar Tutorial", tut_badge: "TUTORIAL - NO OPERATIVO",
 
                 sim_w_open: "Abre @wallet", sim_w_open_desc: "Busca @wallet en Telegram y haz clic en Iniciar.",
                 sim_w_space: "Activa TON Space", sim_w_space_desc: "Ve a configuración y activa TON Space Beta. Es tu bóveda personal.",
@@ -836,7 +837,7 @@
 
                 task_main_title:"COMO DESBLOQUEAR",task_main_desc:"Siga estes 3 passos simples para obter o seu Passe Premium de 7 dias.",
                 step1_badge:"PASSO 1",step1_title:"CONECTAR CARTEIRA",step1_desc:"Conecte sua Carteira Web3 para criar sua identidade segura na blockchain.",
-                step2_badge:"PASO 2",step2_title:"ENTRAR NO TELEGRAM",step2_desc:"Junte-se à nossa comunidade oficial no Telegram para receber os sinais.",
+                step2_badge:"PASSO 2",step2_title:"ENTRAR NO TELEGRAM",step2_desc:"Junte-se à nossa comunidade oficial no Telegram para receber os sinais.",
                 step3_badge:"PASSO 3",step3_title:"CONVIDAR 2 AMIGOS",step3_desc:"Compartilhe seu link. Quando 2 amigos completarem o loop, todos ganham 7 dias grátis!",
                 btn_start_loop:"INICIAR LOOP AGORA",
                 slogan:"APOSTA EM TI 🫵",
@@ -855,7 +856,7 @@
                 
                 verify_tut1: "Como criar a Carteira", verify_tut2: "Como funciona o Loop",
                 how_wallet_sub: "Leva 1 minuto", how_loop_sub: "Guia passo a passo",
-                close_tut: "Fechar Tutorial", tut_badge: "Tutorial - Não operacional",
+                close_tut: "Fechar Tutorial", tut_badge: "TUTORIAL - NÃO OPERACIONAL",
 
                 sim_w_open: "Abrir @wallet", sim_w_open_desc: "Pesquise @wallet no Telegram e clique em Iniciar.",
                 sim_w_space: "Ativar TON Space", sim_w_space_desc: "Vá às configurações e ative TON Space Beta. É o seu cofre.",
@@ -863,7 +864,7 @@
                 
                 sim_l_get: "Obter o Link", sim_l_get_desc: "Conecte sua carteira para gerar sua URL única.",
                 sim_l_share: "Compartilhar", sim_l_share_desc: "Envie o link para 2 amigos. Eles seguem os mesmos passos.",
-                sim_l_unlock: "Desbloqueio Automático", sim_l_unlock_desc: "Assim que conectarem, a blockchain verifica. Todos ganham!",
+                sim_l_unlock: "Desbloqueo Automático", sim_l_unlock_desc: "Assim que conectarem, a blockchain verifica. Todos ganham!",
 
                 tw_t1: "1. Encontrar a Carteira", tw_d1: "O Telegram possui uma carteira nativa. Pesquise '@wallet'.",
                 tw_t2: "2. TON Space", tw_d2: "Ative a função self-custodial TON Space para se conectar.",
@@ -930,7 +931,7 @@
                 
                 verify_tut1: "Come creare il Wallet", verify_tut2: "Come funziona il Loop",
                 how_wallet_sub: "Richiede 1 minuto", how_loop_sub: "Guida passo passo",
-                close_tut: "Chiudi Tutorial", tut_badge: "Tutorial - Simulazione non operativa",
+                close_tut: "Chiudi Tutorial", tut_badge: "TUTORIAL - NON OPERATIVO",
 
                 sim_w_open: "Apri @wallet", sim_w_open_desc: "Cerca @wallet nella barra in alto su Telegram e clicca Avvia.",
                 sim_w_space: "Abilita TON Space", sim_w_space_desc: "Vai nelle impostazioni e attiva TON Space Beta. È la tua cassaforte personale.",
@@ -962,13 +963,13 @@
         const urlParams = new URLSearchParams(window.location.search);
         let referrerId = urlParams.get('ref');
         
-        window.onload = function() {
+        window.addEventListener('load', function() {
             if(referrerId) {
                 document.getElementById('ref-id-display').innerText = referrerId.substring(0, 15) + (referrerId.length > 15 ? '...' : '');
             } else {
                 document.getElementById('ref-id-display').innerText = 'Organic / Direct';
             }
-        };
+        });
 
         window.setLang = function(l) {
             currentLang = supportedLangs.includes(l) ? l : 'en'; 
@@ -1011,7 +1012,6 @@
 
         setLang(detectUserLanguage());
 
-        // SPA Navigation Logic 
         window.openViralDashboard = function() {
             document.getElementById('screen-landing').classList.replace('block', 'hidden');
             document.getElementById('viral-container').classList.replace('hidden', 'flex');
@@ -1031,7 +1031,6 @@
             document.querySelectorAll('.scroll-container').forEach(c => c.scrollTop = 0);
         }
 
-        // Logic to simulate Wallet Connection & Affiliate Link generation
         window.connectWallet = function() {
             const btn = document.getElementById('wallet-btn');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
@@ -1041,29 +1040,24 @@
             setTimeout(() => {
                 const fakeWallet = 'UQ' + Math.random().toString(36).substring(2, 10).toUpperCase();
                 
-                // Show Wallet
                 const walletDisplay = document.getElementById('user-wallet');
                 walletDisplay.innerText = fakeWallet;
                 walletDisplay.classList.remove('hidden');
                 
-                // Update Button UI
                 btn.classList.remove('bg-brand-neon', 'text-brand-dark', 'hover:bg-[#86d611]');
-                btn.classList.add('bg-success-500/10', 'text-success-400', 'border', 'border-success-500/30', 'cursor-default');
+                btn.classList.add('bg-green-500/10', 'text-green-400', 'border', 'border-green-500/30', 'cursor-default');
                 btn.innerHTML = '<i class="fa-solid fa-check"></i>';
                 
-                // Unlock Link Generation
                 const linkInput = document.getElementById('affiliate-link');
                 const baseUrl = window.location.origin + window.location.pathname;
                 linkInput.value = `${baseUrl}?ref=${fakeWallet}`;
                 
                 const copyBtn = document.getElementById('copy-btn');
                 copyBtn.disabled = false;
-                copyBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-surface-800');
+                copyBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-gray-800');
                 copyBtn.classList.add('bg-brand-neon', 'text-brand-dark', 'hover:bg-[#86d611]');
                 
-                // Small progress update
                 document.querySelector('.progress-bar-fill').style.width = '15%';
-
             }, 1200);
         }
 
@@ -1086,7 +1080,6 @@
             }
         }
 
-        // Tutorial Simulator Logic 
         const tutorials = {
             wallet: { current: 1, max: 3, color: 'bg-brand-neon', prefix: 'tw' },
             loop: { current: 1, max: 3, color: 'bg-brand-neon', prefix: 'tl' } 
@@ -1150,7 +1143,6 @@
             }
         }
 
-        // Lazy load Observer
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if ('IntersectionObserver' in window && !prefersReducedMotion) {
             const obs = new IntersectionObserver((entries) => {
