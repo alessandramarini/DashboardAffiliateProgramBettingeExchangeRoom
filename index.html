@@ -123,14 +123,20 @@
     const { useState, useEffect, useCallback, useRef, useMemo } = React;
     const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } = window.Recharts; 
 
+    // Safe Icon Component per prevenire conflitti tra Lucide e React Virtual DOM
     const Icon = ({ name, size = 24, className = '', ...props }) => {
       const spanRef = useRef(null);
       useEffect(() => {
         if (spanRef.current && window.lucide) {
-          window.lucide.createIcons({ root: spanRef.current, nameAttr: 'data-lucide', attrs: { width: size, height: size, class: className, ...props } });
+          spanRef.current.innerHTML = `<i data-lucide="${name}"></i>`;
+          window.lucide.createIcons({
+            root: spanRef.current,
+            nameAttr: 'data-lucide',
+            attrs: { width: size, height: size, class: className, ...props }
+          });
         }
       }, [name, size, className, props]);
-      return <span ref={spanRef} className={`inline-flex items-center justify-center shrink-0`}><i data-lucide={name} /></span>;
+      return <span ref={spanRef} className="inline-flex items-center justify-center shrink-0"></span>;
     };
 
     const LANGUAGES = [
@@ -481,7 +487,28 @@
       );
     };
 
-    const WhitepaperModal = ({ isOpen, onClose, t }) => {
+    // Componente Aggiunto: Specifications Modal per risolvere il ReferenceError
+    const SpecificationsModal = ({ isOpen, onClose, t }) => {
+      if (!isOpen) return null;
+      return (
+        <div className="fixed inset-0 z-[350] flex items-center justify-center bg-surface-950/95 backdrop-blur-xl p-4 sm:p-6 fade-in">
+          <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-lg shadow-[0_0_80px_rgba(212,175,55,0.15)] overflow-hidden flex flex-col p-6 text-center">
+            <div className="w-12 h-12 bg-brand-500/10 rounded-full flex items-center justify-center text-brand-400 mx-auto mb-4 border border-brand-500/20">
+              <Icon name="file-text" size={24} />
+            </div>
+            <h3 className="text-xl font-black text-zinc-100 uppercase tracking-widest mb-4">{t('specifications')}</h3>
+            <p className="text-zinc-400 text-sm mb-6 leading-relaxed">
+              Le specifiche tecniche complete e la documentazione del pricing model sono disponibili nel documento PDF ufficiale della piattaforma.
+            </p>
+            <button onClick={onClose} className="w-full sm:w-auto px-8 py-3 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded-xl text-sm font-bold transition-colors uppercase tracking-wider shadow-lg mx-auto">
+              {t('close_doc')}
+            </button>
+          </div>
+        </div>
+      );
+    };
+
+    const WhitepaperModal = ({ isOpen, onClose, onOpenSpecs, t }) => {
       const [showTechSpecs, setShowTechSpecs] = useState(false);
       if (!isOpen) return null;
       return (
@@ -566,9 +593,9 @@
               </div>
             </div>
             <div className="p-4 sm:p-5 border-t border-surface-800 bg-surface-900/50 shrink-0 flex flex-col sm:flex-row justify-end items-center gap-3">
-              <a href="pricing.html" className="w-full sm:w-auto px-6 py-2.5 bg-surface-950 border border-brand-500/30 hover:border-brand-500/60 text-brand-400 rounded-xl text-xs sm:text-sm font-bold transition-colors uppercase tracking-wider shadow-lg flex items-center justify-center gap-2">
+              <button onClick={() => { if(onOpenSpecs) onOpenSpecs(); }} className="w-full sm:w-auto px-6 py-2.5 bg-surface-950 border border-brand-500/30 hover:border-brand-500/60 text-brand-400 rounded-xl text-xs sm:text-sm font-bold transition-colors uppercase tracking-wider shadow-lg flex items-center justify-center gap-2">
                  <Icon name="file-text" size={16} /> {t('specifications')}
-              </a>
+              </button>
               <button onClick={onClose} className="w-full sm:w-auto px-6 py-2.5 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded-xl text-xs sm:text-sm font-bold transition-colors uppercase tracking-wider shadow-lg">{t('close_doc')}</button>
             </div>
           </div>
@@ -625,6 +652,7 @@
       const [isSimulating, setIsSimulating] = useState(false);
       const [statusSort, setStatusSort] = useState('activeFirst'); 
       const [showWhitepaper, setShowWhitepaper] = useState(false);
+      const [showSpecs, setShowSpecs] = useState(false);
 
       const localizedChartData = useMemo(() => RAW_REVENUE_DATA.map(d => ({...d, name: t(d.rawKey) || d.rawKey})), [t]);
       
@@ -765,7 +793,8 @@
             </div>
             
           </div>
-          <WhitepaperModal isOpen={showWhitepaper} onClose={() => setShowWhitepaper(false)} t={t} />
+          <WhitepaperModal isOpen={showWhitepaper} onClose={() => setShowWhitepaper(false)} onOpenSpecs={() => setShowSpecs(true)} t={t} />
+          <SpecificationsModal isOpen={showSpecs} onClose={() => setShowSpecs(false)} t={t} />
         </div>
       );
     };
@@ -794,9 +823,19 @@
       const refId = sc.state.tonWallet ? sc.state.tonWallet.substring(0, 10) : "ALEX99";
 
       const copyReferral = () => {
-        navigator.clipboard.writeText(`https://tonpull.app/ref/${sc.state.walletAddress.substring(0,8)}`).then(() => {
+        const addrToCopy = sc.state.walletAddress ? sc.state.walletAddress.substring(0,8) : "ABCDEF";
+        navigator.clipboard.writeText(`https://tonpull.app/ref/${addrToCopy}`).then(() => {
           setCopied(true); sc.addToast(t('copied'), '', "success");
           setTimeout(() => setCopied(false), 2000);
+        }).catch(() => sc.addToast(t('copy_error'), "", "error"));
+      };
+
+      const displayAddress = sc.state.walletAddress ? sc.state.walletAddress.substring(0,8) : "ABCDEF";
+
+      const copyFunnelLink = (path, nameKey) => {
+        const fullUrl = `https://tonpull.app/${path}?ref=${displayAddress}`;
+        navigator.clipboard.writeText(fullUrl).then(() => {
+          sc.addToast(t('copied'), t(nameKey), "success");
         }).catch(() => sc.addToast(t('copy_error'), "", "error"));
       };
 
@@ -821,7 +860,7 @@
                 </div>
                 
                 <div className="flex items-center bg-surface-950 rounded-xl border border-surface-700 p-1 shadow-inner mb-3">
-                  <div className="px-2 text-[10px] sm:text-xs text-zinc-300 truncate flex-1 font-mono">tonpull.app/ref/{sc.state.walletAddress.substring(0,8)}</div>
+                  <div className="px-2 text-[10px] sm:text-xs text-zinc-300 truncate flex-1 font-mono">tonpull.app/ref/{displayAddress}</div>
                   <button onClick={copyReferral} className={`shrink-0 flex items-center gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[9px] sm:text-[10px] font-black transition-all uppercase tracking-wide shadow-md ${copied ? 'bg-success-500 text-white shadow-success-500/20' : 'bg-surface-800 hover:bg-surface-700 text-zinc-100'}`}>
                     <Icon name={copied ? 'check' : 'copy'} size={12} /> <span className="hidden sm:inline">{copied ? t('copied') : t('copy_link')}</span>
                   </button>
@@ -832,44 +871,77 @@
                     <Icon name="megaphone" size={12} className="text-brand-500" /> {t('marketing_funnels')}
                   </h4>
                   
-                  <a href={`promo-50.html?ref=${refId}`} target="_blank" rel="noopener noreferrer" className="relative group w-full p-2.5 sm:p-3 rounded-xl transition-all border border-emerald-500/20 hover:border-emerald-500/50 bg-gradient-to-r from-emerald-950/30 via-surface-900 to-surface-950 hover:-translate-y-0.5 shadow-md flex flex-col justify-center">
-                    <div className="absolute top-1.5 right-1.5 flex items-center gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-400/20 px-1 py-0.5 rounded text-[7px] sm:text-[8px] font-black uppercase">
-                      {t('promo_50_tag')}
+                  {/* FUNNEL 1 */}
+                  <div className="relative w-full p-2.5 sm:p-3 rounded-xl border border-emerald-500/20 bg-surface-900/30 shadow-md flex flex-col gap-2 hover:border-emerald-500/40 transition-colors">
+                    <div className="flex justify-between items-start">
+                      <div className="flex items-center gap-1.5 text-emerald-400">
+                        <Icon name="sparkles" size={14} className="shrink-0" />
+                        <span className="font-black text-[9px] sm:text-[10px] uppercase tracking-wider">{t('funnel_1')}</span>
+                      </div>
+                      <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-400/20 px-1 py-0.5 rounded text-[7px] sm:text-[8px] font-black uppercase shrink-0">
+                        {t('promo_50_tag')}
+                      </span>
                     </div>
-                    <div className="flex items-center gap-2 mb-1 text-emerald-400">
-                      <Icon name="sparkles" size={14} className="group-hover:animate-pulse shrink-0" />
-                      <span className="font-black text-[9px] sm:text-[10px] uppercase tracking-wider truncate pr-12">{t('funnel_1')}</span>
-                    </div>
-                    <p className="text-[8px] sm:text-[9px] text-zinc-500 leading-tight font-medium pl-5 text-left">
+                    <p className="text-[8px] sm:text-[9px] text-zinc-400 leading-tight pr-2">
                       {t('funnel_1_desc')}
                     </p>
-                  </a>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <button onClick={() => copyFunnelLink('promo-50.html', 'funnel_1')} className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-surface-800 hover:bg-surface-700 text-zinc-200 rounded-lg text-[9px] font-bold uppercase transition-colors shadow-sm">
+                        <Icon name="copy" size={10} /> {t('copy_link')}
+                      </button>
+                      <a href={`promo-50.html?ref=${displayAddress}`} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-lg flex items-center justify-center transition-colors">
+                        <Icon name="external-link" size={10} />
+                      </a>
+                    </div>
+                  </div>
                   
-                  <a href={`promo-masterclass.html?ref=${refId}`} target="_blank" rel="noopener noreferrer" className="relative group w-full p-2.5 sm:p-3 rounded-xl transition-all border border-purple-500/20 hover:border-purple-500/50 bg-gradient-to-r from-purple-950/30 via-surface-900 to-surface-950 hover:-translate-y-0.5 shadow-md flex flex-col justify-center">
-                    <div className="absolute top-1.5 right-1.5 flex items-center gap-1 bg-purple-500/10 text-purple-400 border border-purple-400/20 px-1 py-0.5 rounded text-[7px] sm:text-[8px] font-black uppercase">
-                      {t('live_event_tag')}
+                  {/* FUNNEL 2 */}
+                  <div className="relative w-full p-2.5 sm:p-3 rounded-xl border border-purple-500/20 bg-surface-900/30 shadow-md flex flex-col gap-2 hover:border-purple-500/40 transition-colors">
+                    <div className="flex justify-between items-start">
+                      <div className="flex items-center gap-1.5 text-purple-400">
+                        <Icon name="graduation-cap" size={14} className="shrink-0" />
+                        <span className="font-black text-[9px] sm:text-[10px] uppercase tracking-wider">{t('funnel_2')}</span>
+                      </div>
+                      <span className="bg-purple-500/10 text-purple-400 border border-purple-400/20 px-1 py-0.5 rounded text-[7px] sm:text-[8px] font-black uppercase shrink-0">
+                        {t('live_event_tag')}
+                      </span>
                     </div>
-                    <div className="flex items-center gap-2 mb-1 text-purple-400">
-                      <Icon name="graduation-cap" size={14} className="shrink-0" />
-                      <span className="font-black text-[9px] sm:text-[10px] uppercase tracking-wider truncate pr-12">{t('funnel_2')}</span>
-                    </div>
-                    <p className="text-[8px] sm:text-[9px] text-zinc-500 leading-tight font-medium pl-5 text-left">
+                    <p className="text-[8px] sm:text-[9px] text-zinc-400 leading-tight pr-2">
                       {t('funnel_2_desc')}
                     </p>
-                  </a>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <button onClick={() => copyFunnelLink('promo-masterclass.html', 'funnel_2')} className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-surface-800 hover:bg-surface-700 text-zinc-200 rounded-lg text-[9px] font-bold uppercase transition-colors shadow-sm">
+                        <Icon name="copy" size={10} /> {t('copy_link')}
+                      </button>
+                      <a href={`promo-masterclass.html?ref=${displayAddress}`} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/20 rounded-lg flex items-center justify-center transition-colors">
+                        <Icon name="external-link" size={10} />
+                      </a>
+                    </div>
+                  </div>
 
-                  <a href={`taskfreeweek.html?ref=${refId}`} target="_blank" rel="noopener noreferrer" className="relative group w-full p-2.5 sm:p-3 rounded-xl transition-all border border-brand-500/30 hover:border-brand-500 bg-gradient-to-r from-brand-950/30 via-surface-900 to-surface-950 hover:-translate-y-0.5 shadow-lg flex flex-col justify-center">
-                    <div className="absolute top-1.5 right-1.5 flex items-center gap-1 bg-brand-500/10 text-brand-400 border border-brand-400/20 px-1 py-0.5 rounded text-[7px] sm:text-[8px] font-black uppercase">
-                      {t('viral_task_tag')}
+                  {/* FUNNEL 3 */}
+                  <div className="relative w-full p-2.5 sm:p-3 rounded-xl border border-brand-500/30 bg-surface-900/30 shadow-md flex flex-col gap-2 hover:border-brand-500/50 transition-colors">
+                    <div className="flex justify-between items-start">
+                      <div className="flex items-center gap-1.5 text-brand-400">
+                        <Icon name="infinity" size={14} className="text-yellow-400 shrink-0" />
+                        <span className="font-black text-[9px] sm:text-[10px] uppercase tracking-wider text-gold-gradient">{t('funnel_3')}</span>
+                      </div>
+                      <span className="bg-brand-500/10 text-brand-400 border border-brand-400/20 px-1 py-0.5 rounded text-[7px] sm:text-[8px] font-black uppercase shrink-0">
+                        {t('viral_task_tag')}
+                      </span>
                     </div>
-                    <div className="flex items-center gap-2 mb-1 text-brand-400">
-                      <Icon name="infinity" size={14} className="text-yellow-400 group-hover:rotate-180 transition-transform duration-700 shrink-0" />
-                      <span className="font-black text-[9px] sm:text-[10px] uppercase tracking-wider text-gold-gradient truncate pr-14">{t('funnel_3')}</span>
-                    </div>
-                    <p className="text-[8px] sm:text-[9px] text-zinc-400 leading-tight pl-5 text-left">
+                    <p className="text-[8px] sm:text-[9px] text-zinc-400 leading-tight pr-2">
                       {t('funnel_3_desc')} 
                     </p>
-                  </a>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <button onClick={() => copyFunnelLink('taskfreeweek.html', 'funnel_3')} className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-surface-800 hover:bg-surface-700 text-zinc-200 rounded-lg text-[9px] font-bold uppercase transition-colors shadow-sm">
+                        <Icon name="copy" size={10} /> {t('copy_link')}
+                      </button>
+                      <a href={`taskfreeweek.html?ref=${displayAddress}`} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 border border-brand-500/20 rounded-lg flex items-center justify-center transition-colors">
+                        <Icon name="external-link" size={10} />
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </Card>
 
