@@ -1,229 +1,393 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" class="antialiased">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Contract Blueprint & Security V3 - Betting Exchange</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-  .chart-container { position: relative; width: 100%; max-width: 100%; height: 260px; }
-  @media (min-width: 768px) { .chart-container { height: 280px; } }
-  .tab-content { display: none; }
-  .tab-content.active { display: flex; flex-direction: column; animation: fadeIn 0.25s ease-out forwards; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-  body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #e7e5e4; border-radius: 10px; }
-  ::-webkit-scrollbar-thumb:hover { background: #d6d3d1; }
-</style>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          stone: { 50: '#fafaf9', 100: '#f5f5f4', 200: '#e7e5e4', 300: '#d6d3d1', 800: '#292524', 900: '#1c1917', 950: '#0c0a09' },
-          amber: { 500: '#f59e0b', 600: '#d97706' },
-          emerald: { 600: '#059669' },
-          blue: { 600: '#2563eb' }
-        },
-        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], mono: ['ui-monospace', 'SFMono-Regular', 'monospace'] }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Smart Contract Blueprint & Security V3 - Betting Exchange</title>
+  
+  <meta name="theme-color" content="#09090b">
+
+  <!-- Tailwind CSS & Chart.js & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body, html {
+      margin: 0; padding: 0;
+      background-color: #09090b !important; color: #f4f4f5 !important;
+      font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
+      height: 100%;
+    }
+    
+    .bg-grid-pattern {
+      background-color: #09090b;
+      background-image: 
+        radial-gradient(rgba(212, 175, 55, 0.07) 1px, transparent 1px),
+        radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 32px 32px, 64px 64px;
+      background-position: 0 0, 16px 16px;
+      position: relative;
+    }
+    .bg-grid-pattern::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 1000px; height: 600px;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, rgba(9, 9, 11, 0) 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .text-gold-gradient {
+      background: linear-gradient(135deg, #fef08a 0%, #d4af37 50%, #92400e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .bg-gold-gradient {
+      background: linear-gradient(135deg, #fcd34d 0%, #d4af37 50%, #b45309 100%);
+    }
+
+    .glass-panel {
+      background: rgba(24, 24, 27, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #d4af37; }
+
+    /* Tabs Logic */
+    .tab-content { display: none; }
+    .tab-content.active { display: flex; flex-direction: column; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .chart-container { position: relative; width: 100%; max-width: 100%; height: 260px; }
+    @media (min-width: 768px) { .chart-container { height: 280px; } }
+  </style>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: { 
+            brand: { 300: '#fde68a', 400: '#fcd34d', 500: '#d4af37', 600: '#b45309', 700: '#92400e' },
+            success: { 400: '#34d399', 500: '#10b981', 600: '#059669' },
+            warning: { 400: '#fbbf24', 500: '#f59e0b' },
+            surface: { 950: '#09090b', 900: '#18181b', 800: '#27272a', 700: '#3f3f46' },
+            zinc: { 300: '#d4d4d8', 400: '#a1a1aa', 500: '#71717a' }
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace']
+          }
+        }
       }
     }
-  }
-</script>
+  </script>
 </head>
-<body class="bg-stone-50 text-stone-800 font-sans min-h-screen overflow-y-auto md:h-screen md:overflow-hidden flex flex-col md:flex-row">
+<body class="bg-surface-950 text-zinc-300 min-h-screen overflow-y-auto md:h-screen md:overflow-hidden flex flex-col md:flex-row bg-grid-pattern selection:bg-brand-500/30">
 
-<nav class="w-full md:w-72 bg-stone-950 text-stone-100 flex flex-col shadow-xl z-20 h-auto md:h-full shrink-0 border-b md:border-b-0 md:border-r border-stone-800">
-  <div class="p-4 md:p-6 bg-stone-900 border-b border-stone-800 flex justify-between items-center md:block">
+<!-- SIDEBAR -->
+<nav class="w-full md:w-72 bg-surface-950/80 backdrop-blur-xl border-b md:border-b-0 md:border-r border-surface-800 flex flex-col shadow-xl z-20 h-auto md:h-full shrink-0 relative">
+  <div class="p-4 md:p-6 bg-surface-900/50 border-b border-surface-800 flex justify-between items-center md:block">
     <div>
-      <h1 class="text-base md:text-xl font-black tracking-tight text-amber-500 uppercase">🛡️ Tech Blueprint V3</h1>
-      <p class="text-[10px] md:text-xs text-stone-400 font-mono mt-0.5">TON Smart Contract Specs</p>
+      <div class="flex items-center gap-2 mb-1">
+        <div class="w-8 h-8 rounded-lg bg-brand-500/10 flex items-center justify-center border border-brand-500/20 text-brand-500">
+          <i data-lucide="shield-check" class="w-5 h-5"></i>
+        </div>
+        <h1 class="text-base md:text-lg font-black tracking-widest text-zinc-100 uppercase">Tech Blueprint</h1>
+      </div>
+      <p class="text-[10px] md:text-xs text-brand-500 font-mono font-bold tracking-widest uppercase">TON Smart Contract V3</p>
     </div>
     
-    <div class="flex items-center gap-1.5 md:mt-4 bg-stone-950 p-1 rounded-md border border-stone-800">
-      <button onclick="changeLanguage('en')" id="lang-en" class="p-1 rounded opacity-40 hover:opacity-100 transition-all border border-transparent" title="English">
-        <svg class="w-5 h-3.5 rounded-sm object-cover shadow-sm" viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg">
-          <clipPath id="t"><path d="M0 0h60v30H0z"/></clipPath>
-          <g clip-path="url(#t)"><path d="M0 0h60v30H0z" fill="#012169"/><path d="M0 0l60 30M60 0L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30M60 0L0 30" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></g>
-        </svg>
+    <!-- Language Selector -->
+    <div class="flex items-center gap-1.5 md:mt-6 bg-surface-950 p-1 rounded-lg border border-surface-800 shadow-inner">
+      <button onclick="changeLanguage('en')" id="lang-en" class="p-1.5 rounded bg-surface-800 border border-surface-700 transition-all" title="English">
+        <img src="https://flagcdn.com/gb.svg" alt="EN" class="w-5 h-3.5 object-cover rounded-[1px] shadow-[0_0_2px_rgba(0,0,0,0.5)]">
       </button>
-      <button onclick="changeLanguage('es')" id="lang-es" class="p-1 rounded opacity-40 hover:opacity-100 transition-all border border-transparent" title="Español">
-        <svg class="w-5 h-3.5 rounded-sm object-cover shadow-sm" viewBox="0 0 750 500" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0 0h750v500H0z" fill="#c60b1e"/><path d="M0 125h750v250H0z" fill="#ffc400"/>
-        </svg>
+      <button onclick="changeLanguage('es')" id="lang-es" class="p-1.5 rounded opacity-50 hover:opacity-100 border border-transparent transition-all" title="Español">
+        <img src="https://flagcdn.com/es.svg" alt="ES" class="w-5 h-3.5 object-cover rounded-[1px] shadow-[0_0_2px_rgba(0,0,0,0.5)]">
       </button>
-      <button onclick="changeLanguage('pt')" id="lang-pt" class="p-1 rounded opacity-40 hover:opacity-100 transition-all border border-transparent" title="Português">
-        <svg class="w-5 h-3.5 rounded-sm object-cover shadow-sm" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0 0h600v400H0z" fill="#046a38"/><path d="M0 0h240v400H0z" fill="#da291c"/><circle cx="240" cy="200" r="60" fill="#ffcd00"/></svg>
+      <button onclick="changeLanguage('pt')" id="lang-pt" class="p-1.5 rounded opacity-50 hover:opacity-100 border border-transparent transition-all" title="Português">
+        <img src="https://flagcdn.com/pt.svg" alt="PT" class="w-5 h-3.5 object-cover rounded-[1px] shadow-[0_0_2px_rgba(0,0,0,0.5)]">
       </button>
-      <button onclick="changeLanguage('it')" id="lang-it" class="p-1 rounded opacity-40 hover:opacity-100 transition-all border border-transparent" title="Italiano">
-        <svg class="w-5 h-3.5 rounded-sm object-cover shadow-sm" viewBox="0 0 3 2" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0 0h1v2H0z" fill="#009246"/><path d="M1 0h1v2H1z" fill="#fff"/><path d="M2 0h1v2H2z" fill="#ce2b37"/>
-        </svg>
+      <button onclick="changeLanguage('it')" id="lang-it" class="p-1.5 rounded opacity-50 hover:opacity-100 border border-transparent transition-all" title="Italiano">
+        <img src="https://flagcdn.com/it.svg" alt="IT" class="w-5 h-3.5 object-cover rounded-[1px] shadow-[0_0_2px_rgba(0,0,0,0.5)]">
       </button>
     </div>
   </div>
   
-  <div class="flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto p-2 md:p-4 gap-1.5 flex-1 scrollbar-hide">
-    <button onclick="switchTab('arch')" id="btn-arch" class="tab-btn flex-1 md:flex-none text-left px-3 py-2.5 rounded-lg bg-stone-800 text-stone-50 text-xs md:text-sm font-medium transition-colors hover:bg-stone-700 whitespace-nowrap border border-stone-700" data-i18n="nav_arch">🏛️ Architettura & Pricing</button>
-    <button onclick="switchTab('revenue')" id="btn-revenue" class="tab-btn flex-1 md:flex-none text-left px-3 py-2.5 rounded-lg text-stone-400 text-xs md:text-sm font-medium transition-colors hover:bg-stone-700 whitespace-nowrap border border-transparent" data-i18n="nav_revenue">💸 Revenue Split & Pool</button>
-    <button onclick="switchTab('security')" id="btn-security" class="tab-btn flex-1 md:flex-none text-left px-3 py-2.5 rounded-lg text-stone-400 text-xs md:text-sm font-medium transition-colors hover:bg-stone-700 whitespace-nowrap border border-transparent" data-i18n="nav_security">🛑 Zero-Trust & Anti-Spoofing</button>
-    <button onclick="switchTab('prompt')" id="btn-prompt" class="tab-btn flex-1 md:flex-none text-left px-3 py-2.5 rounded-lg text-stone-400 text-xs md:text-sm font-medium transition-colors hover:bg-stone-700 whitespace-nowrap border border-transparent mt-none md:mt-auto bg-stone-900/50" data-i18n="nav_prompt">🤖 Prompt AI / Dev Spec</button>
+  <div class="flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto p-3 gap-2 flex-1 custom-scrollbar">
+    <button onclick="switchTab('arch')" id="btn-arch" class="tab-btn flex-1 md:flex-none text-left px-4 py-3 rounded-xl bg-surface-800 text-brand-400 text-xs md:text-sm font-bold uppercase tracking-wide transition-all shadow-sm border border-surface-700 flex items-center gap-2 whitespace-nowrap" data-i18n="nav_arch">
+      <i data-lucide="network" class="w-4 h-4"></i> Architecture
+    </button>
+    <button onclick="switchTab('revenue')" id="btn-revenue" class="tab-btn flex-1 md:flex-none text-left px-4 py-3 rounded-xl text-zinc-500 hover:text-zinc-300 text-xs md:text-sm font-bold uppercase tracking-wide transition-all border border-transparent flex items-center gap-2 whitespace-nowrap" data-i18n="nav_revenue">
+      <i data-lucide="database" class="w-4 h-4"></i> Revenue Split
+    </button>
+    <button onclick="switchTab('security')" id="btn-security" class="tab-btn flex-1 md:flex-none text-left px-4 py-3 rounded-xl text-zinc-500 hover:text-zinc-300 text-xs md:text-sm font-bold uppercase tracking-wide transition-all border border-transparent flex items-center gap-2 whitespace-nowrap" data-i18n="nav_security">
+      <i data-lucide="shield-alert" class="w-4 h-4"></i> Zero-Trust Auth
+    </button>
+    <div class="hidden md:block flex-1"></div>
+    <button onclick="switchTab('prompt')" id="btn-prompt" class="tab-btn flex-1 md:flex-none text-left px-4 py-3 rounded-xl text-brand-500/70 hover:text-brand-400 text-xs font-mono font-bold tracking-widest transition-all border border-brand-500/20 bg-brand-500/5 flex items-center gap-2 whitespace-nowrap">
+      <i data-lucide="terminal" class="w-4 h-4"></i> Dev_Spec.md
+    </button>
   </div>
 </nav>
 
-<main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 bg-stone-50 relative scroll-smooth flex flex-col justify-start md:justify-between min-h-0">
+<!-- MAIN CONTENT -->
+<main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 relative z-10 custom-scrollbar flex flex-col justify-start min-h-0">
 
+  <!-- TAB: ARCHITECTURE -->
   <div id="arch" class="tab-content active max-w-5xl w-full mx-auto flex flex-col gap-6">
     <header class="shrink-0">
-      <h2 class="text-xl md:text-2xl font-black text-stone-900 mb-1 tracking-tight" data-i18n="arch_title">Architettura di Sistema V3</h2>
-      <p class="text-xs md:text-sm text-stone-600" data-i18n="arch_subtitle">Separazione netta degli ambienti: il backend Python è la singola fonte di verità, la blockchain è cassaforte.</p>
+      <h2 class="text-2xl md:text-3xl font-black text-zinc-100 mb-2 tracking-widest uppercase flex items-center gap-3">
+        <i data-lucide="network" class="text-brand-500"></i> <span class="text-gold-gradient" data-i18n="wp_title">Web3 System Architecture V3</span>
+      </h2>
+      <p class="text-xs md:text-sm text-brand-400 bg-brand-500/10 inline-block px-3 py-1.5 rounded-lg border border-brand-500/20 font-bold uppercase tracking-widest" data-i18n="wp_v">Viral Loop Model • Security Addon</p>
     </header>
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-200 flex flex-col justify-between gap-3">
+      <div class="glass-panel p-5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.3)] hover:border-surface-700 transition-colors flex flex-col justify-between gap-4 border-t-2 border-t-brand-500">
         <div>
-          <h3 class="text-sm md:text-base font-bold text-stone-900 mb-1 flex items-center gap-2" data-i18n="vault_title">🔗 Il Paradigma "Dumb Vault"</h3>
-          <p class="text-xs md:text-sm text-stone-600 leading-relaxed" data-i18n="vault_desc">Lo Smart Contract su TON non possiede logica di business complessa. La sua unica funzione è ricevere USDT, emettere un evento verificabile e attendere firme crittografiche dal backend per autorizzare i prelievi.</p>
+          <h3 class="text-sm md:text-base font-black text-zinc-100 mb-2 flex items-center gap-2 uppercase tracking-wide">
+            <i data-lucide="lock" class="w-4 h-4 text-brand-500"></i> <span data-i18n="wp_sec1_title">1. Architecture Mandate</span>
+          </h3>
+          <p class="text-xs md:text-sm text-zinc-400 leading-relaxed" data-i18n="wp_sec1_desc">Strict separation: Off-Chain (Python Backend + DB) is the absolute Source of Truth. On-Chain (TON Smart Contract) acts strictly as a Dumb Vault.</p>
         </div>
-        <div class="bg-stone-100 p-2.5 rounded font-mono text-[11px] text-stone-700 border-l-2 border-blue-500">
-          Backend (Python/DB) -> Source of Truth<br>Smart Contract (TON) -> Escrow & Liquidity
+        <div class="bg-surface-950 p-3 rounded-xl font-mono text-[11px] text-zinc-500 border-l-2 border-blue-500 shadow-inner">
+          <span class="text-zinc-300 font-bold">Backend (Python/DB)</span> -> Source of Truth<br>
+          <span class="text-zinc-300 font-bold">Smart Contract (TON)</span> -> Escrow & Liquidity
         </div>
       </div>
       
-      <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-200 flex flex-col justify-between gap-3">
+      <div class="glass-panel p-5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.3)] hover:border-surface-700 transition-colors flex flex-col justify-between gap-4 border-t-2 border-t-purple-500">
         <div>
-          <h3 class="text-sm md:text-base font-bold text-stone-900 mb-1 flex items-center gap-2" data-i18n="identity_title">🆔 Motore di Identità & Accesso</h3>
-          <p class="text-xs md:text-sm text-stone-600 leading-relaxed" data-i18n="identity_desc">Il Telegram_ID funge da Chiave Primaria Immutabile. Le downline di affiliazione sono collegate a vita al database off-chain.</p>
+          <h3 class="text-sm md:text-base font-black text-zinc-100 mb-2 flex items-center gap-2 uppercase tracking-wide">
+            <i data-lucide="fingerprint" class="w-4 h-4 text-purple-500"></i> <span data-i18n="wp_academy_title">Identity Engine</span>
+          </h3>
+          <p class="text-xs md:text-sm text-zinc-400 leading-relaxed" data-i18n="wp_academy_desc">Telegram_ID is the immutable Primary Key. Downlines are permanently attached.</p>
         </div>
-        <div class="bg-amber-50 p-2.5 rounded text-xs text-amber-900 border border-amber-200 font-medium" data-i18n="golden_rule">
-          Regola Aurea Trasparenza:<br><span class="font-black text-amber-600">1 Credito = 1 Giorno esatto.</span><br>Listino universale applicato globalmente.
+        <div class="bg-brand-500/10 p-3 rounded-xl text-xs text-brand-300 border border-brand-500/20 font-bold tracking-wide" data-i18n="wp_signals_desc">
+          1 Credit = 24 Hours. Expiration updates automatically upon payment.
         </div>
       </div>
     </div>
 
+    <!-- VIRAL LOOP CARD -->
     <div class="w-full">
-      <h3 class="text-sm md:text-base font-bold text-stone-900 mb-2" data-i18n="pricing_title">Pricing Universale: Web vs Promoter Link</h3>
-      <div class="overflow-x-auto rounded-xl border border-stone-200 shadow-sm">
-        <table class="w-full text-left bg-white text-xs md:text-sm min-w-[500px] md:min-w-0">
-          <thead class="bg-stone-900 text-stone-100 font-medium">
+      <div class="bg-gradient-to-br from-surface-900 to-surface-950 p-5 md:p-6 rounded-2xl shadow-[0_0_30px_rgba(212,175,55,0.1)] border border-brand-500/30 relative overflow-hidden">
+        <div class="absolute top-0 right-0 p-8 opacity-5"><i data-lucide="infinity" class="w-32 h-32 text-brand-500"></i></div>
+        <h3 class="text-base md:text-lg font-black mb-4 text-brand-400 uppercase tracking-widest flex items-center gap-2 relative z-10" data-i18n="wp_sec4_title">
+          <i data-lucide="infinity" class="w-5 h-5"></i> 4. The Infinity Viral Loop
+        </h3>
+        <p class="text-xs md:text-sm text-zinc-300 leading-relaxed relative z-10 font-bold bg-surface-950/50 p-4 rounded-xl border border-surface-800" data-i18n="wp_sec4_desc">
+          The core growth engine. A user clicks a Promoter's link. To unlock the platform, they must: 1. Connect Wallet 2. Join Telegram 3. Invite 2 Friends. Upon completion, all 3 receive 7 Days Free Access. Zero cost to the company, infinite lead generation. Post-trial, FOMO drives high-conversion upgrades at the discounted Promoter Price.
+        </p>
+      </div>
+    </div>
+
+    <div class="w-full">
+      <h3 class="text-sm md:text-base font-black text-zinc-100 mb-3 uppercase tracking-widest flex items-center gap-2">
+        <i data-lucide="shopping-cart" class="w-4 h-4 text-brand-500"></i> <span>Universal Pricing Matrix</span>
+      </h3>
+      <div class="overflow-x-auto rounded-2xl border border-surface-800 shadow-[0_8px_30px_rgb(0,0,0,0.3)] glass-panel">
+        <table class="w-full text-left text-xs md:text-sm min-w-[500px] md:min-w-0">
+          <thead class="bg-surface-900 border-b border-surface-800 text-zinc-400 font-bold uppercase tracking-wider text-[10px] md:text-xs">
             <tr>
-              <th class="p-3" data-i18n="th_tier">Tier di Accesso</th>
-              <th class="p-3" data-i18n="th_web">Prezzo Pubblico (Web)</th>
-              <th class="p-3 text-amber-400" data-i18n="th_promo">Prezzo Link Promoter (-50%)</th>
+              <th class="p-4">Access Tier</th>
+              <th class="p-4" data-i18n="wp_promo_title">Public Web Price</th>
+              <th class="p-4 text-brand-400" data-i18n="wp_affiliate_title">Promoter Link Price (-50%)</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-stone-100 font-mono">
-            <tr><td class="p-3 font-sans font-medium" data-i18n="tier_starter">Starter (30 gg)</td><td class="p-3">94 USDT</td><td class="p-3 font-bold text-emerald-600">47 USDT</td></tr>
-            <tr><td class="p-3 font-sans font-medium" data-i18n="tier_pro">Pro (90 gg)</td><td class="p-3">234 USDT</td><td class="p-3 font-bold text-emerald-600">117 USDT</td></tr>
-            <tr><td class="p-3 font-sans font-medium" data-i18n="tier_elite">Elite (180 gg)</td><td class="p-3">394 USDT</td><td class="p-3 font-bold text-emerald-600">197 USDT</td></tr>
+          <tbody class="divide-y divide-surface-800/50 font-mono text-zinc-300 bg-surface-950/30">
+            <tr class="hover:bg-surface-900/50 transition-colors">
+              <td class="p-4 font-sans font-bold">Starter (30 days)</td>
+              <td class="p-4">94 USDT</td>
+              <td class="p-4 font-black text-success-400 bg-success-500/5">47 USDT</td>
+            </tr>
+            <tr class="hover:bg-surface-900/50 transition-colors">
+              <td class="p-4 font-sans font-bold">Pro (90 days)</td>
+              <td class="p-4">234 USDT</td>
+              <td class="p-4 font-black text-success-400 bg-success-500/5">117 USDT</td>
+            </tr>
+            <tr class="hover:bg-surface-900/50 transition-colors">
+              <td class="p-4 font-sans font-bold">Elite (180 days)</td>
+              <td class="p-4">394 USDT</td>
+              <td class="p-4 font-black text-success-400 bg-success-500/5">197 USDT</td>
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
+  <!-- TAB: REVENUE -->
   <div id="revenue" class="tab-content max-w-5xl w-full mx-auto flex flex-col gap-6">
     <header class="shrink-0">
-      <h2 class="text-xl md:text-2xl font-black text-stone-900 mb-1 tracking-tight" data-i18n="rev_title">Distribuzione Ricavi & Global Pool</h2>
-      <p class="text-xs md:text-sm text-stone-600" data-i18n="rev_subtitle">Logica matematica di calcolo off-chain prima dell'autorizzazione del prelievo on-chain.</p>
+      <h2 class="text-2xl md:text-3xl font-black text-zinc-100 mb-2 tracking-widest uppercase flex items-center gap-3">
+        <i data-lucide="database" class="text-brand-500"></i> <span class="text-gold-gradient" data-i18n="wp_sec2_title">2. Revenue Split Engine</span>
+      </h2>
+      <p class="text-xs md:text-sm text-zinc-400 bg-surface-900/50 inline-block px-3 py-1.5 rounded-lg border border-surface-800" data-i18n="wp_sec2_desc">Revenue is split automatically off-chain based on the source of the transaction (Referred vs Direct).</p>
     </header>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-200">
-        <h3 class="font-bold text-stone-900 mb-3 uppercase tracking-wider text-xs" data-i18n="scenario_a">Scenario A: Vendita Tramite Ref-Link</h3>
-        <div class="space-y-2 font-mono text-xs md:text-sm">
-          <div class="flex justify-between items-center p-2 hover:bg-stone-50 rounded"><span data-i18n="l1">Livello 1 (Diretto)</span><span class="font-bold text-emerald-600">50%</span></div>
-          <div class="flex justify-between items-center p-2 hover:bg-stone-50 rounded"><span data-i18n="l2">Livello 2 (Mentore)</span><span class="font-bold text-emerald-600">10%</span></div>
-          <div class="flex justify-between items-center p-2 hover:bg-stone-50 rounded"><span data-i18n="l3">Livello 3 (Master)</span><span class="font-bold text-emerald-600">5%</span></div>
-          <div class="flex justify-between items-center p-2 border-t border-stone-100"><span data-i18n="treasury">Tesoreria (Azienda)</span><span class="font-bold text-stone-900">25%</span></div>
-          <div class="flex justify-between items-center p-2 bg-amber-50 border border-amber-100 rounded text-amber-700 font-bold"><span>Global Milestone Pool</span><span>10%</span></div>
+      <div class="glass-panel p-5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.3)]">
+        <h3 class="font-black text-brand-400 mb-4 uppercase tracking-widest text-xs border-b border-surface-800 pb-2" data-i18n="scenario_a">SCENARIO A: Referred Sales (3-Tier)</h3>
+        <div class="space-y-1 font-mono text-xs md:text-sm text-zinc-400">
+          <div class="flex justify-between items-center p-2 hover:bg-surface-800 rounded transition-colors">
+            <span data-i18n="level_1">Level 1 (Direct)</span><span class="font-bold text-success-400">50%</span>
+          </div>
+          <div class="flex justify-between items-center p-2 hover:bg-surface-800 rounded transition-colors">
+            <span data-i18n="level_2">Level 2 (Mentor)</span><span class="font-bold text-success-400">10%</span>
+          </div>
+          <div class="flex justify-between items-center p-2 hover:bg-surface-800 rounded transition-colors">
+            <span data-i18n="level_3">Level 3 (Master)</span><span class="font-bold text-success-400">5%</span>
+          </div>
+          <div class="flex justify-between items-center p-2 border-t border-surface-800/50 mt-2">
+            <span data-i18n="treasury_comp">Treasury (Company)</span><span class="font-bold text-zinc-100">25%</span>
+          </div>
+          <div class="flex justify-between items-center p-2 bg-brand-500/10 border border-brand-500/20 rounded-lg text-brand-400 font-bold mt-2">
+            <span data-i18n="wp_sec3_title">3. Top 10 Weekly Pool</span><span>10%</span>
+          </div>
         </div>
       </div>
 
-      <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-200">
-        <h3 class="font-bold text-stone-900 mb-3 uppercase tracking-wider text-xs" data-i18n="scenario_b">Scenario B: Vendita Diretta dal Sito</h3>
-        <div class="space-y-2 font-mono text-xs md:text-sm">
-          <div class="flex justify-between items-center p-2 hover:bg-stone-50 rounded"><span data-i18n="treasury">Tesoreria (Azienda)</span><span class="font-bold text-stone-900">40%</span></div>
-          <div class="flex justify-between items-center p-2 bg-amber-50 border border-amber-100 rounded text-amber-700 font-bold"><span>Global Milestone Pool</span><span>30%</span></div>
-          <div class="flex justify-between items-center p-2 hover:bg-stone-50 rounded"><span data-i18n="eco_fund">Events & Eco Fund</span><span class="font-bold text-blue-600">30%</span></div>
+      <div class="glass-panel p-5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.3)]">
+        <h3 class="font-black text-blue-400 mb-4 uppercase tracking-widest text-xs border-b border-surface-800 pb-2" data-i18n="scenario_b">SCENARIO B: Direct Web Sales</h3>
+        <div class="space-y-1 font-mono text-xs md:text-sm text-zinc-400">
+          <div class="flex justify-between items-center p-2 hover:bg-surface-800 rounded transition-colors">
+            <span data-i18n="treasury_comp">Treasury (Company)</span><span class="font-bold text-zinc-100">80%</span>
+          </div>
+          <div class="flex justify-between items-center p-2 hover:bg-surface-800 rounded transition-colors mt-2">
+            <span data-i18n="events_pool_top10">Top 10 Events Pool</span><span class="font-bold text-purple-400">10%</span>
+          </div>
+          <div class="flex justify-between items-center p-2 hover:bg-surface-800 rounded transition-colors mt-2">
+            <span data-i18n="marketing_pool">Marketing & Dev Fund</span><span class="font-bold text-cyan-400">10%</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="bg-stone-900 p-4 md:p-5 rounded-xl shadow-md text-stone-100 border border-stone-800 relative overflow-hidden">
-      <h3 class="text-base md:text-lg font-black mb-2 text-amber-400" data-i18n="pool_mech_title">Meccanica del Global Milestone Pool</h3>
-      <div class="space-y-2 text-xs md:text-sm text-stone-300">
-        <p><strong class="text-white" data-i18n="pool_a_t">A. Il Trigger Absoluto:</strong> <span data-i18n="pool_a_d">I fondi accumulati nel pool vengono sbloccati solo se l'intera azienda raggiunge il Volume Globale Settimanale.</span></p>
-        <p><strong class="text-white" data-i18n="pool_b_t">B. Liquidazione:</strong> <span data-i18n="pool_b_d">Eseguita settimanalmente la Domenica alle 23:59 UTC proporzionalmente tra tutti i promoter attivi.</span></p>
-        <p><strong class="text-white" data-i18n="pool_c_t">C. Effetto Psicologico:</strong> <span data-i18n="pool_c_d">Questo design forza i top leader a supportare l'intera community, poiché senza il volume globale il bonus non scatta.</span></p>
+    <div class="bg-gradient-to-br from-surface-900 to-surface-950 p-5 md:p-6 rounded-2xl shadow-[0_0_30px_rgba(212,175,55,0.1)] border border-brand-500/30 relative overflow-hidden">
+      <div class="absolute top-0 right-0 p-8 opacity-5"><i data-lucide="globe" class="w-32 h-32 text-brand-500"></i></div>
+      <h3 class="text-base md:text-lg font-black mb-4 text-brand-400 uppercase tracking-widest flex items-center gap-2 relative z-10" data-i18n="wp_sec3_title">
+        <i data-lucide="globe" class="w-5 h-5"></i> 3. Top 10 Weekly Pool
+      </h3>
+      <div class="space-y-3 text-xs md:text-sm text-zinc-400 relative z-10">
+        <p class="flex items-start gap-2 bg-brand-500/5 p-3 rounded-r-xl border-l-4 border-brand-500">
+          <span><strong class="text-brand-300 block mb-1 uppercase tracking-wider text-[10px]" data-i18n="wp_sec3_a_title">A. Allocation</strong> <span data-i18n="wp_sec3_a_desc" class="text-zinc-300">10% of promoter sales flows into this pool dedicated to the week's 10 best sellers.</span></span>
+        </p>
+        <p class="flex items-start gap-2 bg-success-500/5 p-3 rounded-r-xl border-l-4 border-success-500">
+          <span><strong class="text-success-300 block mb-1 uppercase tracking-wider text-[10px]" data-i18n="wp_sec3_b_title">B. Weekly Liquidation</strong> <span data-i18n="wp_sec3_b_desc" class="text-zinc-100 font-bold">Liquidated every Sunday (23:59 UTC), divided among the Top 10 proportional to their volume. Ties are broken by chronological order of sales.</span></span>
+        </p>
+        <p class="flex items-start gap-2 bg-blue-500/5 p-3 rounded-r-xl border-l-4 border-blue-500">
+          <span><strong class="text-blue-300 block mb-1 uppercase tracking-wider text-[10px]" data-i18n="wp_sec3_c_title">C. The Psychology</strong> <span data-i18n="wp_sec3_c_desc" class="text-zinc-300">Incentivizes elite competition, rewarding absolute excellence and speed of execution.</span></span>
+        </p>
       </div>
     </div>
   </div>
 
+  <!-- TAB: SECURITY -->
   <div id="security" class="tab-content max-w-5xl w-full mx-auto flex flex-col gap-6">
     <header class="shrink-0">
-      <h2 class="text-xl md:text-2xl font-black text-stone-900 mb-1 tracking-tight" data-i18n="sec_title">Sicurezza Zero-Trust & Anti-Spoofing</h2>
-      <p class="text-xs md:text-sm text-stone-600" data-i18n="sec_subtitle">Modellazione delle minacce e difese automatizzate a livello di transazione e database.</p>
+      <h2 class="text-2xl md:text-3xl font-black text-zinc-100 mb-2 tracking-widest uppercase flex items-center gap-3">
+        <i data-lucide="shield-alert" class="text-brand-500"></i> <span class="text-gold-gradient">Enterprise Cybersecurity</span>
+      </h2>
+      <p class="text-xs md:text-sm text-zinc-400 bg-surface-900/50 inline-block px-3 py-1.5 rounded-lg border border-surface-800">Threat modeling and automated defense mechanisms.</p>
     </header>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-      <div class="bg-white p-3 rounded-xl border border-stone-200 shadow-sm border-t-4 border-t-blue-500">
-        <h4 class="font-bold text-stone-900 mb-1 text-xs md:text-sm" data-i18n="card_dec_t">Validazione Decimali USDT</h4>
-        <p class="text-[11px] md:text-xs text-stone-600" data-i18n="card_dec_d">Su TON, USDT ha 6 decimali rigidi. Il parser converte e verifica gli importi on-chain (es. 197 diventa 197000000).</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div class="glass-panel p-4 rounded-xl border-t-2 border-t-brand-500 flex flex-col justify-start">
+        <i data-lucide="key" class="w-5 h-5 text-brand-500 mb-2"></i>
+        <h4 class="font-black text-zinc-200 text-xs mb-1" data-i18n="wp_tech_1_title">1. On-Chain Signatures</h4>
+        <p class="text-[10px] text-zinc-400 font-mono leading-relaxed" data-i18n="wp_tech_1_desc">claim() MUST verify ED25519 signature from backend: Hash(Amount, Wallet, Nonce).</p>
       </div>
-      <div class="bg-white p-3 rounded-xl border border-stone-200 shadow-sm border-t-4 border-t-emerald-500">
-        <h4 class="font-bold text-stone-900 mb-1 text-xs md:text-sm" data-i18n="card_atom_t">Atomicità Firestore</h4>
-        <p class="text-[11px] md:text-xs text-stone-600" data-i18n="card_atom_d">Contro Replay Attacks: utilizzo stringente di transaction.get(txRef). Se l'hash della transazione esiste già, l'aggiornamento fallisce istantaneamente.</p>
+      <div class="glass-panel p-4 rounded-xl border-t-2 border-t-success-500 flex flex-col justify-start">
+        <i data-lucide="copy-x" class="w-5 h-5 text-success-500 mb-2"></i>
+        <h4 class="font-black text-zinc-200 text-xs mb-1" data-i18n="wp_tech_2_title">2. Strict Deduplication</h4>
+        <p class="text-[10px] text-zinc-400 font-mono leading-relaxed" data-i18n="wp_tech_2_desc">DB enforces UNIQUE constraint on TON tx_hash.</p>
       </div>
-      <div class="bg-white p-3 rounded-xl border border-stone-200 shadow-sm border-t-4 border-t-red-500">
-        <h4 class="font-bold text-stone-900 mb-1 text-xs md:text-sm" data-i18n="card_fake_t">Fake Token Shield</h4>
-        <p class="text-[11px] md:text-xs text-stone-600" data-i18n="card_fake_d">Controllo sul jetton_master_address per respingere l'invio di finti token chiamati "USDT" volti a ingannare il sistema.</p>
+      <div class="glass-panel p-4 rounded-xl border-t-2 border-t-purple-500 flex flex-col justify-start">
+        <i data-lucide="lock" class="w-5 h-5 text-purple-500 mb-2"></i>
+        <h4 class="font-black text-zinc-200 text-xs mb-1" data-i18n="wp_tech_3_title">3. Wallet Change Time-Lock</h4>
+        <p class="text-[10px] text-zinc-400 font-mono leading-relaxed" data-i18n="wp_tech_3_desc">Updating Active_Wallet triggers a 72-hour freeze on withdrawals.</p>
+      </div>
+      <div class="glass-panel p-4 rounded-xl border-t-2 border-t-warning-500 flex flex-col justify-start">
+        <i data-lucide="alert-triangle" class="w-5 h-5 text-warning-500 mb-2"></i>
+        <h4 class="font-black text-zinc-200 text-xs mb-1" data-i18n="wp_tech_4_title">4. Admin Thresholds</h4>
+        <p class="text-[10px] text-zinc-400 font-mono leading-relaxed" data-i18n="wp_tech_4_desc">Payouts > 1,000 USDT get flagged as Pending_Manual_Review.</p>
+      </div>
+      <div class="glass-panel p-4 rounded-xl border-t-2 border-t-red-500 flex flex-col justify-start bg-red-500/5">
+        <i data-lucide="hard-drive" class="w-5 h-5 text-red-500 mb-2"></i>
+        <h4 class="font-black text-red-400 text-xs mb-1" data-i18n="wp_tech_5_title">5. Offline Cold Storage</h4>
+        <p class="text-[10px] text-red-300/80 font-mono leading-relaxed" data-i18n="wp_tech_5_desc">Smart contract has an emergency sweep function to move funds to a hardware wallet.</p>
       </div>
     </div>
 
-    <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-200 flex-1 flex flex-col justify-between gap-4">
-      <div>
-        <h3 class="text-sm md:text-base font-bold text-stone-900 mb-1" data-i18n="motor_title">Motore Matematico Anti-Frode (Underpayment Recalibration)</h3>
-        <p class="text-xs md:text-sm text-stone-600 mb-3" data-i18n="motor_desc">Il vettore di attacco principale è il Payload Spoofing: un utente manipola il frontend per inviare un payload "Elite" (180 gg), ma allega solo i fondi dello status "Starter" (47 USDT). Il backend ignora il testo del payload e riproporziona i giorni sull'effettivo collaterale on-chain.</p>
+    <div class="glass-panel p-5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.3)] flex-1 flex flex-col justify-between gap-5 relative overflow-hidden border border-surface-800">
+      <div class="relative z-10">
+        <h3 class="text-sm md:text-base font-black text-brand-400 mb-2 uppercase tracking-widest flex items-center gap-2" data-i18n="motor_title">
+          <i data-lucide="cpu" class="w-5 h-5"></i> Anti-Fraud Math Engine
+        </h3>
+        <p class="text-xs md:text-sm text-zinc-400 mb-4 bg-surface-950/50 p-3 rounded-lg border border-surface-800" data-i18n="motor_desc">
+          The primary attack vector is Payload Spoofing: a malicious user alters the frontend to send an 'Elite' payload (180 days) but only attaches 'Starter' funds (47 USDT). The backend ignores the text payload and adjusts days based solely on the real on-chain collateral.
+        </p>
       </div>
       
-      <div class="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center bg-stone-50 p-3 rounded-lg border border-stone-200 text-xs">
+      <div class="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center bg-surface-900/80 p-4 rounded-xl border border-surface-700 text-xs relative z-10">
         <div class="flex-1">
-          <label class="block text-[10px] font-bold text-stone-700 mb-1 uppercase" data-i18n="sim_label">Simulatore Attacco Spoofing</label>
-          <select id="scenario-select" class="w-full border border-stone-300 rounded-lg px-2 py-2 bg-white text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium" onchange="updateSpoofChart()">
-            <option value="spoof_promoter" selected data-i18n="opt_spoof">Hacker Spoofing (Payload Elite [197 USDT Link - 180 gg] ma paga solo 47 USDT Starter)</option>
-            <option value="honest_promoter" data-i18n="opt_honest_p">Utente Onesto via Link Promoter (Paga 197 USDT - Riceve 180 gg Elite)</option>
-            <option value="honest_web" data-i18n="opt_honest_w">Utente Onesto da Sito Web (Paga 394 USDT - Riceve 180 gg Elite)</option>
+          <label class="block text-[10px] font-bold text-zinc-500 mb-2 uppercase tracking-widest flex items-center gap-1.5" data-i18n="sim_label">
+            <i data-lucide="crosshair" class="w-3 h-3 text-red-400"></i> Spoofing Simulator
+          </label>
+          <select id="scenario-select" class="w-full border border-surface-700 rounded-lg px-3 py-2.5 bg-surface-950 text-zinc-200 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 font-bold transition-all shadow-inner text-xs" onchange="updateSpoofChart()">
+            <option value="spoof_promoter" selected data-i18n="opt_spoof">Hacker Spoofing (Payload Elite [197 USDT] but pays 47 USDT)</option>
+            <option value="honest_promoter" data-i18n="opt_honest_p">Honest via Link (Pays 197 USDT - Receives 180 days)</option>
+            <option value="honest_web" data-i18n="opt_honest_w">Honest from Web (Pays 394 USDT - Receives 180 days)</option>
           </select>
         </div>
-        <div class="flex-1 bg-white p-2.5 rounded-lg border border-stone-200 shadow-inner flex flex-col justify-center min-h-[60px]">
-          <div class="text-[9px] text-stone-500 font-bold uppercase tracking-wider mb-0.5" data-i18n="back_res">Risoluzione del Backend</div>
-          <div id="calc-formula" class="font-mono text-xs text-red-600 font-bold"></div>
+        <div class="flex-1 bg-surface-950 p-3 rounded-xl border border-surface-800 shadow-inner flex flex-col justify-center min-h-[70px]">
+          <div class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mb-1 flex items-center gap-1.5" data-i18n="back_res">
+            <i data-lucide="server-cog" class="w-3 h-3 text-brand-500"></i> Backend Resolution
+          </div>
+          <div id="calc-formula" class="font-mono text-[11px] sm:text-xs text-red-400 font-bold leading-relaxed"></div>
         </div>
       </div>
       
-      <div class="chart-container w-full">
+      <div class="chart-container w-full relative z-10 mt-2">
         <canvas id="spoofChart"></canvas>
       </div>
     </div>
   </div>
 
+  <!-- TAB: PROMPT -->
   <div id="prompt" class="tab-content max-w-5xl w-full mx-auto flex flex-col gap-6 flex-1 h-[450px] md:h-full">
     <header class="shrink-0">
-      <h2 class="text-xl md:text-2xl font-black text-stone-900 mb-1 tracking-tight" data-i18n="prompt_title">AI Developer Prompt</h2>
-      <p class="text-xs md:text-sm text-stone-600" data-i18n="prompt_subtitle">Usa questo prompt di sistema per generare lo Smart Contract TON (in Tact o FunC) con logiche Zero-Trust.</p>
+      <h2 class="text-2xl md:text-3xl font-black text-zinc-100 mb-2 tracking-widest uppercase flex items-center gap-3">
+        <i data-lucide="bot" class="text-brand-500"></i> <span class="text-gold-gradient" data-i18n="prompt_title">AI Developer Prompt</span>
+      </h2>
+      <p class="text-xs md:text-sm text-zinc-400 bg-surface-900/50 inline-block px-3 py-1.5 rounded-lg border border-surface-800" data-i18n="prompt_subtitle">Use this system prompt to instruct an AI or developer to write the TON smart contract with Zero-Trust logic.</p>
     </header>
 
-    <div class="flex-1 bg-stone-950 rounded-xl shadow-xl border border-stone-800 flex flex-col overflow-hidden min-h-[300px]">
-      <div class="bg-stone-900 px-3 py-2 flex justify-between items-center border-b border-stone-800 shrink-0">
-        <span class="text-[11px] font-mono text-amber-500 fill-amber-500 flex items-center gap-1.5"><div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div> System_Prompt.md</span>
-        <button onclick="copyPrompt()" id="copy-btn" class="text-[11px] font-bold bg-stone-800 hover:bg-stone-700 text-stone-300 px-2.5 py-1 rounded transition-colors" data-i18n="btn_copy">📋 Copia Prompt</button>
+    <div class="flex-1 bg-surface-950 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.5)] border border-surface-800 flex flex-col overflow-hidden min-h-[300px] relative">
+      <!-- Glow effect behind the editor -->
+      <div class="absolute inset-0 bg-brand-500/5 pointer-events-none"></div>
+      
+      <div class="bg-surface-900 px-4 py-3 flex justify-between items-center border-b border-surface-800 shrink-0 relative z-10">
+        <span class="text-[11px] font-mono text-brand-400 flex items-center gap-2 font-bold">
+          <div class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></div> System_Prompt.md
+        </span>
+        <button onclick="copyPrompt()" id="copy-btn" class="text-[10px] font-black uppercase tracking-wider bg-surface-800 hover:bg-surface-700 text-zinc-300 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 border border-surface-700 hover:border-brand-500/50" data-i18n="btn_copy">
+          <i data-lucide="copy" class="w-3 h-3"></i> Copy Prompt
+        </button>
       </div>
-      <textarea id="prompt-text" class="w-full flex-1 bg-stone-950 text-emerald-400 font-mono text-[11px] md:text-xs p-3 md:p-4 focus:outline-none resize-none overflow-y-auto" readonly>
+      <textarea id="prompt-text" class="w-full flex-1 bg-transparent text-success-400 font-mono text-xs md:text-sm p-4 md:p-6 focus:outline-none resize-none overflow-y-auto custom-scrollbar relative z-10 leading-relaxed" readonly>
 # CONTEXT
 You are an elite enterprise Smart Contract developer specializing in the TON blockchain, using Tact. You are tasked with creating the "Vault" contract for the Betting Exchange Room architecture.
 
@@ -256,118 +420,169 @@ Develop a smart contract that handles Jetton (USDT) transactions with the follow
 </main>
 
 <script>
+  // Initialize Lucide Icons globally
+  lucide.createIcons();
+
   const translations = {
     en: {
-      nav_arch: "🏛️ Architecture & Pricing", nav_revenue: "💸 Revenue Split & Pool", nav_security: "🛑 Zero-Trust & Anti-Spoofing", nav_prompt: "🤖 AI Prompt / Dev Spec",
-      arch_title: "System Architecture V3", arch_subtitle: "Clear environment separation: Python backend is the single source of truth, blockchain is the vault.",
-      vault_title: "🔗 The 'Dumb Vault' Paradigm", vault_desc: "The TON Smart Contract holds no complex business logic. Its sole function is to receive USDT, emit a verifiable event, and await cryptographic signatures from the backend to authorize withdrawals.",
-      identity_title: "🆔 Identity & Access Engine", identity_desc: "The Telegram_ID serves as an immutable Primary Key. Affiliate downlines are permanently linked in the off-chain database.",
-      golden_rule: "Golden Rule of Transparency:<br><span class='font-black text-amber-600'>1 Credit = 1 Day exact.</span><br>Universal price list applied globally.",
-      pricing_title: "Universal Pricing: Web vs Promoter Link", th_tier: "Access Tier", th_web: "Public Price (Web)", th_promo: "Promoter Link Price (-50%)",
-      tier_starter: "Starter (30 days)", tier_pro: "Pro (90 days)", tier_elite: "Elite (180 days)",
-      rev_title: "Revenue Distribution & Global Pool", rev_subtitle: "Mathematical off-chain processing before authorizing on-chain claims.",
-      scenario_a: "Scenario A: Ref-Link Sales", scenario_b: "Scenario B: Direct Website Sales",
-      l1: "Level 1 (Direct)", l2: "Level 2 (Mentor)", l3: "Level 3 (Master)", treasury: "Treasury (Company)", eco_fund: "Events & Eco Fund",
-      pool_mech_title: "Global Milestone Pool Mechanics",
-      pool_a_t: "A. Absolute Trigger:", pool_a_d: "Fonds are unlocked only if the entire company reaches the fixed Weekly Global Volume.",
-      pool_b_t: "B. Settlement:", pool_b_d: "Executed weekly on Sundays at 23:59 UTC, splitting proportionally among active promoters.",
-      pool_c_t: "C. Psychological Effect:", pool_c_d: "This structure forces top leaders to assist the community globally, as the bonus requires total volume.",
-      sec_title: "Zero-Trust Security & Anti-Spoofing", sec_subtitle: "Threat modeling and automated defense at transaction and database levels.",
-      card_dec_t: "USDT Decimals Validation", card_dec_d: "On TON, USDT uses 6 strict decimals. The parser handles and verifies integers (e.g., 197 becomes 197000000).",
-      card_atom_t: "Firestore Atomicity", card_atom_d: "Against Replay Attacks: use of transaction.get(txRef). If the transaction hash already exists, it aborts.",
-      card_fake_t: "Fake Token Shield", card_fake_d: "Inexorable check on jetton_master_address to reject scam tokens named 'USDT' attempting to trick the parser.",
-      motor_title: "Anti-Fraud Math Engine (Underpayment Recalibration)",
+      nav_arch: "Architecture", nav_revenue: "Revenue Split", nav_security: "Zero-Trust Auth", nav_prompt: "Dev_Spec.md",
+      
+      // Architecture
+      wp_title: "Web3 System Architecture V3", wp_v: "Viral Loop Model • Security Addon",
+      wp_sec1_title: "1. Architecture Mandate", wp_sec1_desc: "Strict separation: Off-Chain (Python Backend + DB) is the absolute Source of Truth. On-Chain (TON Smart Contract) acts strictly as a Dumb Vault.",
+      wp_academy_title: "Identity Engine", wp_academy_desc: "Telegram_ID is the immutable Primary Key. Downlines are permanently attached.",
+      wp_signals_desc: "1 Credit = 24 Hours. Expiration updates automatically upon payment.",
+      
+      wp_sec4_title: "4. The Infinity Viral Loop", wp_sec4_desc: "The core growth engine. A user clicks a Promoter's link. To unlock the platform, they must: 1. Connect Wallet 2. Join Telegram 3. Invite 2 Friends. Upon completion, all 3 receive 7 Days Free Access. Zero cost to the company, infinite lead generation. Post-trial, FOMO drives high-conversion upgrades at the discounted Promoter Price.",
+      
+      wp_promo_title: "Public Web Price", wp_affiliate_title: "Promoter Link Price (-50%)",
+
+      // Revenue
+      wp_sec2_title: "2. Revenue Split Engine", wp_sec2_desc: "Revenue is split automatically off-chain based on the source of the transaction (Referred vs Direct).",
+      scenario_a: "SCENARIO A: Referred Sales (3-Tier)", scenario_b: "SCENARIO B: Direct Web Sales",
+      level_1: "Level 1 (Direct)", level_2: "Level 2 (Mentor)", level_3: "Level 3 (Master)", 
+      treasury_comp: "Treasury (Company)", events_pool_top10: "Top 10 Events Pool", marketing_pool: "Marketing & Dev Fund",
+      
+      wp_sec3_title: "3. Top 10 Weekly Pool", 
+      wp_sec3_a_title: "A. Allocation", wp_sec3_a_desc: "10% of promoter sales flows into this pool dedicated to the week's 10 best sellers.",
+      wp_sec3_b_title: "B. Weekly Liquidation", wp_sec3_b_desc: "Liquidated every Sunday (23:59 UTC), divided among the Top 10 proportional to their volume. Ties are broken by chronological order of sales.",
+      wp_sec3_c_title: "C. The Psychology", wp_sec3_c_desc: "Incentivizes elite competition, rewarding absolute excellence and speed of execution.",
+
+      // Security
+      wp_tech_1_title: "1. On-Chain Signatures", wp_tech_1_desc: "claim() MUST verify ED25519 signature from backend: Hash(Amount, Wallet, Nonce).",
+      wp_tech_2_title: "2. Strict Deduplication", wp_tech_2_desc: "DB enforces UNIQUE constraint on TON tx_hash.", 
+      wp_tech_3_title: "3. Wallet Change Time-Lock", wp_tech_3_desc: "Updating Active_Wallet triggers a 72-hour freeze on withdrawals.",
+      wp_tech_4_title: "4. Admin Thresholds", wp_tech_4_desc: "Payouts > 1,000 USDT get flagged as Pending_Manual_Review.", 
+      wp_tech_5_title: "5. Offline Cold Storage", wp_tech_5_desc: "Smart contract has an emergency sweep function to move funds to a hardware wallet.",
+
+      motor_title: "Anti-Fraud Math Engine",
       motor_desc: "The primary attack vector is Payload Spoofing: a malicious user alters the frontend to send an 'Elite' payload (180 days) but only attaches 'Starter' funds (47 USDT). The backend ignores the text payload and adjusts days based solely on the real on-chain collateral.",
-      sim_label: "Spoofing Attack Simulator", back_res: "Backend Resolution", btn_copy: "📋 Copy Prompt",
-      opt_spoof: "Hacker Spoofing (Payload Elite [197 USDT Link - 180 days] but pays 47 USDT Starter)",
-      opt_honest_p: "Honest User via Promoter Link (Pays 197 USDT - Receives 180 days Elite)",
-      opt_honest_w: "Honest User from Website (Pays 394 USDT - Receives 180 days Elite)",
+      sim_label: "Spoofing Simulator", back_res: "Backend Resolution", btn_copy: "<i data-lucide='copy' class='w-3 h-3'></i> Copy Prompt",
+      opt_spoof: "Hacker Spoofing (Payload Elite [197 USDT] but pays 47 USDT)",
+      opt_honest_p: "Honest via Link (Pays 197 USDT - Receives 180 days)",
+      opt_honest_w: "Honest from Web (Pays 394 USDT - Receives 180 days)",
       prompt_title: "AI Developer Prompt", prompt_subtitle: "Use this system prompt to instruct an AI or developer to write the TON smart contract with Zero-Trust logic.",
-      copied: "✅ Copied!", label_chart_1: "Days expected by payload", label_chart_2: "Days assigned by backend"
+      copied: "<i data-lucide='check' class='w-3 h-3'></i> Copied!", label_chart_1: "Days expected by payload", label_chart_2: "Days assigned by backend"
     },
     es: {
-      nav_arch: "🏛️ Arquitectura y Precios", nav_revenue: "💸 Distribución y Pool", nav_security: "🛑 Zero-Trust y Anti-Spoofing", nav_prompt: "🤖 Prompt AI / Dev Spec",
-      arch_title: "Arquitectura de Sistema V3", arch_subtitle: "Separación clara de entornos: el backend Python es la única fuente de verdad, la blockchain es la bóveda.",
-      vault_title: "🔗 El Paradigma 'Dumb Vault'", vault_desc: "El Smart Contract en TON no contiene lógica compleja. Su única función es recibir USDT, emitir un evento verificable y esperar firmas criptográficas del backend para autorizar retiros.",
-      identity_title: "🆔 Motor de Identidad y Acceso", identity_desc: "El Telegram_ID actúa como clave primaria inmutable. Las líneas de afiliación están vinculadas de por vida en la base de datos.",
-      golden_rule: "Regla de Oro de Transparencia:<br><span class='font-black text-amber-600'>1 Crédito = 1 Día exacto.</span><br>Lista de precios universal global.",
-      pricing_title: "Precios Universales: Web vs Enlace Promoter", th_tier: "Nivel de Acceso", th_web: "Precio Público (Web)", th_promo: "Precio Enlace Promoter (-50%)",
-      tier_starter: "Starter (30 días)", tier_pro: "Pro (90 días)", tier_elite: "Elite (180 días)",
-      rev_title: "Distribución de Ingresos y Pool Global", rev_subtitle: "Lógica matemática de procesamiento off-chain antes de autorizar retiros.",
-      scenario_a: "Escenario A: Ventas por Enlace Ref", scenario_b: "Escenario B: Ventas Directas Web",
-      l1: "Nivel 1 (Directo)", l2: "Nivel 2 (Mentor)", l3: "Nivel 3 (Master)", treasury: "Tesorería (Empresa)", eco_fund: "Eventos y Eco Fund",
-      pool_mech_title: "Mecánica del Global Milestone Pool",
-      pool_a_t: "A. Activador Absoluto:", pool_a_d: "Los fondos se liberan solo si toda la empresa alcanza el Volumen Global Semanal fijado.",
-      pool_b_t: "B. Liquidación:", pool_b_d: "Ejecutado semanalmente los domingos a las 23:59 UTC, distribuido proporcionalmente.",
-      pool_c_t: "C. Efecto Psicológico:", pool_c_d: "Esta estructura obliga a los líderes a ayudar a la comunidad global, ya que el bono requiere el volumen total.",
-      sec_title: "Seguridad Zero-Trust y Anti-Spoofing", sec_subtitle: "Modelado de amenazas y defensas automatizadas en transacciones y bases de datos.",
-      card_dec_t: "Validación de Decimales USDT", card_dec_d: "En TON, USDT tiene 6 decimales estrictos. El parser maneja y verifica enteros (ej. 197 se convierte en 197000000).",
-      card_atom_t: "Atomicidad en Firestore", card_atom_d: "Contra Replay Attacks: uso estrito de transaction.get(txRef). Si el hash ya existe, la operación se cancela.",
-      card_fake_t: "Escudo Fake Token", card_fake_d: "Control estricto en jetton_master_address para rechazar tokens falsos llamados 'USDT' que intentan engañar al sistema.",
-      motor_title: "Motor Matemático Anti-Fraude (Underpayment Recalibration)",
-      motor_desc: "El vector de ataque principal es el Payload Spoofing: un usuario manipula el frontend para enviar un payload 'Elite' (180 días) pero paga solo tarifas de 'Starter' (47 USDT). El backend ignora el texto del payload y recalcula los días según el colateral real on-chain.",
-      sim_label: "Simulador de Ataque Spoofing", back_res: "Resolución del Backend", btn_copy: "📋 Copiar Prompt",
-      opt_spoof: "Hacker Spoofing (Payload Elite [197 USDT Link - 180 días] pero paga 47 USDT Starter)",
-      opt_honest_p: "Usuario Honesto por Enlace Promoter (Paga 197 USDT - Recibe 180 días Elite)",
-      opt_honest_w: "Usuario Honesto desde Web (Paga 394 USDT - Recibe 180 días Elite)",
-      prompt_title: "AI Developer Prompt", prompt_subtitle: "Use este prompt de sistema para instruir a una IA o desarrollador a escribir el contrato en TON con lógica Zero-Trust.",
-      copied: "✅ ¡Copiado!", label_chart_1: "Días esperados por payload", label_chart_2: "Días asignados por backend"
+      nav_arch: "Arquitectura", nav_revenue: "Distribución", nav_security: "Zero-Trust Auth", nav_prompt: "Dev_Spec.md",
+      
+      // Architecture
+      wp_title: "Arquitectura Web3 V3", wp_v: "Modelo Viral Loop • Addon de Seguridad",
+      wp_sec1_title: "1. Mandato de Arquitectura", wp_sec1_desc: "Separación estricta: Off-Chain (Python Backend + DB) es la Fuente de Verdad. On-Chain es un Smart Contract pasivo (Dumb Vault).",
+      wp_academy_title: "Motor de Identidad", wp_academy_desc: "Telegram_ID es la llave primaria. Las líneas descendentes se unen de por vida.",
+      wp_signals_desc: "1 Crédito = 24 Horas. La expiración se actualiza al instante.",
+      
+      wp_sec4_title: "4. The Infinity Viral Loop", wp_sec4_desc: "El motor de crecimiento. Un usuario hace clic en el enlace. Para desbloquear debe: 1. Conectar Wallet 2. Unirse a Telegram 3. Invitar 2 Amigos. Todos reciben 7 Días Gratis. Cero costo para la empresa, generación infinita de leads. Luego, el FOMO impulsa la actualización al Precio Promotor.",
+      
+      wp_promo_title: "Precio Web Público", wp_affiliate_title: "Precio Link Promotor (-50%)",
+
+      // Revenue
+      wp_sec2_title: "2. Motor de Ingresos", wp_sec2_desc: "Reparto de ingresos automatizado según el origen de la venta.",
+      scenario_a: "ESCENARIO A: Ventas por Referidos (3 Niveles)", scenario_b: "ESCENARIO B: Ventas Web Directas",
+      level_1: "Nivel 1 (Directo)", level_2: "Nivel 2 (Mentor)", level_3: "Nivel 3 (Maestro)", 
+      treasury_comp: "Tesorería (Empresa)", events_pool_top10: "Pool Eventos Top 10", marketing_pool: "Fondo de Marketing & Dev",
+      
+      wp_sec3_title: "3. Top 10 Weekly Pool", 
+      wp_sec3_a_title: "A. Asignación", wp_sec3_a_desc: "El 10% de las ventas promotores fluye a este pool dedicado a los 10 mejores vendedores.",
+      wp_sec3_b_title: "B. Liquidación Semanal", wp_sec3_b_desc: "Liquidado cada Domingo (23:59 UTC), dividido entre los Top 10 en proporción a su volumen. Los empates se rompen por orden cronológico.",
+      wp_sec3_c_title: "C. La Psicología", wp_sec3_c_desc: "Incentiva la competencia de élite, premiando la excelencia absoluta y la velocidad.",
+
+      // Security
+      wp_tech_1_title: "1. Firmas On-Chain", wp_tech_1_desc: "claim() DEBE verificar firma ED25519: Hash(Amount, Wallet, Nonce).",
+      wp_tech_2_title: "2. Deduplicación Estricta", wp_tech_2_desc: "La DB aplica restricción UNIQUE en tx_hash de TON.", 
+      wp_tech_3_title: "3. Bloqueo por Cambio de Wallet", wp_tech_3_desc: "Cambiar wallet bloquea los retiros por 72 horas.",
+      wp_tech_4_title: "4. Umbrales de Administrador", wp_tech_4_desc: "Pagos > 1,000 USDT requieren revisión manual.", 
+      wp_tech_5_title: "5. Almacenamiento en Frío", wp_tech_5_desc: "Función de barrido de emergencia hacia hardware wallet.",
+
+      motor_title: "Motor Matemático Anti-Fraude",
+      motor_desc: "El ataque principal es el Payload Spoofing: enviar un payload 'Elite' (180 días) pero pagar solo 'Starter' (47 USDT). El backend recalcula los días según el colateral real on-chain.",
+      sim_label: "Simulador Spoofing", back_res: "Resolución Backend", btn_copy: "<i data-lucide='copy' class='w-3 h-3'></i> Copiar Prompt",
+      opt_spoof: "Hacker Spoofing (Payload Elite [197 USDT] pero paga 47 USDT)",
+      opt_honest_p: "Honesto por Enlace (Paga 197 USDT - Recibe 180 días)",
+      opt_honest_w: "Honesto desde Web (Paga 394 USDT - Recibe 180 días)",
+      prompt_title: "AI Developer Prompt", prompt_subtitle: "Use este prompt para instruir a una IA a escribir el contrato en TON con lógica Zero-Trust.",
+      copied: "<i data-lucide='check' class='w-3 h-3'></i> ¡Copiado!", label_chart_1: "Días esperados", label_chart_2: "Días asignados"
     },
     pt: {
-      nav_arch: "🏛️ Arquitetura e Preços", nav_revenue: "💸 Distribuição e Pool", nav_security: "🛑 Zero-Trust e Anti-Spoofing", nav_prompt: "🤖 Prompt AI / Dev Spec",
-      arch_title: "Arquitetura de Sistema V3", arch_subtitle: "Separação clara de ambientes: o backend Python é a única fonte de verdade, a blockchain é o cofre.",
-      vault_title: "🔗 O Paradigma 'Dumb Vault'", vault_desc: "O Smart Contract na TON não possui lógica complexa. Sua única função é receber USDT, emitir um evento verificável e aguardar assinaturas criptográficas do backend para autorizar saques.",
-      identity_title: "🆔 Motor de Identidade e Acesso", identity_desc: "O Telegram_ID atua como chave primária imutável. As linhas de afiliação são conectadas perpetuamente no banco de dados.",
-      golden_rule: "Regra de Ouro da Transparência:<br><span class='font-black text-amber-600'>1 Crédito = 1 Dia exato.</span><br>Lista de preços universal aplicada globalmente.",
-      pricing_title: "Preços Universais: Web vs Link Promoter", th_tier: "Nível de Acesso", th_web: "Preço Público (Web)", th_promo: "Preço Link Promoter (-50%)",
-      tier_starter: "Starter (30 dias)", tier_pro: "Pro (90 dias)", tier_elite: "Elite (180 dias)",
-      rev_title: "Distribuição de Receitas e Pool Global", rev_subtitle: "Lógica matemática de processamento off-chain antes da autorização de saques.",
-      scenario_a: "Cenário A: Vendas por Link de Ref", scenario_b: "Cenário B: Vendas Diretas no Site",
-      l1: "Nível 1 (Direto)", l2: "Nível 2 (Mentor)", l3: "Nível 3 (Master)", treasury: "Tesouraria (Empresa)", eco_fund: "Eventos e Eco Fund",
-      pool_mech_title: "Mecânica do Global Milestone Pool",
-      pool_a_t: "A. Gatilho Absoluto:", pool_a_d: "Os fundos são liberados apenas se toda a empresa atingir o Volume Global Semanal estipulado.",
-      pool_b_t: "B. Liquidação:", pool_b_d: "Executado semanalmente aos domingos às 23:59 UTC, distribuído proporcionalmente.",
-      pool_c_t: "C. Efeito Psicológico:", pool_c_d: "Esta estrutura força os líderes a ajudar a comunidade global, pois o bônus exige o volume total.",
-      sec_title: "Segurança Zero-Trust e Anti-Spoofing", sec_subtitle: "Modelagem de ameaças e defesas automatizadas em transações e banco de dados.",
-      card_dec_t: "Validação de Decimais USDT", card_dec_d: "Na TON, o USDT usa 6 decimais estritos. O parser converte e verifica números inteiros (ex: 197 torna-se 197000000).",
-      card_atom_t: "Atomicidade no Firestore", card_atom_d: "Contra Replay Attacks: uso estrito de transaction.get(txRef). Se o hash já existir, a atualização falha instantaneamente.",
-      card_fake_t: "Escudo Fake Token", card_fake_d: "Verificação rigorosa no jetton_master_address para rejeitar tokens falsos chamados 'USDT' que tentam enganar o sistema.",
-      motor_title: "Motor Matemático Anti-Fraude (Underpayment Recalibration)",
-      motor_desc: "O principal vetor de ataque é o Payload Spoofing: um usuário manipula o frontend para enviar um payload 'Elite' (180 dias), mas envia fundos de 'Starter' (47 USDT). O backend ignora o preço do payload e recalcula os dias com base no colateral real on-chain.",
-      sim_label: "Simulador de Ataque Spoofing", back_res: "Resolução do Backend", btn_copy: "📋 Copiar Prompt",
-      opt_spoof: "Hacker Spoofing (Payload Elite [197 USDT Link - 180 dias] mas paga 47 USDT Starter)",
-      opt_honest_p: "Usuário Justo via Link Promoter (Paga 197 USDT - Recebe 180 dias Elite)",
-      opt_honest_w: "Usuário Justo do Website (Paga 394 USDT - Recebe 180 dias Elite)",
-      prompt_title: "AI Developer Prompt", prompt_subtitle: "Use este prompt de sistema para instruir uma IA ou desenvolvedor a escrever o contrato na TON com lógica Zero-Trust.",
-      copied: "✅ Copiado!", label_chart_1: "Dias esperados pelo payload", label_chart_2: "Dias atribuídos pelo backend"
+      nav_arch: "Arquitetura", nav_revenue: "Distribuição", nav_security: "Zero-Trust Auth", nav_prompt: "Dev_Spec.md",
+      
+      // Architecture
+      wp_title: "Arquitetura Web3 V3", wp_v: "Modelo Viral Loop • Addon de Segurança",
+      wp_sec1_title: "1. Mandato de Arquitetura", wp_sec1_desc: "Separação estrita: Off-Chain (Python + DB) é a Fonte de Verdade. On-Chain é um Cofre Passivo.",
+      wp_academy_title: "Motor de Identidade", wp_academy_desc: "Telegram_ID é a chave primária. Redes são vinculadas de forma vitalícia.",
+      wp_signals_desc: "1 Crédito = 24 Horas. Expiração atualiza instantaneamente.",
+      
+      wp_sec4_title: "4. The Infinity Viral Loop", wp_sec4_desc: "O motor de crescimento. Para desbloquear a plataforma, o usuário deve: 1. Conectar Carteira 2. Entrar no Telegram 3. Convidar 2 Amigos. Todos ganham 7 Dias Grátis. Custo zero para a empresa, leads infinitos. O FOMO impulsiona atualizações para o Preço Promotor.",
+      
+      wp_promo_title: "Preço Web Público", wp_affiliate_title: "Preço Link Promotor (-50%)",
+
+      // Revenue
+      wp_sec2_title: "2. Motor de Receita", wp_sec2_desc: "Divisão automática baseada na origem da transação.",
+      scenario_a: "CENÁRIO A: Vendas por Referência (3 Níveis)", scenario_b: "CENÁRIO B: Vendas Web Diretas",
+      level_1: "Nível 1 (Direto)", level_2: "Nível 2 (Mentor)", level_3: "Nível 3 (Mestre)", 
+      treasury_comp: "Tesouraria (Empresa)", events_pool_top10: "Pool Eventos Top 10", marketing_pool: "Fundo Marketing & Dev",
+      
+      wp_sec3_title: "3. Top 10 Weekly Pool", 
+      wp_sec3_a_title: "A. Alocação", wp_sec3_a_desc: "10% das vendas dos promotores flui para esta pool dedicada aos 10 melhores vendedores.",
+      wp_sec3_b_title: "B. Liquidação Semanal", wp_sec3_b_desc: "Liquidado todo Domingo (23:59 UTC), dividido entre os Top 10 proporcional ao volume. Empates são decididos pela ordem cronológica.",
+      wp_sec3_c_title: "C. A Psicologia", wp_sec3_c_desc: "Incentiva a competição de elite, recompensando a excelência absoluta e a velocidade.",
+
+      // Security
+      wp_tech_1_title: "1. Assinaturas On-Chain", wp_tech_1_desc: "claim() DEBE verificar a assinatura ED25519: Hash(Amount, Wallet, Nonce).",
+      wp_tech_2_title: "2. Deduplicação Estrita", wp_tech_2_desc: "DB impõe restrição UNIQUE no tx_hash.", 
+      wp_tech_3_title: "3. Bloqueio por Mudança de Carteira", wp_tech_3_desc: "Alterar a carteira bloqueia os saques por 72 horas.",
+      wp_tech_4_title: "4. Limites Administrativos", wp_tech_4_desc: "Saques > 1.000 USDT exigem revisão manual.", 
+      wp_tech_5_title: "5. Armazenamento Frio", wp_tech_5_desc: "Função de varredura para hardware wallet.",
+
+      motor_title: "Motor Matemático Anti-Fraude",
+      motor_desc: "O principal vetor de ataque é o Payload Spoofing: enviar um payload 'Elite' (180 dias) mas enviar fundos de 'Starter' (47 USDT). O backend recalcula os dias com base no colateral real.",
+      sim_label: "Simulador Spoofing", back_res: "Resolução do Backend", btn_copy: "<i data-lucide='copy' class='w-3 h-3'></i> Copiar Prompt",
+      opt_spoof: "Hacker Spoofing (Payload Elite [197 USDT] mas paga 47 USDT)",
+      opt_honest_p: "Honesto via Link (Paga 197 USDT - Recebe 180 dias)",
+      opt_honest_w: "Honesto do Web (Paga 394 USDT - Recebe 180 dias)",
+      prompt_title: "AI Developer Prompt", prompt_subtitle: "Use este prompt para instruir uma IA a escrever o contrato na TON com lógica Zero-Trust.",
+      copied: "<i data-lucide='check' class='w-3 h-3'></i> Copiado!", label_chart_1: "Dias esperados", label_chart_2: "Dias atribuídos"
     },
     it: {
-      nav_arch: "🏛️ Architettura & Pricing", nav_revenue: "💸 Revenue Split & Pool", nav_security: "🛑 Zero-Trust & Anti-Spoofing", nav_prompt: "🤖 Prompt AI / Dev Spec",
-      arch_title: "Architettura di Sistema V3", arch_subtitle: "Separazione nel primo livello degli ambienti: il backend Python è la singola fonte di verità, la blockchain è cassaforte.",
-      vault_title: "🔗 Il Paradigma 'Dumb Vault'", vault_desc: "Lo Smart Contract su TON non possiede logica di business complessa. La sua unica funzione è ricevere USDT, emettere un evento verificabile e attendere firme crittografiche dal backend per autorizzare i prelievi.",
-      identity_title: "🆔 Motore di Identità & Accesso", identity_desc: "Il Telegram_ID funge da Chiave Primaria Immutabile. Le downline di affiliazione sono collegate a vita al database off-chain.",
-      golden_rule: "Regola Aurea Trasparenza:<br><span class='font-black text-amber-600'>1 Credito = 1 Giorno esatto.</span><br>Listino universale applicato globalmente.",
-      pricing_title: "Pricing Universale: Web vs Promoter Link", th_tier: "Tier di Accesso", th_web: "Prezzo Pubblico (Web)", th_promo: "Prezzo Link Promoter (-50%)",
-      tier_starter: "Starter (30 gg)", tier_pro: "Pro (90 gg)", tier_elite: "Elite (180 gg)",
-      rev_title: "Distribuzione Ricavi & Global Pool", rev_subtitle: "Logica matematica di calcolo off-chain prima dell'autorizzazione del prelievo on-chain.",
-      scenario_a: "Scenario A: Vendita Tramite Ref-Link", scenario_b: "Scenario B: Vendita Diretta dal Sito",
-      l1: "Livello 1 (Diretto)", l2: "Livello 2 (Mentore)", l3: "Livello 3 (Master)", treasury: "Tesoreria (Azienda)", eco_fund: "Events & Eco Fund",
-      pool_mech_title: "Meccanica del Global Milestone Pool",
-      pool_a_t: "A. Il Trigger Assoluto:", pool_a_d: "I fondi accumulati nel pool vengono sbloccati solo se l'intera azienda raggiunge il Volume Globale Settimanale prefissato.",
-      pool_b_t: "B. Liquidazione:", pool_b_d: "Eseguita settimanalmente la Domenica alle 23:59 UTC, riparto proporzionale tra tutti i promoter attivi.",
-      pool_c_t: "C. Effetto Psicologico:", pool_c_d: "Questo design forza i top leader a supportare l'intera community, poiché senza il volume globale il bonus non scatta.",
-      sec_title: "Sicurezza Zero-Trust & Anti-Spoofing", sec_subtitle: "Modellazione delle minacce e difese automatizzate a livello di transazione e database.",
-      card_dec_t: "Validazione Decimali USDT", card_dec_d: "Su TON, USDT ha 6 decimali rigidi. Il parser converte e verifica gli importi on-chain (es. 197 diventa 197000000).",
-      card_atom_t: "Atomicità Firestore", card_atom_d: "Difesa contro Replay Attacks: utilizzo stringente di transaction.get(txRef). Se l'hash della transazione esiste in DB, l'aggiornamento fallisce.",
-      card_fake_t: "Fake Token Shield", card_fake_d: "Controllo inesorabile sul jetton_master_address per respingere l'invio di shitcoin chiamate 'USDT' volte a truffare il parser.",
-      motor_title: "Motore Matematico Anti-Frode (Underpayment Recalibration)",
-      motor_desc: "Il vettore di attacco principale è il Payload Spoofing: un malintenzionato manipola l'interfaccia frontend per inviare un payload 'Elite' (180 gg), allegando però i fondi ridotti di uno status 'Starter' (47 USDT). Il backend ignora la stringa del payload e ri-proporziona i giorni basandosi unicamente sul collaterale on-chain reale.",
-      sim_label: "Simulatore Attacco Spoofing", back_res: "Risoluzione del Backend", btn_copy: "📋 Copia Prompt",
-      opt_spoof: "Hacker Spoofing (Payload Elite [197 USDT Link - 180 gg] ma paga solo 47 USDT Starter)",
-      opt_honest_p: "Utente Onesto via Link Promoter (Paga 197 USDT - Riceve 180 gg Elite)",
-      opt_honest_w: "Utente Onesto da Sito Web (Paga 394 USDT - Riceve 180 gg Elite)",
-      prompt_title: "AI Developer Prompt", prompt_subtitle: "Usa questo prompt di sistema per istruire uno sviluppatore a generare lo Smart Contract TON con le logiche Zero-Trust pattuite.",
-      copied: "✅ Copiato!", label_chart_1: "Giorni attesi dal payload", label_chart_2: "Giorni assegnati dal backend"
+      nav_arch: "Architettura", nav_revenue: "Revenue Split", nav_security: "Zero-Trust Auth", nav_prompt: "Dev_Spec.md",
+      
+      // Architecture
+      wp_title: "Architettura Web3 V3", wp_v: "Modello Viral Loop • Security Addon",
+      wp_sec1_title: "1. Architettura (Separazione Netta)", wp_sec1_desc: "Off-Chain (Python Backend + DB) è l'assoluta fonte di verità. On-Chain (TON Smart Contract) agisce strettamente come 'Dumb Vault'.",
+      wp_academy_title: "Motore d'Identità", wp_academy_desc: "Telegram_ID è la chiave primaria. Le downline sono collegate a vita.",
+      wp_signals_desc: "1 Credito = 24 Ore. La scadenza viene aggiornata istantaneamente al pagamento.",
+      
+      wp_sec4_title: "4. The Infinity Viral Loop", wp_sec4_desc: "Il vero motore di crescita. Un utente clicca il link del Promoter. Per sbloccare la piattaforma non paga nulla, ma deve: 1. Connettere il Wallet 2. Entrare su Telegram 3. Invitare 2 Amici. Completato il task, tutti ricevono 7 Giorni Gratis (costo zero per l'azienda, lead infiniti generati). Alla scadenza, la FOMO spinge l'utente ad acquistare l'abbonamento al Prezzo Scontato Promoter, garantendo tassi di conversione altissimi.",
+      
+      wp_promo_title: "Prezzo Pubblico (Ancoraggio)", wp_affiliate_title: "Prezzo Link Promoter (-50%)",
+
+      // Revenue
+      wp_sec2_title: "2. Motore di Ricavo (Collaborativo)", wp_sec2_desc: "L'airdrop passivo è sostituito dall'Infinity Viral Loop. La ripartizione calcolata off-chain massimizza le commissioni.",
+      scenario_a: "SCENARIO A: Vendite da Promoter (3 Livelli)", scenario_b: "SCENARIO B: Vendite Dirette dal Web",
+      level_1: "Livello 1 (Diretto)", level_2: "Livello 2 (Mentore)", level_3: "Livello 3 (Master)", 
+      treasury_comp: "Tesoreria Aziendale", events_pool_top10: "Pool Eventi Top 10", marketing_pool: "Fondo Marketing & Sviluppo",
+      
+      wp_sec3_title: "3. Top 10 Weekly Pool", 
+      wp_sec3_a_title: "A. Assegnazione", wp_sec3_a_desc: "Il 10% delle vendite promoter confluisce in questa pool per i 10 migliori venditori.",
+      wp_sec3_b_title: "B. Liquidazione Settimanale", wp_sec3_b_desc: "Liquidato ogni Domenica (23:59 UTC), diviso tra i Top 10 in proporzione al volume. A parità di volume, vince chi ha venduto prima.",
+      wp_sec3_c_title: "C. La Psicologia", wp_sec3_c_desc: "Incentiva una competizione elitaria, premiando l'eccellenza assoluta e la velocità di esecuzione.",
+
+      // Security
+      wp_tech_1_title: "1. Firme Server On-Chain", wp_tech_1_desc: "claim() DEBE verificare la firma ED25519 dal backend: Hash(Amount, Wallet, Nonce).",
+      wp_tech_2_title: "2. Deduplicazione Severa", wp_tech_2_desc: "Il DB applica un vincolo UNIQUE su tx_hash di TON per evitare Replay Attacks.", 
+      wp_tech_3_title: "3. Time-Lock Cambio Wallet", wp_tech_3_desc: "Cambiare il wallet attivo fa scattare un blocco di 72 ore sui prelievi (Anti-Hijacking).",
+      wp_tech_4_title: "4. Soglie Amministrative", wp_tech_4_desc: "I prelievi > 1.000 USDT vengono contrassegnati per la revisione manuale.", 
+      wp_tech_5_title: "5. Cold Storage Offline", wp_tech_5_desc: "Lo Smart Contract ha una funzione di sweep di emergenza per spostare la tesoreria su un hardware wallet.",
+
+      motor_title: "Motore Matematico Anti-Frode",
+      motor_desc: "Il vettore di attacco è il Payload Spoofing: inviare un payload 'Elite' (180 gg) ma allegando fondi 'Starter' (47 USDT). Il backend ri-proporziona i giorni basandosi unicamente sul collaterale reale.",
+      sim_label: "Simulatore Spoofing", back_res: "Risoluzione Backend", btn_copy: "<i data-lucide='copy' class='w-3 h-3'></i> Copia Prompt",
+      opt_spoof: "Hacker Spoofing (Payload Elite [197 USDT] ma paga 47 USDT)",
+      opt_honest_p: "Onesto via Link (Paga 197 USDT - Riceve 180 gg)",
+      opt_honest_w: "Onesto dal Web (Paga 394 USDT - Riceve 180 gg)",
+      prompt_title: "AI Developer Prompt", prompt_subtitle: "Usa questo prompt di sistema per generare lo Smart Contract TON con logiche Zero-Trust.",
+      copied: "<i data-lucide='check' class='w-3 h-3'></i> Copiato!", label_chart_1: "Giorni attesi dal payload", label_chart_2: "Giorni assegnati"
     }
   };
 
@@ -384,17 +599,20 @@ Develop a smart contract that handles Jetton (USDT) transactions with the follow
     });
 
     document.querySelectorAll('[id^="lang-"]').forEach(btn => {
-      btn.classList.add('opacity-40', 'border-transparent');
-      btn.classList.remove('opacity-100', 'bg-stone-800', 'border-stone-700');
+      btn.classList.add('opacity-50', 'border-transparent');
+      btn.classList.remove('opacity-100', 'bg-surface-800', 'border-surface-700');
     });
     
     const activeBtn = document.getElementById('lang-' + lang);
     if(activeBtn) {
-      activeBtn.classList.remove('opacity-40', 'border-transparent');
-      activeBtn.classList.add('opacity-100', 'bg-stone-800', 'border-stone-700');
+      activeBtn.classList.remove('opacity-50', 'border-transparent');
+      activeBtn.classList.add('opacity-100', 'bg-surface-800', 'border-surface-700');
     }
 
     updateSpoofChart();
+    
+    // Re-initialize icons just in case innerHTML wiped them
+    setTimeout(() => lucide.createIcons(), 10);
   }
 
   function changeLanguage(lang) {
@@ -415,15 +633,25 @@ Develop a smart contract that handles Jetton (USDT) transactions with the follow
     document.getElementById(tabId).classList.add('active');
     
     document.querySelectorAll('.tab-btn').forEach(el => {
-      el.classList.remove('bg-stone-800', 'text-stone-50', 'border-stone-700', 'bg-stone-900/50');
-      el.classList.add('text-stone-400', 'border-transparent');
+      el.classList.remove('bg-surface-800', 'text-brand-400', 'border-surface-700', 'bg-brand-500/5', 'border-brand-500/20');
+      // For prompt tab specific class removal
+      if(el.id === 'btn-prompt') {
+          el.classList.add('text-brand-500/70', 'border-brand-500/20', 'bg-brand-500/5');
+      } else {
+          el.classList.add('text-zinc-500', 'border-transparent');
+      }
     });
     
     const activeBtn = document.getElementById('btn-' + tabId);
-    activeBtn.classList.remove('text-stone-400', 'border-transparent');
-    activeBtn.classList.add('bg-stone-800', 'text-stone-50', 'border-stone-700');
     
-    if(tabId === 'prompt') activeBtn.classList.add('bg-stone-900/50');
+    if(tabId === 'prompt') {
+        activeBtn.classList.remove('text-brand-500/70', 'border-brand-500/20', 'bg-brand-500/5');
+        activeBtn.classList.add('bg-surface-800', 'text-brand-400', 'border-surface-700');
+    } else {
+        activeBtn.classList.remove('text-zinc-500', 'border-transparent');
+        activeBtn.classList.add('bg-surface-800', 'text-brand-400', 'border-surface-700');
+    }
+    
     if(tabId === 'security') setTimeout(initChart, 50);
   }
 
@@ -432,10 +660,17 @@ Develop a smart contract that handles Jetton (USDT) transactions with the follow
     navigator.clipboard.writeText(text).then(() => {
       const btn = document.getElementById('copy-btn');
       btn.innerHTML = translations[currentLang]['copied'];
-      btn.classList.add('text-emerald-400');
+      btn.classList.add('text-success-400', 'border-success-400/50');
+      btn.classList.remove('text-zinc-300', 'border-surface-700');
+      
+      // Re-init icon
+      lucide.createIcons();
+      
       setTimeout(() => {
         btn.innerHTML = translations[currentLang]['btn_copy'];
-        btn.classList.remove('text-emerald-400');
+        btn.classList.remove('text-success-400', 'border-success-400/50');
+        btn.classList.add('text-zinc-300', 'border-surface-700');
+        lucide.createIcons();
       }, 2000);
     });
   }
@@ -443,7 +678,8 @@ Develop a smart contract that handles Jetton (USDT) transactions with the follow
   function initChart() {
     if (spoofChartInstance) return;
     const ctx = document.getElementById('spoofChart').getContext('2d');
-    Chart.defaults.font.family = 'Inter, sans-serif';
+    Chart.defaults.font.family = 'Inter, ui-sans-serif, system-ui, sans-serif';
+    Chart.defaults.color = '#a1a1aa'; // zinc-400
     
     spoofChartInstance = new Chart(ctx, {
       type: 'bar',
@@ -451,19 +687,19 @@ Develop a smart contract that handles Jetton (USDT) transactions with the follow
         labels: [translations[currentLang]['label_chart_1'], translations[currentLang]['label_chart_2']],
         datasets: [{
           data: [180, 42.9],
-          backgroundColor: ['rgba(245, 158, 11, 0.15)', 'rgba(5, 150, 105, 0.85)'],
-          borderColor: ['rgba(245, 158, 11, 1)', 'rgba(5, 150, 105, 1)'],
+          backgroundColor: ['rgba(212, 175, 55, 0.2)', 'rgba(16, 185, 129, 0.85)'], // Brand/Gold, Success/Emerald
+          borderColor: ['rgba(212, 175, 55, 1)', 'rgba(16, 185, 129, 1)'],
           borderWidth: 1,
-          borderRadius: 4
+          borderRadius: 6
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
+        plugins: { legend: { display: false }, tooltip: { backgroundColor: '#18181b', titleColor: '#fff', bodyColor: '#fff', borderColor: '#3f3f46', borderWidth: 1 } },
         scales: {
-          y: { beginAtZero: true, max: 200, grid: { color: '#f5f5f4' }, ticks: { stepSize: 40 } },
-          x: { grid: { display: false } }
+          y: { beginAtZero: true, max: 200, grid: { color: 'rgba(63, 63, 70, 0.5)' }, ticks: { stepSize: 40, font: { weight: 'bold' } } }, // surface-700
+          x: { grid: { display: false }, ticks: { font: { weight: 'bold' } } }
         }
       }
     });
@@ -479,30 +715,30 @@ Develop a smart contract that handles Jetton (USDT) transactions with the follow
 
     if (scenario === 'spoof_promoter') {
       assigned = (47 / 197) * 180;
-      if(currentLang === 'it') formulaEl.innerHTML = "(47 / 197) * 180 = " + assigned.toFixed(1) + " giorni. <span class='text-stone-500 font-sans font-normal'>Spoofing neutralizzato.</span>";
-      else if(currentLang === 'es') formulaEl.innerHTML = "(47 / 197) * 180 = " + assigned.toFixed(1) + " días. <span class='text-stone-500 font-sans font-normal'>Spoofing neutralizado.</span>";
-      else if(currentLang === 'pt') formulaEl.innerHTML = "(47 / 197) * 180 = " + assigned.toFixed(1) + " dias. <span class='text-stone-500 font-sans font-normal'>Spoofing neutralizado.</span>";
-      else formulaEl.innerHTML = "(47 / 197) * 180 = " + assigned.toFixed(1) + " days. <span class='text-stone-500 font-sans font-normal'>Spoofing neutralized.</span>";
-      formulaEl.className = "font-mono text-xs text-red-600 font-bold";
+      if(currentLang === 'it') formulaEl.innerHTML = "(47 / 197) * 180 = " + assigned.toFixed(1) + " gg.<br><span class='text-zinc-500 font-sans font-normal'>Spoofing neutralizzato.</span>";
+      else if(currentLang === 'es') formulaEl.innerHTML = "(47 / 197) * 180 = " + assigned.toFixed(1) + " días.<br><span class='text-zinc-500 font-sans font-normal'>Spoofing neutralizado.</span>";
+      else if(currentLang === 'pt') formulaEl.innerHTML = "(47 / 197) * 180 = " + assigned.toFixed(1) + " dias.<br><span class='text-zinc-500 font-sans font-normal'>Spoofing neutralizado.</span>";
+      else formulaEl.innerHTML = "(47 / 197) * 180 = " + assigned.toFixed(1) + " days.<br><span class='text-zinc-500 font-sans font-normal'>Spoofing neutralized.</span>";
+      formulaEl.className = "font-mono text-[11px] sm:text-xs text-red-400 font-bold leading-relaxed";
     } else {
       assigned = 180;
       const u = scenario === 'honest_web' ? '394' : '197';
-      if(currentLang === 'it') formulaEl.innerHTML = "Pagamento on-chain coerente (" + u + " USDT). Assegnazione = 180 giorni.";
-      else if(currentLang === 'es') formulaEl.innerHTML = "Pago on-chain congruente (" + u + " USDT). Asignación = 180 días.";
-      else if(currentLang === 'pt') formulaEl.innerHTML = "Pagamento on-chain congruente (" + u + " USDT). Atribuição = 180 dias.";
-      else formulaEl.innerHTML = "Consistent on-chain payment (" + u + " USDT). Allocation = 180 days.";
-      formulaEl.className = "font-mono text-xs text-emerald-600 font-bold";
+      if(currentLang === 'it') formulaEl.innerHTML = "Pagamento on-chain congruo (" + u + " USDT).<br>Assegnazione = 180 giorni.";
+      else if(currentLang === 'es') formulaEl.innerHTML = "Pago on-chain congruente (" + u + " USDT).<br>Asignación = 180 días.";
+      else if(currentLang === 'pt') formulaEl.innerHTML = "Pagamento on-chain congruente (" + u + " USDT).<br>Atribuição = 180 dias.";
+      else formulaEl.innerHTML = "Consistent on-chain payment (" + u + " USDT).<br>Allocation = 180 days.";
+      formulaEl.className = "font-mono text-[11px] sm:text-xs text-success-400 font-bold leading-relaxed";
     }
 
     if (spoofChartInstance) {
       spoofChartInstance.data.labels = [translations[currentLang]['label_chart_1'], translations[currentLang]['label_chart_2']];
       spoofChartInstance.data.datasets[0].data = [expected, assigned.toFixed(1)];
       if (scenario.startsWith('honest')) {
-        spoofChartInstance.data.datasets[0].backgroundColor = ['rgba(5, 150, 105, 0.85)', 'rgba(5, 150, 105, 0.85)'];
-        spoofChartInstance.data.datasets[0].borderColor = ['rgba(5, 150, 105, 1)', 'rgba(5, 150, 105, 1)'];
+        spoofChartInstance.data.datasets[0].backgroundColor = ['rgba(16, 185, 129, 0.85)', 'rgba(16, 185, 129, 0.85)']; // Success
+        spoofChartInstance.data.datasets[0].borderColor = ['rgba(16, 185, 129, 1)', 'rgba(16, 185, 129, 1)'];
       } else {
-        spoofChartInstance.data.datasets[0].backgroundColor = ['rgba(245, 158, 11, 0.15)', 'rgba(5, 150, 105, 0.85)'];
-        spoofChartInstance.data.datasets[0].borderColor = ['rgba(245, 158, 11, 1)', 'rgba(5, 150, 105, 1)'];
+        spoofChartInstance.data.datasets[0].backgroundColor = ['rgba(212, 175, 55, 0.2)', 'rgba(16, 185, 129, 0.85)']; // Brand, Success
+        spoofChartInstance.data.datasets[0].borderColor = ['rgba(212, 175, 55, 1)', 'rgba(16, 185, 129, 1)'];
       }
       spoofChartInstance.update();
     }
