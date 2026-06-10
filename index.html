@@ -156,8 +156,8 @@
         security_auth: "Confirm Withdrawal", requested_amount: "Amount", dest_wallet: "Destination", signing_btn: "Confirming...", sign_withdraw_btn: "Confirm Transfer",
         earnings_chart: "Earnings Overview", daily_subs: "Active Leads", conv_rate: "Conv. Rate", bot_interactions: "Link Clicks", geo_dist: "Global Distribution", tier_status: "Current Tier",
         recent_activity: "Recent Referrals", joined: "joined", deposited: "deposited",
-        network_dir: "Network Directory", my_network: "My Downline", wallet: "Wallet Address", status: "Status", volume: "Volume", global_pool: "Global Milestone Pool", pool_qualified: "Target Reached - Pool Unlocked!",
-        pool_unqualified: "Global Target Not Met", target: "Target", ends_sat: "Liquidates Sunday 23:59 UTC", leads: "Leads", promoter: "Promoter", rank: "Rank",
+        network_dir: "Network Directory", my_network: "My Downline", wallet: "Wallet Address", status: "Status", volume: "Volume", global_pool: "Top 10 Weekly Pool", pool_qualified: "Currently in Top 10!",
+        pool_unqualified: "Not in Top 10", target: "10th Place Vol", ends_sat: "Liquidates Sunday 23:59 UTC", leads: "Leads", promoter: "Promoter", rank: "Rank",
         white_paper: "White Paper", close_doc: "Close Document", specifications: "Specifications", show_balances: "Show Balances", hide_balances: "Hide Balances",
         registered_subtext: "Registered", conv_subtext: "Lead to Active", clicks_subtext: "Total Clicks", user_col: "User", action_col: "Action", vol_col: "Vol",
         toast_success_title: "Success", toast_conn_title: "Connected", toast_conn_msg: "Secure link established.", toast_dep_title: "Deposit Detected", toast_dep_msg: "Liquidity updated on-chain.", toast_auth_title: "Transfer Auth Success", toast_auth_msg: "Funds sent to your wallet.",
@@ -169,16 +169,19 @@
         wp_promo_title: "Public Web Price", wp_promo_desc: "Starter: 94 USDT | Pro: 234 USDT | Elite: 394 USDT (2x Anchor)",
         wp_affiliate_title: "Promoter Link Price", wp_affiliate_desc: "Starter: 47 USDT | Pro: 117 USDT | Elite: 197 USDT (-50% VIP)",
         
-        wp_sec2_title: "2. Collaborative Revenue Engine", wp_sec2_desc: "Revenue is split automatically off-chain based on the source of the transaction (Referred vs Direct).",
+        wp_sec2_title: "2. Revenue Split Engine", wp_sec2_desc: "Revenue is split automatically off-chain based on the source of the transaction (Referred vs Direct).",
         scenario_a: "SCENARIO A: Referred Sales (3-Tier)", scenario_b: "SCENARIO B: Direct Web Sales",
         level_1: "Level 1 (Direct)", level_2: "Level 2 (Mentor)", level_3: "Level 3 (Master)",
-        treasury_comp: "Treasury (Company)", events_fund: "Events & Eco Fund",
+        treasury_comp: "Treasury (Company)", events_pool_top10: "Top 10 Events Pool", weekly_airdrop: "Weekly Airdrop (Promoter/Company)",
         
-        wp_sec3_title: "3. The Global Milestone Pool",
-        wp_sec3_a_title: "A. The Trigger", wp_sec3_a_desc: "Distributed ONLY if the entire company reaches a pre-set weekly Global Volume Target.",
-        wp_sec3_b_title: "B. Weekly Liquidation", wp_sec3_b_desc: "Liquidated WEEKLY at Sunday 23:59 UTC, split proportionally among ALL promoters.",
-        wp_sec3_c_title: "C. The Psychology", wp_sec3_c_desc: "Forces top leaders to publicly share strategies with cross-lines globally.",
+        wp_sec3_title: "3. Top 10 Weekly Pool",
+        wp_sec3_a_title: "A. Allocation", wp_sec3_a_desc: "10% of promoter sales flows into this pool dedicated to the week's 10 best sellers.",
+        wp_sec3_b_title: "B. Weekly Liquidation", wp_sec3_b_desc: "Liquidated every Sunday (23:59 UTC), divided among the Top 10 proportional to their volume. Ties are broken by chronological order of sales.",
+        wp_sec3_c_title: "C. The Psychology", wp_sec3_c_desc: "Incentivizes elite competition, rewarding absolute excellence and speed of execution.",
         
+        wp_sec4_title: "4. Viral Growth Protocol (Task)",
+        wp_sec4_desc: "By linking a wallet, joining the channel, and inviting 2 users, all 3 receive 1 Free Week (Academy + Signals). Upon expiration, standard paid subscription is offered (attributed to the original link, sponsor, or company).",
+
         wp_tech_btn: "Show Enterprise Cybersecurity Specs", wp_tech_hide: "Hide Specs",
         wp_tech_1_title: "1. On-Chain Signatures", wp_tech_1_desc: "claim() MUST verify ED25519 signature from backend: Hash(Amount, Wallet, Nonce).",
         wp_tech_2_title: "2. Strict Deduplication", wp_tech_2_desc: "DB enforces UNIQUE constraint on TON tx_hash.",
@@ -197,8 +200,8 @@
         security_auth: "Confirmar Retiro", requested_amount: "Monto", dest_wallet: "Destino", signing_btn: "Confirmando...", sign_withdraw_btn: "Confirmar Transferencia",
         earnings_chart: "Resumen de Ganancias", daily_subs: "Leads Activos", conv_rate: "Tasa Conv.", bot_interactions: "Clics en Enlace", geo_dist: "Distribución Global", tier_status: "Nivel",
         recent_activity: "Referidos Recientes", joined: "se unió", deposited: "depositó",
-        network_dir: "Directorio de Red", my_network: "Mi Red", wallet: "Dirección Wallet", status: "Estado", volume: "Volumen", global_pool: "Global Milestone Pool", pool_qualified: "¡Objetivo Alcanzado!",
-        pool_unqualified: "Objetivo Global No Alcanzado", target: "Objetivo", ends_sat: "Liquidación Domingo 23:59 UTC", leads: "Leads", promoter: "Promotor", rank: "Pos",
+        network_dir: "Directorio de Red", my_network: "Mi Red", wallet: "Dirección Wallet", status: "Estado", volume: "Volumen", global_pool: "Top 10 Weekly Pool", pool_qualified: "¡Actualmente en Top 10!",
+        pool_unqualified: "Fuera del Top 10", target: "Vol. 10º Puesto", ends_sat: "Liquidación Domingo 23:59 UTC", leads: "Leads", promoter: "Promotor", rank: "Pos",
         white_paper: "White Paper", close_doc: "Cerrar", specifications: "Especificaciones", show_balances: "Mostrar Saldos", hide_balances: "Ocultar Saldos",
         registered_subtext: "Registrados", conv_subtext: "Lead a Activo", clicks_subtext: "Clics Totales", user_col: "Usuario", action_col: "Acción", vol_col: "Vol",
         toast_success_title: "Éxito", toast_conn_title: "Conectado", toast_conn_msg: "Conexión segura establecida.", toast_dep_title: "Depósito Detectado", toast_dep_msg: "Liquidez actualizada on-chain.", toast_auth_title: "Autorización", toast_auth_msg: "Fondos enviados a tu wallet.",
@@ -213,13 +216,16 @@
         wp_sec2_title: "2. Motor de Ingresos Colaborativo", wp_sec2_desc: "Reparto de ingresos automatizado según el origen de la venta.",
         scenario_a: "ESCENARIO A: Ventas por Referidos (3 Niveles)", scenario_b: "ESCENARIO B: Ventas Web Directas",
         level_1: "Nivel 1 (Directo)", level_2: "Nivel 2 (Mentor)", level_3: "Nivel 3 (Maestro)",
-        treasury_comp: "Tesorería (Empresa)", events_fund: "Fondo para Eventos",
+        treasury_comp: "Tesorería (Empresa)", events_pool_top10: "Pool Eventos Top 10", weekly_airdrop: "Airdrop Semanal",
         
-        wp_sec3_title: "3. Global Milestone Pool",
-        wp_sec3_a_title: "A. El Activador", wp_sec3_a_desc: "Se distribuye SOLO si la empresa alcanza el objetivo global semanal.",
-        wp_sec3_b_title: "B. Liquidación Semanal", wp_sec3_b_desc: "Se liquida cada DOMINGO a las 23:59 UTC, entre todos los promotores.",
-        wp_sec3_c_title: "C. La Psicología", wp_sec3_c_desc: "Fuerza a los líderes a compartir estrategias globalmente.",
+        wp_sec3_title: "3. Top 10 Weekly Pool",
+        wp_sec3_a_title: "A. Asignación", wp_sec3_a_desc: "El 10% de las ventas promotores fluye a este pool dedicado a los 10 mejores vendedores.",
+        wp_sec3_b_title: "B. Liquidación Semanal", wp_sec3_b_desc: "Liquidado cada Domingo (23:59 UTC), dividido entre los Top 10 en proporción a su volumen. Los empates se rompen por orden cronológico.",
+        wp_sec3_c_title: "C. La Psicología", wp_sec3_c_desc: "Incentiva la competencia de élite, premiando la excelencia absoluta y la velocidad.",
         
+        wp_sec4_title: "4. Protocolo Crecimiento Viral (Task)",
+        wp_sec4_desc: "Al conectar la wallet, unirse al canal e invitar a 2 usuarios, los 3 reciben 1 Semana Gratis (Academy + Señales). Al expirar, se ofrece suscripción de pago (atribuida al link original, sponsor o empresa).",
+
         wp_tech_btn: "Ver Especificaciones de Seguridad", wp_tech_hide: "Ocultar Specs",
         wp_tech_1_title: "1. Firmas On-Chain", wp_tech_1_desc: "claim() DEBE verificar firma ED25519: Hash(Amount, Wallet, Nonce).",
         wp_tech_2_title: "2. Deduplicación Estricta", wp_tech_2_desc: "La DB aplica restricción UNIQUE en tx_hash de TON.",
@@ -238,8 +244,8 @@
         security_auth: "Confirmar Saque", requested_amount: "Valor", dest_wallet: "Destino", signing_btn: "Confirmando...", sign_withdraw_btn: "Confirmar Transferência",
         earnings_chart: "Resumo de Ganhos", daily_subs: "Leads Ativos", conv_rate: "Taxa Conv.", bot_interactions: "Cliques no Link", geo_dist: "Distribuição Global", tier_status: "Nível",
         recent_activity: "Indicados Recentes", joined: "entrou", deposited: "depositou",
-        network_dir: "Diretório de Rede", my_network: "A Sua Rede", wallet: "Endereço Carteira", status: "Status", volume: "Volume", global_pool: "Global Milestone Pool", pool_qualified: "Alvo Atingido - Pool Desbloqueado!",
-        pool_unqualified: "Alvo Global Não Atingido", target: "Meta", ends_sat: "Liquidação Domingo 23:59 UTC", leads: "Leads", promoter: "Promotor", rank: "Pos",
+        network_dir: "Diretório de Rede", my_network: "A Sua Rede", wallet: "Endereço Carteira", status: "Status", volume: "Volume", global_pool: "Top 10 Weekly Pool", pool_qualified: "Atualmente no Top 10!",
+        pool_unqualified: "Fora do Top 10", target: "Vol. 10º Lugar", ends_sat: "Liquidação Domingo 23:59 UTC", leads: "Leads", promoter: "Promotor", rank: "Pos",
         white_paper: "White Paper", close_doc: "Fechar", specifications: "Especificações", show_balances: "Mostrar Saldos", hide_balances: "Ocultar Saldos",
         registered_subtext: "Registrados", conv_subtext: "Lead para Ativo", clicks_subtext: "Cliques Totais", user_col: "Usuário", action_col: "Ação", vol_col: "Vol",
         toast_success_title: "Sucesso", toast_conn_title: "Conectado", toast_conn_msg: "Conexão segura estabelecida.", toast_dep_title: "Depósito Detectado", toast_dep_msg: "Liquidez atualizada on-chain.", toast_auth_title: "Autorização", toast_auth_msg: "Fundos enviados para sua wallet.",
@@ -254,12 +260,15 @@
         wp_sec2_title: "2. Motor de Receita Colaborativo", wp_sec2_desc: "Divisão automática baseada na origem da transação.",
         scenario_a: "CENÁRIO A: Vendas por Referência (3 Níveis)", scenario_b: "CENÁRIO B: Vendas Web Diretas",
         level_1: "Nível 1 (Diretto)", level_2: "Nível 2 (Mentor)", level_3: "Nível 3 (Mestre)",
-        treasury_comp: "Tesouraria (Empresa)", events_fund: "Fundo de Eventos",
+        treasury_comp: "Tesouraria (Empresa)", events_pool_top10: "Pool Eventos Top 10", weekly_airdrop: "Airdrop Semanal",
         
-        wp_sec3_title: "3. Global Milestone Pool",
-        wp_sec3_a_title: "A. O Gatilho", wp_sec3_a_desc: "Distribuído APENAS se a meta global semanal foi atingida.",
-        wp_sec3_b_title: "B. Liquidação Semanal", wp_sec3_b_desc: "Liquidado todo DOMINGO às 23:59 UTC, entre todos os promotores.",
-        wp_sec3_c_title: "C. A Psicologia", wp_sec3_c_desc: "Força os líderes a partilhar estratégias globalmente.",
+        wp_sec3_title: "3. Top 10 Weekly Pool",
+        wp_sec3_a_title: "A. Alocação", wp_sec3_a_desc: "10% das vendas dos promotores flui para esta pool dedicada aos 10 melhores vendedores.",
+        wp_sec3_b_title: "B. Liquidação Semanal", wp_sec3_b_desc: "Liquidado todo Domingo (23:59 UTC), dividido entre os Top 10 proporcional ao volume. Empates são decididos pela ordem cronológica.",
+        wp_sec3_c_title: "C. A Psicologia", wp_sec3_c_desc: "Incentiva a competição de elite, recompensando a excelência absoluta e a velocidade.",
+
+        wp_sec4_title: "4. Protocolo Crescimento Viral (Task)",
+        wp_sec4_desc: "Ao conectar a carteira, entrar no canal e convidar 2 usuários, os 3 recebem 1 Semana Grátis (Academy + Sinais). Após expirar, a assinatura padrão é oferecida (atribuída ao link original, sponsor ou empresa).",
         
         wp_tech_btn: "Ver Especificações de Segurança", wp_tech_hide: "Ocultar Specs",
         wp_tech_1_title: "1. Assinaturas On-Chain", wp_tech_1_desc: "claim() DEBE verificar a assinatura ED25519: Hash(Amount, Wallet, Nonce).",
@@ -279,8 +288,8 @@
         security_auth: "Conferma Prelievo", requested_amount: "Importo", dest_wallet: "Destinazione", signing_btn: "Conferma...", sign_withdraw_btn: "Conferma Trasferimento",
         earnings_chart: "Panoramica Guadagni", daily_subs: "Lead Attivi", conv_rate: "Tasso Conv.", bot_interactions: "Clic Link", geo_dist: "Distribuzione Globale", tier_status: "Livello",
         recent_activity: "Referral Recenti", joined: "si è unito", deposited: "ha depositato",
-        network_dir: "Directory di Rete", my_network: "La Tua Downline", wallet: "Indirizzo Wallet", status: "Stato", volume: "Volume", global_pool: "Global Milestone Pool", pool_qualified: "Target Globale Raggiunto!",
-        pool_unqualified: "Target Globale Non Raggiunto", target: "Target Globale", ends_sat: "Liquidazione Domenica 23:59 UTC", leads: "Lead", promoter: "Promoter", rank: "Pos",
+        network_dir: "Directory di Rete", my_network: "La Tua Downline", wallet: "Indirizzo Wallet", status: "Stato", volume: "Volume", global_pool: "Top 10 Weekly Pool", pool_qualified: "Attualmente nei Top 10!",
+        pool_unqualified: "Fuori dai Top 10", target: "Vol. 10° Posto", ends_sat: "Liquidazione Domenica 23:59 UTC", leads: "Lead", promoter: "Promoter", rank: "Pos",
         white_paper: "White Paper", close_doc: "Chiudi Documento", specifications: "Specifiche", show_balances: "Mostra Saldi", hide_balances: "Nascondi Saldi",
         registered_subtext: "Registrati", conv_subtext: "Lead in Attivi", clicks_subtext: "Clic Totali", user_col: "Utente", action_col: "Azione", vol_col: "Vol",
         toast_success_title: "Successo", toast_conn_title: "Connesso", toast_conn_msg: "Connessione sicura stabilita.", toast_dep_title: "Deposito Rilevato", toast_dep_msg: "Liquidità aggiornata on-chain.", toast_auth_title: "Autorizzazione Trasferimento", toast_auth_msg: "Fondi inviati al tuo wallet.",
@@ -295,13 +304,16 @@
         wp_sec2_title: "2. Motore di Ricavo (Collaborativo)", wp_sec2_desc: "Ripartizione calcolata off-chain in base alla fonte della vendita (Referenziata vs Diretta).",
         scenario_a: "SCENARIO A: Vendite da Promoter (3 Livelli)", scenario_b: "SCENARIO B: Vendite Dirette dal Web",
         level_1: "Livello 1 (Diretto)", level_2: "Livello 2 (Mentore)", level_3: "Livello 3 (Master)",
-        treasury_comp: "Tesoreria Aziendale", events_fund: "Fondo Eventi & Eco",
+        treasury_comp: "Tesoreria Aziendale", events_pool_top10: "Pool Eventi Top 10", weekly_airdrop: "Airdrop Settimanale",
         
-        wp_sec3_title: "3. Global Milestone Pool",
-        wp_sec3_a_title: "A. Il Trigger", wp_sec3_a_desc: "Il pool viene distribuito SOLO se l'intera azienda raggiunge il target di volume globale settimanale.",
-        wp_sec3_b_title: "B. Liquidazione Settimanale", wp_sec3_b_desc: "Liquidato SETTIMANALMENTE ogni Domenica alle 23:59 UTC, e ripartito proporzionalmente tra TUTTI i promoter.",
-        wp_sec3_c_title: "C. La Psicologia", wp_sec3_c_desc: "I top leader sono costretti a collaborare e condividere strategie a livello globale per sbloccare il massiccio pool comunitario.",
+        wp_sec3_title: "3. Top 10 Weekly Pool",
+        wp_sec3_a_title: "A. Assegnazione", wp_sec3_a_desc: "Il 10% delle vendite promoter confluisce in questa pool per i 10 migliori venditori.",
+        wp_sec3_b_title: "B. Liquidazione Settimanale", wp_sec3_b_desc: "Liquidato ogni Domenica (23:59 UTC), diviso tra i Top 10 in proporzione al volume. A parità di volume, vince chi ha venduto prima.",
+        wp_sec3_c_title: "C. La Psicologia", wp_sec3_c_desc: "Incentiva una competizione elitaria, premiando l'eccellenza assoluta e la velocità di esecuzione.",
         
+        wp_sec4_title: "4. Protocollo Crescita Virale (Task)",
+        wp_sec4_desc: "Collegando il wallet, iscrivendosi al canale e invitando 2 utenti, tutti e 3 ottengono 1 Settimana Gratis (Academy + Segnali). Alla scadenza, viene proposto l'abbonamento a listino (attribuito al link originario, sponsor o azienda).",
+
         wp_tech_btn: "Mostra Specifiche di Sicurezza Enterprise", wp_tech_hide: "Nascondi Specifiche",
         wp_tech_1_title: "1. Firme Server On-Chain", wp_tech_1_desc: "claim() DEBE verificare la firma ED25519 dal backend: Hash(Amount, Wallet, Nonce).",
         wp_tech_2_title: "2. Deduplicazione Severa", wp_tech_2_desc: "Il DB applica un vincolo UNIQUE su tx_hash di TON per evitare Replay Attacks.",
@@ -524,9 +536,9 @@
                   {/* Scenario B */}
                   <div className="bg-surface-950 p-4 rounded-xl border border-surface-800 font-mono text-xs sm:text-sm text-zinc-400 shadow-inner overflow-x-auto">
                     <h5 className="text-blue-400 font-bold mb-2 pb-2 border-b border-surface-800/50">{t('scenario_b')}</h5>
-                    <div className="flex justify-between py-1 border-b border-surface-800/50 min-w-[300px]"><span>├── {t('treasury_comp')}</span><span className="text-zinc-100 ml-auto">40%</span></div>
-                    <div className="flex justify-between py-1 border-b border-surface-800/50 min-w-[300px]"><span>├── <span className="text-brand-400 font-black">{t('global_pool')}</span></span><span className="text-brand-500 ml-auto font-bold">30%</span></div>
-                    <div className="flex justify-between py-1 min-w-[300px]"><span>└── {t('events_fund')}</span><span className="text-purple-400 ml-auto">30%</span></div>
+                    <div className="flex justify-between py-1 border-b border-surface-800/50 min-w-[300px]"><span>├── {t('treasury_comp')}</span><span className="text-zinc-100 ml-auto">80%</span></div>
+                    <div className="flex justify-between py-1 border-b border-surface-800/50 min-w-[300px]"><span>├── {t('events_pool_top10')}</span><span className="text-purple-400 ml-auto">10%</span></div>
+                    <div className="flex justify-between py-1 min-w-[300px]"><span>└── {t('weekly_airdrop')}</span><span className="text-brand-400 ml-auto">10%</span></div>
                   </div>
                 </div>
               </section>
@@ -538,6 +550,11 @@
                   <div className="bg-success-500/5 border-l-4 border-success-500 p-4 rounded-r-xl"><h5 className="font-bold text-success-300 mb-1">{t('wp_sec3_b_title')}</h5><p className="text-zinc-300 text-sm font-bold">{t('wp_sec3_b_desc')}</p></div>
                   <div className="bg-blue-500/5 border-l-4 border-blue-500 p-4 rounded-r-xl"><h5 className="font-bold text-blue-300 mb-1">{t('wp_sec3_c_title')}</h5><p className="text-zinc-300 text-sm">{t('wp_sec3_c_desc')}</p></div>
                 </div>
+              </section>
+
+              <section>
+                <h4 className="text-lg font-black text-zinc-100 mb-3 pb-2 border-b border-surface-800 flex items-center gap-2"><Icon name="users" size={18} className="text-brand-500" /> {t('wp_sec4_title')}</h4>
+                <p className="text-sm text-zinc-300">{t('wp_sec4_desc')}</p>
               </section>
 
               <div className="pt-2">
@@ -787,10 +804,10 @@
         });
       }, []);
 
-      const globalVolume = sc.state.globalWeeklyVolume; 
-      const globalTarget = sc.state.globalWeeklyTarget;
-      const isQualified = globalVolume >= globalTarget;
-      const weeklyPoolTotal = (globalVolume * 0.10); 
+      const pVol = sc.state.promoterVolume; 
+      const pTarget = sc.state.tenthPlaceVolume;
+      const isQualified = pVol >= pTarget;
+      const poolTotal = sc.state.weeklyPoolTotal; 
 
       const copyReferral = () => {
         navigator.clipboard.writeText(`https://tonpull.app/ref/${sc.state.walletAddress.substring(0,8)}`).then(() => {
@@ -876,16 +893,16 @@
                  </div>
                  <div className="w-full mb-2 max-w-[200px]">
                     <div className="flex justify-between text-[8px] sm:text-[9px] font-black uppercase tracking-wider mb-1">
-                      <span className="text-zinc-400">{t('target')}: {formatCurrency(globalTarget, sc.state.isHidden)}</span>
-                      <span className={isQualified ? 'text-brand-400' : 'text-zinc-100'}>{formatCurrency(globalVolume, sc.state.isHidden)}</span>
+                      <span className="text-zinc-400">{t('target')}: {formatCurrency(pTarget, sc.state.isHidden)}</span>
+                      <span className={isQualified ? 'text-brand-400' : 'text-zinc-100'}>{formatCurrency(pVol, sc.state.isHidden)}</span>
                     </div>
                     <div className="h-1.5 w-full bg-surface-950 rounded-full overflow-hidden shadow-inner">
-                      <div className={`h-full rounded-full transition-all duration-1000 ${isQualified ? 'bg-brand-500' : 'bg-zinc-600'}`} style={{width: `${Math.min((globalVolume/globalTarget)*100, 100)}%`}}></div>
+                      <div className={`h-full rounded-full transition-all duration-1000 ${isQualified ? 'bg-brand-500' : 'bg-zinc-600'}`} style={{width: `${Math.min((pVol/pTarget)*100, 100)}%`}}></div>
                     </div>
                  </div>
                  <p className={`text-[9px] sm:text-[10px] font-black uppercase tracking-widest mt-1 ${isQualified ? 'text-brand-400' : 'text-zinc-500'}`}>{isQualified ? t('pool_qualified') : t('pool_unqualified')}</p>
                  <div className="mt-auto pt-2 sm:pt-3 border-t border-surface-800/50 w-full">
-                   <p className="text-base sm:text-lg font-mono font-black text-zinc-200 leading-none">{formatCurrency(weeklyPoolTotal, sc.state.isHidden)} <span className="text-[9px] sm:text-[10px] text-zinc-500">USDT</span></p>
+                   <p className="text-base sm:text-lg font-mono font-black text-zinc-200 leading-none">{formatCurrency(poolTotal, sc.state.isHidden)} <span className="text-[9px] sm:text-[10px] text-zinc-500">USDT</span></p>
                    <p className="text-[8px] text-brand-500/70 mt-1 uppercase font-bold tracking-widest">{t('ends_sat')}</p>
                  </div>
               </Card>
@@ -1008,8 +1025,9 @@
       const [promoterAvailable, setPromoterAvailable] = useState(450.00);
       const [promoterLifetime, setPromoterLifetime] = useState(3250.00);
       
-      const [globalWeeklyVolume, setGlobalWeeklyVolume] = useState(85420.00); 
-      const [globalWeeklyTarget, setGlobalWeeklyTarget] = useState(10000.00); 
+      const [promoterVolume, setPromoterVolume] = useState(14500); 
+      const [tenthPlaceVolume, setTenthPlaceVolume] = useState(15000); 
+      const [weeklyPoolTotal, setWeeklyPoolTotal] = useState(8542.00); 
 
       const [claimHistory, setClaimHistory] = useState([ { date: '12 May 2026', amount: 120.00, tx: '0xTX...4f2' } ]);
 
@@ -1035,7 +1053,8 @@
           setTimeout(() => {
             setTotalProcessed(p => p + 150);
             setContractBalance(p => p + 45);
-            setGlobalWeeklyVolume(p => p + 150);
+            setPromoterVolume(p => p + 150);
+            setWeeklyPoolTotal(p => p + 15);
             addToast(t ? t('toast_dep_title') : "Deposit Detected", t ? t('toast_dep_msg') : "Liquidity updated on-chain.", "info");
             resolve();
           }, 1000);
@@ -1056,7 +1075,7 @@
       };
 
       return {
-        state: { walletConnected, walletAddress, tonWallet, isHidden, toasts, contractBalance, totalProcessed, activePromoters, promoterAvailable, promoterLifetime, globalWeeklyVolume, globalWeeklyTarget, claimHistory },
+        state: { walletConnected, walletAddress, tonWallet, isHidden, toasts, contractBalance, totalProcessed, activePromoters, promoterAvailable, promoterLifetime, promoterVolume, tenthPlaceVolume, weeklyPoolTotal, claimHistory },
         connect, disconnect, addToast, simulateDeposit, processClaim, toggleHidden: () => setIsHidden(!isHidden), setTonWallet: setTonWalletState
       };
     };
