@@ -19,8 +19,9 @@
       font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      overflow-x: hidden;
+      overflow: hidden; /* Prevent body scroll, handle inside components */
       height: 100%;
+      width: 100%;
     }
     
     #root { height: 100vh; height: 100dvh; display: flex; flex-direction: column; position: relative; overflow: hidden; }
@@ -88,7 +89,7 @@
     .coin-unqualified { filter: grayscale(100%) opacity(0.5); transition: filter 0.5s ease-in-out; }
     .coin-qualified { filter: grayscale(0%) opacity(1); transition: filter 0.5s ease-in-out; box-shadow: 0 0 25px rgba(212, 175, 55, 0.5); }
     
-    .flex-col-fluid { display: flex; flex-direction: column; min-height: 0; }
+    .flag-icon { width: 22px; height: 15px; object-fit: cover; border-radius: 2px; box-shadow: 0 0 3px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; }
   </style>
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -111,11 +112,11 @@
   <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
   <script src="https://unpkg.com/recharts@2.1.12/umd/Recharts.js"></script>
 </head>
-<body class="bg-surface-950 text-zinc-300 selection:bg-brand-500/30 overflow-hidden">
+<body class="bg-surface-950 text-zinc-300 selection:bg-brand-500/30">
   <div id="root">
     <div class="initial-loader">
       <div class="spinner-ring"></div>
-      <div class="text-xs text-zinc-500 mt-2 font-bold tracking-widest uppercase">Initializing Smart Contracts...</div>
+      <div class="text-xs text-zinc-500 mt-2 font-bold tracking-widest uppercase" id="loading-text">INITIALIZING ELITE ENVIRONMENT...</div>
     </div>
   </div>
 
@@ -123,7 +124,7 @@
     const { useState, useEffect, useCallback, useRef, useMemo } = React;
     const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } = window.Recharts; 
 
-    // Safe Icon Component per prevenire conflitti tra Lucide e React Virtual DOM
+    // Safe Icon Component
     const Icon = ({ name, size = 24, className = '', ...props }) => {
       const spanRef = useRef(null);
       useEffect(() => {
@@ -136,7 +137,7 @@
           });
         }
       }, [name, size, className, props]);
-      return <span ref={spanRef} className="inline-flex items-center justify-center shrink-0"></span>;
+      return <span ref={spanRef} className={`inline-flex items-center justify-center shrink-0 ${className}`}></span>;
     };
 
     const LANGUAGES = [
@@ -160,10 +161,9 @@
         recent_activity: "Recent Referrals", joined: "joined", deposited: "deposited",
         network_dir: "Network Directory", my_network: "My Downline", wallet: "Wallet Address", status: "Status", volume: "Volume", global_pool: "Top 10 Weekly Pool", pool_qualified: "Currently in Top 10!",
         pool_unqualified: "Not in Top 10", target: "10th Place Vol", ends_sat: "Liquidates Sunday 23:59 UTC", leads: "Leads", promoter: "Promoter", rank: "Rank",
-        white_paper: "White Paper", close_doc: "Close Document", specifications: "Specifications", show_balances: "Show Balances", hide_balances: "Hide Balances",
+        pricing_docs: "Pricing & Specs", specifications: "Specifications", show_balances: "Show Balances", hide_balances: "Hide Balances",
         registered_subtext: "Generated via Loop", conv_subtext: "Lead to Active", clicks_subtext: "Total Clicks", user_col: "User", action_col: "Action", vol_col: "Vol",
         toast_success_title: "Success", toast_dep_title: "Deposit Detected", toast_dep_msg: "Liquidity updated on-chain.", toast_auth_title: "Transfer Auth Success", toast_auth_msg: "Funds sent to your wallet.",
-        
         status_active: "Active", status_inactive: "Inactive", action_deposit: "Deposit", action_join: "Join",
         time_10m: "10 min ago", time_1h: "1 hour ago", time_3h: "3 hours ago", time_5h: "5 hours ago", time_1d: "1 day ago", time_2d: "2 days ago", time_3d: "3 days ago", time_1w: "1 week ago", time_2w: "2 weeks ago",
         mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun", today: "Today",
@@ -171,24 +171,7 @@
         funnel_2: "FUNNEL 2: MASTERCLASS", funnel_2_desc: "Free Live Masterclass invite + free signals + Academy Lesson 1.",
         funnel_3: "FUNNEL 3: VIRAL LOOP", funnel_3_desc: "Offers 1 Free Premium Week by unlocking the friend invite task.",
         elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "Live Event", viral_task_tag: "VIRAL TASK",
-
-        wp_title: "Web3 System Architecture V3", wp_v: "Viral Loop Model • Security Addon",
-        wp_sec1_title: "1. Architecture Mandate", wp_sec1_desc: "Strict separation: Off-Chain (Python Backend + DB) is the absolute Source of Truth. On-Chain (TON Smart Contract) acts strictly as a Dumb Vault.",
-        wp_academy_title: "Identity Engine", wp_academy_desc: "Telegram_ID is the immutable Primary Key. Downlines are permanently attached.",
-        wp_signals_title: "Access Logic", wp_signals_desc: "1 Credit = 24 Hours. Expiration updates automatically upon payment.",
-        wp_promo_title: "Public Web Price", wp_promo_desc: "Starter: 94 USDT | Pro: 234 USDT | Elite: 394 USDT (Anchor Pricing)",
-        wp_affiliate_title: "Promoter Link Price", wp_affiliate_desc: "Starter: 47 USDT | Pro: 117 USDT | Elite: 197 USDT (-50% VIP)",
-        wp_sec2_title: "2. Revenue Split Engine", wp_sec2_desc: "Revenue is split automatically off-chain based on the source of the transaction (Referred vs Direct).",
-        scenario_a: "SCENARIO A: Referred Sales (3-Tier)", scenario_b: "SCENARIO B: Direct Web Sales",
-        level_1: "Level 1 (Direct)", level_2: "Level 2 (Mentor)", level_3: "Level 3 (Master)",
-        treasury_comp: "Treasury (Company)", events_pool_top10: "Top 10 Events Pool", marketing_pool: "Marketing & Dev Fund",
-        wp_sec3_title: "3. Top 10 Weekly Pool", wp_sec3_a_title: "A. Allocation", wp_sec3_a_desc: "10% of promoter sales flows into this pool dedicated to the week's 10 best sellers.",
-        wp_sec3_b_title: "B. Weekly Liquidation", wp_sec3_b_desc: "Liquidated every Sunday (23:59 UTC), divided among the Top 10 proportional to their volume. Ties are broken by chronological order of sales.",
-        wp_sec3_c_title: "C. The Psychology", wp_sec3_c_desc: "Incentivizes elite competition, rewarding absolute excellence and speed of execution.",
-        wp_sec4_title: "4. The Infinity Viral Loop (Zero-Cost Lead Gen)", wp_sec4_desc: "The core growth engine. A user clicks a Promoter's link. To unlock the platform, they must: 1. Connect Wallet 2. Join Telegram 3. Invite 2 Friends. Upon completion, all 3 receive 7 Days Free Access. Zero cost to the company, infinite lead generation. Post-trial, FOMO drives high-conversion upgrades at the discounted Promoter Price.",
-        wp_tech_btn: "Show Enterprise Cybersecurity Specs", wp_tech_hide: "Hide Specs", wp_tech_1_title: "1. On-Chain Signatures", wp_tech_1_desc: "claim() MUST verify ED25519 signature from backend: Hash(Amount, Wallet, Nonce).",
-        wp_tech_2_title: "2. Strict Deduplication", wp_tech_2_desc: "DB enforces UNIQUE constraint on TON tx_hash.", wp_tech_3_title: "3. Wallet Change Time-Lock", wp_tech_3_desc: "Updating Active_Wallet triggers a 72-hour freeze on withdrawals.",
-        wp_tech_4_title: "4. Admin Thresholds", wp_tech_4_desc: "Payouts > 1,000 USDT get flagged as Pending_Manual_Review.", wp_tech_5_title: "5. Offline Cold Storage", wp_tech_5_desc: "Smart contract has an emergency sweep function to move funds to a hardware wallet."
+        welcome_title: "OPERATIONS HUB", system_status_ok: "SYSTEM STATUS: OPTIMAL", sign_tx: "Sign transaction in your wallet.", users_label: "Users", elite_platform: "Elite Platform", init_env: "Initializing Elite Environment..."
       },
       es: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programa de Afiliados", user_dash: "Área Usuario", partner_dash: "Área Socios", company_dash: "Tesorería",
@@ -196,17 +179,16 @@
         change_wallet: "Cambiar Billetera", edit_wallet_desc: "Actualiza tu dirección TON. Esto no afecta tu red de referidos.",
         save_wallet: "Guardar", cancel: "Cancelar", login: "Conectar Billetera", logout: "Desconectar", treasury_center: "Operaciones de Tesorería", simulate_deposit: "Simular Depósito",
         processed_volume: "Volumen Bruto", real_usdt: "USDT On-Chain", company_reserve: "Reserva Empresa", withdrawable_funds: "Fondos Líquidos", active_nodes: "Promotores Activos",
-        registered_pools: "Usuarios", cash_flow: "Ingresos (7D)", copy_link: "Copiar Enlace", copied: "¡Copiado!", copy_error: "Error de Portapapeles", vault_available: "Disponible para Retiro",
+        registered_pools: "Usuarios a Sistema", cash_flow: "Ingresos (7D)", copy_link: "Copiar Enlace", copied: "¡Copiado!", copy_error: "Error de Portapapeles", vault_available: "Disponible para Retiro",
         no_funds: "Sin Fondos", signing: "Procesando...", unlock_withdraw: "Retirar Fondos", lifetime_deposit: "Ganancias Totales", audit_trail: "Historial Retiros", no_tx: "Sin transacciones.",
         security_auth: "Confirmar Retiro", requested_amount: "Monto", dest_wallet: "Destino", signing_btn: "Confirmando...", sign_withdraw_btn: "Confirmar Transferencia",
         earnings_chart: "Resumen de Ganancias", daily_subs: "Leads Virales", conv_rate: "Tasa Conv.", bot_interactions: "Clics en Enlace", geo_dist: "Distribución Global", tier_status: "Nivel",
         recent_activity: "Referidos Recientes", joined: "se unió", deposited: "depositó",
         network_dir: "Directorio de Red", my_network: "Mi Red", wallet: "Dirección Wallet", status: "Estado", volume: "Volumen", global_pool: "Top 10 Weekly Pool", pool_qualified: "¡Actualmente en Top 10!",
         pool_unqualified: "Fuera del Top 10", target: "Vol. 10º Puesto", ends_sat: "Liquidación Domingo 23:59 UTC", leads: "Leads", promoter: "Promotor", rank: "Pos",
-        white_paper: "White Paper", close_doc: "Cerrar", specifications: "Especificaciones", show_balances: "Mostrar Saldos", hide_balances: "Ocultar Saldos",
+        pricing_docs: "Precios y Docs", specifications: "Especificaciones", show_balances: "Mostrar Saldos", hide_balances: "Ocultar Saldos",
         registered_subtext: "Generados por Loop", conv_subtext: "Lead a Activo", clicks_subtext: "Clics Totales", user_col: "Usuario", action_col: "Acción", vol_col: "Vol",
         toast_success_title: "Éxito", toast_dep_title: "Depósito Detectado", toast_dep_msg: "Liquidez actualizada on-chain.", toast_auth_title: "Autorización", toast_auth_msg: "Fondos enviados a tu wallet.",
-        
         status_active: "Activo", status_inactive: "Inactivo", action_deposit: "Depósito", action_join: "Ingreso",
         time_10m: "hace 10 min", time_1h: "hace 1 hora", time_3h: "hace 3 horas", time_5h: "hace 5 horas", time_1d: "hace 1 día", time_2d: "hace 2 días", time_3d: "hace 3 días", time_1w: "hace 1 sem", time_2w: "hace 2 sem",
         mon: "Lun", tue: "Mar", wed: "Mié", thu: "Jue", fri: "Vie", sat: "Sáb", sun: "Dom", today: "Hoy",
@@ -214,24 +196,7 @@
         funnel_2: "FUNNEL 2: MASTERCLASS", funnel_2_desc: "Invitación a Masterclass en vivo + señales gratis + Lección 1 Academy.",
         funnel_3: "FUNNEL 3: VIRAL LOOP", funnel_3_desc: "Ofrece 1 Semana Premium Gratis completando la tarea de invitación.",
         elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "En Vivo", viral_task_tag: "TAREA VIRAL",
-
-        wp_title: "Arquitectura Web3 V3", wp_v: "Modelo Viral Loop • Addon de Seguridad",
-        wp_sec1_title: "1. Mandato de Arquitectura", wp_sec1_desc: "Separación estricta: Off-Chain (Python Backend + DB) es la Fuente de Verdad. On-Chain es un Smart Contract pasivo (Dumb Vault).",
-        wp_academy_title: "Motor de Identidad", wp_academy_desc: "Telegram_ID es la llave primaria. Las líneas descendentes se unen de por vida.",
-        wp_signals_title: "Lógica de Acceso", wp_signals_desc: "1 Crédito = 24 Horas. La expiración se actualiza al instante.",
-        wp_promo_title: "Precio Web Público", wp_promo_desc: "Starter: 94 USDT | Pro: 234 USDT | Elite: 394 USDT (Ancla)",
-        wp_affiliate_title: "Precio Link Promotor", wp_affiliate_desc: "Starter: 47 USDT | Pro: 117 USDT | Elite: 197 USDT (-50% VIP)",
-        wp_sec2_title: "2. Motor de Ingresos", wp_sec2_desc: "Reparto de ingresos automatizado según el origen de la venta.",
-        scenario_a: "ESCENARIO A: Ventas por Referidos (3 Niveles)", scenario_b: "ESCENARIO B: Ventas Web Directas",
-        level_1: "Nivel 1 (Directo)", level_2: "Nivel 2 (Mentor)", level_3: "Nivel 3 (Maestro)",
-        treasury_comp: "Tesorería (Empresa)", events_pool_top10: "Pool Eventos Top 10", marketing_pool: "Fondo de Marketing & Dev",
-        wp_sec3_title: "3. Top 10 Weekly Pool", wp_sec3_a_title: "A. Asignación", wp_sec3_a_desc: "El 10% de las ventas promotores fluye a este pool dedicado a los 10 mejores vendedores.",
-        wp_sec3_b_title: "B. Liquidación Semanal", wp_sec3_b_desc: "Liquidado cada Domingo (23:59 UTC), dividido entre los Top 10 en proporción a su volumen. Los empates se rompen por orden cronológico.",
-        wp_sec3_c_title: "C. La Psicología", wp_sec3_c_desc: "Incentiva la competencia de élite, premiando la excelencia absoluta y la velocidad.",
-        wp_sec4_title: "4. The Infinity Viral Loop (Crecimiento Cero Costo)", wp_sec4_desc: "El motor de crecimiento. Un usuario hace clic en el enlace. Para desbloquear debe: 1. Conectar Wallet 2. Unirse a Telegram 3. Invitar 2 Amigos. Todos reciben 7 Días Gratis. Cero costo para la empresa, generación infinita de leads. Luego, el FOMO impulsa la actualización al Precio Promotor.",
-        wp_tech_btn: "Ver Especificaciones de Seguridad", wp_tech_hide: "Ocultar Specs", wp_tech_1_title: "1. Firmas On-Chain", wp_tech_1_desc: "claim() DEBE verificar firma ED25519: Hash(Amount, Wallet, Nonce).",
-        wp_tech_2_title: "2. Deduplicación Estricta", wp_tech_2_desc: "La DB aplica restricción UNIQUE en tx_hash de TON.", wp_tech_3_title: "3. Bloqueo por Cambio de Wallet", wp_tech_3_desc: "Cambiar wallet bloquea los retiros por 72 horas.",
-        wp_tech_4_title: "4. Umbrales de Administrador", wp_tech_4_desc: "Pagos > 1,000 USDT requieren revisión manual.", wp_tech_5_title: "5. Almacenamiento en Frío", wp_tech_5_desc: "Función de barrido de emergencia hacia hardware wallet."
+        welcome_title: "CENTRO DE OPERACIONES", system_status_ok: "ESTADO SISTEMA: ÓPTIMO", sign_tx: "Firma la transacción en tu billetera.", users_label: "Usuarios", elite_platform: "Plataforma Élite", init_env: "Inicializando Entorno..."
       },
       pt: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programa Afiliados", user_dash: "Área Usuário", partner_dash: "Área Sócios", company_dash: "Tesouraria",
@@ -239,17 +204,16 @@
         change_wallet: "Mudar Carteira", edit_wallet_desc: "Atualize o destino TON. Não afeta a sua rede.",
         save_wallet: "Salvar", cancel: "Cancelar", login: "Conectar Carteira", logout: "Desconectar", treasury_center: "Operações de Tesouraria", simulate_deposit: "Simular Depósito",
         processed_volume: "Volume Bruto", real_usdt: "USDT On-Chain", company_reserve: "Reserva Empresa", withdrawable_funds: "Fundos Líquidos", active_nodes: "Promotores Ativos",
-        registered_pools: "Usuários", cash_flow: "Receita (7D)", copy_link: "Copiar Link", copied: "Copiado!", copy_error: "Erro na Área de Transferência", vault_available: "Disponível para Saque",
+        registered_pools: "Usuários no Sistema", cash_flow: "Receita (7D)", copy_link: "Copiar Link", copied: "Copiado!", copy_error: "Erro na Área de Transferência", vault_available: "Disponível para Saque",
         no_funds: "Sem Fundos", signing: "Processando...", unlock_withdraw: "Sacar Fundos", lifetime_deposit: "Ganhos Totais", audit_trail: "Histórico Saques", no_tx: "Nenhum saque.",
         security_auth: "Confirmar Saque", requested_amount: "Valor", dest_wallet: "Destino", signing_btn: "Confirmando...", sign_withdraw_btn: "Confirmar Transferência",
         earnings_chart: "Resumo de Ganhos", daily_subs: "Leads Virais", conv_rate: "Taxa Conv.", bot_interactions: "Cliques no Link", geo_dist: "Distribuição Global", tier_status: "Nível",
         recent_activity: "Indicados Recentes", joined: "entrou", deposited: "depositou",
         network_dir: "Diretório de Rede", my_network: "A Sua Rede", wallet: "Endereço Carteira", status: "Status", volume: "Volume", global_pool: "Top 10 Weekly Pool", pool_qualified: "Atualmente no Top 10!",
         pool_unqualified: "Fora do Top 10", target: "Vol. 10º Lugar", ends_sat: "Liquidação Domingo 23:59 UTC", leads: "Leads", promoter: "Promotor", rank: "Pos",
-        white_paper: "White Paper", close_doc: "Fechar", specifications: "Especificações", show_balances: "Mostrar Saldos", hide_balances: "Ocultar Saldos",
+        pricing_docs: "Preços e Docs", specifications: "Especificações", show_balances: "Mostrar Saldos", hide_balances: "Ocultar Saldos",
         registered_subtext: "Gerados por Loop", conv_subtext: "Lead para Ativo", clicks_subtext: "Cliques Totais", user_col: "Usuário", action_col: "Ação", vol_col: "Vol",
         toast_success_title: "Sucesso", toast_dep_title: "Depósito Detectado", toast_dep_msg: "Liquidez atualizada on-chain.", toast_auth_title: "Autorização", toast_auth_msg: "Fundos enviados para sua wallet.",
-        
         status_active: "Ativo", status_inactive: "Inativo", action_deposit: "Depósito", action_join: "Ingressou",
         time_10m: "há 10 min", time_1h: "há 1 hora", time_3h: "há 3 horas", time_5h: "há 5 horas", time_1d: "há 1 dia", time_2d: "há 2 dias", time_3d: "há 3 dias", time_1w: "há 1 sem", time_2w: "há 2 sem",
         mon: "Seg", tue: "Ter", wed: "Qua", thu: "Qui", fri: "Sex", sat: "Sáb", sun: "Dom", today: "Hoje",
@@ -257,24 +221,7 @@
         funnel_2: "FUNIL 2: MASTERCLASS", funnel_2_desc: "Convite Masterclass ao vivo + sinais grátis + Lição 1 Academy.",
         funnel_3: "FUNIL 3: VIRAL LOOP", funnel_3_desc: "Oferece 1 Semana Premium Grátis desbloqueando a tarefa de convite.",
         elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "Ao Vivo", viral_task_tag: "TAREFA VIRAL",
-
-        wp_title: "Arquitetura Web3 V3", wp_v: "Modelo Viral Loop • Addon de Segurança",
-        wp_sec1_title: "1. Mandato de Arquitetura", wp_sec1_desc: "Separação estrita: Off-Chain (Python + DB) é a Fonte de Verdade. On-Chain é um Cofre Passivo.",
-        wp_academy_title: "Motor de Identidade", wp_academy_desc: "Telegram_ID é a chave primária. Redes são vinculadas de forma vitalícia.",
-        wp_signals_title: "Lógica de Acesso", wp_signals_desc: "1 Crédito = 24 Horas. Expiração atualiza instantaneamente.",
-        wp_promo_title: "Preço Web Público", wp_promo_desc: "Starter: 94 USDT | Pro: 234 USDT | Elite: 394 USDT (Âncora)",
-        wp_affiliate_title: "Preço Link Promotor", wp_affiliate_desc: "Starter: 47 USDT | Pro: 117 USDT | Elite: 197 USDT (-50% VIP)",
-        wp_sec2_title: "2. Motor de Receita", wp_sec2_desc: "Divisão automática baseada na origem da transação.",
-        scenario_a: "CENÁRIO A: Vendas por Referência (3 Níveis)", scenario_b: "CENÁRIO B: Vendas Web Diretas",
-        level_1: "Nível 1 (Diretto)", level_2: "Nível 2 (Mentor)", level_3: "Nível 3 (Mestre)",
-        treasury_comp: "Tesouraria (Empresa)", events_pool_top10: "Pool Eventos Top 10", marketing_pool: "Fundo Marketing & Dev",
-        wp_sec3_title: "3. Top 10 Weekly Pool", wp_sec3_a_title: "A. Alocação", wp_sec3_a_desc: "10% das vendas dos promotores flui para esta pool dedicada aos 10 melhores vendedores.",
-        wp_sec3_b_title: "B. Liquidação Semanal", wp_sec3_b_desc: "Liquidado todo Domingo (23:59 UTC), dividido entre os Top 10 proporcional ao volume. Empates são decididos pela ordem cronológica.",
-        wp_sec3_c_title: "C. A Psicologia", wp_sec3_c_desc: "Incentiva a competição de elite, recompensando a excelência absoluta e a velocidade.",
-        wp_sec4_title: "4. The Infinity Viral Loop (Crescimento Custo Zero)", wp_sec4_desc: "O motor de crescimento. Para desbloquear a plataforma, o usuário deve: 1. Conectar Carteira 2. Entrar no Telegram 3. Convidar 2 Amigos. Todos ganham 7 Dias Grátis. Custo zero para a empresa, leads infinitos. O FOMO impulsiona atualizações para o Preço Promotor.",
-        wp_tech_btn: "Ver Especificações de Segurança", wp_tech_hide: "Ocultar Specs", wp_tech_1_title: "1. Assinaturas On-Chain", wp_tech_1_desc: "claim() DEBE verificar a assinatura ED25519: Hash(Amount, Wallet, Nonce).",
-        wp_tech_2_title: "2. Deduplicação Estrita", wp_tech_2_desc: "DB impõe restrição UNIQUE no tx_hash.", wp_tech_3_title: "3. Bloqueo por Mudança de Carteira", wp_tech_3_desc: "Alterar a carteira bloqueia os saques por 72 horas.",
-        wp_tech_4_title: "4. Limites Administrativos", wp_tech_4_desc: "Saques > 1.000 USDT exigem revisão manual.", wp_tech_5_title: "5. Armazenamento Frio", wp_tech_5_desc: "Função de varredura para hardware wallet."
+        welcome_title: "CENTRAL DE OPERAÇÕES", system_status_ok: "STATUS SISTEMA: IDEAL", sign_tx: "Assine a transação na sua carteira.", users_label: "Usuários", elite_platform: "Plataforma Elite", init_env: "Inicializando Ambiente..."
       },
       it: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programma Affiliati", user_dash: "Area Utente", partner_dash: "Area Partner", company_dash: "Tesoreria",
@@ -289,10 +236,9 @@
         recent_activity: "Referral Recenti", joined: "si è unito", deposited: "ha depositato",
         network_dir: "Directory di Rete", my_network: "La Tua Downline", wallet: "Indirizzo Wallet", status: "Stato", volume: "Volume", global_pool: "Top 10 Weekly Pool", pool_qualified: "Attualmente nei Top 10!",
         pool_unqualified: "Fuori dai Top 10", target: "Vol. 10° Posto", ends_sat: "Liquidazione Domenica 23:59 UTC", leads: "Lead", promoter: "Promoter", rank: "Pos",
-        white_paper: "White Paper", close_doc: "Chiudi Documento", specifications: "Specifiche", show_balances: "Mostra Saldi", hide_balances: "Nascondi Saldi",
+        pricing_docs: "Pricing e Docs", specifications: "Specifiche", show_balances: "Mostra Saldi", hide_balances: "Nascondi Saldi",
         registered_subtext: "Generati dal Loop", conv_subtext: "Lead in Attivi", clicks_subtext: "Clic Totali", user_col: "Utente", action_col: "Azione", vol_col: "Vol",
         toast_success_title: "Successo", toast_dep_title: "Deposito Rilevato", toast_dep_msg: "Liquidità aggiornata on-chain.", toast_auth_title: "Autorizzazione Trasferimento", toast_auth_msg: "Fondi inviati al tuo wallet.",
-        
         status_active: "Attivo", status_inactive: "Inattivo", action_deposit: "Deposito", action_join: "Iscritto",
         time_10m: "10 min fa", time_1h: "1 ora fa", time_3h: "3 ore fa", time_5h: "5 ore fa", time_1d: "1 giorno fa", time_2d: "2 giorni fa", time_3d: "3 giorni fa", time_1w: "1 sett fa", time_2w: "2 sett fa",
         mon: "Lun", tue: "Mar", wed: "Mer", thu: "Gio", fri: "Ven", sat: "Sab", sun: "Dom", today: "Oggi",
@@ -300,24 +246,7 @@
         funnel_2: "FUNNEL 2: MASTERCLASS", funnel_2_desc: "Invito Masterclass Live + segnali gratis + 1° lezione Academy.",
         funnel_3: "FUNNEL 3: VIRAL LOOP", funnel_3_desc: "Offre 1 Settimana Premium gratis completando il task di invito.",
         elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "Evento Live", viral_task_tag: "TASK VIRALE",
-
-        wp_title: "Architettura Web3 V3", wp_v: "Modello Viral Loop • Security Addon",
-        wp_sec1_title: "1. Architettura (Separazione Netta)", wp_sec1_desc: "Off-Chain (Python Backend + DB) è l'assoluta fonte di verità. On-Chain (TON Smart Contract) agisce strettamente come 'Dumb Vault'.",
-        wp_academy_title: "Motore d'Identità", wp_academy_desc: "Telegram_ID è la chiave primaria. Le downline sono collegate a vita.",
-        wp_signals_title: "Logica di Accesso", wp_signals_desc: "1 Credito = 24 Ore. La scadenza viene aggiornata istantaneamente al pagamento.",
-        wp_promo_title: "Prezzo Pubblico (Ancoraggio)", wp_promo_desc: "Starter: 94 USDT | Pro: 234 USDT | Elite: 394 USDT",
-        wp_affiliate_title: "Prezzo Link Promoter", wp_affiliate_desc: "Starter: 47 USDT | Pro: 117 USDT | Elite: 197 USDT (-50% VIP)",
-        wp_sec2_title: "2. Motore di Ricavo (Collaborativo)", wp_sec2_desc: "L'airdrop passivo è sostituito dall'Infinity Viral Loop (vedi Sez. 4). La ripartizione calcolata off-chain massimizza le commissioni dirette e la liquidità aziendale.",
-        scenario_a: "SCENARIO A: Vendite da Promoter (3 Livelli)", scenario_b: "SCENARIO B: Vendite Dirette dal Web",
-        level_1: "Livello 1 (Diretto)", level_2: "Livello 2 (Mentore)", level_3: "Livello 3 (Master)",
-        treasury_comp: "Tesoreria Aziendale", events_pool_top10: "Pool Eventi Top 10", marketing_pool: "Fondo Marketing & Sviluppo",
-        wp_sec3_title: "3. Top 10 Weekly Pool", wp_sec3_a_title: "A. Assegnazione", wp_sec3_a_desc: "Il 10% delle vendite promoter confluisce in questa pool per i 10 migliori venditori.",
-        wp_sec3_b_title: "B. Liquidazione Settimanale", wp_sec3_b_desc: "Liquidato ogni Domenica (23:59 UTC), diviso tra i Top 10 in proporzione al volume. A parità di volume, vince chi ha venduto prima.",
-        wp_sec3_c_title: "C. La Psicologia", wp_sec3_c_desc: "Incentiva una competizione elitaria, premiando l'eccellenza assoluta e la velocità di esecuzione.",
-        wp_sec4_title: "4. The Infinity Viral Loop (Acquisizione a Costo Zero)", wp_sec4_desc: "Il vero motore di crescita. Un utente clicca il link del Promoter. Per sbloccare la piattaforma non paga nulla, ma deve: 1. Connettere il Wallet 2. Entrare su Telegram 3. Invitare 2 Amici. Completato il task, tutti ricevono 7 Giorni Gratis (costo zero per l'azienda, lead infiniti generati). Alla scadenza, la FOMO spinge l'utente ad acquistare l'abbonamento al Prezzo Scontato Promoter, garantendo tassi di conversione altissimi.",
-        wp_tech_btn: "Mostra Specifiche di Sicurezza Enterprise", wp_tech_hide: "Nascondi Specifiche", wp_tech_1_title: "1. Firme Server On-Chain", wp_tech_1_desc: "claim() DEBE verificare la firma ED25519 dal backend: Hash(Amount, Wallet, Nonce).",
-        wp_tech_2_title: "2. Deduplicazione Severa", wp_tech_2_desc: "Il DB applica un vincolo UNIQUE su tx_hash di TON per evitare Replay Attacks.", wp_tech_3_title: "3. Time-Lock Cambio Wallet", wp_tech_3_desc: "Cambiare il wallet attivo fa scattare un blocco di 72 ore sui prelievi (Anti-Hijacking).",
-        wp_tech_4_title: "4. Soglie Amministrative", wp_tech_4_desc: "I prelievi > 1.000 USDT vengono contrassegnati per la revisione manuale.", wp_tech_5_title: "5. Cold Storage Offline", wp_tech_5_desc: "Lo Smart Contract ha una funzione di sweep di emergenza per spostare la tesoreria su un hardware wallet."
+        welcome_title: "HUB OPERATIVO", system_status_ok: "STATO SISTEMA: OTTIMALE", sign_tx: "Firma la transazione nel tuo wallet.", users_label: "Utenti", elite_platform: "Piattaforma Elite", init_env: "Inizializzazione Ambiente..."
       }
     };
 
@@ -356,19 +285,19 @@
       );
     };
 
-    const Card = ({ children, className = '', padding = 'p-5 sm:p-6' }) => (
-      <div className={`glass-panel rounded-2xl ${padding} shadow-[0_8px_30px_rgb(0,0,0,0.3)] hover:border-surface-700 transition-colors duration-300 min-w-0 flex flex-col ${className}`}>
+    const Card = ({ children, className = '', padding = 'p-3 sm:p-4' }) => (
+      <div className={`glass-panel rounded-2xl ${padding} shadow-lg flex flex-col ${className}`}>
         {children}
       </div>
     );
 
     const StatCard = ({ title, value, subtext, icon, colorClass, highlight = false }) => (
-      <Card padding="p-3 sm:p-4" className={`justify-center h-full ${highlight ? 'ring-1 ring-inset ring-brand-500/40 bg-gradient-to-br from-surface-900 to-surface-800/80 shadow-[0_0_20px_rgba(212,175,55,0.05)]' : ''}`}>
+      <Card padding="p-3 sm:p-4" className={`justify-center h-full w-full ${highlight ? 'ring-1 ring-inset ring-brand-500/40 bg-gradient-to-br from-surface-900 to-surface-800/80 shadow-[0_0_20px_rgba(212,175,55,0.05)]' : ''}`}>
         <div className="flex justify-between items-start gap-2 h-full">
           <div className="flex-1 min-w-0 flex flex-col justify-center">
             <p className="text-zinc-500 font-bold mb-1 text-[9px] sm:text-[10px] lg:text-xs uppercase tracking-widest leading-tight">{title}</p>
-            <h3 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-black text-zinc-100 mb-1 tracking-tight drop-shadow-sm truncate">{value}</h3>
-            <div className={`text-[9px] sm:text-[10px] font-bold ${colorClass} uppercase tracking-wider leading-tight`}>
+            <h3 className="text-lg sm:text-xl lg:text-2xl font-black text-zinc-100 mb-1 tracking-tight drop-shadow-sm truncate">{value}</h3>
+            <div className={`text-[9px] sm:text-[10px] font-bold ${colorClass} uppercase tracking-wider leading-tight truncate`}>
               {subtext}
             </div>
           </div>
@@ -408,15 +337,15 @@
       return (
         <div className="relative" ref={dropdownRef}>
           <button onClick={(e) => { e.preventDefault(); setIsOpen(!isOpen); }} className="flex items-center gap-1.5 sm:gap-2 bg-surface-950/80 border border-surface-700 hover:border-brand-500/50 transition-all rounded-lg px-2 sm:px-2.5 py-1.5 sm:py-2 shadow-inner group">
-            <img src={`https://flagcdn.com/${currentLang.flag}.svg`} alt={currentLang.name} className="w-5 h-[14px] object-cover rounded-[1px] shadow-[0_0_2px_rgba(0,0,0,0.5)] opacity-90 group-hover:opacity-100 shrink-0" />
+            <img src={`https://flagcdn.com/${currentLang.flag}.svg`} alt={currentLang.name} className="flag-icon opacity-90 group-hover:opacity-100" />
             <span className="text-[10px] sm:text-[11px] font-bold text-zinc-300 tracking-wider hidden sm:block">{currentLang.name}</span>
-            <Icon name="chevron-down" size={12} className="text-zinc-500 group-hover:text-zinc-300 transition-colors sm:w-[14px] sm:h-[14px]" />
+            <Icon name="chevron-down" size={12} className="text-zinc-500 group-hover:text-zinc-300 transition-colors" />
           </button>
           {isOpen && (
             <div className="absolute right-0 mt-2 w-32 sm:w-36 bg-surface-900 border border-surface-700 rounded-xl shadow-2xl overflow-hidden z-50 fade-in">
               {LANGUAGES.map((l) => (
                 <button key={l.code} onClick={() => { setLang(l.code); setIsOpen(false); }} className={`w-full flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 text-left hover:bg-surface-800 transition-colors ${lang === l.code ? 'bg-surface-800/80 text-brand-400' : 'text-zinc-300'}`}>
-                  <img src={`https://flagcdn.com/${l.flag}.svg`} alt={l.name} className="w-5 h-[14px] object-cover rounded-[1px] shadow-[0_0_2px_rgba(0,0,0,0.5)] shrink-0" />
+                  <img src={`https://flagcdn.com/${l.flag}.svg`} alt={l.name} className="flag-icon" />
                   <span className="text-[11px] sm:text-xs font-bold tracking-wider">{l.name}</span>
                 </button>
               ))}
@@ -461,7 +390,7 @@
             <div className="p-6 text-center border-b border-surface-800">
               <div className="w-12 h-12 bg-surface-950 rounded-full flex items-center justify-center text-brand-400 mx-auto mb-4 border border-surface-800"><Icon name="shield-check" size={24} /></div>
               <h3 className="text-lg font-black text-zinc-100 uppercase tracking-wider">{t('security_auth')}</h3>
-              <p className="text-sm text-zinc-400 mt-2">Sign transaction in your wallet.</p>
+              <p className="text-sm text-zinc-400 mt-2">{t('sign_tx')}</p>
             </div>
             <div className="p-6 space-y-6">
               <div className="bg-surface-950 p-4 rounded-xl border border-surface-800 text-sm shadow-inner">
@@ -487,163 +416,56 @@
       );
     };
 
-    // Componente Aggiunto: Specifications Modal per risolvere il ReferenceError
-    const SpecificationsModal = ({ isOpen, onClose, t }) => {
-      if (!isOpen) return null;
-      return (
-        <div className="fixed inset-0 z-[350] flex items-center justify-center bg-surface-950/95 backdrop-blur-xl p-4 sm:p-6 fade-in">
-          <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-lg shadow-[0_0_80px_rgba(212,175,55,0.15)] overflow-hidden flex flex-col p-6 text-center">
-            <div className="w-12 h-12 bg-brand-500/10 rounded-full flex items-center justify-center text-brand-400 mx-auto mb-4 border border-brand-500/20">
-              <Icon name="file-text" size={24} />
-            </div>
-            <h3 className="text-xl font-black text-zinc-100 uppercase tracking-widest mb-4">{t('specifications')}</h3>
-            <p className="text-zinc-400 text-sm mb-6 leading-relaxed">
-              Le specifiche tecniche complete e la documentazione del pricing model sono disponibili nel documento PDF ufficiale della piattaforma.
-            </p>
-            <button onClick={onClose} className="w-full sm:w-auto px-8 py-3 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded-xl text-sm font-bold transition-colors uppercase tracking-wider shadow-lg mx-auto">
-              {t('close_doc')}
-            </button>
-          </div>
-        </div>
-      );
-    };
-
-    const WhitepaperModal = ({ isOpen, onClose, onOpenSpecs, t }) => {
-      const [showTechSpecs, setShowTechSpecs] = useState(false);
-      if (!isOpen) return null;
-      return (
-        <div className="fixed inset-0 z-[300] flex justify-center bg-surface-950/95 backdrop-blur-xl p-4 sm:p-6 fade-in overflow-hidden">
-          <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-4xl shadow-[0_0_80px_rgba(212,175,55,0.15)] overflow-hidden flex flex-col h-full max-h-[90dvh] mt-4 sm:mt-8">
-            <div className="p-4 sm:p-5 border-b border-surface-800 flex justify-between items-center bg-surface-900/50 sticky top-0 z-10 shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-brand-500/10 rounded-lg flex items-center justify-center text-brand-400 border border-brand-500/20"><Icon name="file-code-2" size={20} /></div>
-                <div>
-                  <h3 className="text-base sm:text-lg font-black text-zinc-100 uppercase tracking-widest leading-none">{t('wp_title')}</h3>
-                  <p className="text-[10px] font-bold text-brand-500 uppercase tracking-widest mt-1">{t('wp_v')}</p>
-                </div>
-              </div>
-              <button onClick={onClose} className="p-2 hover:bg-surface-800 rounded-lg text-zinc-400 hover:text-zinc-100 transition-colors"><Icon name="x" size={24} /></button>
-            </div>
-            
-            <div className="p-5 sm:p-8 overflow-y-auto custom-scrollbar flex-1 space-y-8 text-zinc-300 text-sm sm:text-base leading-relaxed">
-              <section>
-                <h4 className="text-lg font-black text-zinc-100 mb-3 pb-2 border-b border-surface-800 flex items-center gap-2"><Icon name="network" size={18} className="text-brand-500" /> {t('wp_sec1_title')}</h4>
-                <p className="mb-4">{t('wp_sec1_desc')}</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                  <div className="bg-surface-900/50 p-4 rounded-xl border border-surface-800"><h5 className="font-bold text-brand-400 flex items-center gap-2 mb-2"><Icon name="fingerprint" size={16}/> {t('wp_academy_title')}</h5><p className="text-xs text-zinc-400">{t('wp_academy_desc')}</p></div>
-                  <div className="bg-surface-900/50 p-4 rounded-xl border border-surface-800"><h5 className="font-bold text-blue-400 flex items-center gap-2 mb-2"><Icon name="clock" size={16}/> {t('wp_signals_title')}</h5><p className="text-xs text-zinc-400">{t('wp_signals_desc')}</p></div>
-                  <div className="bg-surface-900/50 p-4 rounded-xl border border-surface-800"><h5 className="font-bold text-zinc-300 flex items-center gap-2 mb-2"><Icon name="shopping-cart" size={16}/> {t('wp_promo_title')}</h5><p className="text-xs text-zinc-400">{t('wp_promo_desc')}</p></div>
-                  <div className="bg-surface-900/50 p-4 rounded-xl border border-surface-800 ring-1 ring-brand-500/20 bg-gradient-to-br from-brand-500/5 to-transparent"><h5 className="font-bold text-brand-500 flex items-center gap-2 mb-2"><Icon name="link" size={16}/> {t('wp_affiliate_title')}</h5><p className="text-xs text-brand-300/80">{t('wp_affiliate_desc')}</p></div>
-                </div>
-              </section>
-
-              <section>
-                <h4 className="text-lg font-black text-zinc-100 mb-3 pb-2 border-b border-surface-800 flex items-center gap-2"><Icon name="database" size={18} className="text-brand-500" /> {t('wp_sec2_title')}</h4>
-                <p className="mb-4">{t('wp_sec2_desc')}</p>
-                
-                <div className="space-y-4">
-                  <div className="bg-surface-950 p-4 rounded-xl border border-surface-800 font-mono text-xs sm:text-sm text-zinc-400 shadow-inner overflow-x-auto">
-                    <h5 className="text-brand-400 font-bold mb-2 pb-2 border-b border-surface-800/50">{t('scenario_a')}</h5>
-                    <div className="flex justify-between py-1 border-b border-surface-800/50 min-w-[300px]"><span>├── {t('level_1')}</span><span className="text-success-400 ml-auto">50%</span></div>
-                    <div className="flex justify-between py-1 border-b border-surface-800/50 min-w-[300px]"><span>├── {t('level_2')}</span><span className="text-success-400 ml-auto">10%</span></div>
-                    <div className="flex justify-between py-1 border-b border-surface-800/50 min-w-[300px]"><span>├── {t('level_3')}</span><span className="text-success-400 ml-auto">5%</span></div>
-                    <div className="flex justify-between py-1 border-b border-surface-800/50 min-w-[300px]"><span>├── {t('treasury_comp')}</span><span className="text-zinc-100 ml-auto">25%</span></div>
-                    <div className="flex justify-between py-1 min-w-[300px]"><span>└── <span className="text-brand-400 font-black">{t('global_pool')}</span></span><span className="text-brand-500 ml-auto font-bold">10%</span></div>
-                  </div>
-
-                  <div className="bg-surface-950 p-4 rounded-xl border border-surface-800 font-mono text-xs sm:text-sm text-zinc-400 shadow-inner overflow-x-auto">
-                    <h5 className="text-blue-400 font-bold mb-2 pb-2 border-b border-surface-800/50">{t('scenario_b')}</h5>
-                    <div className="flex justify-between py-1 border-b border-surface-800/50 min-w-[300px]"><span>├── {t('treasury_comp')}</span><span className="text-zinc-100 ml-auto">80%</span></div>
-                    <div className="flex justify-between py-1 border-b border-surface-800/50 min-w-[300px]"><span>├── {t('events_pool_top10')}</span><span className="text-purple-400 ml-auto">10%</span></div>
-                    <div className="flex justify-between py-1 min-w-[300px]"><span>└── {t('marketing_pool')}</span><span className="text-cyan-400 ml-auto">10%</span></div>
-                  </div>
-                </div>
-              </section>
-
-              <section>
-                <h4 className="text-lg font-black text-zinc-100 mb-3 pb-2 border-b border-surface-800 flex items-center gap-2"><Icon name="globe" size={18} className="text-brand-500" /> {t('wp_sec3_title')}</h4>
-                <div className="space-y-4">
-                  <div className="bg-brand-500/5 border-l-4 border-brand-500 p-4 rounded-r-xl"><h5 className="font-bold text-brand-300 mb-1">{t('wp_sec3_a_title')}</h5><p className="text-zinc-300 text-sm">{t('wp_sec3_a_desc')}</p></div>
-                  <div className="bg-success-500/5 border-l-4 border-success-500 p-4 rounded-r-xl"><h5 className="font-bold text-success-300 mb-1">{t('wp_sec3_b_title')}</h5><p className="text-zinc-300 text-sm font-bold">{t('wp_sec3_b_desc')}</p></div>
-                  <div className="bg-blue-500/5 border-l-4 border-blue-500 p-4 rounded-r-xl"><h5 className="font-bold text-blue-300 mb-1">{t('wp_sec3_c_title')}</h5><p className="text-zinc-300 text-sm">{t('wp_sec3_c_desc')}</p></div>
-                </div>
-              </section>
-
-              <section>
-                <h4 className="text-xl font-black text-zinc-100 mb-3 pb-2 border-b border-brand-500 flex items-center gap-2"><Icon name="infinity" size={24} className="text-brand-500" /> {t('wp_sec4_title')}</h4>
-                <p className="text-sm text-zinc-300 font-bold bg-brand-500/10 p-4 rounded-xl border border-brand-500/30 leading-relaxed shadow-[0_0_15px_rgba(212,175,55,0.15)]">{t('wp_sec4_desc')}</p>
-              </section>
-
-              <div className="pt-2">
-                <button onClick={() => setShowTechSpecs(!showTechSpecs)} className={`w-full p-4 rounded-xl border flex items-center justify-between font-bold text-sm transition-all shadow-lg ${showTechSpecs ? 'bg-surface-800 border-red-500/50 text-red-400' : 'bg-surface-900 border-surface-700 text-zinc-300 hover:border-red-500/50 hover:-translate-y-0.5'}`}>
-                  <span className="flex items-center gap-2"><Icon name="shield-alert" size={18} /> {showTechSpecs ? t('wp_tech_hide') : t('wp_tech_btn')}</span>
-                  <Icon name={showTechSpecs ? "chevron-up" : "chevron-down"} size={18} />
-                </button>
-
-                {showTechSpecs && (
-                  <div className="mt-4 p-4 sm:p-5 bg-surface-950 border border-red-500/30 rounded-xl font-mono text-xs text-zinc-400 space-y-4 sm:space-y-5 shadow-inner fade-in">
-                    <h5 className="text-red-400 font-bold text-sm mb-2">// Enterprise Cybersecurity Safeguards</h5>
-                    <div><strong className="text-zinc-200 block mb-1 flex items-center gap-2"><Icon name="key" size={14}/> {t('wp_tech_1_title')}</strong>{t('wp_tech_1_desc')}</div>
-                    <div><strong className="text-zinc-200 block mb-1 flex items-center gap-2"><Icon name="copy-x" size={14}/> {t('wp_tech_2_title')}</strong>{t('wp_tech_2_desc')}</div>
-                    <div><strong className="text-zinc-200 block mb-1 flex items-center gap-2"><Icon name="lock" size={14}/> {t('wp_tech_3_title')}</strong>{t('wp_tech_3_desc')}</div>
-                    <div><strong className="text-warning-400 block mb-1 flex items-center gap-2 text-yellow-500"><Icon name="alert-triangle" size={14}/> {t('wp_tech_4_title')}</strong>{t('wp_tech_4_desc')}</div>
-                    <div className="bg-red-500/10 border border-red-500/30 p-3 rounded-lg"><strong className="text-red-400 block mb-1 flex items-center gap-2"><Icon name="hard-drive" size={14}/> {t('wp_tech_5_title')}</strong>{t('wp_tech_5_desc')}</div>
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="p-4 sm:p-5 border-t border-surface-800 bg-surface-900/50 shrink-0 flex flex-col sm:flex-row justify-end items-center gap-3">
-              <button onClick={() => { if(onOpenSpecs) onOpenSpecs(); }} className="w-full sm:w-auto px-6 py-2.5 bg-surface-950 border border-brand-500/30 hover:border-brand-500/60 text-brand-400 rounded-xl text-xs sm:text-sm font-bold transition-colors uppercase tracking-wider shadow-lg flex items-center justify-center gap-2">
-                 <Icon name="file-text" size={16} /> {t('specifications')}
-              </button>
-              <button onClick={onClose} className="w-full sm:w-auto px-6 py-2.5 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded-xl text-xs sm:text-sm font-bold transition-colors uppercase tracking-wider shadow-lg">{t('close_doc')}</button>
-            </div>
-          </div>
-        </div>
-      );
-    };
-
     const UserDashboard = ({ t }) => {
       return (
-        <div className="flex-1 flex flex-col items-center justify-center w-full max-w-5xl mx-auto fade-in h-full py-4 min-h-0">
-          <Card padding="p-6 sm:p-10 lg:p-12" className="flex flex-col items-center text-center bg-gradient-to-b from-surface-900/90 to-surface-950 border-t-2 border-t-brand-500 relative w-full shadow-2xl justify-center h-full sm:h-auto">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-brand-500/10 blur-[60px] pointer-events-none rounded-full"></div>
-            
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-zinc-100 mb-8 lg:mb-10 tracking-tight relative z-10"><span className="text-gold-gradient">WELCOME!</span></h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 w-full relative z-10">
-              <a href="SummaryZeroToHeroAcademy.html" target="_blank" rel="noopener noreferrer" className="relative overflow-hidden flex flex-col items-center justify-center p-6 sm:p-8 rounded-2xl bg-surface-950 hover:bg-surface-900 transition-all shadow-lg group border border-brand-500/30 hover:border-brand-500 hover:-translate-y-1">
-                <div className="absolute inset-0 bg-gradient-to-br from-brand-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-surface-900 border border-brand-500/40 flex items-center justify-center mb-4 sm:mb-5 shadow-[0_0_20px_rgba(212,175,55,0.2)] group-hover:scale-110 transition-transform duration-500 ease-out shrink-0">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 sm:w-8 sm:h-8">
+        <div className="flex-1 flex flex-col h-full min-h-0 py-2 sm:py-4 fade-in">
+          <div className="w-full flex flex-col h-full gap-4 max-w-6xl mx-auto">
+            {/* Top Operational Status Bar */}
+            <div className="shrink-0 p-4 sm:p-6 glass-panel rounded-2xl border-l-4 border-l-brand-500 flex items-center justify-between shadow-lg">
+              <div>
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-zinc-100 uppercase tracking-widest">{t('welcome_title')}</h2>
+                <p className="text-success-400 font-mono text-xs mt-1 font-bold flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-success-500 animate-pulse"></span>
+                  {t('system_status_ok')}
+                </p>
+              </div>
+              <Icon name="activity" className="text-brand-500" size={32} />
+            </div>
+
+            {/* Modules Grid - filling remaining height nicely */}
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 min-h-0 overflow-y-auto custom-scrollbar lg:overflow-hidden">
+              <a href="SummaryZeroToHeroAcademy.html" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-6 lg:p-8 rounded-2xl glass-panel hover:bg-surface-800 transition-all shadow-lg group border border-brand-500/30 hover:border-brand-500 hover:-translate-y-1 h-full min-h-[200px]">
+                <div className="absolute inset-0 bg-gradient-to-br from-brand-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
+                <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-surface-900 border border-brand-500/40 flex items-center justify-center mb-4 lg:mb-6 shadow-[0_0_20px_rgba(212,175,55,0.2)] group-hover:scale-110 transition-transform duration-500 ease-out shrink-0">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 lg:w-10 lg:h-10">
                     <defs><linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#fef08a" /><stop offset="50%" stopColor="#d4af37" /><stop offset="100%" stopColor="#92400e" /></linearGradient></defs>
                     <path d="M12 3L1 9L12 15L21 10.09V17H23V9L12 3Z" fill="url(#goldGrad)"/><path d="M5 13.18V17.18C5 17.18 8.5 21 12 21C15.5 21 19 17.18 19 17.18V13.18L12 17L5 13.18Z" fill="url(#goldGrad)" opacity="0.8"/><circle cx="12" cy="12" r="3" fill="#09090b" /><path d="M12 10.5L13.5 13.5H10.5L12 10.5Z" fill="url(#goldGrad)"/>
                   </svg>
                 </div>
-                <h3 className="text-sm sm:text-base font-black text-zinc-100 tracking-widest uppercase text-center">{t('academy_btn')}</h3>
+                <h3 className="text-sm lg:text-base font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('academy_btn')}</h3>
               </a>
               
-              <a href="https://t.me/BettingExchangeRoom" target="_blank" rel="noopener noreferrer" className="relative overflow-hidden flex flex-col items-center justify-center p-6 sm:p-8 rounded-2xl bg-surface-950 hover:bg-surface-900 transition-all shadow-lg group border border-[#2AABEE]/30 hover:border-[#2AABEE] hover:-translate-y-1">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#2AABEE]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-surface-900 border border-[#2AABEE]/40 flex items-center justify-center mb-4 sm:mb-5 shadow-[0_0_20px_rgba(42,171,238,0.2)] group-hover:scale-110 transition-transform duration-500 ease-out shrink-0">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 sm:w-10 sm:h-10">
+              <a href="https://t.me/BettingExchangeRoom" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-6 lg:p-8 rounded-2xl glass-panel hover:bg-surface-800 transition-all shadow-lg group border border-[#2AABEE]/30 hover:border-[#2AABEE] hover:-translate-y-1 h-full min-h-[200px]">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#2AABEE]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
+                <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-surface-900 border border-[#2AABEE]/40 flex items-center justify-center mb-4 lg:mb-6 shadow-[0_0_20px_rgba(42,171,238,0.2)] group-hover:scale-110 transition-transform duration-500 ease-out shrink-0">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 lg:w-10 lg:h-10">
                     <path d="M12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12z" fill="#2AABEE"/><path d="M5.432 12.333l10.87-4.18c.513-.19.957.123.774.887l-1.854 8.742c-.156.697-.568.868-1.15.542l-3.18-2.344-1.533 1.478c-.17.17-.312.312-.642.312l.228-3.238 5.894-5.32c.256-.228-.056-.355-.397-.127L7.15 13.68l-3.136-.98c-.682-.213-.697-.683.143-1.013z" fill="#fff"/>
                   </svg>
                 </div>
-                <h3 className="text-sm sm:text-base font-black text-zinc-100 tracking-widest uppercase text-center">{t('signals_btn')}</h3>
+                <h3 className="text-sm lg:text-base font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('signals_btn')}</h3>
               </a>
 
-              <a href="brandshop.html" target="_blank" rel="noopener noreferrer" className="relative overflow-hidden flex flex-col items-center justify-center p-6 sm:p-8 rounded-2xl bg-surface-950 hover:bg-surface-900 transition-all shadow-lg group border border-[#ec4899]/30 hover:border-[#ec4899] hover:-translate-y-1">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#ec4899]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-surface-900 border border-[#ec4899]/40 flex items-center justify-center mb-4 sm:mb-5 shadow-[0_0_20px_rgba(236,72,153,0.2)] group-hover:scale-110 transition-transform duration-500 ease-out shrink-0">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 sm:w-10 sm:h-10">
-                     <path d="M16 11V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V11M5 9H19L20 21H4L5 9Z" stroke="#ec4899" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <a href="brandshop.html" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-6 lg:p-8 rounded-2xl glass-panel hover:bg-surface-800 transition-all shadow-lg group border border-[#ec4899]/30 hover:border-[#ec4899] hover:-translate-y-1 h-full min-h-[200px]">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#ec4899]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
+                <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-surface-900 border border-[#ec4899]/40 flex items-center justify-center mb-4 lg:mb-6 shadow-[0_0_20px_rgba(236,72,153,0.2)] group-hover:scale-110 transition-transform duration-500 ease-out shrink-0">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 lg:w-10 lg:h-10">
+                      <path d="M16 11V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V11M5 9H19L20 21H4L5 9Z" stroke="#ec4899" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </div>
-                <h3 className="text-sm sm:text-base font-black text-zinc-100 tracking-widest uppercase text-center">{t('brand_shop')}</h3>
+                <h3 className="text-sm lg:text-base font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('brand_shop')}</h3>
               </a>
             </div>
-          </Card>
+          </div>
         </div>
       );
     };
@@ -651,8 +473,6 @@
     const CompanyDashboard = ({ sc, t }) => {
       const [isSimulating, setIsSimulating] = useState(false);
       const [statusSort, setStatusSort] = useState('activeFirst'); 
-      const [showWhitepaper, setShowWhitepaper] = useState(false);
-      const [showSpecs, setShowSpecs] = useState(false);
 
       const localizedChartData = useMemo(() => RAW_REVENUE_DATA.map(d => ({...d, name: t(d.rawKey) || d.rawKey})), [t]);
       
@@ -679,81 +499,88 @@
       };
 
       return (
-        <div className="flex flex-col flex-1 h-full fade-in gap-4 pb-4 min-h-0">
-          <Card padding="p-3 sm:p-4" className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-gradient-to-r from-surface-900 to-surface-800 border-l-4 border-l-brand-500 shrink-0">
-            <div className="w-full sm:w-auto overflow-hidden min-w-0 flex-1">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-brand-500/10 rounded-lg flex items-center justify-center text-brand-400 shrink-0 border border-brand-500/20"><Icon name="building" size={20} /></div>
-                <h2 className="text-lg sm:text-xl font-black text-zinc-100 truncate uppercase tracking-widest">{t('treasury_center')}</h2>
-              </div>
+        <div className="flex flex-col flex-1 h-full fade-in min-h-0 pt-2 lg:pt-0">
+          
+          {/* Top Navbar specifically for Treasury actions */}
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 shrink-0 mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-brand-500/10 rounded-lg flex items-center justify-center text-brand-400 shrink-0 border border-brand-500/20"><Icon name="building" size={20} /></div>
+              <h2 className="text-lg sm:text-xl font-black text-zinc-100 truncate uppercase tracking-widest">{t('treasury_center')}</h2>
             </div>
-            <div className="w-full sm:w-auto shrink-0 flex flex-col sm:flex-row gap-2 sm:gap-3">
-              <button onClick={() => setShowWhitepaper(true)} className="w-full sm:w-auto px-5 py-2.5 bg-surface-950 hover:bg-surface-800 border border-surface-700 text-brand-400 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition-colors uppercase tracking-wide shadow-lg">
-                <Icon name="file-text" size={16} /> {t('white_paper')}
-              </button>
+            <div className="w-full lg:w-auto shrink-0 flex flex-col sm:flex-row gap-2 sm:gap-3">
+              <a href="pricing.html" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto px-5 py-2.5 bg-surface-950 hover:bg-surface-800 border border-surface-700 text-brand-400 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition-colors uppercase tracking-wide shadow-lg">
+                <Icon name="file-text" size={16} /> {t('pricing_docs')}
+              </a>
               <button onClick={handleDeposit} disabled={isSimulating} className="w-full sm:w-auto px-5 py-2.5 bg-gold-gradient hover:opacity-90 text-surface-950 rounded-xl text-xs font-black flex items-center justify-center gap-2 disabled:opacity-50 transition-opacity uppercase tracking-wide shadow-lg">
                 {isSimulating ? <Icon name="loader-2" size={16} className="animate-spin" /> : <Icon name="plus" size={16} />} {t('simulate_deposit')}
               </button>
             </div>
-          </Card>
+          </div>
 
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 min-h-0">
+          {/* Main Grid fitting 100vh */}
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 lg:grid-rows-[auto_1fr] gap-4 min-h-0 overflow-y-auto lg:overflow-hidden custom-scrollbar pb-4 lg:pb-0">
             
-            <div className="lg:col-span-3 flex flex-col gap-4 min-h-0 overflow-y-auto lg:overflow-visible custom-scrollbar">
+            {/* Top Row: 4 Metric Cards */}
+            <div className="lg:col-span-4 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 shrink-0">
               <StatCard title={t('processed_volume')} value={formatCurrency(sc.state.totalProcessed, sc.state.isHidden)} subtext={t('real_usdt')} icon="bar-chart-2" colorClass="text-brand-400" />
               <StatCard title={t('company_reserve')} value={formatCurrency(sc.state.contractBalance, sc.state.isHidden)} subtext={t('withdrawable_funds')} icon="wallet" colorClass="text-success-400" highlight={true} />
               <StatCard title={t('active_nodes')} value={sc.state.activePromoters.toString()} subtext={t('registered_pools')} icon="users" colorClass="text-blue-400" />
               
-              <Card padding="p-4" className="flex-col-fluid flex-1 min-h-[200px]">
-                <h3 className="text-[10px] sm:text-xs font-bold text-zinc-100 mb-2 uppercase tracking-widest flex items-center gap-2 shrink-0"><Icon name="globe-2" size={16} className="text-brand-500" /> {t('geo_dist')}</h3>
-                <div className="flex-1 w-full flex justify-center items-center relative min-h-0">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie data={GEO_DATA} cx="50%" cy="50%" innerRadius="65%" outerRadius="85%" paddingAngle={5} dataKey="value" stroke="none">
-                        {GEO_DATA.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
-                      </Pie>
-                      <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '8px', padding: '4px 8px', fontSize: '12px' }} itemStyle={{ fontWeight: 'bold', color:'#fff' }} formatter={(value) => [`${value}%`, 'Users']}/>
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="grid grid-cols-2 gap-2 mt-2 shrink-0">
-                  {GEO_DATA.map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-1.5 text-[9px] bg-surface-950 p-1.5 rounded border border-surface-800">
-                      <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: item.color }}></div>
-                      <span className="text-zinc-300 font-bold truncate">{item.name}</span>
-                      <span className="text-zinc-500 ml-auto font-mono">{item.value}%</span>
+              <Card padding="p-3 sm:p-4" className="flex flex-col h-full min-h-[120px]">
+                <h3 className="text-[10px] sm:text-xs font-bold text-zinc-100 mb-1 uppercase tracking-widest flex items-center gap-2 shrink-0"><Icon name="globe-2" size={14} className="text-brand-500" /> {t('geo_dist')}</h3>
+                <div className="flex-1 w-full relative min-h-0">
+                  <div className="absolute inset-0 flex">
+                    <ResponsiveContainer width="50%" height="100%">
+                      <PieChart>
+                        <Pie data={GEO_DATA} cx="50%" cy="50%" innerRadius="65%" outerRadius="90%" paddingAngle={5} dataKey="value" stroke="none">
+                          {GEO_DATA.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+                        </Pie>
+                        <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '8px', padding: '4px 8px', fontSize: '12px' }} itemStyle={{ fontWeight: 'bold', color:'#fff' }} formatter={(value) => [`${value}%`, t('users_label')]}/>
+                      </PieChart>
+                    </ResponsiveContainer>
+                    <div className="w-1/2 flex flex-col justify-center gap-1 pl-2">
+                      {GEO_DATA.map((item, idx) => (
+                        <div key={idx} className="flex items-center gap-1.5 text-[9px] 2xl:text-[10px]">
+                          <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: item.color }}></div>
+                          <span className="text-zinc-300 font-bold truncate">{item.name}</span>
+                          <span className="text-zinc-500 ml-auto font-mono">{item.value}%</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
                 </div>
               </Card>
             </div>
 
-            <div className="lg:col-span-5 flex flex-col gap-4 min-h-0">
-              <Card className="flex flex-col flex-1 min-h-[250px]" padding="p-4">
+            {/* Bottom Row: Cash Flow Chart + Network Dir */}
+            <div className="lg:col-span-2 flex flex-col gap-4 min-h-[300px] lg:min-h-0 h-full">
+              <Card className="flex flex-col flex-1 h-full" padding="p-4">
                 <div className="flex justify-between items-center mb-4 shrink-0">
                   <h3 className="text-[10px] sm:text-xs font-bold text-zinc-100 flex items-center gap-2 uppercase tracking-widest"><Icon name="activity" size={16} className="text-brand-500"/> {t('cash_flow')}</h3>
                 </div>
-                <div className="flex-1 w-full min-h-0">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -20, bottom: 0}}>
-                      <defs><linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#d4af37" stopOpacity={0.4}/><stop offset="95%" stopColor="#d4af37" stopOpacity={0}/></linearGradient></defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
-                      <XAxis dataKey="name" stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700, textTransform:'uppercase'}} axisLine={false} tickLine={false} dy={10} />
-                      <YAxis stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700}} axisLine={false} tickLine={false} dx={-10} width={50} />
-                      <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '12px', color: '#fff' }} itemStyle={{ color: '#fcd34d', fontWeight: 'bold' }} />
-                      <Area type="monotone" dataKey="amount" stroke="#d4af37" strokeWidth={2} fillOpacity={1} fill="url(#colorAmount)" activeDot={{r: 5, fill: '#d4af37', stroke: '#fff', strokeWidth: 2}} />
-                    </AreaChart>
-                  </ResponsiveContainer>
+                <div className="flex-1 w-full relative min-h-0">
+                  <div className="absolute inset-0">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -20, bottom: 0}}>
+                        <defs><linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#d4af37" stopOpacity={0.4}/><stop offset="95%" stopColor="#d4af37" stopOpacity={0}/></linearGradient></defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+                        <XAxis dataKey="name" stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700, textTransform:'uppercase'}} axisLine={false} tickLine={false} dy={10} />
+                        <YAxis stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700}} axisLine={false} tickLine={false} dx={-10} width={50} />
+                        <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '12px', color: '#fff' }} itemStyle={{ color: '#fcd34d', fontWeight: 'bold' }} />
+                        <Area type="monotone" dataKey="amount" stroke="#d4af37" strokeWidth={2} fillOpacity={1} fill="url(#colorAmount)" activeDot={{r: 5, fill: '#d4af37', stroke: '#fff', strokeWidth: 2}} />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
               </Card>
             </div>
 
-            <div className="lg:col-span-4 flex flex-col gap-4 min-h-0">
-              <Card padding="p-0" className="flex flex-col flex-1 min-h-[300px]">
+            <div className="lg:col-span-2 flex flex-col gap-4 min-h-[300px] lg:min-h-0 h-full">
+              <Card padding="p-0" className="flex flex-col flex-1 h-full">
                 <div className="p-3 border-b border-surface-800 bg-surface-900/50 flex justify-between items-center shrink-0">
                   <h3 className="text-zinc-100 font-bold uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2"><Icon name="users-2" size={16} className="text-brand-500" /> {t('network_dir')}</h3>
                 </div>
-                <div className="flex-1 w-full overflow-y-auto custom-scrollbar relative bg-surface-950/30">
+                <div className="flex-1 w-full overflow-y-auto custom-scrollbar relative bg-surface-950/30 min-h-0">
                   <table className="w-full text-left border-collapse">
                     <thead className="sticky top-0 z-10 bg-surface-900 shadow-md">
                       <tr className="text-[9px] sm:text-[10px] uppercase tracking-wider text-zinc-500 border-b border-surface-800">
@@ -771,7 +598,7 @@
                         <tr key={member.id} className="hover:bg-surface-900/50 transition-colors">
                           <td className="px-3 py-2.5">
                             <div className="flex items-center gap-2">
-                              {member.flag && <img src={`https://flagcdn.com/${member.flag}.svg`} alt="flag" className="w-5 h-[14px] object-cover rounded-[1px] shadow-[0_0_2px_rgba(0,0,0,0.5)] shrink-0" />}
+                              {member.flag && <img src={`https://flagcdn.com/${member.flag}.svg`} alt="flag" className="flag-icon" />}
                               <div className="flex flex-col min-w-0">
                                 <span className="text-zinc-100 font-bold text-[10px] sm:text-xs truncate max-w-[100px] sm:max-w-[150px]">{member.name}</span>
                                 <TgLink username={member.username} className="text-[9px] sm:text-[10px] mt-0.5 truncate" />
@@ -793,8 +620,6 @@
             </div>
             
           </div>
-          <WhitepaperModal isOpen={showWhitepaper} onClose={() => setShowWhitepaper(false)} onOpenSpecs={() => setShowSpecs(true)} t={t} />
-          <SpecificationsModal isOpen={showSpecs} onClose={() => setShowSpecs(false)} t={t} />
         </div>
       );
     };
@@ -840,11 +665,12 @@
       };
 
       return (
-        <div className="flex flex-col flex-1 h-full fade-in gap-4 pb-4 min-h-0">
+        <div className="flex flex-col flex-1 h-full fade-in min-h-0 pt-2 lg:pt-0 pb-4">
           
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 min-h-0 overflow-y-auto lg:overflow-hidden custom-scrollbar">
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 lg:grid-rows-2 gap-3 sm:gap-4 min-h-0 overflow-y-auto lg:overflow-hidden custom-scrollbar">
             
-            <div className="lg:col-span-3 flex flex-col gap-4 min-h-0 shrink-0 lg:shrink">
+            {/* Left Col (3) */}
+            <div className="lg:col-span-3 flex flex-col gap-3 sm:gap-4 min-h-0 lg:row-span-2">
               <Card className="flex flex-col justify-between border-l-2 border-l-brand-500 shrink-0" padding="p-3 sm:p-4">
                 <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
                   <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-surface-950 flex items-center justify-center shrink-0 border-2 border-brand-500/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] overflow-hidden">
@@ -866,27 +692,24 @@
                   </button>
                 </div>
 
-                <div className="flex flex-col gap-2.5 w-full mt-1 border-t border-surface-800/60 pt-3">
+                <div className="flex flex-col gap-2 w-full mt-1 border-t border-surface-800/60 pt-3">
                   <h4 className="text-[9px] font-bold uppercase tracking-widest text-zinc-400 mb-0.5 flex items-center gap-1.5">
                     <Icon name="megaphone" size={12} className="text-brand-500" /> {t('marketing_funnels')}
                   </h4>
                   
                   {/* FUNNEL 1 */}
-                  <div className="relative w-full p-2.5 sm:p-3 rounded-xl border border-emerald-500/20 bg-surface-900/30 shadow-md flex flex-col gap-2 hover:border-emerald-500/40 transition-colors">
+                  <div className="relative w-full p-2 sm:p-2.5 rounded-xl border border-emerald-500/20 bg-surface-900/30 shadow-md flex flex-col gap-1.5 hover:border-emerald-500/40 transition-colors">
                     <div className="flex justify-between items-start">
-                      <div className="flex items-center gap-1.5 text-emerald-400">
-                        <Icon name="sparkles" size={14} className="shrink-0" />
-                        <span className="font-black text-[9px] sm:text-[10px] uppercase tracking-wider">{t('funnel_1')}</span>
+                      <div className="flex items-center gap-1 text-emerald-400">
+                        <Icon name="sparkles" size={12} className="shrink-0" />
+                        <span className="font-black text-[9px] uppercase tracking-wider">{t('funnel_1')}</span>
                       </div>
-                      <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-400/20 px-1 py-0.5 rounded text-[7px] sm:text-[8px] font-black uppercase shrink-0">
+                      <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-400/20 px-1 py-0.5 rounded text-[7px] font-black uppercase shrink-0">
                         {t('promo_50_tag')}
                       </span>
                     </div>
-                    <p className="text-[8px] sm:text-[9px] text-zinc-400 leading-tight pr-2">
-                      {t('funnel_1_desc')}
-                    </p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <button onClick={() => copyFunnelLink('promo-50.html', 'funnel_1')} className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-surface-800 hover:bg-surface-700 text-zinc-200 rounded-lg text-[9px] font-bold uppercase transition-colors shadow-sm">
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => copyFunnelLink('promo-50.html', 'funnel_1')} className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-surface-800 hover:bg-surface-700 text-zinc-200 rounded-lg text-[8px] font-bold uppercase transition-colors shadow-sm">
                         <Icon name="copy" size={10} /> {t('copy_link')}
                       </button>
                       <a href={`promo-50.html?ref=${displayAddress}`} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-lg flex items-center justify-center transition-colors">
@@ -896,21 +719,18 @@
                   </div>
                   
                   {/* FUNNEL 2 */}
-                  <div className="relative w-full p-2.5 sm:p-3 rounded-xl border border-purple-500/20 bg-surface-900/30 shadow-md flex flex-col gap-2 hover:border-purple-500/40 transition-colors">
+                  <div className="relative w-full p-2 sm:p-2.5 rounded-xl border border-purple-500/20 bg-surface-900/30 shadow-md flex flex-col gap-1.5 hover:border-purple-500/40 transition-colors">
                     <div className="flex justify-between items-start">
-                      <div className="flex items-center gap-1.5 text-purple-400">
-                        <Icon name="graduation-cap" size={14} className="shrink-0" />
-                        <span className="font-black text-[9px] sm:text-[10px] uppercase tracking-wider">{t('funnel_2')}</span>
+                      <div className="flex items-center gap-1 text-purple-400">
+                        <Icon name="graduation-cap" size={12} className="shrink-0" />
+                        <span className="font-black text-[9px] uppercase tracking-wider">{t('funnel_2')}</span>
                       </div>
-                      <span className="bg-purple-500/10 text-purple-400 border border-purple-400/20 px-1 py-0.5 rounded text-[7px] sm:text-[8px] font-black uppercase shrink-0">
+                      <span className="bg-purple-500/10 text-purple-400 border border-purple-400/20 px-1 py-0.5 rounded text-[7px] font-black uppercase shrink-0">
                         {t('live_event_tag')}
                       </span>
                     </div>
-                    <p className="text-[8px] sm:text-[9px] text-zinc-400 leading-tight pr-2">
-                      {t('funnel_2_desc')}
-                    </p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <button onClick={() => copyFunnelLink('promo-masterclass.html', 'funnel_2')} className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-surface-800 hover:bg-surface-700 text-zinc-200 rounded-lg text-[9px] font-bold uppercase transition-colors shadow-sm">
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => copyFunnelLink('promo-masterclass.html', 'funnel_2')} className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-surface-800 hover:bg-surface-700 text-zinc-200 rounded-lg text-[8px] font-bold uppercase transition-colors shadow-sm">
                         <Icon name="copy" size={10} /> {t('copy_link')}
                       </button>
                       <a href={`promo-masterclass.html?ref=${displayAddress}`} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/20 rounded-lg flex items-center justify-center transition-colors">
@@ -920,21 +740,18 @@
                   </div>
 
                   {/* FUNNEL 3 */}
-                  <div className="relative w-full p-2.5 sm:p-3 rounded-xl border border-brand-500/30 bg-surface-900/30 shadow-md flex flex-col gap-2 hover:border-brand-500/50 transition-colors">
+                  <div className="relative w-full p-2 sm:p-2.5 rounded-xl border border-brand-500/30 bg-surface-900/30 shadow-md flex flex-col gap-1.5 hover:border-brand-500/50 transition-colors">
                     <div className="flex justify-between items-start">
-                      <div className="flex items-center gap-1.5 text-brand-400">
-                        <Icon name="infinity" size={14} className="text-yellow-400 shrink-0" />
-                        <span className="font-black text-[9px] sm:text-[10px] uppercase tracking-wider text-gold-gradient">{t('funnel_3')}</span>
+                      <div className="flex items-center gap-1 text-brand-400">
+                        <Icon name="infinity" size={12} className="text-yellow-400 shrink-0" />
+                        <span className="font-black text-[9px] uppercase tracking-wider text-gold-gradient">{t('funnel_3')}</span>
                       </div>
-                      <span className="bg-brand-500/10 text-brand-400 border border-brand-400/20 px-1 py-0.5 rounded text-[7px] sm:text-[8px] font-black uppercase shrink-0">
+                      <span className="bg-brand-500/10 text-brand-400 border border-brand-400/20 px-1 py-0.5 rounded text-[7px] font-black uppercase shrink-0">
                         {t('viral_task_tag')}
                       </span>
                     </div>
-                    <p className="text-[8px] sm:text-[9px] text-zinc-400 leading-tight pr-2">
-                      {t('funnel_3_desc')} 
-                    </p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <button onClick={() => copyFunnelLink('taskfreeweek.html', 'funnel_3')} className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-surface-800 hover:bg-surface-700 text-zinc-200 rounded-lg text-[9px] font-bold uppercase transition-colors shadow-sm">
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => copyFunnelLink('taskfreeweek.html', 'funnel_3')} className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-surface-800 hover:bg-surface-700 text-zinc-200 rounded-lg text-[8px] font-bold uppercase transition-colors shadow-sm">
                         <Icon name="copy" size={10} /> {t('copy_link')}
                       </button>
                       <a href={`taskfreeweek.html?ref=${displayAddress}`} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 border border-brand-500/20 rounded-lg flex items-center justify-center transition-colors">
@@ -945,31 +762,7 @@
                 </div>
               </Card>
 
-              <Card className="flex flex-col items-center justify-center text-center relative overflow-hidden bg-gradient-to-b from-surface-900 to-surface-950 border-t-2 border-t-success-500 shrink-0" padding="p-4">
-                <p className="text-[9px] sm:text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-1 leading-tight">{t('vault_available')}</p>
-                <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-zinc-100 mb-2 tracking-tight truncate w-full font-mono drop-shadow-md">{formatCurrency(sc.state.promoterAvailable, sc.state.isHidden)} {!sc.state.isHidden && <span className="text-xs sm:text-base text-success-400 ml-1 font-sans tracking-normal">USDT</span>}</div>
-                <div className="mb-4">
-                  <button onClick={sc.toggleHidden} className="text-zinc-500 hover:text-zinc-300 transition-colors p-1 px-2.5 bg-surface-950 rounded-md border border-surface-800 flex items-center gap-1.5 text-[9px] font-bold uppercase mx-auto"><Icon name={sc.state.isHidden ? 'eye' : 'eye-off'} size={10} /> {sc.state.isHidden ? t('show_balances') : t('hide_balances')}</button>
-                </div>
-
-                <div className="w-full max-w-[240px] mx-auto mt-auto">
-                  {!sc.state.tonWallet ? (
-                    <button onClick={() => setShowWalletModal(true)} className="w-full py-2.5 rounded-xl font-black text-[10px] sm:text-[11px] uppercase tracking-widest flex items-center justify-center gap-2 transition-transform hover:-translate-y-0.5 bg-gold-gradient text-surface-950 hover:opacity-90 shadow-[0_10px_20px_rgba(212,175,55,0.2)]"><Icon name="wallet" size={14} /> {t('setup_wallet')}</button>
-                  ) : (
-                    <div className="flex flex-col gap-2">
-                      <button onClick={() => setShowWalletModal(true)} className="flex items-center justify-center gap-2 text-[10px] font-mono text-zinc-400 bg-surface-900 border border-surface-800 hover:border-brand-500/50 py-1.5 rounded-lg transition-colors group">
-                        <span className="truncate max-w-[150px]">{sc.state.tonWallet}</span>
-                        <Icon name="pencil" size={10} className="group-hover:text-brand-400" />
-                      </button>
-                      <button onClick={() => { if(sc.state.promoterAvailable > 0) setShowSecureModal(true); }} disabled={isClaiming || sc.state.promoterAvailable <= 0} className={`w-full py-2.5 rounded-xl font-black text-[10px] sm:text-[11px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${sc.state.promoterAvailable <= 0 ? 'bg-surface-950 border border-surface-800 text-zinc-600' : isClaiming ? 'bg-success-600 text-white cursor-wait' : 'bg-success-600 hover:bg-success-500 text-white shadow-[0_10px_20px_rgba(16,185,129,0.3)] hover:-translate-y-0.5'}`}>
-                        {sc.state.promoterAvailable <= 0 ? (<><Icon name="lock" size={14} /> {t('no_funds')}</>) : isClaiming ? (<><Icon name="loader-2" size={14} className="animate-spin" /> {t('signing')}</>) : (<><Icon name="fingerprint" size={16} /> {t('unlock_withdraw')}</>)}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </Card>
-
-              <Card className={`relative overflow-hidden flex flex-col items-center justify-center text-center p-3 sm:p-4 border-b-4 shrink-0 flex-1 min-h-[160px] lg:min-h-0 ${isQualified ? 'border-brand-500 bg-gradient-to-t from-brand-500/10 to-surface-900' : 'border-surface-700'}`}>
+              <Card className={`relative overflow-hidden flex flex-col items-center justify-center text-center p-3 sm:p-4 border-b-4 shrink-0 flex-1 min-h-[160px] ${isQualified ? 'border-brand-500 bg-gradient-to-t from-brand-500/10 to-surface-900' : 'border-surface-700'}`}>
                  <h3 className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-1.5 text-zinc-300"><Icon name="award" size={12} className={isQualified ? 'text-brand-500' : 'text-zinc-500'}/> {t('global_pool')}</h3>
                  <div className="relative mb-2 sm:mb-3">
                    {isQualified && <div className="absolute inset-0 bg-brand-500/30 blur-[20px] rounded-full"></div>}
@@ -995,32 +788,60 @@
               </Card>
             </div>
 
-            <div className="lg:col-span-5 flex flex-col gap-4 min-h-0 shrink-0 lg:shrink">
-              <Card className="flex flex-col flex-1 min-h-[200px]" padding="p-4">
-                <h3 className="text-[10px] sm:text-xs font-bold text-zinc-100 mb-2 uppercase tracking-widest flex items-center gap-2 shrink-0"><Icon name="bar-chart-3" size={16} className="text-success-500" /> {t('earnings_chart')}</h3>
-                <div className="flex-1 w-full min-h-0">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -20, bottom: 0}}>
-                      <defs><linearGradient id="colorPromoterAmount" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/><stop offset="95%" stopColor="#10b981" stopOpacity={0}/></linearGradient></defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
-                      <XAxis dataKey="name" stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700, textTransform:'uppercase'}} axisLine={false} tickLine={false} dy={10} />
-                      <YAxis stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700}} axisLine={false} tickLine={false} dx={-10} width={50} />
-                      <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '12px', color: '#fff' }} itemStyle={{ color: '#34d399', fontWeight: 'bold' }} />
-                      <Area type="monotone" dataKey="amount" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorPromoterAmount)" activeDot={{r: 5, fill: '#10b981', stroke: '#fff', strokeWidth: 2}} />
-                    </AreaChart>
-                  </ResponsiveContainer>
+            {/* Middle Col (5) */}
+            <div className="lg:col-span-5 flex flex-col gap-3 sm:gap-4 min-h-0 lg:row-span-2">
+              <Card className="flex flex-col items-center justify-center text-center relative overflow-hidden bg-gradient-to-b from-surface-900 to-surface-950 border-t-2 border-t-success-500 shrink-0" padding="p-4">
+                <p className="text-[9px] sm:text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-1 leading-tight">{t('vault_available')}</p>
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-zinc-100 mb-2 tracking-tight truncate w-full font-mono drop-shadow-md">{formatCurrency(sc.state.promoterAvailable, sc.state.isHidden)} {!sc.state.isHidden && <span className="text-xs sm:text-base text-success-400 ml-1 font-sans tracking-normal">USDT</span>}</div>
+                <div className="mb-4">
+                  <button onClick={sc.toggleHidden} className="text-zinc-500 hover:text-zinc-300 transition-colors p-1 px-2.5 bg-surface-950 rounded-md border border-surface-800 flex items-center gap-1.5 text-[9px] font-bold uppercase mx-auto"><Icon name={sc.state.isHidden ? 'eye' : 'eye-off'} size={10} /> {sc.state.isHidden ? t('show_balances') : t('hide_balances')}</button>
+                </div>
+
+                <div className="w-full max-w-[240px] mx-auto mt-auto">
+                  {!sc.state.tonWallet ? (
+                    <button onClick={() => setShowWalletModal(true)} className="w-full py-2.5 rounded-xl font-black text-[10px] sm:text-[11px] uppercase tracking-widest flex items-center justify-center gap-2 transition-transform hover:-translate-y-0.5 bg-gold-gradient text-surface-950 hover:opacity-90 shadow-[0_10px_20px_rgba(212,175,55,0.2)]"><Icon name="wallet" size={14} /> {t('setup_wallet')}</button>
+                  ) : (
+                    <div className="flex flex-col gap-2">
+                      <button onClick={() => setShowWalletModal(true)} className="flex items-center justify-center gap-2 text-[10px] font-mono text-zinc-400 bg-surface-900 border border-surface-800 hover:border-brand-500/50 py-1.5 rounded-lg transition-colors group">
+                        <span className="truncate max-w-[150px]">{sc.state.tonWallet}</span>
+                        <Icon name="pencil" size={10} className="group-hover:text-brand-400" />
+                      </button>
+                      <button onClick={() => { if(sc.state.promoterAvailable > 0) setShowSecureModal(true); }} disabled={isClaiming || sc.state.promoterAvailable <= 0} className={`w-full py-2.5 rounded-xl font-black text-[10px] sm:text-[11px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${sc.state.promoterAvailable <= 0 ? 'bg-surface-950 border border-surface-800 text-zinc-600' : isClaiming ? 'bg-success-600 text-white cursor-wait' : 'bg-success-600 hover:bg-success-500 text-white shadow-[0_10px_20px_rgba(16,185,129,0.3)] hover:-translate-y-0.5'}`}>
+                        {sc.state.promoterAvailable <= 0 ? (<><Icon name="lock" size={14} /> {t('no_funds')}</>) : isClaiming ? (<><Icon name="loader-2" size={14} className="animate-spin" /> {t('signing')}</>) : (<><Icon name="fingerprint" size={16} /> {t('unlock_withdraw')}</>)}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </Card>
 
-              <div className="grid grid-cols-2 gap-2 sm:gap-3 shrink-0">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 shrink-0">
                 <StatCard title={t('lifetime_deposit')} value={formatCurrency(sc.state.promoterLifetime, sc.state.isHidden)} subtext="USDT" icon="coins" colorClass="text-brand-400" />
                 <StatCard title={t('daily_subs')} value="3,105" subtext={t('registered_subtext')} icon="infinity" colorClass="text-purple-400" highlight={true} />
                 <StatCard title={t('conv_rate')} value="18.5%" subtext={t('conv_subtext')} icon="pie-chart" colorClass="text-brand-400" />
                 <StatCard title={t('bot_interactions')} value="1,240" subtext={t('clicks_subtext')} icon="mouse-pointer-click" colorClass="text-cyan-400" />
               </div>
+
+              <Card className="flex flex-col flex-1 min-h-[200px]" padding="p-4">
+                <h3 className="text-[10px] sm:text-xs font-bold text-zinc-100 mb-2 uppercase tracking-widest flex items-center gap-2 shrink-0"><Icon name="bar-chart-3" size={16} className="text-success-500" /> {t('earnings_chart')}</h3>
+                <div className="flex-1 w-full relative min-h-0">
+                  <div className="absolute inset-0">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -20, bottom: 0}}>
+                        <defs><linearGradient id="colorPromoterAmount" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/><stop offset="95%" stopColor="#10b981" stopOpacity={0}/></linearGradient></defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+                        <XAxis dataKey="name" stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700, textTransform:'uppercase'}} axisLine={false} tickLine={false} dy={10} />
+                        <YAxis stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700}} axisLine={false} tickLine={false} dx={-10} width={50} />
+                        <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '12px', color: '#fff' }} itemStyle={{ color: '#34d399', fontWeight: 'bold' }} />
+                        <Area type="monotone" dataKey="amount" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorPromoterAmount)" activeDot={{r: 5, fill: '#10b981', stroke: '#fff', strokeWidth: 2}} />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </Card>
             </div>
 
-            <div className="lg:col-span-4 flex flex-col gap-4 min-h-0 shrink-0 lg:shrink">
+            {/* Right Col (4) */}
+            <div className="lg:col-span-4 flex flex-col gap-3 sm:gap-4 min-h-0 lg:row-span-2">
               <Card padding="p-0" className="flex flex-col flex-1 min-h-[250px] lg:min-h-0">
                 <div className="p-3 border-b border-surface-800 bg-surface-900/50 flex justify-between items-center shrink-0">
                   <h3 className="text-zinc-100 font-bold uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2"><Icon name="network" size={16} className="text-brand-500" /> {t('my_network')}</h3>
@@ -1040,7 +861,7 @@
                           <td className="px-3 py-2">
                             <div className="flex items-center gap-2">
                                <div className={`p-1.5 rounded-lg shrink-0 border hidden sm:block ${lead.typeKey === 'action_deposit' ? 'bg-success-500/10 text-success-400 border-success-500/30' : 'bg-brand-500/10 text-brand-400 border-brand-500/30'}`}><Icon name={lead.typeKey === 'action_deposit' ? 'coins' : 'user-plus'} size={12} /></div>
-                               {lead.flag && <img src={`https://flagcdn.com/${lead.flag}.svg`} alt="flag" className="w-5 h-[14px] object-cover rounded-[1px] shadow-[0_0_2px_rgba(0,0,0,0.5)] shrink-0" />}
+                               {lead.flag && <img src={`https://flagcdn.com/${lead.flag}.svg`} alt="flag" className="flag-icon" />}
                                <div className="min-w-0">
                                  <TgLink username={lead.username} className="text-[9px] sm:text-[10px] truncate" />
                                  <p className="text-[7px] sm:text-[8px] text-zinc-500 uppercase tracking-wider font-bold mt-0.5">{t(lead.timeKey)}</p>
@@ -1064,7 +885,7 @@
                 </div>
               </Card>
               
-              <Card padding="p-0" className="flex flex-col flex-1 min-h-[180px] lg:min-h-0 shrink-0">
+              <Card padding="p-0" className="flex flex-col flex-1 min-h-[180px] lg:min-h-[220px] shrink-0">
                 <div className="p-3 border-b border-surface-800 bg-surface-900/50 flex justify-between items-center shrink-0">
                   <h3 className="text-zinc-100 font-bold uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2"><Icon name="history" size={16} className="text-zinc-500" /> {t('audit_trail')}</h3>
                 </div>
@@ -1174,11 +995,16 @@
       const [isInitLoad, setIsInitLoad] = useState(true);
       const sc = useSmartContract(); 
 
-      useEffect(() => {
-        setTimeout(() => setIsInitLoad(false), 800); 
-      }, []);
-
       const t = useCallback((key) => translations[lang]?.[key] || translations['en'][key] || key, [lang]);
+
+      useEffect(() => {
+        // Initial setup for the static loader based on browser lang
+        const loadingEl = document.getElementById('loading-text');
+        if (loadingEl) {
+           loadingEl.innerText = t('init_env');
+        }
+        setTimeout(() => setIsInitLoad(false), 800); 
+      }, [t]);
 
       const handleWalletToggle = () => {
         if (sc.state.walletConnected) {
@@ -1189,13 +1015,13 @@
         }
       };
 
-      if (isInitLoad) return <div className="initial-loader"><div className="spinner-ring"></div><div className="text-xs text-zinc-500 mt-2 font-bold tracking-widest uppercase">Initializing Elite Environment...</div></div>;
+      if (isInitLoad) return null; // Controlled strictly by index.html until effect clears it
 
       return (
         <div className="bg-grid-pattern h-full flex flex-col overflow-hidden">
           <ToastContainer toasts={sc.state.toasts} />
           
-          <nav className="glass-panel border-b border-surface-800 sticky top-0 z-40 shadow-sm shrink-0">
+          <nav className="glass-panel border-b border-surface-800 z-40 shadow-sm shrink-0">
             <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-12 sm:h-14 flex items-center justify-between gap-2 sm:gap-4">
               <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
                 <div className="relative w-7 h-7 sm:w-9 sm:h-9 rounded-full overflow-hidden shrink-0 border border-brand-500/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] p-0.5 bg-surface-950">
@@ -1224,7 +1050,7 @@
             </div>
           </nav>
 
-          <main className={`max-w-[1400px] mx-auto px-3 sm:px-6 py-4 flex-1 flex flex-col w-full min-h-0 relative z-10 ${sc.state.walletConnected ? 'pb-20 md:pb-4' : ''}`}>
+          <main className={`max-w-[1400px] mx-auto px-3 sm:px-6 flex-1 flex flex-col w-full min-h-0 relative z-10 ${sc.state.walletConnected ? 'pb-16 md:pb-4' : 'py-4'}`}>
             {!sc.state.walletConnected ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6 fade-in h-full min-h-0">
                 <div className="w-20 h-20 sm:w-24 sm:h-24 bg-surface-900 text-brand-400 rounded-3xl flex items-center justify-center border border-brand-500/50 mb-2 shadow-[0_0_40px_rgba(212,175,55,0.2)] relative shrink-0">
@@ -1232,7 +1058,7 @@
                   <Icon name="infinity" size={32} className="relative z-10" />
                 </div>
                 <div className="max-w-md px-4 shrink-0">
-                  <h2 className="text-xl sm:text-2xl font-black text-zinc-100 uppercase tracking-wide">Elite Platform</h2>
+                  <h2 className="text-xl sm:text-2xl font-black text-zinc-100 uppercase tracking-wide">{t('elite_platform')}</h2>
                 </div>
                 <button onClick={handleWalletToggle} className="px-6 py-3 bg-gold-gradient text-surface-950 rounded-xl font-black text-[10px] sm:text-xs uppercase tracking-widest shadow-[0_10px_30px_rgba(212,175,55,0.3)] transition-transform hover:-translate-y-1 flex items-center gap-2 shrink-0">
                    {t('login')} <Icon name="arrow-right" size={14} />
