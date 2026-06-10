@@ -518,7 +518,7 @@
           </div>
 
           {/* Main Grid fitting 100vh */}
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 lg:grid-rows-[auto_1fr] gap-4 min-h-0 overflow-y-auto lg:overflow-hidden custom-scrollbar pb-4 lg:pb-0">
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 lg:grid-rows-[auto_minmax(0,1fr)] gap-4 min-h-0 overflow-y-auto custom-scrollbar pb-4 lg:pb-2 lg:pr-2">
             
             {/* Top Row: 4 Metric Cards */}
             <div className="lg:col-span-4 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 shrink-0">
@@ -554,7 +554,7 @@
 
             {/* Bottom Row: Cash Flow Chart + Network Dir */}
             <div className="lg:col-span-2 flex flex-col gap-4 min-h-[300px] lg:min-h-0 h-full">
-              <Card className="flex flex-col flex-1 h-full" padding="p-4">
+              <Card className="flex flex-col flex-1 h-full min-h-0" padding="p-4">
                 <div className="flex justify-between items-center mb-4 shrink-0">
                   <h3 className="text-[10px] sm:text-xs font-bold text-zinc-100 flex items-center gap-2 uppercase tracking-widest"><Icon name="activity" size={16} className="text-brand-500"/> {t('cash_flow')}</h3>
                 </div>
@@ -576,7 +576,7 @@
             </div>
 
             <div className="lg:col-span-2 flex flex-col gap-4 min-h-[300px] lg:min-h-0 h-full">
-              <Card padding="p-0" className="flex flex-col flex-1 h-full">
+              <Card padding="p-0" className="flex flex-col flex-1 h-full min-h-0">
                 <div className="p-3 border-b border-surface-800 bg-surface-900/50 flex justify-between items-center shrink-0">
                   <h3 className="text-zinc-100 font-bold uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2"><Icon name="users-2" size={16} className="text-brand-500" /> {t('network_dir')}</h3>
                 </div>
@@ -667,7 +667,7 @@
       return (
         <div className="flex flex-col flex-1 h-full fade-in min-h-0 pt-2 lg:pt-0 pb-4">
           
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 lg:grid-rows-2 gap-3 sm:gap-4 min-h-0 overflow-y-auto lg:overflow-hidden custom-scrollbar">
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 lg:grid-rows-[minmax(0,1fr)_minmax(0,1fr)] gap-3 sm:gap-4 min-h-0 overflow-y-auto custom-scrollbar lg:pr-2 lg:pb-2">
             
             {/* Left Col (3) */}
             <div className="lg:col-span-3 flex flex-col gap-3 sm:gap-4 min-h-0 lg:row-span-2">
@@ -885,7 +885,7 @@
                 </div>
               </Card>
               
-              <Card padding="p-0" className="flex flex-col flex-1 min-h-[180px] lg:min-h-[220px] shrink-0">
+              <Card padding="p-0" className="flex flex-col flex-1 min-h-[180px] lg:min-h-0 shrink-0">
                 <div className="p-3 border-b border-surface-800 bg-surface-900/50 flex justify-between items-center shrink-0">
                   <h3 className="text-zinc-100 font-bold uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2"><Icon name="history" size={16} className="text-zinc-500" /> {t('audit_trail')}</h3>
                 </div>
