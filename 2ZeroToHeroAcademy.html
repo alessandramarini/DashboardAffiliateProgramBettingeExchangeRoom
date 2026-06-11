@@ -7,341 +7,293 @@
     <meta name="theme-color" content="#050a05">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title id="page-title">Room AI | Global Exchange Academy - Day 2</title>
+    <title>Room AI | Global Exchange Academy - Day 2</title>
     <meta name="description" content="Interactive Academy for Betting Exchange. Day 2: Anatomy of the Price & Ladder.">
 
-    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <!-- Pre-connessioni ai CDN per caricamento fulmineo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://flagcdn.com">
     
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&display=swap"></noscript>
-
+    <!-- Font e Tailwind -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
+        :root {
+            --neon-green: #99E814;
+            --dark-bg: #050a05;
+            --panel-bg: rgba(10, 15, 10, 0.65);
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #050a05;
+            background-color: var(--dark-bg);
             background-image: 
-                linear-gradient(to bottom, rgba(5, 10, 5, 0.96), rgba(10, 20, 10, 0.90)),
-                url('https://images.unsplash.com/photo-1518605368461-1e125222058c?auto=format,compress&fit=crop&w=1920&q=70&fm=webp');
-            background-size: cover;
+                radial-gradient(circle at 10% 40%, rgba(153, 232, 20, 0.04), transparent 30%),
+                radial-gradient(circle at 90% 60%, rgba(36, 161, 222, 0.04), transparent 30%);
             background-attachment: fixed;
-            background-position: center;
             -webkit-tap-highlight-color: transparent;
-            -webkit-text-size-adjust: 100%;
-            text-rendering: optimizeLegibility;
+            color: #e5e7eb;
             overflow-x: hidden;
-            width: 100vw;
+            overscroll-behavior-y: none;
         }
 
-        .glass-panel {
-            background: rgba(10, 15, 10, 0.65);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(153, 232, 20, 0.15);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            transform: translateZ(0); 
-            will-change: transform, opacity;
-        }
-
-        .text-neon-green { color: #99E814; text-shadow: 0 0 12px rgba(153, 232, 20, 0.4); }
-        .bg-neon-green { background-color: #99E814; }
-
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.5); }
-        ::-webkit-scrollbar-thumb { background: #99E814; border-radius: 10px; }
-        .tg-scrollbar::-webkit-scrollbar { width: 4px; }
-        .tg-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .tg-scrollbar::-webkit-scrollbar-thumb { background: rgba(153,232,20,0.4); border-radius: 4px; }
-        .tg-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(153,232,20,0.8); }
-
-        @keyframes pulse-sub {
-            0% { color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); border-color: rgba(239, 68, 68, 0.6); background-color: rgba(20,5,5,0.9); }
-            50% { color: #99E814; box-shadow: 0 0 20px rgba(153, 232, 20, 0.3); border-color: rgba(153, 232, 20, 0.6); background-color: rgba(5,20,5,0.9); }
-            100% { color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); border-color: rgba(239, 68, 68, 0.6); background-color: rgba(20,5,5,0.9); }
-        }
-        .sub-warning { animation: pulse-sub 3s infinite ease-in-out; border: 1px solid; transition: all 0.3s ease; transform: translateZ(0); }
-
-        @keyframes joystickNeon {
-            0% { filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.5)); transform: scale(1) translateZ(0); }
-            50% { filter: drop-shadow(0 0 35px rgba(59, 130, 246, 1)); transform: scale(1.15) translateZ(0); }
-            100% { filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.5)); transform: scale(1) translateZ(0); }
-        }
-        .joystick-pulse { animation: joystickNeon 2.5s ease-in-out infinite; display: inline-block; cursor: pointer; will-change: transform, filter; }
-
-        @keyframes play-shadow-pulse {
-            0% { box-shadow: 0 0 0 0 rgba(153, 232, 20, 0.6), 0 8px 32px rgba(0,0,0,0.5); }
-            70% { box-shadow: 0 0 0 20px rgba(153, 232, 20, 0), 0 8px 32px rgba(0,0,0,0.5); }
-            100% { box-shadow: 0 0 0 0 rgba(153, 232, 20, 0), 0 8px 32px rgba(0,0,0,0.5); }
-        }
-        .play-pulse { animation: play-shadow-pulse 2.5s infinite cubic-bezier(0.66, 0, 0, 1); transform: translateZ(0); }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translate3d(0, 15px, 0); }
-            to { opacity: 1; transform: translate3d(0, 0, 0); }
-        }
-        .animate-fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; will-change: transform, opacity; }
-
-        .premium-card {
-            background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
-            border-radius: 24px;
-            position: relative;
-            transform: translateZ(0);
-            width: 100%;
-            box-sizing: border-box;
-            overflow: hidden; 
-        }
+        /* Fluid Typography */
+        .text-fluid-h1 { font-size: clamp(1.5rem, 3vw, 2.5rem); line-height: 1.1; }
+        .text-fluid-h2 { font-size: clamp(1.1rem, 2vw, 1.5rem); line-height: 1.2; }
         
-        .frame-gold {
-            border: 2px solid #c5a059;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(197, 160, 89, 0.15);
-        }
-        .wwtbam-question-box {
-            background: radial-gradient(ellipse at center, rgba(30, 41, 59, 0.95) 0%, rgba(2, 6, 23, 0.95) 100%);
-            border: 1px solid #d4af37;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7), inset 0 0 15px rgba(212,175,55,0.15);
-            position: relative;
-            width: 100%;
-        }
-
-        .frame-cyan {
-            border: 2px solid #00e5ff;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(0, 229, 255, 0.15);
-            background: linear-gradient(135deg, #041419 0%, #08222a 100%);
-        }
-
-        .frame-neon {
-            border: 2px solid #99E814;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(153, 232, 20, 0.15);
-            background: linear-gradient(135deg, #0a140f 0%, #112211 100%);
-        }
-
-        .frame-purple {
-            border: 2px solid #a855f7;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(168, 85, 247, 0.15);
-            background: linear-gradient(135deg, #13051a 0%, #260a33 100%);
-        }
-
-        .frame-blue {
-            border: 2px solid #3b82f6;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(59, 130, 246, 0.15);
-            background: linear-gradient(135deg, #05101a 0%, #0a2133 100%);
-        }
-
-        .wwtbam-btn {
-            background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
-            border: 1px solid rgba(197, 160, 89, 0.5);
-            border-radius: 9999px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+        /* Glassmorphism Premium Styling */
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            border-radius: 1.25rem;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            min-height: 3.5rem;
-            word-wrap: break-word;
-        }
-        .wwtbam-btn:hover:not(:disabled) {
-            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-            border-color: #ffd700;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4), inset 0 0 10px rgba(212, 175, 55, 0.2);
-            transform: translateY(-1px);
-        }
-        .wwtbam-btn.correct {
-            background: linear-gradient(180deg, #064e3b 0%, #022c22 100%) !important;
-            border-color: #10b981 !important;
-            box-shadow: 0 0 25px rgba(16, 185, 129, 0.3) !important;
-            color: #ffffff !important;
-        }
-        .wwtbam-btn.wrong {
-            background: linear-gradient(180deg, #7f1d1d 0%, #450a0a 100%) !important;
-            border-color: #ef4444 !important;
-            box-shadow: 0 0 25px rgba(239, 68, 68, 0.3) !important;
-            color: #ffffff !important;
         }
 
+        /* Temi cromatici dei bordi */
+        .border-neon { border: 1px solid rgba(153, 232, 20, 0.3); }
+        .border-gold { border: 1px solid rgba(212, 175, 55, 0.3); }
+        .border-cyan { border: 1px solid rgba(0, 229, 255, 0.3); }
+        .border-purple { border: 1px solid rgba(168, 85, 247, 0.3); }
+
+        /* Scrollbar stilizzata */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(153, 232, 20, 0.5); border-radius: 4px; }
+
+        /* Bandiere HD */
         .lang-flag {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            border-radius: 6px;
+            width: 32px; height: 22px;
+            border-radius: 3px; overflow: hidden;
+            opacity: 0.5; filter: grayscale(80%);
+            transition: all 0.3s ease; border: 1px solid transparent;
+            cursor: pointer; padding: 0; outline: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
         .lang-flag.active {
-            opacity: 1;
-            transform: scale(1.15) translateY(-2px);
-            border-color: #99E814;
-            box-shadow: 0 6px 12px rgba(153, 232, 20, 0.3), 0 0 0 2px rgba(153, 232, 20, 0.5);
-            filter: grayscale(0%);
-            z-index: 10;
+            opacity: 1; filter: grayscale(0%);
+            transform: scale(1.15); border-color: var(--neon-green);
+            box-shadow: 0 0 12px rgba(153, 232, 20, 0.5);
         }
-        .lang-flag.inactive {
-            opacity: 0.6;
-            filter: grayscale(60%) contrast(1.2);
-            border-color: transparent;
-            transform: scale(1);
+        .lang-flag img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        /* Effetti Interattivi Pulsanti */
+        .premium-btn {
+            position: relative; overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .lang-flag.inactive:hover {
-            opacity: 0.9;
-            filter: grayscale(20%);
-            transform: scale(1.05);
+        .premium-btn::before {
+            content: ''; position: absolute; inset: 0;
+            background: inherit; filter: blur(20px); opacity: 0;
+            transition: opacity 0.3s ease; z-index: 0;
         }
+        .premium-btn:hover::before { opacity: 1; }
+        .premium-btn > * { position: relative; z-index: 1; }
         
-        .btn-hover-fix:hover span {
-            color: #050a05 !important;
+        .quiz-opt {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease; text-align: left;
+        }
+        .quiz-opt:hover:not(:disabled) { background: rgba(212, 175, 55, 0.1); border-color: #d4af37; transform: translateX(6px); }
+        .quiz-opt.correct { background: rgba(16, 185, 129, 0.2) !important; border-color: #10b981 !important; color: #10b981; }
+        .quiz-opt.wrong { background: rgba(239, 68, 68, 0.2) !important; border-color: #ef4444 !important; color: #ef4444; }
+
+        /* Animazioni Globali */
+        @keyframes pulse-neon { 0%, 100% { box-shadow: 0 0 10px rgba(153,232,20,0.2); } 50% { box-shadow: 0 0 20px rgba(153,232,20,0.6); } }
+        .pulse-neon-fx { animation: pulse-neon 3s infinite ease-in-out; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .float-fx { animation: float 4s infinite ease-in-out; }
+
+        /* Layout Grid Master */
+        .master-grid {
+            display: grid; grid-template-columns: 1fr; gap: 1.5rem; align-items: stretch;
+        }
+        @media (min-width: 1024px) {
+            .master-grid { grid-template-columns: 1.25fr 1fr; }
+            .col-video { display: flex; flex-direction: column; justify-content: space-between; height: 100%; gap: 1rem; }
+            .video-wrapper { flex-grow: 1; min-height: 400px; display: flex; flex-direction: column; } 
+            .video-wrapper iframe { height: 100% !important; flex-grow: 1; }
+            .col-right { display: flex; flex-direction: column; justify-content: space-between; height: 100%; gap: 1rem; }
         }
     </style>
 </head>
-<body class="text-gray-200 pb-12 selection:bg-[#99E814] selection:text-black antialiased relative w-full overflow-x-hidden">
+<body class="flex flex-col min-h-[100dvh]">
 
-    <header class="sticky top-0 z-40 glass-panel border-b-0 border-t-0 border-x-0 border-b border-[#99E814]/20 px-3 sm:px-6 py-2 sm:py-3 flex justify-between items-center transform-gpu w-full">
-        <div class="flex items-center gap-2 md:gap-4 flex-shrink min-w-0">
-            <img src="logo-tondo.jpeg" alt="Logo" class="w-8 h-8 md:w-10 md:h-10 rounded-full shadow-[0_0_15px_rgba(153,232,20,0.3)] object-cover shrink-0 border border-[#99E814]/30" onerror="this.src='https://placehold.co/100x100/102010/99E814?text=BE'">
-            <h1 class="font-black text-[10px] sm:text-xs md:text-sm lg:text-base tracking-wider uppercase whitespace-nowrap overflow-hidden text-ellipsis" data-i18n-html="headerTitle">BETTING EXCHANGE <span class="text-neon-green">ROOM</span></h1>
+    <header class="sticky top-0 z-50 bg-[#050a05]/90 backdrop-blur-md border-b border-[#99E814]/20 px-4 py-2 flex items-center justify-between shadow-lg">
+        <div class="flex items-center gap-3 overflow-hidden">
+            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full border border-[#99E814] bg-[#99E814]/10 flex items-center justify-center font-black text-[#99E814] text-xs shrink-0 pulse-neon-fx">BE</div>
+            <h1 class="font-black text-xs md:text-sm tracking-wider uppercase truncate">
+                <span class="hidden sm:inline" data-i18n="headerPrefix">EXCHANGE</span> 
+                <span class="text-[#99E814]">ROOM</span>
+            </h1>
         </div>
         
-        <div class="flex items-center gap-2 sm:gap-4 shrink-0">
-            <div class="flex items-center bg-black/60 border border-gray-700 px-2.5 py-1.5 sm:px-3 rounded-full shadow-inner" id="xp-badge">
-                <span class="text-yellow-400 text-[10px] sm:text-xs mr-1.5">⚡</span>
-                <span id="xp-counter" class="font-mono font-bold text-[11px] sm:text-sm text-white tabular-nums">0 XP</span>
+        <div class="flex items-center gap-4">
+            <!-- Centralized Flag Switcher -->
+            <div class="flex items-center gap-2 bg-black/60 p-1.5 rounded-lg border border-gray-800 shadow-inner">
+                <button onclick="window.changeLang('en')" class="lang-flag" data-lang="en" title="English">
+                    <img src="https://flagcdn.com/w80/gb.png" alt="English">
+                </button>
+                <button onclick="window.changeLang('es')" class="lang-flag" data-lang="es" title="Español">
+                    <img src="https://flagcdn.com/w80/es.png" alt="Español">
+                </button>
+                <button onclick="window.changeLang('pt')" class="lang-flag" data-lang="pt" title="Português">
+                    <img src="https://flagcdn.com/w80/br.png" alt="Português">
+                </button>
+                <button onclick="window.changeLang('it')" class="lang-flag" data-lang="it" title="Italiano">
+                    <img src="https://flagcdn.com/w80/it.png" alt="Italiano">
+                </button>
+            </div>
+            
+            <!-- XP Badge -->
+            <div class="hidden sm:flex items-center bg-black/80 border border-gray-700 px-3 py-1.5 rounded-full shadow-inner">
+                <span class="text-yellow-400 text-xs mr-1 drop-shadow-[0_0_5px_rgba(250,204,21,0.8)]">⚡</span>
+                <span id="xp-counter" class="font-mono font-bold text-xs text-white">0 XP</span>
             </div>
         </div>
     </header>
 
-    <main class="w-full max-w-5xl mx-auto px-3 sm:px-6 mt-4 md:mt-8 space-y-6 md:space-y-10">
-
-        <div class="flex justify-center w-full px-4 mb-4 animate-fade-in-up">
-            <div class="flex items-center justify-center gap-3 sm:gap-5 bg-gradient-to-r from-gray-900/40 via-gray-900/80 to-gray-900/40 border border-[#99E814]/20 py-2.5 px-6 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md">
-                <button onclick="window.changeLang('en')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="en" aria-label="English">
-                    <img src="https://flagcdn.com/w40/gb.png" alt="EN" class="w-full h-full object-cover">
-                </button>
-                <button onclick="window.changeLang('es')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="es" aria-label="Español">
-                    <img src="https://flagcdn.com/w40/es.png" alt="ES" class="w-full h-full object-cover">
-                </button>
-                <button onclick="window.changeLang('pt')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="pt" aria-label="Português">
-                    <img src="https://flagcdn.com/w40/br.png" alt="PT" class="w-full h-full object-cover">
-                </button>
-                <button onclick="window.changeLang('it')" class="lang-flag inactive border-2 w-8 h-6 sm:w-10 sm:h-7 flex items-center justify-center bg-gray-800 touch-manipulation focus:outline-none" data-lang="it" aria-label="Italiano">
-                    <img src="https://flagcdn.com/w40/it.png" alt="IT" class="w-full h-full object-cover">
-                </button>
-            </div>
-        </div>
-
-        <div class="text-center space-y-2 md:space-y-3 px-2 animate-fade-in-up flex flex-col items-center">
-            <p class="text-[#99E814] font-black text-[10px] sm:text-xs md:text-sm tracking-[0.3em] uppercase drop-shadow-lg break-words text-center" data-i18n="moduleTitle">GIORNO 2/30</p>
-            <h2 class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tighter leading-tight break-words text-center w-full" data-i18n="lessonTitle">ZERO TO HERO academy</h2>
-            <p class="text-gray-400 max-w-2xl mx-auto text-xs sm:text-sm md:text-base font-bold leading-relaxed mt-2" data-i18n="lessonDesc">Impara a leggere il mercato. Anatomia del prezzo, Bid/Ask spread e lettura del Ladder.</p>
-        </div>
-
-        <section class="premium-card frame-cyan w-full p-3 sm:p-6 md:p-8" style="content-visibility: auto; contain-intrinsic-size: 500px;">
-            <div id="video-wrapper" class="relative w-full aspect-video bg-[#0a140f] rounded-xl md:rounded-2xl overflow-hidden border border-[#00e5ff]/30 shadow-xl ring-1 ring-white/5 transform-gpu">
-                <iframe id="main-video" class="absolute inset-0 w-full h-full z-20" src="https://www.youtube.com/embed/rR3bFDSiZmk?rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 mt-4 sm:mt-6 w-full max-w-4xl mx-auto">
-                <a id="btn-podcast" href="#" target="_blank" rel="noopener noreferrer" onclick="SoundEngine.click()" class="flex items-center justify-center p-3 sm:p-5 md:p-6 bg-gray-900/80 hover:bg-[#00e5ff]/10 hover:border-[#00e5ff]/50 border border-gray-700/50 rounded-xl md:rounded-2xl transition-all active:scale-95 group shadow-md text-center flex-row touch-manipulation transform-gpu min-h-[70px]">
-                    <svg class="w-6 h-6 sm:w-8 sm:h-8 mr-3 text-[#00e5ff] group-hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.8)] group-hover:scale-110 transition-all duration-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-                    <span class="font-black text-[11px] sm:text-xs md:text-sm tracking-widest uppercase text-[#00e5ff] break-words leading-tight" data-i18n="btnPodcast">ASCOLTA IL PODCAST</span>
-                </a>
-                <button onclick="openEbookModal()" class="flex items-center justify-center p-3 sm:p-5 md:p-6 bg-gray-900/80 hover:bg-[#ffb703]/10 hover:border-[#ffb703]/50 border border-gray-700/50 rounded-xl md:rounded-2xl transition-all active:scale-95 group shadow-md text-center flex-row touch-manipulation transform-gpu min-h-[70px]">
-                    <svg class="w-6 h-6 sm:w-8 sm:h-8 mr-3 text-[#ffb703] group-hover:drop-shadow-[0_0_8px_rgba(255,183,3,0.8)] group-hover:scale-110 transition-all duration-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                    <span class="font-black text-[11px] sm:text-xs md:text-sm tracking-widest uppercase text-[#ffb703] transition-colors break-words leading-tight" data-i18n="btnEbook">VISUALIZZA IL MANUALE</span>
-                </button>
-            </div>
-        </section>
-
-        <section class="premium-card frame-gold w-full p-4 sm:p-6 md:p-10 h-fit" id="quiz-section">
-            <div id="quiz-container" class="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center">
-                <div class="w-full flex flex-wrap justify-between items-center mb-6 sm:mb-8 px-2 gap-2">
-                    <div class="text-[#d4af37] text-[10px] sm:text-xs font-black uppercase tracking-widest bg-[#d4af37]/10 px-3 py-1 rounded-full border border-[#d4af37]/40 whitespace-nowrap shadow-inner" id="quiz-progress-text">Domanda 1 di 5</div>
-                    <div class="flex gap-1.5 shrink-0" id="quiz-dots"></div>
-                </div>
-                <div class="wwtbam-question-box px-4 sm:px-6 py-8 sm:py-10 rounded-xl text-center mb-8 sm:mb-10 w-full">
-                    <p id="quiz-question-text" class="text-[15px] sm:text-lg md:text-xl text-white font-black leading-relaxed drop-shadow-md break-words"></p>
-                </div>
-                <div id="quiz-options-container" class="space-y-3 sm:space-y-4 w-full"></div>
-            </div>
-            
-            <div id="quiz-feedback" class="hidden w-full max-w-2xl mx-auto p-6 sm:p-8 md:p-10 rounded-xl md:rounded-2xl text-center shadow-2xl mt-8 transition-all duration-500 transform-gpu relative overflow-hidden flex justify-center items-center">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
-                <div id="quiz-feedback-icon" class="text-6xl sm:text-8xl relative z-10 drop-shadow-lg flex items-center justify-center">✅</div>
-                <p id="quiz-feedback-text" class="hidden"></p>
-            </div>
-
-            <div id="quiz-completed-screen" class="hidden flex-col items-center justify-center py-10 md:py-16 text-center transition-all duration-500 w-full">
-                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-[#d4af37]/10 rounded-full flex items-center justify-center mb-6 border-2 border-[#d4af37] shadow-[0_0_30px_rgba(212,175,55,0.4)] shrink-0">
-                    <span class="text-4xl sm:text-5xl drop-shadow-lg">🏆</span>
-                </div>
-                <h4 class="text-[#d4af37] font-black text-xl sm:text-2xl md:text-3xl uppercase tracking-widest mb-3 drop-shadow-md break-words w-full" data-i18n="quizCompletedTitle">Check-Point Superato!</h4>
-                <p class="text-gray-200 text-sm md:text-base font-medium mb-10 max-w-md mx-auto px-4 break-words" data-i18n="quizCompletedDesc">Hai sbloccato 500 XP. Sei pronto per proseguire con la pratica.</p>
-                <button onclick="resetQuiz()" class="wwtbam-btn px-6 sm:px-10 py-3 sm:py-4 text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-[0.2em] text-[#d4af37] hover:text-white flex items-center justify-center gap-2 sm:gap-3 group max-w-full">
-                    <span class="group-hover:-rotate-180 transition-transform duration-500 text-base sm:text-lg shrink-0">🔄</span> 
-                    <span data-i18n="btnRetryQuiz" class="truncate">Ripeti il test</span>
-                </button>
-            </div>
-        </section>
-
-        <section class="premium-card frame-neon w-full p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center relative overflow-hidden" style="content-visibility: auto;">
-            <div class="absolute inset-0 bg-gray-600 opacity-[0.02] blur-3xl pointer-events-none"></div>
-            <div class="w-full max-w-4xl mx-auto flex justify-start items-center mb-3 md:mb-5 relative z-10">
-                <div class="bg-gray-900 text-[#99E814] border border-[#99E814]/30 text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest break-words" data-i18n="demoBadge">DEMO INTERATTIVA</div>
-            </div>
-            <a href="https://demo-betting-exchange.vercel.app/" target="_blank" class="demo-link block group relative w-full max-w-4xl mx-auto rounded-xl sm:rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl border border-[#99E814]/30 hover:border-[#99E814] transition-all duration-700 cursor-pointer bg-[#050a05] transform-gpu hover:-translate-y-1" onclick="SoundEngine.click()">
-                <div class="relative w-full overflow-hidden" style="aspect-ratio: 16/9;">
-                    <img src="demo-odds.jpeg" onerror="this.src='https://placehold.co/1280x720/102010/99E814?text=SIMULATOR'" alt="Demo Odds" class="absolute inset-0 w-full h-full object-cover object-top z-0 transition-transform duration-1000 group-hover:scale-105 opacity-100 grayscale-[0.8] mix-blend-lighten">
-                    <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-[#0a140f]/90 z-10 transition-opacity duration-700 opacity-80 group-hover:opacity-90 pointer-events-none"></div>
-                    <div class="absolute inset-0 flex items-center justify-center z-20 pointer-events-none px-2">
-                        <div class="play-pulse px-4 py-3 sm:px-8 sm:py-4 bg-[#99E814] border border-[#99E814] rounded-lg sm:rounded-xl flex items-center justify-center shadow-[0_0_30px_rgba(153,232,20,0.5)] transform group-hover:scale-105 transition-all duration-500 ease-out group-hover:bg-[#b3ff33] group-hover:shadow-[0_0_40px_rgba(153,232,20,0.7)] pointer-events-auto gap-2 sm:gap-3 backdrop-blur-sm max-w-[90%]">
-                            <svg class="w-4 h-4 sm:w-6 sm:h-6 text-[#050a05] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                            <span class="text-[#050a05] font-black text-[10px] sm:text-sm md:text-base tracking-[0.1em] sm:tracking-[0.2em] uppercase truncate" data-i18n="startSimulator">Avvia Simulatore</span>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </section>
+    <main class="flex-1 w-full max-w-[1400px] mx-auto p-3 md:p-6 flex flex-col justify-center">
         
-        <section class="premium-card frame-purple w-full p-5 sm:p-8 relative overflow-hidden transform-gpu" style="content-visibility: auto;">
-            <p class="text-[9px] sm:text-[11px] md:text-xs text-[#a855f7] font-black mb-2 sm:mb-4 tracking-[0.2em] uppercase text-center md:text-left break-words" data-i18n="finLabel">PILLOLA FINANZIARIA</p>
-            <p class="text-xs sm:text-base md:text-lg text-gray-300 font-medium italic leading-relaxed text-center md:text-left break-words w-full">"<span data-i18n="finQuote">Non comprare mai a mercato se lo spread è troppo ampio. Nel trading sportivo, pagare un tick di troppo ogni volta distrugge il tuo margine a lungo termine.</span>"</p>
-        </section>
+        <!-- Header Section -->
+        <div class="text-center mb-4 md:mb-6 flex flex-col items-center">
+            <span class="text-[#99E814] font-black text-[10px] md:text-xs tracking-[0.3em] uppercase bg-[#99E814]/10 px-3 py-1 rounded-full border border-[#99E814]/30 mb-2 float-fx" data-i18n="moduleTitle">DAY 2/30</span>
+            <h2 class="text-fluid-h1 font-black text-white uppercase tracking-tighter drop-shadow-md" data-i18n="lessonTitle">ZERO TO HERO</h2>
+            <p class="text-gray-400 max-w-xl mx-auto text-[11px] md:text-sm font-medium mt-1" data-i18n="lessonDesc">Learn to read the market. Anatomy of the price, Bid/Ask spread, and Ladder reading.</p>
+        </div>
 
-        <section class="premium-card frame-blue w-full p-6 sm:p-10 flex flex-col items-center justify-center relative transform-gpu">
-            <div class="text-center space-y-3 mb-6 px-4 animate-fade-in-up relative z-10 w-full">
-                <h4 class="text-[#3b82f6] font-black text-lg sm:text-xl md:text-2xl tracking-[0.2em] uppercase drop-shadow-[0_0_15px_rgba(59,130,246,0.5)] w-full break-words" data-i18n="penaltiesTitle">GIOCO EDUCATIVO</h4>
-                <p class="text-gray-300 text-xs sm:text-sm md:text-base font-medium max-w-lg mx-auto leading-relaxed w-full break-words" data-i18n="penaltiesDesc">Clicca il joystick per giocare alla ruota della fortuna.</p>
-            </div>
-            <a href="https://wheel-of-fortune-bice.vercel.app/" target="_blank" rel="noopener noreferrer" class="text-6xl sm:text-7xl md:text-8xl hover:scale-125 transition-transform duration-500 touch-manipulation joystick-pulse transform-gpu shrink-0 relative z-10 mt-4" title="Play Wheel of Fortune" onclick="SoundEngine.click()">
-                🎮
-                <div class="absolute inset-0 bg-[#3b82f6] rounded-full blur-[50px] opacity-20 -z-10"></div>
-            </a>
-        </section>
-
-        <div class="flex flex-col justify-center items-center pt-8 pb-4 border-t border-gray-800/50 relative gap-4 w-full">
-            <div id="sub-warning-msg" class="hidden absolute inset-0 md:static sub-warning px-4 sm:px-8 py-3.5 sm:py-4 rounded-xl text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-center w-full items-center justify-center gap-2 z-20 break-words">
-                <span data-i18n="subNotActive">ABBONAMENTO NON ATTIVO! CONTATTA IL TUO REFERENTE</span>
-            </div>
+        <!-- MASTER GRID -->
+        <div class="master-grid">
             
-            <a id="btn-next-lesson" href="https://affiliate-program-bettinge-exchange.vercel.app/SummaryZeroToHeroAcademy.html" onclick="SoundEngine.click()" class="bg-[#0a140f] text-[#99E814] border-2 border-[#99E814] font-black w-full max-w-md mx-auto justify-center px-6 sm:px-10 py-5 rounded-2xl hover:bg-[#99E814] hover:border-[#99E814] transition-all duration-300 text-xs sm:text-sm md:text-base uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(153,232,20,0.2)] hover:shadow-[0_0_40px_rgba(153,232,20,0.6)] touch-manipulation active:scale-95 flex items-center gap-3 z-10 transform-gpu group btn-hover-fix h-auto min-h-[4rem]">
-                <span data-i18n="navNextLesson" class="truncate transition-colors duration-300">PROSSIMA LEZIONE</span> 
-                <span class="text-xl sm:text-2xl group-hover:translate-x-2 group-hover:text-black transition-all duration-300 shrink-0">→</span>
+            <!-- COLONNA SINISTRA: Video e Podcast -->
+            <div class="col-video flex flex-col gap-4 w-full h-full">
+                <!-- Wrapper Video -->
+                <section class="glass-panel border-cyan p-2 w-full flex flex-col flex-1 shadow-[0_0_30px_rgba(0,229,255,0.05)]">
+                    <div class="video-wrapper relative w-full aspect-video bg-black rounded-xl overflow-hidden shadow-inner">
+                        <iframe id="main-video" class="absolute inset-0 w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </section>
+                
+                <!-- Pulsanti Azione (Podcast & Ebook) -->
+                <div class="grid grid-cols-2 gap-3 md:gap-4 shrink-0">
+                    <a id="btn-podcast" href="#" target="_blank" onclick="SoundEngine.click()" class="premium-btn flex flex-col items-center justify-center p-3 md:p-5 bg-gradient-to-b from-gray-900 to-black rounded-xl border border-gray-700/80 hover:border-[#00e5ff] transform-gpu hover:-translate-y-1 active:scale-95 shadow-lg group">
+                        <svg class="w-7 h-7 md:w-9 md:h-9 mb-2.5 text-[#00e5ff] drop-shadow-[0_0_8px_rgba(0,229,255,0.6)] group-hover:drop-shadow-[0_0_15px_rgba(0,229,255,1)] group-hover:scale-110 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                            <line stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" x1="12" y1="19" x2="12" y2="22"></line>
+                        </svg>
+                        <span class="font-black text-[9px] md:text-xs tracking-[0.2em] uppercase text-center text-gray-300 group-hover:text-white transition-colors" data-i18n="btnPodcast">PODCAST</span>
+                    </a>
+                    <button onclick="openEbookModal()" class="premium-btn flex flex-col items-center justify-center p-3 md:p-5 bg-gradient-to-b from-gray-900 to-black rounded-xl border border-gray-700/80 hover:border-[#ffb703] transform-gpu hover:-translate-y-1 active:scale-95 shadow-lg group">
+                        <svg class="w-7 h-7 md:w-9 md:h-9 mb-2.5 text-[#ffb703] drop-shadow-[0_0_8px_rgba(255,183,3,0.6)] group-hover:drop-shadow-[0_0_15px_rgba(255,183,3,1)] group-hover:scale-110 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                        <span class="font-black text-[9px] md:text-xs tracking-[0.2em] uppercase text-center text-gray-300 group-hover:text-white transition-colors" data-i18n="btnEbook">MANUAL</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- COLONNA DESTRA: Quiz e Interattività -->
+            <div class="col-right flex flex-col gap-4 w-full h-full">
+                
+                <!-- QUIZ Section -->
+                <section class="glass-panel border-gold p-4 md:p-6 flex flex-col shadow-[0_0_20px_rgba(212,175,55,0.05)] w-full relative">
+                    <div id="quiz-container" class="flex-1 flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-[#d4af37] drop-shadow-[0_0_5px_rgba(212,175,55,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span class="text-[#d4af37] text-[10px] md:text-xs font-black uppercase tracking-widest" id="quiz-progress-text">Q 1/5</span>
+                            </div>
+                            <div class="flex gap-1.5" id="quiz-dots"></div>
+                        </div>
+                        
+                        <div class="mb-4 flex items-center min-h-[40px]">
+                            <p id="quiz-question-text" class="text-sm md:text-base text-white font-bold leading-snug drop-shadow-md"></p>
+                        </div>
+                        <div id="quiz-options-container" class="space-y-2"></div>
+                    </div>
+                    
+                    <!-- Feedback Modal -->
+                    <div id="quiz-feedback" class="hidden mt-4 p-3 rounded-xl text-center border backdrop-blur-sm">
+                        <div id="quiz-feedback-icon" class="text-2xl mb-1"></div>
+                        <p id="quiz-feedback-text" class="text-[10px] sm:text-xs font-black uppercase tracking-wide"></p>
+                    </div>
+
+                    <!-- Screen Completamento -->
+                    <div id="quiz-completed-screen" class="hidden flex-col items-center justify-center text-center py-6">
+                        <div class="text-5xl mb-3 drop-shadow-[0_0_15px_rgba(212,175,55,0.8)]">🏆</div>
+                        <h4 class="text-[#d4af37] font-black text-xl uppercase tracking-widest mb-1" data-i18n="quizCompletedTitle">Passed!</h4>
+                        <p class="text-gray-400 text-xs mb-5" data-i18n="quizCompletedDesc">+500 XP Unlocked.</p>
+                        <button onclick="resetQuiz()" class="px-5 py-2.5 bg-gray-900 text-[#d4af37] border border-[#d4af37]/50 rounded-lg text-xs font-black uppercase hover:bg-[#d4af37]/20 transition-all active:scale-95 shadow-lg" data-i18n="btnRetryQuiz">Retry</button>
+                    </div>
+                </section>
+
+                <!-- Demo & Gioco -->
+                <div class="grid grid-cols-2 gap-4 w-full flex-1">
+                    
+                    <!-- Simulator Demo -->
+                    <section class="glass-panel border-neon p-4 flex flex-col justify-center items-center text-center premium-btn cursor-pointer transform-gpu hover:-translate-y-1 active:scale-95 shadow-[0_0_15px_rgba(153,232,20,0.05)]" onclick="window.open('https://demo-betting-exchange.vercel.app/', '_blank'); SoundEngine.click()">
+                        <svg class="w-8 h-8 md:w-10 md:h-10 text-[#99E814] drop-shadow-[0_0_10px_rgba(153,232,20,0.8)] mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <p class="text-[#99E814] font-black text-[9px] md:text-[10px] tracking-widest uppercase mb-1" data-i18n="demoBadge">INTERACTIVE DEMO</p>
+                        <h3 class="text-white font-bold text-xs md:text-sm" data-i18n="startSimulator">Start Simulator</h3>
+                    </section>
+
+                    <!-- Gioco Educativo -->
+                    <section class="glass-panel border-purple p-4 flex flex-col justify-center items-center text-center premium-btn cursor-pointer transform-gpu hover:-translate-y-1 active:scale-95 shadow-[0_0_15px_rgba(168,85,247,0.05)]" onclick="window.open('https://wheel-of-fortune-bice.vercel.app/', '_blank'); SoundEngine.click()">
+                        <div class="text-3xl md:text-4xl mb-2 drop-shadow-[0_0_15px_rgba(168,85,247,0.6)]">🎮</div>
+                        <p class="text-[#a855f7] font-black text-[9px] md:text-[10px] tracking-widest uppercase" data-i18n="penaltiesTitle">MINI EDUCATIONAL GAME</p>
+                    </section>
+                </div>
+
+                <!-- Pillola Finanziaria -->
+                <section class="glass-panel border-white/10 p-4 md:p-5 flex flex-col justify-center relative overflow-hidden bg-gradient-to-br from-gray-900 to-[#050a05] w-full">
+                    <div class="absolute -right-2 -top-4 text-7xl text-white/5 font-serif pointer-events-none">"</div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#24A1DE] shadow-[0_0_5px_rgba(36,161,222,1)]"></span>
+                        <p class="text-[#24A1DE] font-black text-[10px] tracking-widest uppercase" data-i18n="finLabel">MINDSET</p>
+                    </div>
+                    <p class="text-gray-300 text-xs md:text-sm italic leading-relaxed" data-i18n="finQuote">Never buy at market if the spread is too wide.</p>
+                </section>
+
+            </div>
+        </div>
+
+        <!-- Pulsante Prossima Lezione -->
+        <div class="mt-8 flex flex-col items-center justify-center w-full">
+            <a href="https://affiliate-program-bettinge-exchange.vercel.app/SummaryZeroToHeroAcademy.html" onclick="SoundEngine.click()" class="bg-gradient-to-r from-[#0a140f] to-[#112211] text-[#99E814] border border-[#99E814] font-black w-full max-w-md flex justify-center items-center px-6 py-4 rounded-xl hover:bg-[#99E814] hover:text-black transition-all duration-300 text-xs md:text-sm uppercase tracking-widest shadow-[0_0_20px_rgba(153,232,20,0.2)] group transform-gpu active:scale-95">
+                <span data-i18n="navNextLesson">NEXT LESSON</span> 
+                <svg class="w-5 h-5 ml-3 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
             </a>
+            <div id="sub-warning-msg" class="hidden mt-3 text-center text-red-500 font-black text-[10px] uppercase tracking-widest bg-red-900/20 border border-red-500/50 px-4 py-2 rounded-lg" data-i18n="subNotActive">Subscription inactive!</div>
         </div>
     </main>
 
-    <div id="ebook-modal" class="fixed inset-0 z-[100] hidden flex-col items-center justify-center bg-[#050a05]/95 backdrop-blur-md p-0 sm:p-4 md:p-6 opacity-0 transition-opacity duration-300">
-        <div class="bg-[#050a05] w-full max-w-4xl h-full sm:h-auto sm:max-h-[95vh] rounded-none sm:rounded-3xl border-0 sm:border border-gray-700 flex flex-col overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 relative modern-ebook" id="ebook-modal-content">
-            <div class="flex justify-between items-center p-4 md:p-6 border-b border-gray-800 bg-[#050a05] shrink-0 z-10 w-full">
-                <h3 class="text-[#99E814] font-black uppercase tracking-widest text-[11px] sm:text-sm md:text-base flex items-center gap-2 truncate">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#ffb703] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477-4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg> 
-                    <span class="text-[#ffb703] truncate" data-i18n="btnEbookTitle">MANUALE</span>
-                </h3>
-                <button onclick="closeEbookModal()" class="text-gray-400 hover:text-white text-3xl md:text-4xl leading-none px-3 py-1 rounded-lg active:scale-95 touch-manipulation transition-colors shrink-0">&times;</button>
+    <!-- EBOOK MODAL -->
+    <div id="ebook-modal" class="fixed inset-0 z-[100] hidden flex-col items-center justify-center bg-black/90 backdrop-blur-md opacity-0 transition-opacity duration-300">
+        <div id="ebook-modal-content" class="bg-[#050a05] w-full h-full md:w-[90vw] md:h-[90vh] md:max-w-4xl md:rounded-2xl border border-gray-800 flex flex-col overflow-hidden transform scale-95 transition-transform duration-300 shadow-2xl">
+            <!-- Header Modal -->
+            <div class="flex justify-between items-center px-5 py-4 border-b border-gray-800 bg-black shrink-0">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-[#ffb703]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253"></path></svg>
+                    <span class="text-[#ffb703] font-black uppercase text-xs tracking-[0.2em]" data-i18n="btnEbookTitle">MANUAL</span>
+                </div>
+                <button onclick="closeEbookModal()" class="text-gray-400 hover:text-white p-2 rounded-lg bg-gray-900 hover:bg-red-900/50 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
             </div>
-            <div class="flex-1 overflow-y-auto relative flex flex-col items-center tg-scrollbar bg-[#050a05] w-full">
-                <div class="w-full max-w-3xl p-5 sm:p-8 md:p-10 text-justify md:text-left break-words" id="ebook-content-container" data-i18n-html="ebookContent"></div>
+            <!-- Contenuto Modal -->
+            <div class="flex-1 overflow-y-auto p-5 md:p-10 bg-[#0a0f0a]">
+                <div class="max-w-2xl mx-auto w-full" id="ebook-content-container" data-i18n-html="ebookContent"></div>
             </div>
         </div>
     </div>
 
+    <!-- LOGICA E DATI JAVASCRIPT -->
     <script>
         const SoundEngine = {
             ctx: null, unlocked: false,
@@ -365,150 +317,114 @@
                     osc.start(); osc.stop(this.ctx.currentTime + duration);
                 } catch(e) {}
             },
-            click: function() { this.playTone(600, 'sine', 0.1, 0.1); },
-            cashout: function() { this.playTone(880, 'sine', 0.1, 0.1); setTimeout(() => this.playTone(1760, 'sine', 0.3, 0.15), 100); },
-            error: function() { this.playTone(150, 'sawtooth', 0.3, 0.1); }
+            click: function() { this.playTone(600, 'sine', 0.1, 0.05); },
+            cashout: function() { this.playTone(880, 'sine', 0.1, 0.05); setTimeout(() => this.playTone(1760, 'sine', 0.2, 0.1), 100); },
+            error: function() { this.playTone(150, 'sawtooth', 0.2, 0.1); }
         };
 
         function openEbookModal() {
             SoundEngine.click();
             const modal = document.getElementById('ebook-modal');
+            const content = document.getElementById('ebook-modal-content');
             modal.classList.remove('hidden'); modal.classList.add('flex');
-            void modal.offsetWidth; 
+            void modal.offsetWidth;
             modal.classList.remove('opacity-0'); modal.classList.add('opacity-100');
-            document.getElementById('ebook-modal-content').classList.remove('scale-95'); document.getElementById('ebook-modal-content').classList.add('scale-100');
+            content.classList.remove('scale-95'); content.classList.add('scale-100');
             document.body.style.overflow = 'hidden';
         }
         
         function closeEbookModal() {
             SoundEngine.click();
             const modal = document.getElementById('ebook-modal');
+            const content = document.getElementById('ebook-modal-content');
             modal.classList.remove('opacity-100'); modal.classList.add('opacity-0');
-            document.getElementById('ebook-modal-content').classList.remove('scale-100'); document.getElementById('ebook-modal-content').classList.add('scale-95');
-            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); document.body.style.overflow = ''; }, 300);
+            content.classList.remove('scale-100'); content.classList.add('scale-95');
+            setTimeout(() => { 
+                modal.classList.add('hidden'); modal.classList.remove('flex'); 
+                document.body.style.overflow = ''; 
+            }, 300);
         }
 
         window.RoomApp = (function() {
-            const CONFIG = { STORAGE_KEY: 'bx_academy_demo_hd_v2_day2' }; 
-
+            const CONFIG = { STORAGE_KEY: 'bx_academy_day2_final' }; 
+            
             const podcastUrls = {
-                it: "https://open.spotify.com/episode/3jhpfs2uPCAPf3pTnUrn1D?si=RdRXsDqKTomj1JqPRFI0_g",
                 en: "https://open.spotify.com/episode/13Br99OCtKsvcauxasoSKy?si=IyxXSI1OSoqtb7VMvbtz6A",
                 es: "https://open.spotify.com/episode/2jjCu0yvuXKw3MU1D2Uifw?si=jPNqrv4MTgqmtSuRHoVr9w",
-                pt: "https://spotifycreators-web.app.link/e/p6KTwNwwl3b"
+                pt: "https://spotifycreators-web.app.link/e/p6KTwNwwl3b",
+                it: "https://open.spotify.com/episode/3jhpfs2uPCAPf3pTnUrn1D?si=RdRXsDqKTomj1JqPRFI0_g"
             };
 
-            const ebookTemplate = (langDict) => `
-                <div class="space-y-6 text-gray-300">
-                    <div class="text-center mb-8">
-                        <h2 class="text-2xl md:text-3xl font-black text-[#99E814] tracking-widest uppercase drop-shadow-md">${langDict.ebTitle1}</h2>
-                        <h3 class="text-xl md:text-2xl font-bold text-white mt-2">${langDict.ebTitle2}</h3>
-                        <p class="text-[#ffb703] font-semibold mt-1 uppercase tracking-wider">${langDict.ebTitle3}</p>
+            const buildDay2EbookContent = (dict) => `
+                <div class="text-center mb-8">
+                    <span class="text-[#99E814] font-mono text-[10px] bg-[#99E814]/10 px-3 py-1.5 rounded-full border border-[#99E814]/30">${dict.ebTitle1}</span>
+                    <h2 class="text-3xl md:text-5xl font-black uppercase text-white mt-5 leading-tight tracking-tighter">${dict.ebTitle2} <br><span class="text-[#99E814] drop-shadow-[0_0_10px_rgba(153,232,20,0.4)]">${dict.ebTitle3}</span></h2>
+                </div>
+                
+                <div class="space-y-4 text-gray-300 text-sm md:text-base leading-relaxed bg-[#050a05]/50 p-6 rounded-2xl border border-gray-800 shadow-inner mb-6">
+                    <p>${dict.ebP1}</p>
+                    <p><strong class="text-[#3b82f6]">${dict.ebP2_strong}</strong> ${dict.ebP2}</p>
+                </div>
+
+                <div class="flex items-center gap-4 bg-gradient-to-r from-[#99E814]/10 to-transparent p-5 rounded-2xl border border-[#99E814]/30 mb-8 shadow-lg">
+                    <div class="text-3xl drop-shadow-[0_0_10px_rgba(153,232,20,0.5)]">📈</div>
+                    <div>
+                        <h4 class="font-black text-[#99E814] uppercase tracking-widest text-sm">${dict.ebMatchTitle}</h4>
+                        <p class="font-medium mt-1 text-gray-200 text-sm">${dict.ebMatchDesc}</p>
                     </div>
-                    
-                    <div class="bg-gray-900/50 p-5 rounded-xl border border-gray-700/50 shadow-inner">
-                        <p class="leading-relaxed">${langDict.ebP1}</p>
-                    </div>
+                </div>
 
-                    <div class="bg-[#3b82f6]/10 p-5 rounded-xl border border-[#3b82f6]/30">
-                        <p class="leading-relaxed"><strong class="text-[#3b82f6]">${langDict.ebP2_strong}</strong> ${langDict.ebP2}</p>
-                    </div>
+                <h3 class="text-xl font-black text-white border-b border-gray-800 pb-2 mt-8 mb-6 uppercase tracking-widest">${dict.ebDictTitle}</h3>
 
-                    <div class="flex items-center gap-4 bg-[#99E814]/10 p-4 rounded-xl border border-[#99E814]/30">
-                        <div class="text-3xl">📈</div>
-                        <div>
-                            <h4 class="font-bold text-[#99E814] uppercase">${langDict.ebMatchTitle}</h4>
-                            <p class="font-medium mt-1">${langDict.ebMatchDesc}</p>
-                        </div>
-                    </div>
-
-                    <h3 class="text-xl font-bold text-white border-b border-gray-700 pb-2 mt-8 mb-4">${langDict.ebDictTitle}</h3>
-
-                    <div class="space-y-4">
-                        <div class="bg-gray-800/80 p-4 rounded-lg border-l-4 border-[#ffb703]">
-                            <h4 class="font-bold text-[#ffb703] flex items-center gap-2"><span class="text-xl">📏</span> Tick</h4>
-                            <p class="mt-1">${langDict.ebTick1}</p>
-                            <p class="text-sm text-gray-400 mt-2 bg-gray-900 p-2 rounded italic">💡 Tip: ${langDict.ebTick2}</p>
-                        </div>
-
-                        <div class="bg-gray-800/80 p-4 rounded-lg border-l-4 border-[#ef4444]">
-                            <h4 class="font-bold text-[#ef4444] flex items-center gap-2"><span class="text-xl">↔️</span> Spread</h4>
-                            <p class="mt-1">${langDict.ebSpread}</p>
-                        </div>
-
-                        <div class="bg-gray-800/80 p-4 rounded-lg border-l-4 border-[#a855f7]">
-                            <h4 class="font-bold text-[#a855f7] flex items-center gap-2"><span class="text-xl">📊</span> Market Depth</h4>
-                            <p class="mt-1">${langDict.ebDepth}</p>
-                            <p class="text-sm text-red-400 mt-2 bg-red-900/20 border border-red-900/50 p-2 rounded font-medium">⚠️ Spoofing: ${langDict.ebSpoof}</p>
-                        </div>
+                <div class="space-y-4 mb-8">
+                    <div class="bg-gray-900/60 p-5 rounded-xl border-l-4 border-[#ffb703] shadow-md">
+                        <h4 class="font-black text-[#ffb703] flex items-center gap-2 uppercase tracking-wide text-sm"><span class="text-lg">📏</span> Tick</h4>
+                        <p class="mt-2 text-gray-300 text-sm">${dict.ebTick1}</p>
+                        <p class="text-xs text-gray-400 mt-3 bg-black/50 p-3 rounded-lg border border-gray-800 italic">💡 Tip: ${dict.ebTick2}</p>
                     </div>
 
-                    <div class="bg-gradient-to-r from-gray-900 to-gray-800 p-6 rounded-xl border border-gray-700 mt-6 shadow-lg relative overflow-hidden">
-                        <div class="absolute top-0 right-0 p-4 opacity-10 text-5xl">⚖️</div>
-                        <h4 class="text-lg font-bold text-white uppercase tracking-wider mb-3 relative z-10">Passive vs Aggressive Entry</h4>
-                        <p class="relative z-10 leading-relaxed text-gray-300">
-                            ${langDict.ebPassive1} <br><br>
-                            ${langDict.ebPassive2}
-                        </p>
+                    <div class="bg-gray-900/60 p-5 rounded-xl border-l-4 border-[#ef4444] shadow-md">
+                        <h4 class="font-black text-[#ef4444] flex items-center gap-2 uppercase tracking-wide text-sm"><span class="text-lg">↔️</span> Spread</h4>
+                        <p class="mt-2 text-gray-300 text-sm">${dict.ebSpread}</p>
                     </div>
 
-                    <div class="bg-black/40 p-6 rounded-xl border-l-2 border-[#00e5ff] italic text-center mt-6">
-                        <p class="text-lg text-gray-200">"${langDict.ebQuote1}"</p>
-                        <p class="text-xl font-black text-white mt-4 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">"${langDict.ebQuote2}"</p>
+                    <div class="bg-gray-900/60 p-5 rounded-xl border-l-4 border-[#a855f7] shadow-md">
+                        <h4 class="font-black text-[#a855f7] flex items-center gap-2 uppercase tracking-wide text-sm"><span class="text-lg">📊</span> Market Depth</h4>
+                        <p class="mt-2 text-gray-300 text-sm">${dict.ebDepth}</p>
+                        <p class="text-xs text-red-400 mt-3 bg-red-900/20 p-3 rounded-lg border border-red-900/30 font-medium">⚠️ Spoofing: ${dict.ebSpoof}</p>
                     </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-gray-900 to-[#050a05] p-6 rounded-2xl border border-gray-700 shadow-xl relative overflow-hidden mb-8">
+                    <div class="absolute top-0 right-0 p-4 opacity-[0.03] text-7xl pointer-events-none">⚖️</div>
+                    <h4 class="text-sm font-black text-white uppercase tracking-widest mb-4 relative z-10 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-[#24A1DE] shadow-[0_0_8px_#24A1DE]"></span> 
+                        Passive vs Aggressive
+                    </h4>
+                    <div class="relative z-10 space-y-3 text-sm text-gray-300 leading-relaxed">
+                        <p>${dict.ebPassive1}</p>
+                        <p>${dict.ebPassive2}</p>
+                    </div>
+                </div>
+
+                <div class="bg-black/60 p-6 md:p-8 rounded-2xl border border-gray-800 text-center relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#00e5ff]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <p class="text-sm md:text-base text-gray-400 italic mb-4">"${dict.ebQuote1}"</p>
+                    <p class="text-lg md:text-xl font-black text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">"${dict.ebQuote2}"</p>
                 </div>
             `;
 
-            const dict = {
-                it: {
-                    pageTitle: "Room AI | Global Exchange Academy - Giorno 2",
-                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
-                    moduleTitle: "GIORNO 2/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Impara a leggere il mercato. Anatomia del prezzo, Bid/Ask spread e lettura del Ladder.",
-                    finLabel: "PILLOLA FINANZIARIA", finQuote: "Non comprare mai a mercato se lo spread è troppo ampio. Nel trading sportivo, pagare un tick di troppo ogni volta distrugge il tuo margine a lungo termine.",
-                    demoBadge: "DEMO INTERATTIVA", startSimulator: "AVVIA SIMULATORE",
-                    penaltiesTitle: "GIOCO EDUCATIVO", penaltiesDesc: "Clicca il joystick per giocare alla ruota della fortuna.",
-                    quizProgress: "Domanda {step} di 5",
-                    btnPodcast: "ASCOLTA IL PODCAST", btnEbook: "VISUALIZZA IL MANUALE", btnEbookTitle: "MANUALE", btnRetryQuiz: "Ripeti il test",
-                    navNextLesson: "PROSSIMA LEZIONE",
-                    subNotActive: "ABBONAMENTO NON ATTIVO! CONTATTA IL TUO REFERENTE",
-                    quizCompletedTitle: "Check-Point Superato!", quizCompletedDesc: "Hai sbloccato 500 XP. Ora domini i fondamentali del Ladder.",
-                    videoUrl: "https://www.youtube.com/embed/rR3bFDSiZmk?rel=0&modestbranding=1",
-                    
-                    // Ebook Text
-                    ebTitle1: "Giorno 2", ebTitle2: "Anatomia del Prezzo", ebTitle3: "Lettura del Ladder & Spread",
-                    ebP1: "Nel trading sportivo, il prezzo non è un numero statico, ma un'entità viva mossa dalla domanda e dall'offerta. Comprendere come si muove è la differenza tra scommettere alla cieca ed operare come un Market Maker.",
-                    ebP2_strong: "L'interfaccia utilizzata dai professionisti si chiama Ladder (Scala).",
-                    ebP2: "A differenza della vista tradizionale, il Ladder ti mostra il prezzo su un asse verticale e, soprattutto, rivela la <strong>Profondità del Mercato</strong> (i soldi in attesa di essere abbinati su ogni tick).",
-                    ebMatchTitle: "La Logica del Matching", ebMatchDesc: "Se punti (Back) = Prendi liquidità da chi Banca (Lay)",
-                    ebDictTitle: "Dizionario del Ladder",
-                    ebTick1: "L'incremento minimo del prezzo. Esempio: da 2.00 a 2.02 ci sono due tick (2.02-2.00 = 0.02).", ebTick2: "Il tick cambia in base alla quota: 0.01 (sotto 2.00), 0.05 (tra 3.0 e 4.0), 0.50 (sopra 10.0).",
-                    ebSpread: "Distanza in Ticks tra la miglior quota Punta e Banca. Se è ampio, entrarci è costoso (Slippage).",
-                    ebDepth: "Il volume di denaro visibile in attesa (Unmatched). Rivela le intenzioni istituzionali.", ebSpoof: "Occhio ai Fake Money! Ordini giganti inseriti solo per spaventare il mercato e poi cancellati.",
-                    ebPassive1: "Se vuoi entrare a mercato e chiedi un prezzo migliore (es. Back a 2.02 con Spread 2.00/2.02), diventi un creatore di liquidità <strong>(Maker)</strong> e devi attendere.",
-                    ebPassive2: "Se invece accetti il prezzo offerto (es. Back a 2.00), vieni eseguito subito ma paghi lo spread <strong>(Taker)</strong>.",
-                    ebQuote1: "Il bookmaker nasconde lo spread nella sua lavagna (Vigorish). Nell'Exchange lo spread è visibile e governabile.",
-                    ebQuote2: "Il trader non combatte il prezzo, aspetta che venga da lui.",
-
-                    quizData: [
-                        { q: "Qual è l'interfaccia utilizzata dai professionisti per leggere il mercato?", opts: ["Il Ladder (Scala)", "La vista tradizionale del Bookmaker", "Il tabellone dei risultati live", "Il grafico a torta"], correct: 0 },
-                        { q: "Cosa si intende per 'Tick' nel Ladder?", opts: ["L'incremento minimo del prezzo", "La commissione pagata all'Exchange", "Il ritardo nell'inserimento dell'ordine", "Il profitto netto dell'operazione"], correct: 0 },
-                        { q: "Cos'è lo 'Spread'?", opts: ["La distanza in Ticks tra la miglior quota Punta e Banca", "Il volume totale scambiato sul mercato", "La somma dei soldi persi dagli scommettitori", "Il finto denaro inserito per spaventare il mercato"], correct: 0 },
-                        { q: "Cosa rappresenta la 'Market Depth' (Profondità del Mercato)?", opts: ["Il volume di denaro visibile in attesa di essere abbinato (Unmatched)", "I soldi già abbinati e scambiati", "Il limite massimo di scommessa consentito", "Il tempo rimanente alla fine della partita"], correct: 0 },
-                        { q: "Qual è la differenza tra entrare a mercato in modo 'Passive' (Maker) e 'Aggressive' (Taker)?", opts: ["Il Maker chiede un prezzo migliore e attende, il Taker accetta il prezzo attuale ed è eseguito subito", "Il Maker punta quote alte, il Taker punta quote basse", "Il Maker usa stake elevati, il Taker usa stake minimi", "Il Maker scommette prima del match, il Taker scommette live"], correct: 0 }
-                    ]
-                },
+            const rawDict = {
                 en: {
-                    pageTitle: "Room AI | Global Exchange Academy - Day 2",
-                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
-                    moduleTitle: "DAY 2/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Learn to read the market. Anatomy of the price, Bid/Ask spread, and Ladder reading.",
-                    finLabel: "FINANCIAL PILL", finQuote: "Never buy at market if the spread is too wide. In sports trading, paying one tick too much every time destroys your long-term edge.",
-                    demoBadge: "INTERACTIVE DEMO", startSimulator: "START SIMULATOR",
-                    penaltiesTitle: "EDUCATIONAL GAME", penaltiesDesc: "Click the joystick to play the wheel of fortune.",
-                    quizProgress: "Question {step} of 5",
-                    btnPodcast: "LISTEN TO PODCAST", btnEbook: "VIEW MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Retry Quiz",
-                    navNextLesson: "NEXT LESSON",
-                    subNotActive: "SUBSCRIPTION INACTIVE! CONTACT YOUR REFERENT",
-                    quizCompletedTitle: "Checkpoint Passed!", quizCompletedDesc: "You unlocked 500 XP. You now master Ladder fundamentals.",
+                    headerPrefix: "EXCHANGE",
+                    moduleTitle: "DAY 2/30", lessonTitle: "ZERO TO HERO", lessonDesc: "Learn to read the market. Anatomy of the price, Bid/Ask spread, and Ladder reading.",
+                    finLabel: "MINDSET", finQuote: "Never buy at market if the spread is too wide. In sports trading, paying one tick too much every time destroys your long-term edge.",
+                    demoBadge: "INTERACTIVE DEMO", startSimulator: "Start Simulator",
+                    penaltiesTitle: "MINI EDUCATIONAL GAME",
+                    quizProgress: "Q {step}/5",
+                    btnPodcast: "PODCAST", btnEbook: "MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Retry Test",
+                    navNextLesson: "NEXT LESSON", subNotActive: "SUBSCRIPTION NOT ACTIVE!",
+                    quizCompletedTitle: "Passed!", quizCompletedDesc: "You unlocked 500 XP. You now master Ladder fundamentals.",
                     videoUrl: "https://www.youtube.com/embed/LKaE6RyWwqU?rel=0&modestbranding=1",
                     
                     ebTitle1: "Day 2", ebTitle2: "Anatomy of the Price", ebTitle3: "Reading the Ladder & Spread",
@@ -526,27 +442,25 @@
                     ebQuote2: "The trader doesn't fight the price, he waits for it to come to him.",
 
                     quizData: [
-                        { q: "What is the interface used by professionals to read the market?", opts: ["The Ladder", "The traditional Bookmaker view", "The live score board", "The pie chart"], correct: 0 },
-                        { q: "What is meant by 'Tick' in the Ladder?", opts: ["The minimum price increment", "The commission paid to the Exchange", "The delay in order placement", "The net profit of the trade"], correct: 0 },
-                        { q: "What is the 'Spread'?", opts: ["The distance in Ticks between the best Back and Lay odds", "The total volume traded on the market", "The sum of money lost by bettors", "The fake money inserted to scare the market"], correct: 0 },
-                        { q: "What does 'Market Depth' represent?", opts: ["The volume of visible money waiting to be matched (Unmatched)", "The money already matched and traded", "The maximum allowed bet limit", "The time remaining until the end of the match"], correct: 0 },
-                        { q: "What is the difference between entering the market 'Passive' (Maker) and 'Aggressive' (Taker)?", opts: ["The Maker asks for a better price and waits, the Taker accepts the current price and is matched immediately", "The Maker backs high odds, the Taker backs low odds", "The Maker uses high stakes, the Taker uses minimum stakes", "The Maker bets before the match, the Taker bets live"], correct: 0 }
+                        { q: "What is the interface used by professionals to read the market?", opts: ["The Ladder", "The traditional Bookmaker view", "The live score board", "The pie chart"], correct: 0, successMsg: "Correct!", failMsg: "Wrong!" },
+                        { q: "What is meant by 'Tick' in the Ladder?", opts: ["The minimum price increment", "The commission paid to the Exchange", "The delay in order placement", "The net profit of the trade"], correct: 0, successMsg: "Correct!", failMsg: "Wrong!" },
+                        { q: "What is the 'Spread'?", opts: ["The distance in Ticks between the best Back and Lay odds", "The total volume traded on the market", "The sum of money lost by bettors", "The fake money inserted to scare the market"], correct: 0, successMsg: "Correct!", failMsg: "Wrong!" },
+                        { q: "What does 'Market Depth' represent?", opts: ["The volume of visible money waiting to be matched (Unmatched)", "The money already matched and traded", "The maximum allowed bet limit", "The time remaining until the end of the match"], correct: 0, successMsg: "Correct!", failMsg: "Wrong!" },
+                        { q: "What is the difference between entering the market 'Passive' (Maker) and 'Aggressive' (Taker)?", opts: ["The Maker asks for a better price and waits, the Taker accepts the current price and is matched immediately", "The Maker backs high odds, the Taker backs low odds", "The Maker uses high stakes, the Taker uses minimum stakes", "The Maker bets before the match, the Taker bets live"], correct: 0, successMsg: "Correct!", failMsg: "Wrong!" }
                     ]
                 },
                 es: {
-                    pageTitle: "Room AI | Global Exchange Academy - Día 2",
-                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
-                    moduleTitle: "DÍA 2/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Aprende a leer el mercado. Anatomía del precio, Spread Bid/Ask y lectura de la Escalera.",
-                    finLabel: "PÍLDORA FINANCIERA", finQuote: "Nunca compres a mercado si el spread es demasiado amplio. En el trading deportivo, pagar un tick de más cada vez destruye tu margen a largo plazo.",
-                    demoBadge: "DEMO INTERACTIVA", startSimulator: "INICIAR SIMULADOR",
-                    penaltiesTitle: "JUEGO EDUCATIVO", penaltiesDesc: "Haz clic en el joystick para jugar a la ruleta de la fortuna.",
-                    quizProgress: "Pregunta {step} de 5",
-                    btnPodcast: "ESCUCHAR PODCAST", btnEbook: "VER MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Repetir Prueba",
-                    navNextLesson: "PRÓXIMA LECCIÓN",
-                    subNotActive: "¡SUSCRIPCIÓN INACTIVA! CONTACTA A TU REFERENTE",
-                    quizCompletedTitle: "¡Punto de control superado!", quizCompletedDesc: "Has desbloqueado 500 XP. Ahora dominas los fundamentos de la Escalera.",
+                    headerPrefix: "EXCHANGE",
+                    moduleTitle: "DÍA 2/30", lessonTitle: "ZERO TO HERO", lessonDesc: "Aprende a leer el mercado. Anatomía del precio, Spread Bid/Ask y lectura de la Escalera.",
+                    finLabel: "MINDSET", finQuote: "Nunca compres a mercado si el spread es demasiado amplio. En el trading deportivo, pagar un tick de más cada vez destruye tu margen a largo plazo.",
+                    demoBadge: "DEMO INTERACTIVA", startSimulator: "Iniciar Simulador",
+                    penaltiesTitle: "MINI JUEGO EDUCATIVO",
+                    quizProgress: "P {step}/5",
+                    btnPodcast: "PODCAST", btnEbook: "MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Repetir Prueba",
+                    navNextLesson: "PRÓXIMA LECCIÓN", subNotActive: "¡SUSCRIPCIÓN INACTIVA!",
+                    quizCompletedTitle: "¡Superado!", quizCompletedDesc: "Has desbloqueado 500 XP. Ahora dominas los fundamentos.",
                     videoUrl: "https://www.youtube.com/embed/OSlMbu-RpX8?rel=0&modestbranding=1",
-                    
+
                     ebTitle1: "Día 2", ebTitle2: "Anatomía del Precio", ebTitle3: "Lectura del Ladder & Spread",
                     ebP1: "En el trading deportivo, el precio no es un número estático, sino una entidad viva movida por la oferta y la demanda. Entender cómo se mueve es la diferencia entre apostar a ciegas y operar como un Creador de Mercado.",
                     ebP2_strong: "La interfaz utilizada por los profesionales se llama Ladder (Escalera).",
@@ -562,27 +476,25 @@
                     ebQuote2: "El trader no lucha contra el precio, espera a que venga a él.",
 
                     quizData: [
-                        { q: "¿Cuál es la interfaz utilizada por los profesionales para leer el mercado?", opts: ["El Ladder (Escalera)", "La vista tradicional del Bookmaker", "El marcador en vivo", "El gráfico circular"], correct: 0 },
-                        { q: "¿Qué se entiende por 'Tick' en el Ladder?", opts: ["El incremento mínimo del precio", "La comisión pagada al Exchange", "El retraso en la colocación de la orden", "El beneficio neto de la operación"], correct: 0 },
-                        { q: "¿Qué es el 'Spread'?", opts: ["La distancia en Ticks entre las mejores cuotas de Back y Lay", "El volumen total negociado en el mercado", "La suma del dinero perdido por los apostadores", "El dinero falso insertado para asustar al mercado"], correct: 0 },
-                        { q: "¿Qué representa la 'Profundidad del Mercado'?", opts: ["El volumen de dinero visible esperando a ser igualado (Unmatched)", "El dinero ya igualado y negociado", "El límite máximo de apuesta permitido", "El tiempo restante para el final del partido"], correct: 0 },
-                        { q: "¿Cuál es la diferencia entre entrar al mercado de forma 'Passive' (Maker) y 'Aggressive' (Taker)?", opts: ["El Maker pide un precio mejor y espera, el Taker acepta el precio actual y es igualado de inmediato", "El Maker hace back a cuotas altas, el Taker a cuotas bajas", "El Maker usa stakes altos, el Taker stakes mínimos", "El Maker apuesta antes del partido, el Taker en vivo"], correct: 0 }
+                        { q: "¿Cuál es la interfaz utilizada por los profesionales para leer el mercado?", opts: ["El Ladder (Escalera)", "La vista tradicional del Bookmaker", "El marcador en vivo", "El gráfico circular"], correct: 0, successMsg: "¡Correcto!", failMsg: "¡Error!" },
+                        { q: "¿Qué se entiende por 'Tick' en el Ladder?", opts: ["El incremento mínimo del precio", "La comisión pagada al Exchange", "El retraso en la colocación de la orden", "El beneficio neto de la operación"], correct: 0, successMsg: "¡Correcto!", failMsg: "¡Error!" },
+                        { q: "¿Qué es el 'Spread'?", opts: ["La distancia en Ticks entre las mejores cuotas de Back y Lay", "El volumen total negociado en el mercado", "La suma del dinero perdido por los apostadores", "El dinero falso insertado para asustar al mercado"], correct: 0, successMsg: "¡Correcto!", failMsg: "¡Error!" },
+                        { q: "¿Qué representa la 'Profundidad del Mercado'?", opts: ["El volumen de dinero visible esperando a ser igualado (Unmatched)", "El dinero ya igualado y negociado", "El límite máximo de apuesta permitido", "El tiempo restante para el final del partido"], correct: 0, successMsg: "¡Correcto!", failMsg: "¡Error!" },
+                        { q: "¿Cuál es la diferencia entre entrar al mercado de forma 'Passive' (Maker) y 'Aggressive' (Taker)?", opts: ["El Maker pide un precio mejor y espera, el Taker acepta el precio actual y es igualado de inmediato", "El Maker hace back a cuotas altas, el Taker a cuotas bajas", "El Maker usa stakes altos, el Taker stakes mínimos", "El Maker apuesta antes del partido, el Taker en vivo"], correct: 0, successMsg: "¡Correcto!", failMsg: "¡Error!" }
                     ]
                 },
                 pt: {
-                    pageTitle: "Room AI | Global Exchange Academy - Dia 2",
-                    headerTitle: "BETTING EXCHANGE <span class='text-neon-green'>ROOM</span>",
-                    moduleTitle: "DIA 2/30", lessonTitle: "ZERO TO HERO academy", lessonDesc: "Aprenda a ler o mercado. Anatomia do preço, Spread Bid/Ask e leitura da Escada.",
-                    finLabel: "PÍLULA FINANCEIRA", finQuote: "Nunca compre a mercado se o spread for muito amplo. No trading esportivo, pagar um tick a mais a cada vez destrói sua margem a longo prazo.",
-                    demoBadge: "DEMO INTERATIVA", startSimulator: "INICIAR SIMULADOR",
-                    penaltiesTitle: "JOGO EDUCATIVO", penaltiesDesc: "Clique no joystick para jogar a roda da fortuna.",
-                    quizProgress: "Pergunta {step} de 5",
-                    btnPodcast: "OUVIR PODCAST", btnEbook: "VER MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Repetir Teste",
-                    navNextLesson: "PRÓXIMA LIÇÃO",
-                    subNotActive: "ASSINATURA INATIVA! CONTATE SEU REFERENTE",
-                    quizCompletedTitle: "Checkpoint Concluído!", quizCompletedDesc: "Você desbloqueou 500 XP. Agora você domina os fundamentos da Escada.",
+                    headerPrefix: "EXCHANGE",
+                    moduleTitle: "DIA 2/30", lessonTitle: "ZERO TO HERO", lessonDesc: "Aprenda a ler o mercado. Anatomia do preço, Spread Bid/Ask e leitura da Escada.",
+                    finLabel: "MINDSET", finQuote: "Nunca compre a mercado se o spread for muito amplo. No trading esportivo, pagar um tick a mais a cada vez destrói sua margem a longo prazo.",
+                    demoBadge: "DEMO INTERATIVA", startSimulator: "Iniciar Simulador",
+                    penaltiesTitle: "MINI JOGO EDUCATIVO",
+                    quizProgress: "P {step}/5",
+                    btnPodcast: "PODCAST", btnEbook: "MANUAL", btnEbookTitle: "MANUAL", btnRetryQuiz: "Repetir Teste",
+                    navNextLesson: "PRÓXIMA LIÇÃO", subNotActive: "ASSINATURA INATIVA!",
+                    quizCompletedTitle: "Aprovado!", quizCompletedDesc: "Desbloqueaste 500 XP. Você domina os fundamentos.",
                     videoUrl: "https://www.youtube.com/embed/jW2_9qxZKmo?rel=0&modestbranding=1",
-                    
+
                     ebTitle1: "Dia 2", ebTitle2: "Anatomia do Preço", ebTitle3: "Leitura do Ladder & Spread",
                     ebP1: "No trading esportivo, o preço não é um número estático, mas uma entidade viva movida pela oferta e demanda. Entender como ele se move é a diferença entre apostar às cegas e operar como um Formador de Mercado.",
                     ebP2_strong: "A interface usada pelos profissionais chama-se Ladder (Escada).",
@@ -598,205 +510,222 @@
                     ebQuote2: "O trader não luta contra o preço, ele espera que venha até ele.",
 
                     quizData: [
-                        { q: "Qual é a interface usada pelos profissionais para ler o mercado?", opts: ["O Ladder (Escada)", "A visão tradicional do Bookmaker", "O placar ao vivo", "O gráfico de pizza"], correct: 0 },
-                        { q: "O que se entende por 'Tick' no Ladder?", opts: ["O incremento mínimo de preço", "A comissão paga à Exchange", "O atraso na colocação da ordem", "O lucro líquido da operação"], correct: 0 },
-                        { q: "O que é o 'Spread'?", opts: ["A distância em Ticks entre as melhores odds de Back e Lay", "O volume total negociado no mercado", "A soma do dinheiro perdido pelos apostadores", "O dinheiro falso inserido para assustar o mercado"], correct: 0 },
-                        { q: "O que a 'Profundidade do Mercado' representa?", opts: ["O volume de dinheiro visível esperando para ser correspondido (Unmatched)", "O dinheiro já correspondido e negociado", "O limite máximo de aposta permitido", "O tempo restante até o final da partida"], correct: 0 },
-                        { q: "Qual é a diferença entre entrar no mercado de forma 'Passive' (Maker) e 'Aggressive' (Taker)?", opts: ["O Maker pede um preço melhor e espera, o Taker aceita o preço atual e é correspondido imediatamente", "O Maker faz back em odds altas, o Taker em odds baixas", "O Maker usa stakes altas, o Taker stakes mínimas", "O Maker aposta antes da partida, o Taker ao vivo"], correct: 0 }
+                        { q: "Qual é a interface usada pelos profissionais para ler o mercado?", opts: ["O Ladder (Escada)", "A visão tradicional do Bookmaker", "O placar ao vivo", "O gráfico de pizza"], correct: 0, successMsg: "Correto!", failMsg: "Erro!" },
+                        { q: "O que se entende por 'Tick' no Ladder?", opts: ["O incremento mínimo de preço", "A comissão paga à Exchange", "O atraso na colocação da ordem", "O lucro líquido da operação"], correct: 0, successMsg: "Correto!", failMsg: "Erro!" },
+                        { q: "O que é o 'Spread'?", opts: ["A distância em Ticks entre as melhores odds de Back e Lay", "O volume total negociado no mercado", "A soma do dinheiro perdido pelos apostadores", "O dinheiro falso inserido para assustar o mercado"], correct: 0, successMsg: "Correto!", failMsg: "Erro!" },
+                        { q: "O que a 'Profundidade do Mercado' representa?", opts: ["O volume de dinheiro visível esperando para ser correspondido (Unmatched)", "O dinheiro já correspondido e negociado", "O limite máximo de aposta permitido", "O tempo restante até o final da partida"], correct: 0, successMsg: "Correto!", failMsg: "Erro!" },
+                        { q: "Qual é a diferença entre entrar no mercado de forma 'Passive' (Maker) e 'Aggressive' (Taker)?", opts: ["O Maker pede um preço melhor e espera, o Taker aceita o preço atual e é correspondido imediatamente", "O Maker faz back em odds altas, o Taker em odds baixas", "O Maker usa stakes altas, o Taker stakes mínimas", "O Maker aposta antes da partida, o Taker ao vivo"], correct: 0, successMsg: "Correto!", failMsg: "Erro!" }
+                    ]
+                },
+                it: {
+                    headerPrefix: "EXCHANGE",
+                    moduleTitle: "GIORNO 2/30", lessonTitle: "ZERO TO HERO", lessonDesc: "Impara a leggere il mercato. Anatomia del prezzo, Bid/Ask spread e lettura del Ladder.",
+                    finLabel: "MINDSET", finQuote: "Non comprare mai a mercato se lo spread è troppo ampio. Nel trading sportivo, pagare un tick di troppo ogni volta distrugge il tuo margine a lungo termine.",
+                    demoBadge: "DEMO INTERATTIVA", startSimulator: "Avvia Simulatore",
+                    penaltiesTitle: "MINI GIOCO EDUCATIVO",
+                    quizProgress: "D {step}/5",
+                    btnPodcast: "PODCAST", btnEbook: "MANUALE", btnEbookTitle: "MANUALE", btnRetryQuiz: "Ripeti Test",
+                    navNextLesson: "PROSSIMA LEZIONE", subNotActive: "ABBONAMENTO NON ATTIVO!",
+                    quizCompletedTitle: "Superato!", quizCompletedDesc: "Hai sbloccato 500 XP. Ora domini i fondamentali del Ladder.",
+                    videoUrl: "https://www.youtube.com/embed/rR3bFDSiZmk?rel=0&modestbranding=1",
+
+                    ebTitle1: "Giorno 2", ebTitle2: "Anatomia del Prezzo", ebTitle3: "Lettura del Ladder & Spread",
+                    ebP1: "Nel trading sportivo, il prezzo non è un numero statico, ma un'entità viva mossa dalla domanda e dall'offerta. Comprendere come si muove è la differenza tra scommettere alla cieca ed operare come un Market Maker.",
+                    ebP2_strong: "L'interfaccia utilizzata dai professionisti si chiama Ladder (Scala).",
+                    ebP2: "A differenza della vista tradizionale, il Ladder ti mostra il prezzo su un asse verticale e, soprattutto, rivela la <strong>Profondità del Mercato</strong> (i soldi in attesa di essere abbinati su ogni tick).",
+                    ebMatchTitle: "La Logica del Matching", ebMatchDesc: "Se punti (Back) = Prendi liquidità da chi Banca (Lay)",
+                    ebDictTitle: "Dizionario del Ladder",
+                    ebTick1: "L'incremento minimo del prezzo. Esempio: da 2.00 a 2.02 ci sono due tick (2.02-2.00 = 0.02).", ebTick2: "Il tick cambia in base alla quota: 0.01 (sotto 2.00), 0.05 (tra 3.0 e 4.0), 0.50 (sopra 10.0).",
+                    ebSpread: "Distanza in Ticks tra la miglior quota Punta e Banca. Se è ampio, entrarci è costoso (Slippage).",
+                    ebDepth: "Il volume di denaro visibile in attesa (Unmatched). Rivela le intenzioni istituzionali.", ebSpoof: "Occhio ai Fake Money! Ordini giganti inseriti solo per spaventare il mercato e poi cancellati.",
+                    ebPassive1: "Se vuoi entrare a mercato e chiedi un prezzo migliore (es. Back a 2.02 con Spread 2.00/2.02), diventi un creatore di liquidità <strong>(Maker)</strong> e devi attendere.",
+                    ebPassive2: "Se invece accetti il prezzo offerto (es. Back a 2.00), vieni eseguito subito ma paghi lo spread <strong>(Taker)</strong>.",
+                    ebQuote1: "Il bookmaker nasconde lo spread nella sua lavagna (Vigorish). Nell'Exchange lo spread è visibile e governabile.",
+                    ebQuote2: "Il trader non combatte il prezzo, aspetta che venga da lui.",
+
+                    quizData: [
+                        { q: "Qual è l'interfaccia utilizzata dai professionisti per leggere il mercato?", opts: ["Il Ladder (Scala)", "La vista tradizionale del Bookmaker", "Il tabellone dei risultati live", "Il grafico a torta"], correct: 0, successMsg: "Esatto!", failMsg: "Errore!" },
+                        { q: "Cosa si intende per 'Tick' nel Ladder?", opts: ["L'incremento minimo del prezzo", "La commissione pagata all'Exchange", "Il ritardo nell'inserimento dell'ordine", "Il profitto netto dell'operazione"], correct: 0, successMsg: "Esatto!", failMsg: "Errore!" },
+                        { q: "Cos'è lo 'Spread'?", opts: ["La distanza in Ticks tra la miglior quota Punta e Banca", "Il volume totale scambiato sul mercato", "La somma dei soldi persi dagli scommettitori", "Il finto denaro inserito per spaventare il mercato"], correct: 0, successMsg: "Esatto!", failMsg: "Errore!" },
+                        { q: "Cosa rappresenta la 'Market Depth' (Profondità del Mercato)?", opts: ["Il volume di denaro visibile in attesa di essere abbinato (Unmatched)", "I soldi già abbinati e scambiati", "Il limite massimo di scommessa consentito", "Il tempo rimanente alla fine della partita"], correct: 0, successMsg: "Esatto!", failMsg: "Errore!" },
+                        { q: "Qual è la differenza tra entrare a mercato in modo 'Passive' (Maker) e 'Aggressive' (Taker)?", opts: ["Il Maker chiede un prezzo migliore e attende, il Taker accetta il prezzo attuale ed è eseguito subito", "Il Maker punta quote alte, il Taker punta quote basse", "Il Maker usa stake elevati, il Taker usa stake minimi", "Il Maker scommette prima del match, il Taker scommette live"], correct: 0, successMsg: "Esatto!", failMsg: "Errore!" }
                     ]
                 }
             };
 
-            for (const lang in dict) {
-                dict[lang].ebookContent = ebookTemplate(dict[lang]);
+            const dict = {};
+            for (let lang in rawDict) {
+                dict[lang] = { ...rawDict[lang], ebookContent: buildDay2EbookContent(rawDict[lang]) };
             }
 
-            let currentLang = 'it';
-            let currentQuizStep = 0;
-            let xpPoints = parseInt(localStorage.getItem(CONFIG.STORAGE_KEY + '_xp')) || 0;
+            let State = { lang: 'en', xp: 0, currentQuizStep: 0, quizCompleted: false };
 
-            function applyLang(lang) {
-                currentLang = lang;
-                const d = dict[lang];
-                
-                document.title = d.pageTitle;
-                document.querySelectorAll('[data-i18n]').forEach(el => {
-                    const key = el.getAttribute('data-i18n');
-                    if (d[key]) {
-                        if (key.startsWith('quizProgress')) {
-                            // Handled separately
-                        } else {
-                            el.textContent = d[key];
-                        }
+            const UIManager = {
+                setLanguage: (lang) => {
+                    const targetLang = dict[lang] ? lang : 'en';
+                    State.lang = targetLang;
+                    document.documentElement.lang = targetLang;
+                    
+                    document.querySelectorAll('.lang-flag').forEach(btn => {
+                        if(btn.getAttribute('data-lang') === targetLang) btn.classList.add('active');
+                        else btn.classList.remove('active');
+                    });
+                    
+                    document.querySelectorAll('[data-i18n]').forEach(el => {
+                        const key = el.getAttribute('data-i18n');
+                        if (dict[targetLang][key]) el.innerText = dict[targetLang][key];
+                    });
+                    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+                        const key = el.getAttribute('data-i18n-html');
+                        if (dict[targetLang][key]) el.innerHTML = dict[targetLang][key];
+                    });
+                    
+                    const videoIframe = document.getElementById('main-video');
+                    if (videoIframe && dict[targetLang].videoUrl) {
+                        videoIframe.src = dict[targetLang].videoUrl;
                     }
-                });
-                
-                document.querySelectorAll('[data-i18n-html]').forEach(el => {
-                    const key = el.getAttribute('data-i18n-html');
-                    if (d[key]) el.innerHTML = d[key];
-                });
 
-                document.querySelectorAll('.lang-flag').forEach(btn => {
-                    if (btn.getAttribute('data-lang') === lang) {
-                        btn.classList.add('active'); btn.classList.remove('inactive');
-                    } else {
-                        btn.classList.remove('active'); btn.classList.add('inactive');
+                    const podcastLink = document.getElementById('btn-podcast');
+                    if (podcastLink && podcastUrls[targetLang]) {
+                        podcastLink.href = podcastUrls[targetLang];
                     }
-                });
-
-                document.getElementById('btn-podcast').href = podcastUrls[lang] || podcastUrls['en'];
-                document.getElementById('main-video').src = d.videoUrl;
-
-                if (document.getElementById('quiz-container').style.display !== 'none') {
-                    loadQuiz();
+                    
+                    Gamification.renderQuiz();
+                    try { localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(State)); } catch(e){}
+                },
+                updateDashboards: () => {
+                    document.getElementById('xp-counter').innerText = `${State.xp} XP`;
                 }
-            }
+            };
 
-            function loadQuiz() {
-                const d = dict[currentLang];
-                const qData = d.quizData[currentQuizStep];
-                
-                document.getElementById('quiz-progress-text').textContent = d.quizProgress.replace('{step}', currentQuizStep + 1);
-                document.getElementById('quiz-question-text').textContent = qData.q;
-                
-                const optionsContainer = document.getElementById('quiz-options-container');
-                optionsContainer.innerHTML = '';
-                
-                const letters = ['A', 'B', 'C', 'D'];
-                qData.opts.forEach((opt, index) => {
-                    const btn = document.createElement('button');
-                    btn.className = 'wwtbam-btn w-full text-left px-4 sm:px-6 py-3 sm:py-4 flex items-center group';
-                    btn.onclick = () => handleAnswer(index, btn);
-                    btn.innerHTML = `
-                        <span class="text-[#d4af37] font-black mr-3 sm:mr-4 text-base sm:text-lg shrink-0 w-6">${letters[index]}:</span>
-                        <span class="text-gray-200 font-bold text-[11px] sm:text-sm md:text-base group-hover:text-white transition-colors leading-tight">${opt}</span>
-                        <div class="absolute right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <div class="w-2 h-2 rounded-full bg-[#d4af37] shadow-[0_0_8px_#d4af37]"></div>
-                        </div>
-                    `;
-                    optionsContainer.appendChild(btn);
-                });
-                
-                updateProgressDots();
-            }
+            const Gamification = {
+                renderQuiz: () => {
+                    const container = document.getElementById('quiz-container');
+                    const compScreen = document.getElementById('quiz-completed-screen');
+                    const feedback = document.getElementById('quiz-feedback');
 
-            function handleAnswer(selectedIndex, btnElement) {
-                const d = dict[currentLang];
-                const qData = d.quizData[currentQuizStep];
-                const isCorrect = selectedIndex === qData.correct;
-                
-                const allBtns = document.getElementById('quiz-options-container').querySelectorAll('button');
-                allBtns.forEach(b => b.disabled = true);
-                
-                if (isCorrect) {
-                    SoundEngine.cashout();
-                    btnElement.classList.add('correct');
-                    showFeedback(true);
-                    xpPoints += 100;
-                    updateXP();
+                    if (State.quizCompleted) {
+                        container.classList.add('hidden');
+                        feedback.classList.add('hidden');
+                        compScreen.classList.remove('hidden');
+                        compScreen.classList.add('flex');
+                        return;
+                    } else {
+                        compScreen.classList.add('hidden');
+                        compScreen.classList.remove('flex');
+                        container.classList.remove('hidden');
+                        container.classList.add('flex');
+                    }
+
+                    const qData = dict[State.lang].quizData[State.currentQuizStep];
+                    document.getElementById('quiz-progress-text').innerText = dict[State.lang].quizProgress.replace('{step}', State.currentQuizStep + 1);
                     
+                    let dotsHtml = '';
+                    for(let i=0; i<5; i++) {
+                        dotsHtml += `<div class="w-2.5 h-2.5 rounded-full shadow-inner ${i < State.currentQuizStep ? 'bg-[#d4af37] shadow-[0_0_5px_rgba(212,175,55,0.8)]' : (i === State.currentQuizStep ? 'bg-white border border-[#d4af37]' : 'bg-gray-800')}"></div>`;
+                    }
+                    document.getElementById('quiz-dots').innerHTML = dotsHtml;
+                    document.getElementById('quiz-question-text').innerText = qData.q;
+                    
+                    const letters = ['A', 'B', 'C', 'D'];
+                    document.getElementById('quiz-options-container').innerHTML = qData.opts.map((opt, index) => `
+                        <button id="quiz-opt-${index}" onclick="checkAnswer(${index})" class="quiz-opt w-full p-3.5 rounded-xl flex items-center text-xs md:text-sm font-bold text-gray-200 group shadow-md">
+                            <span class="text-[#d4af37] w-6 mr-2 font-black text-lg drop-shadow-[0_0_3px_rgba(212,175,55,0.5)]">${letters[index]}</span> 
+                            <span>${opt}</span>
+                        </button>
+                    `).join('');
+                    
+                    feedback.classList.add('hidden');
+                },
+                checkQuiz: (selectedIndex) => {
+                    const qData = dict[State.lang].quizData[State.currentQuizStep];
+                    const feedback = document.getElementById('quiz-feedback');
+                    const icon = document.getElementById('quiz-feedback-icon');
+                    const text = document.getElementById('quiz-feedback-text');
+                    const clickedBtn = document.getElementById(`quiz-opt-${selectedIndex}`);
+                    const correctBtn = document.getElementById(`quiz-opt-${qData.correct}`);
+
+                    document.querySelectorAll('.quiz-opt').forEach(b => { b.onclick = null; b.disabled = true; });
+
+                    if (selectedIndex === qData.correct) {
+                        SoundEngine.cashout();
+                        clickedBtn.classList.add('correct');
+                        icon.innerText = '✅'; 
+                        text.innerText = qData.successMsg;
+                        feedback.className = 'mt-4 p-3 rounded-xl text-center border border-[#10b981]/50 bg-[#10b981]/10 text-[#10b981] shadow-[0_0_15px_rgba(16,185,129,0.2)]';
+                        State.xp += 100;
+                        UIManager.updateDashboards();
+                    } else {
+                        SoundEngine.error();
+                        clickedBtn.classList.add('wrong');
+                        correctBtn.classList.add('correct');
+                        icon.innerText = '❌'; 
+                        text.innerText = qData.failMsg;
+                        feedback.className = 'mt-4 p-3 rounded-xl text-center border border-[#ef4444]/50 bg-[#ef4444]/10 text-[#ef4444] shadow-[0_0_15px_rgba(239,68,68,0.2)]';
+                    }
+
+                    feedback.classList.remove('hidden');
+
                     setTimeout(() => {
-                        currentQuizStep++;
-                        if (currentQuizStep < d.quizData.length) {
-                            loadQuiz();
-                        } else {
-                            showCompletedScreen();
-                        }
-                    }, 1500);
-                } else {
-                    SoundEngine.error();
-                    btnElement.classList.add('wrong');
-                    
-                    setTimeout(() => {
-                        allBtns[qData.correct].classList.add('correct');
-                    }, 500);
-                    
-                    showFeedback(false);
-                    
-                    setTimeout(() => {
-                        btnElement.classList.remove('wrong');
-                        allBtns[qData.correct].classList.remove('correct');
-                        allBtns.forEach(b => b.disabled = false);
-                        hideFeedback();
+                        if (State.currentQuizStep < 4) State.currentQuizStep++;
+                        else State.quizCompleted = true;
+                        
+                        Gamification.renderQuiz();
+                        try { localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(State)); } catch(e){}
                     }, 2000);
                 }
-            }
-
-            function updateProgressDots() {
-                const dotsContainer = document.getElementById('quiz-dots');
-                dotsContainer.innerHTML = '';
-                for (let i = 0; i < 5; i++) {
-                    const dot = document.createElement('div');
-                    dot.className = `w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${i < currentQuizStep ? 'bg-[#10b981] shadow-[0_0_8px_#10b981]' : i === currentQuizStep ? 'bg-[#d4af37] shadow-[0_0_8px_#d4af37] animate-pulse' : 'bg-gray-700'}`;
-                    dotsContainer.appendChild(dot);
-                }
-            }
-
-            function showFeedback(isSuccess) {
-                const feedbackEl = document.getElementById('quiz-feedback');
-                const iconEl = document.getElementById('quiz-feedback-icon');
-                
-                feedbackEl.classList.remove('hidden');
-                
-                if (isSuccess) {
-                    feedbackEl.className = 'w-full max-w-2xl mx-auto p-6 sm:p-8 md:p-10 rounded-xl md:rounded-2xl text-center shadow-2xl mt-8 transition-all duration-500 transform-gpu relative overflow-hidden bg-gradient-to-br from-[#064e3b] to-[#022c22] border-2 border-[#10b981] flex justify-center items-center';
-                    iconEl.textContent = '✅';
-                } else {
-                    feedbackEl.className = 'w-full max-w-2xl mx-auto p-6 sm:p-8 md:p-10 rounded-xl md:rounded-2xl text-center shadow-2xl mt-8 transition-all duration-500 transform-gpu relative overflow-hidden bg-gradient-to-br from-[#7f1d1d] to-[#450a0a] border-2 border-[#ef4444] flex justify-center items-center';
-                    iconEl.textContent = '❌';
-                }
-            }
-
-            function hideFeedback() {
-                document.getElementById('quiz-feedback').classList.add('hidden');
-                document.getElementById('quiz-feedback').classList.remove('flex');
-            }
-
-            function showCompletedScreen() {
-                document.getElementById('quiz-container').style.display = 'none';
-                hideFeedback();
-                const completedScreen = document.getElementById('quiz-completed-screen');
-                completedScreen.classList.remove('hidden');
-                completedScreen.classList.add('flex');
-            }
-
-            function updateXP() {
-                document.getElementById('xp-counter').innerText = `${xpPoints} XP`;
-                localStorage.setItem(CONFIG.STORAGE_KEY + '_xp', xpPoints);
-                const badge = document.getElementById('xp-badge');
-                badge.classList.add('scale-110', 'bg-yellow-500/20');
-                setTimeout(() => badge.classList.remove('scale-110', 'bg-yellow-500/20'), 300);
-            }
-
-            window.changeLang = function(lang) {
-                SoundEngine.click();
-                applyLang(lang);
             };
 
             window.resetQuiz = function() {
                 SoundEngine.click();
-                currentQuizStep = 0;
-                document.getElementById('quiz-container').style.display = 'flex';
-                const completedScreen = document.getElementById('quiz-completed-screen');
-                completedScreen.classList.add('hidden');
-                completedScreen.classList.remove('flex');
-                loadQuiz();
+                State.currentQuizStep = 0;
+                State.quizCompleted = false;
+                State.xp = Math.max(0, State.xp - 500);
+                UIManager.updateDashboards();
+                Gamification.renderQuiz();
+                try { localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(State)); } catch(e){}
+            };
+            
+            window.changeLang = function(l) { 
+                SoundEngine.click(); 
+                UIManager.setLanguage(l); 
             };
 
-            // Init
-            window.addEventListener('DOMContentLoaded', () => {
-                const userLang = navigator.language || navigator.userLanguage;
-                let initLang = 'en';
-                if(userLang.startsWith('it')) initLang = 'it';
-                else if(userLang.startsWith('es')) initLang = 'es';
-                else if(userLang.startsWith('pt')) initLang = 'pt';
-                
-                updateXP();
-                applyLang(initLang);
-            });
+            return {
+                init: () => {
+                    let detectedLang = 'en';
+                    const browserLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
+                    if (['en', 'es', 'pt', 'it'].includes(browserLang)) {
+                        detectedLang = browserLang;
+                    }
 
-            return { dict };
+                    try { 
+                        const savedData = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY));
+                        if (savedData) {
+                            if (savedData.lang) detectedLang = savedData.lang;
+                            if (savedData.xp) State.xp = savedData.xp;
+                            if (savedData.currentQuizStep) State.currentQuizStep = savedData.currentQuizStep;
+                            if (savedData.quizCompleted) State.quizCompleted = savedData.quizCompleted;
+                        }
+                    } catch(e) {}
+                    
+                    UIManager.setLanguage(detectedLang);
+                    UIManager.updateDashboards();
+                    
+                    const unlockAudio = () => {
+                        SoundEngine.init(); 
+                        document.body.removeEventListener('click', unlockAudio);
+                        document.body.removeEventListener('touchstart', unlockAudio);
+                    };
+                    document.body.addEventListener('click', unlockAudio, { once: true });
+                    document.body.addEventListener('touchstart', unlockAudio, { once: true });
+                },
+                triggerQuiz: Gamification.checkQuiz
+            };
         })();
+
+        document.addEventListener('DOMContentLoaded', () => { RoomApp.init(); });
+        window.checkAnswer = RoomApp.triggerQuiz;
     </script>
 </body>
 </html>
