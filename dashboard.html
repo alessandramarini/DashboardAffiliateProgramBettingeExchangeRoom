@@ -2,29 +2,34 @@
 <html lang="en" class="antialiased">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>BETTING EXCHANGE ROOM - Dashboard</title>
   
   <meta name="theme-color" content="#09090b">
-  <meta name="description" content="Betting Exchange Room Affiliate Program and Smart Contract Dashboard.">
+  <meta name="description" content="Betting Exchange Room Premium Dashboard. Extract Expected Value with Algorithmic Models.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
   <link rel="preconnect" href="https://unpkg.com" crossorigin>
   <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
   <link rel="preconnect" href="https://flagcdn.com" crossorigin>
 
   <style>
+    /* Reset & App-like behavior */
     body, html {
       margin: 0; padding: 0;
       background-color: #09090b !important; color: #f4f4f5 !important;
       font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      overflow: hidden; /* App feels like a native app */
+      overflow: hidden; 
       height: 100%; width: 100%;
+      overscroll-behavior-y: none;
     }
     
     #root { height: 100vh; height: 100dvh; display: flex; flex-direction: column; position: relative; overflow: hidden; }
     
+    /* Background grid optimization */
     .bg-grid-pattern {
       background-color: #09090b;
       background-image: 
@@ -47,27 +52,34 @@
     }
     .bg-gold-gradient { background: linear-gradient(135deg, #fcd34d 0%, #d4af37 50%, #b45309 100%); }
 
+    /* Performance Loaders & Animations */
     .initial-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; height: 100dvh; background: #09090b; color: #d4af37; font-weight: 500; z-index: 9999; }
-    .spinner-ring { width: 48px; height: 48px; border: 3px solid rgba(212, 175, 55, 0.1); border-radius: 50%; border-top-color: #d4af37; animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite; margin-bottom: 24px; }
+    .spinner-ring { width: 48px; height: 48px; border: 3px solid rgba(212, 175, 55, 0.1); border-radius: 50%; border-top-color: #d4af37; animation: spin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite; margin-bottom: 24px; }
     
     @keyframes spin { to { transform: rotate(360deg); } }
     @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     
+    /* Scrollbars invisibili su mobile, compatte su desktop */
     .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
     .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d4af37; }
+    
+    @media (max-width: 768px) {
+      .custom-scrollbar::-webkit-scrollbar { display: none; }
+      .custom-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    }
 
     .toast-enter { animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     
-    .glass-panel { background: rgba(24, 24, 27, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+    .glass-panel { background: rgba(24, 24, 27, 0.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); }
     
-    /* Small HD Flags */
     .flag-icon { width: 16px; height: 11px; object-fit: cover; border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.5); flex-shrink: 0; }
   </style>
 
+  <!-- Tailwind CDN (In Production use built CSS) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -81,6 +93,7 @@
     }
   </script>
   
+  <!-- React & Dependencies -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
@@ -96,6 +109,7 @@
     const { useState, useEffect, useCallback, useRef, useMemo } = React;
     const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } = window.Recharts; 
 
+    // Lucide Icon Component wrapper
     const Icon = ({ name, size = 24, className = '', ...props }) => {
       const spanRef = useRef(null);
       useEffect(() => {
@@ -107,6 +121,7 @@
       return <span ref={spanRef} className={`inline-flex items-center justify-center shrink-0 ${className}`}></span>;
     };
 
+    // Strict Language Order Requirement
     const LANGUAGES = [
       { code: 'en', name: 'ENG', flag: 'gb' },
       { code: 'es', name: 'ESP', flag: 'es' },
@@ -114,6 +129,7 @@
       { code: 'it', name: 'ITA', flag: 'it' }
     ];
 
+    // Localizations
     const translations = {
       en: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Affiliate Program", user_dash: "User Area", partner_dash: "Partner Area", company_dash: "Treasury",
@@ -141,7 +157,8 @@
         welcome_title: "OPERATIONS HUB", system_status_ok: "SYSTEM STATUS: OPTIMAL", sign_tx: "Sign transaction in your wallet.", users_label: "Users", elite_platform: "Elite Platform", init_env: "Initializing Elite Environment...",
         realtime_leaderboard: "Live Leaderboard", bot_managed: "Auto-updated by Python Bot", training_setup: "Training & Setup", signals_access: "Premium Signals", merch_store: "Merch Store",
         /* Access Guard Text */
-        access_denied: "ACCESS DENIED", sub_expired: "Your subscription has expired or no active plan was found on this account.", renew_btn: "RENEW SUBSCRIPTION", demo_bypass: "SIMULATE ACTIVE PLAN (DEMO)"
+        access_denied: "ACCESS DENIED", sub_expired: "Your subscription has expired or no active plan was found on this account.", renew_btn: "RENEW SUBSCRIPTION", demo_bypass: "ADMIN LOGIN",
+        you_tag: "(YOU)", docs_short: "Docs", deposit_short: "Deposit", audit_short: "Audit", top_10_short: "Top 10"
       },
       es: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programa de Afiliados", user_dash: "Área Usuario", partner_dash: "Área Socios", company_dash: "Tesorería",
@@ -169,7 +186,8 @@
         welcome_title: "CENTRO DE OPERACIONES", system_status_ok: "ESTADO SISTEMA: ÓPTIMO", sign_tx: "Firma la transacción en tu billetera.", users_label: "Usuarios", elite_platform: "Plataforma Élite", init_env: "Inicializando Entorno...",
         realtime_leaderboard: "Clasificación en Vivo", bot_managed: "Actualizado por Bot Python", training_setup: "Formación y Setup", signals_access: "Señales Premium", merch_store: "Tienda Oficial",
         /* Access Guard Text */
-        access_denied: "ACCESO DENEGADO", sub_expired: "Tu suscripción ha expirado o no se ha encontrado ningún plan activo.", renew_btn: "RENOVAR SUSCRIPCIÓN", demo_bypass: "SIMULAR PLAN ACTIVO (DEMO)"
+        access_denied: "ACCESO DENEGADO", sub_expired: "Tu suscripción ha expirado o no se ha encontrado ningún plan activo.", renew_btn: "RENOVAR SUSCRIPCIÓN", demo_bypass: "ÁREA ADMIN",
+        you_tag: "(TÚ)", docs_short: "Docs", deposit_short: "Depósito", audit_short: "Auditoría", top_10_short: "Top 10"
       },
       pt: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programa Afiliados", user_dash: "Área Usuário", partner_dash: "Área Sócios", company_dash: "Tesouraria",
@@ -197,7 +215,8 @@
         welcome_title: "CENTRAL DE OPERAÇÕES", system_status_ok: "STATUS SISTEMA: IDEAL", sign_tx: "Assine a transação na sua carteira.", users_label: "Usuários", elite_platform: "Plataforma Elite", init_env: "Inicializando Ambiente...",
         realtime_leaderboard: "Classificação ao Vivo", bot_managed: "Atualizado por Bot Python", training_setup: "Treinamento e Setup", signals_access: "Sinais Premium", merch_store: "Loja Oficial",
         /* Access Guard Text */
-        access_denied: "ACESSO NEGADO", sub_expired: "Sua assinatura expirou ou não encontramos nenhum plano ativo associado.", renew_btn: "RENOVAR ASSINATURA", demo_bypass: "SIMULAR PLANO ATIVO (DEMO)"
+        access_denied: "ACESSO NEGADO", sub_expired: "Sua assinatura expirou ou não encontramos nenhum plano ativo associado.", renew_btn: "RENOVAR ASSINATURA", demo_bypass: "ÁREA ADMIN",
+        you_tag: "(VOCÊ)", docs_short: "Docs", deposit_short: "Depósito", audit_short: "Auditoria", top_10_short: "Top 10"
       },
       it: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programma Affiliati", user_dash: "Area Utente", partner_dash: "Area Partner", company_dash: "Tesoreria",
@@ -225,10 +244,12 @@
         welcome_title: "HUB OPERATIVO", system_status_ok: "STATO SISTEMA: OTTIMALE", sign_tx: "Firma la transazione nel tuo wallet.", users_label: "Utenti", elite_platform: "Piattaforma Elite", init_env: "Inizializzazione Ambiente...",
         realtime_leaderboard: "Classifica in Tempo Reale", bot_managed: "Gestita da Bot Python", training_setup: "Formazione e Setup", signals_access: "Segnali Premium", merch_store: "Store Ufficiale",
         /* Access Guard Text */
-        access_denied: "ACCESSO NEGATO", sub_expired: "Il tuo abbonamento è scaduto o non è stato trovato alcun piano attivo.", renew_btn: "RINNOVA ABBONAMENTO", demo_bypass: "SIMULA PIANO ATTIVO (DEMO)"
+        access_denied: "ACCESSO NEGATO", sub_expired: "Il tuo abbonamento è scaduto o non è stato trovato alcun piano attivo.", renew_btn: "RINNOVA ABBONAMENTO", demo_bypass: "AREA ADMIN",
+        you_tag: "(TU)", docs_short: "Docs", deposit_short: "Deposita", audit_short: "Audit", top_10_short: "Top 10"
       }
     };
 
+    // Chart & Table Data Mockups
     const RAW_REVENUE_DATA = [ { rawKey: 'mon', amount: 1200 }, { rawKey: 'tue', amount: 2500 }, { rawKey: 'wed', amount: 1800 }, { rawKey: 'thu', amount: 3000 }, { rawKey: 'fri', amount: 4500 }, { rawKey: 'sat', amount: 6000 }, { rawKey: 'today', amount: 5500 } ];
     const PROMOTER_CHART_DATA = [ { rawKey: 'mon', amount: 45 }, { rawKey: 'tue', amount: 120 }, { rawKey: 'wed', amount: 80 }, { rawKey: 'thu', amount: 210 }, { rawKey: 'fri', amount: 150 }, { rawKey: 'sat', amount: 320 }, { rawKey: 'today', amount: 280 } ];
     const GEO_DATA = [ { name: 'IT', value: 45, color: '#a855f7' }, { name: 'ES', value: 25, color: '#f59e0b' }, { name: 'BR', value: 20, color: '#10b981' }, { name: 'UK', value: 10, color: '#3b82f6' } ];
@@ -265,9 +286,10 @@
       { rank: 8, name: 'David_G', vol: 18000, isMe: false },
       { rank: 9, name: 'Paul_Smith', vol: 16500, isMe: false },
       { rank: 10, name: 'Mike_T', vol: 15000, isMe: false },
-      { rank: 11, name: 'Alex De Souza', vol: 14500, isMe: true }, // Fuori dai top 10
+      { rank: 11, name: 'Alex De Souza', vol: 14500, isMe: true }, // Out of top 10
     ];
 
+    // Shared Components
     const TgLink = ({ username, className = "" }) => {
       const cleanUsername = username.replace('@', '');
       return (
@@ -286,16 +308,16 @@
 
     const StatCard = ({ title, value, subtext, icon, colorClass, highlight = false }) => (
       <Card padding="p-3 sm:p-4" className={`justify-center h-full w-full ${highlight ? 'ring-1 ring-inset ring-brand-500/40 bg-gradient-to-br from-surface-900 to-surface-800/80 shadow-[0_0_20px_rgba(212,175,55,0.05)]' : ''}`}>
-        <div className="flex justify-between items-start gap-2 h-full">
+        <div className="flex justify-between items-start gap-2 h-full min-h-0">
           <div className="flex-1 min-w-0 flex flex-col justify-center">
-            <p className="text-zinc-500 font-bold mb-1 text-[9px] sm:text-[10px] lg:text-xs uppercase tracking-widest leading-tight">{title}</p>
+            <p className="text-zinc-500 font-bold mb-1 text-[9px] sm:text-[10px] lg:text-xs uppercase tracking-widest leading-tight truncate">{title}</p>
             <h3 className="text-lg sm:text-xl font-black text-zinc-100 mb-1 tracking-tight drop-shadow-sm truncate">{value}</h3>
             <div className={`text-[9px] sm:text-[10px] font-bold ${colorClass} uppercase tracking-wider leading-tight truncate`}>
               {subtext}
             </div>
           </div>
-          <div className={`p-2 rounded-lg bg-surface-950 border border-surface-800 flex-shrink-0 ${colorClass} shadow-inner`}>
-            <Icon name={icon} size={16} className="sm:w-5 sm:h-5" />
+          <div className={`p-2 rounded-lg bg-surface-950 border border-surface-800 flex-shrink-0 ${colorClass} shadow-inner hidden sm:flex items-center justify-center`}>
+            <Icon name={icon} size={16} className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
       </Card>
@@ -358,11 +380,11 @@
       const isEditing = !!currentWallet;
       return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-surface-950/90 backdrop-blur-md p-4 fade-in">
-          <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-sm shadow-[0_0_50px_rgba(212,175,55,0.1)] p-6">
+          <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-sm shadow-[0_0_50px_rgba(212,175,55,0.1)] p-6 max-h-[90vh] overflow-y-auto">
             <div className="w-10 h-10 bg-brand-500/10 rounded-full flex items-center justify-center text-brand-400 mb-4 border border-brand-500/20 mx-auto"><Icon name="wallet" size={20} /></div>
             <h3 className="text-lg font-black text-zinc-100 mb-1 text-center uppercase tracking-wide">{isEditing ? t('change_wallet') : t('setup_wallet')}</h3>
             <p className="text-zinc-400 text-[10px] mb-4 text-center leading-relaxed">{isEditing ? t('edit_wallet_desc') : t('setup_wallet_desc')}</p>
-            <input type="text" value={val} onChange={e=>setVal(e.target.value)} placeholder="UQ... o EQ..." className="w-full bg-surface-950 border border-surface-700 rounded-lg px-3 py-2.5 text-zinc-100 mb-4 font-mono focus:outline-none focus:border-brand-500 transition-colors shadow-inner text-xs" />
+            <input type="text" value={val} onChange={e=>setVal(e.target.value)} placeholder="UQ... or EQ..." className="w-full bg-surface-950 border border-surface-700 rounded-lg px-3 py-2.5 text-zinc-100 mb-4 font-mono focus:outline-none focus:border-brand-500 transition-colors shadow-inner text-xs" />
             <div className="flex gap-2">
               <button onClick={onClose} className="flex-1 py-2.5 rounded-lg font-bold text-zinc-400 bg-surface-800 hover:bg-surface-700 transition-colors text-xs">{t('cancel')}</button>
               <button onClick={()=>{onSave(val); onClose();}} disabled={val.length < 10} className="flex-[2] py-2.5 rounded-lg font-black text-surface-950 bg-gold-gradient hover:opacity-90 transition-opacity disabled:opacity-50 shadow-lg uppercase tracking-wider text-xs">{t('save_wallet')}</button>
@@ -379,7 +401,7 @@
       
       return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-surface-950/90 backdrop-blur-md p-4 fade-in">
-          <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-sm shadow-[0_0_50px_rgba(212,175,55,0.1)] overflow-hidden min-w-0">
+          <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-sm shadow-[0_0_50px_rgba(212,175,55,0.1)] overflow-hidden min-w-0 max-h-[90vh] overflow-y-auto">
             <div className="p-5 text-center border-b border-surface-800">
               <div className="w-10 h-10 bg-surface-950 rounded-full flex items-center justify-center text-brand-400 mx-auto mb-3 border border-surface-800"><Icon name="shield-check" size={20} /></div>
               <h3 className="text-base font-black text-zinc-100 uppercase tracking-wider">{t('security_auth')}</h3>
@@ -409,48 +431,49 @@
       );
     };
 
+    // User Dashboard Component
     const UserDashboard = ({ t }) => {
       return (
         <div className="flex-1 flex flex-col h-full min-h-0 py-2 sm:py-4 fade-in">
-          <div className="w-full flex flex-col h-full gap-4 max-w-5xl mx-auto">
+          <div className="w-full flex flex-col h-full gap-4 max-w-5xl mx-auto min-h-0">
             
             <div className="shrink-0 p-4 sm:p-5 glass-panel rounded-xl border-l-4 border-l-brand-500 flex items-center justify-between shadow-lg">
-              <div>
-                <h2 className="text-xl sm:text-2xl font-black text-zinc-100 uppercase tracking-widest leading-none">{t('welcome_title')}</h2>
-                <p className="text-success-400 font-mono text-[10px] sm:text-xs mt-1.5 font-bold flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-success-500 animate-pulse"></span>
+              <div className="min-w-0 pr-4">
+                <h2 className="text-lg sm:text-2xl font-black text-zinc-100 uppercase tracking-widest leading-none truncate">{t('welcome_title')}</h2>
+                <p className="text-success-400 font-mono text-[10px] sm:text-xs mt-1.5 font-bold flex items-center gap-1.5 truncate">
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-success-500 animate-pulse shrink-0"></span>
                   {t('system_status_ok')}
                 </p>
               </div>
-              <Icon name="activity" className="text-brand-500 opacity-80" size={28} />
+              <Icon name="activity" className="text-brand-500 opacity-80 shrink-0" size={28} />
             </div>
 
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 min-h-0">
-              <a href="SummaryZeroToHeroAcademy.html" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-5 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-brand-500/20 hover:border-brand-500 hover:-translate-y-1">
-                <div className="absolute inset-0 bg-gradient-to-br from-brand-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-surface-900 border border-brand-500/40 flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(212,175,55,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0">
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 min-h-0 overflow-y-auto custom-scrollbar md:overflow-visible pb-4 md:pb-0">
+              <a href="SummaryZeroToHeroAcademy.html" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-5 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-brand-500/20 hover:border-brand-500 md:hover:-translate-y-1 h-full min-h-[160px]">
+                <div className="absolute inset-0 bg-gradient-to-br from-brand-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl pointer-events-none"></div>
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-surface-900 border border-brand-500/40 flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(212,175,55,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
                   <Icon name="graduation-cap" size={24} className="text-brand-400" />
                 </div>
-                <h3 className="text-xs sm:text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('academy_btn')}</h3>
-                <p className="text-[9px] sm:text-[10px] text-zinc-500 mt-1 uppercase tracking-widest font-bold">{t('training_setup')}</p>
+                <h3 className="text-xs sm:text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10 px-2">{t('academy_btn')}</h3>
+                <p className="text-[9px] sm:text-[10px] text-zinc-500 mt-1 uppercase tracking-widest font-bold text-center relative z-10">{t('training_setup')}</p>
               </a>
               
-              <a href="https://t.me/BettingExchangeRoom" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-5 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#2AABEE]/20 hover:border-[#2AABEE] hover:-translate-y-1">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#2AABEE]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-surface-900 border border-[#2AABEE]/40 flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(42,171,238,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0">
+              <a href="https://t.me/BettingExchangeRoom" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-5 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#2AABEE]/20 hover:border-[#2AABEE] md:hover:-translate-y-1 h-full min-h-[160px]">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#2AABEE]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl pointer-events-none"></div>
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-surface-900 border border-[#2AABEE]/40 flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(42,171,238,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
                   <Icon name="send" size={24} className="text-[#2AABEE]" />
                 </div>
-                <h3 className="text-xs sm:text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('signals_btn')}</h3>
-                <p className="text-[9px] sm:text-[10px] text-zinc-500 mt-1 uppercase tracking-widest font-bold">{t('signals_access')}</p>
+                <h3 className="text-xs sm:text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10 px-2">{t('signals_btn')}</h3>
+                <p className="text-[9px] sm:text-[10px] text-zinc-500 mt-1 uppercase tracking-widest font-bold text-center relative z-10">{t('signals_access')}</p>
               </a>
 
-              <a href="brandshop.html" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-5 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#ec4899]/20 hover:border-[#ec4899] hover:-translate-y-1">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#ec4899]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-surface-900 border border-[#ec4899]/40 flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(236,72,153,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0">
+              <a href="brandshop.html" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-5 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#ec4899]/20 hover:border-[#ec4899] md:hover:-translate-y-1 h-full min-h-[160px]">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#ec4899]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl pointer-events-none"></div>
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-surface-900 border border-[#ec4899]/40 flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(236,72,153,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
                   <Icon name="shopping-bag" size={24} className="text-[#ec4899]" />
                 </div>
-                <h3 className="text-xs sm:text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('brand_shop')}</h3>
-                <p className="text-[9px] sm:text-[10px] text-zinc-500 mt-1 uppercase tracking-widest font-bold">{t('merch_store')}</p>
+                <h3 className="text-xs sm:text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10 px-2">{t('brand_shop')}</h3>
+                <p className="text-[9px] sm:text-[10px] text-zinc-500 mt-1 uppercase tracking-widest font-bold text-center relative z-10">{t('merch_store')}</p>
               </a>
             </div>
           </div>
@@ -458,6 +481,7 @@
       );
     };
 
+    // Company Dashboard Component
     const CompanyDashboard = ({ sc, t }) => {
       const [isSimulating, setIsSimulating] = useState(false);
       const [statusSort, setStatusSort] = useState('activeFirst'); 
@@ -490,15 +514,15 @@
             </div>
             <div className="w-full sm:w-auto shrink-0 flex gap-2">
               <a href="pricing.html" target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none px-4 py-2 sm:py-2.5 bg-surface-950 hover:bg-surface-800 border border-surface-700 text-brand-400 rounded-lg text-[10px] sm:text-xs font-black flex items-center justify-center gap-1.5 transition-colors uppercase tracking-wide shadow-sm">
-                <Icon name="file-text" size={14} /> <span className="hidden sm:inline">{t('pricing_docs')}</span><span className="sm:hidden">Docs</span>
+                <Icon name="file-text" size={14} /> <span className="hidden sm:inline">{t('pricing_docs')}</span><span className="sm:hidden">{t('docs_short')}</span>
               </a>
               <button onClick={async () => { setIsSimulating(true); await sc.simulateDeposit(t); setIsSimulating(false); }} disabled={isSimulating} className="flex-[2] sm:flex-none px-4 py-2 sm:py-2.5 bg-gold-gradient hover:opacity-90 text-surface-950 rounded-lg text-[10px] sm:text-xs font-black flex items-center justify-center gap-1.5 disabled:opacity-50 transition-opacity uppercase tracking-wide shadow-sm">
-                {isSimulating ? <Icon name="loader-2" size={14} className="animate-spin" /> : <Icon name="plus" size={14} />} <span className="hidden sm:inline">{t('simulate_deposit')}</span><span className="sm:hidden">Deposit</span>
+                {isSimulating ? <Icon name="loader-2" size={14} className="animate-spin" /> : <Icon name="plus" size={14} />} <span className="hidden sm:inline">{t('simulate_deposit')}</span><span className="sm:hidden">{t('deposit_short')}</span>
               </button>
             </div>
           </div>
 
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 lg:grid-rows-[auto_minmax(0,1fr)] gap-3 sm:gap-4 min-h-0 overflow-y-auto custom-scrollbar lg:pr-2 pb-4">
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 lg:grid-rows-[auto_minmax(0,1fr)] gap-3 sm:gap-4 min-h-0 overflow-y-auto lg:overflow-hidden custom-scrollbar lg:pr-2 pb-4 lg:pb-0">
             
             <div className="lg:col-span-4 grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 shrink-0">
               <StatCard title={t('processed_volume')} value={formatCurrency(sc.state.totalProcessed, sc.state.isHidden)} subtext={t('real_usdt')} icon="bar-chart-2" colorClass="text-brand-400" />
@@ -599,12 +623,13 @@
       );
     };
 
+    // Promoter Dashboard Component
     const PromoterDashboard = ({ sc, t, lang }) => {
       const [isClaiming, setIsClaiming] = useState(false);
       const [copied, setCopied] = useState(false);
       const [showSecureModal, setShowSecureModal] = useState(false);
       const [showWalletModal, setShowWalletModal] = useState(false);
-      const [activeTab, setActiveTab] = useState('top10'); // Tabs per colonna di destra
+      const [activeTab, setActiveTab] = useState('top10'); 
       
       const localizedChartData = useMemo(() => PROMOTER_CHART_DATA.map(d => ({...d, name: t(d.rawKey)||d.rawKey})), [t]);
       const tgUser = { first_name: "Alex", last_name: "De Souza", username: "@alex_crypto_pro" };
@@ -644,11 +669,11 @@
       ];
 
       return (
-        <div className="flex flex-col flex-1 h-full fade-in min-h-0 pt-2 lg:pt-0 pb-4">
+        <div className="flex flex-col flex-1 h-full fade-in min-h-0 pt-2 lg:pt-0 pb-4 lg:pb-0">
           
           <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 lg:grid-rows-[minmax(0,1fr)_minmax(0,1fr)] gap-3 sm:gap-4 min-h-0 overflow-y-auto lg:overflow-hidden custom-scrollbar lg:pr-1">
             
-            {/* Left Col (3) - Funnels Compatti */}
+            {/* Left Col (3) */}
             <div className="lg:col-span-3 flex flex-col gap-3 sm:gap-4 min-h-0 lg:row-span-2">
               <Card className="flex flex-col border-l-2 border-l-brand-500 shrink-0" padding="p-3 sm:p-4">
                 <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
@@ -730,7 +755,7 @@
 
               <Card className="flex flex-col flex-1 min-h-[200px]" padding="p-4">
                 <h3 className="text-[10px] sm:text-xs font-bold text-zinc-100 mb-2 uppercase tracking-widest flex items-center gap-2 shrink-0"><Icon name="bar-chart-3" size={16} className="text-success-500" /> {t('earnings_chart')}</h3>
-                <div className="flex-1 w-full relative min-h-0">
+                <div className="flex-1 w-full relative min-h-[150px]">
                   <div className="absolute inset-0">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -20, bottom: 0}}>
@@ -751,15 +776,14 @@
             <div className="lg:col-span-4 flex flex-col gap-3 sm:gap-4 min-h-0 lg:row-span-2">
               <Card padding="p-0" className="flex flex-col flex-1 min-h-[350px] lg:min-h-0 shrink-0">
                 <div className="flex border-b border-surface-800 bg-surface-900/50 shrink-0">
-                  <button onClick={() => setActiveTab('top10')} className={`flex-1 p-2.5 sm:p-3 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'top10' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="trophy" size={14} /> Top 10</button>
+                  <button onClick={() => setActiveTab('top10')} className={`flex-1 p-2.5 sm:p-3 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'top10' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="trophy" size={14} /> {t('top_10_short')}</button>
                   <button onClick={() => setActiveTab('network')} className={`flex-1 p-2.5 sm:p-3 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'network' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="users" size={14} /> {t('my_network')}</button>
-                  <button onClick={() => setActiveTab('history')} className={`flex-1 p-2.5 sm:p-3 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'history' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="history" size={14} /> Audit</button>
+                  <button onClick={() => setActiveTab('history')} className={`flex-1 p-2.5 sm:p-3 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'history' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="history" size={14} /> {t('audit_short')}</button>
                 </div>
                 
                 <div className="flex-1 w-full overflow-y-auto custom-scrollbar relative bg-surface-950/30 flex flex-col min-h-0">
                   {activeTab === 'top10' && (
                     <div className="flex flex-col h-full fade-in">
-                      {/* Top 10 Graphic Header */}
                       <div className={`p-3 sm:p-4 border-b border-surface-800 shrink-0 ${isQualified ? 'bg-brand-500/5' : 'bg-surface-900/30'}`}>
                         <div className="flex justify-between items-end mb-3">
                           <div>
@@ -784,11 +808,10 @@
                         </div>
                       </div>
 
-                      {/* Live Leaderboard List */}
                       <div className="flex-1 overflow-y-auto custom-scrollbar p-2">
                         <div className="flex items-center justify-between px-2 mb-2 mt-1">
-                          <span className="text-[8px] sm:text-[9px] font-bold text-zinc-400 uppercase tracking-widest">{t('realtime_leaderboard')}</span>
-                          <span className="text-[7px] font-mono text-success-500 font-bold flex items-center gap-1 bg-success-500/10 px-1.5 py-0.5 rounded border border-success-500/20"><Icon name="bot" size={10}/> {t('bot_managed')}</span>
+                          <span className="text-[8px] sm:text-[9px] font-bold text-zinc-400 uppercase tracking-widest truncate">{t('realtime_leaderboard')}</span>
+                          <span className="text-[7px] font-mono text-success-500 font-bold flex items-center gap-1 bg-success-500/10 px-1.5 py-0.5 rounded border border-success-500/20 shrink-0"><Icon name="bot" size={10}/> <span className="hidden sm:inline">{t('bot_managed')}</span></span>
                         </div>
                         <table className="w-full text-left border-separate border-spacing-y-1">
                           <tbody>
@@ -797,7 +820,7 @@
                                 <td className={`w-6 sm:w-8 text-center font-black text-[10px] sm:text-xs ${leader.rank <= 3 ? 'text-brand-400' : 'text-zinc-500'}`}>{leader.rank}</td>
                                 <td className="flex-1 px-1 sm:px-2 min-w-0">
                                   <span className={`font-bold text-[9px] sm:text-[10px] truncate block uppercase tracking-wider ${leader.isMe ? 'text-brand-400' : 'text-zinc-200'}`}>
-                                    {leader.name} {leader.isMe && <span className="text-[7px] ml-1 bg-brand-500 text-surface-950 px-1 py-0.5 rounded-sm">(TU)</span>}
+                                    {leader.name} {leader.isMe && <span className="text-[7px] ml-1 bg-brand-500 text-surface-950 px-1 py-0.5 rounded-sm">{t('you_tag')}</span>}
                                   </span>
                                 </td>
                                 <td className="text-right font-mono text-[9px] sm:text-[10px] font-bold text-success-400 shrink-0">
@@ -816,9 +839,9 @@
                       <table className="w-full text-left border-collapse">
                         <thead className="sticky top-0 z-10 bg-surface-900 shadow-md">
                           <tr className="text-[8px] sm:text-[9px] uppercase tracking-wider text-zinc-500 border-b border-surface-800">
-                            <th className="px-3 py-2 font-bold">{t('user_col')}</th>
-                            <th className="px-3 py-2 font-bold">{t('action_col')}</th>
-                            <th className="px-3 py-2 font-bold text-right">{t('vol_col')}</th>
+                            <th className="px-3 py-2 font-bold truncate">{t('user_col')}</th>
+                            <th className="px-3 py-2 font-bold truncate">{t('action_col')}</th>
+                            <th className="px-3 py-2 font-bold text-right truncate">{t('vol_col')}</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-surface-800/50">
@@ -829,8 +852,8 @@
                                    <div className={`p-1.5 rounded-lg shrink-0 border hidden sm:block ${lead.typeKey === 'action_deposit' ? 'bg-success-500/10 text-success-400 border-success-500/30' : 'bg-brand-500/10 text-brand-400 border-brand-500/30'}`}><Icon name={lead.typeKey === 'action_deposit' ? 'coins' : 'user-plus'} size={12} /></div>
                                    {lead.flag && <img src={`https://flagcdn.com/${lead.flag}.svg`} alt="flag" className="flag-icon" />}
                                    <div className="min-w-0">
-                                     <TgLink username={lead.username} className="text-[9px] sm:text-[10px] truncate" />
-                                     <p className="text-[7px] sm:text-[8px] text-zinc-500 uppercase tracking-wider font-bold mt-0.5">{t(lead.timeKey)}</p>
+                                     <TgLink username={lead.username} className="text-[9px] sm:text-[10px] truncate block" />
+                                     <p className="text-[7px] sm:text-[8px] text-zinc-500 uppercase tracking-wider font-bold mt-0.5 truncate">{t(lead.timeKey)}</p>
                                    </div>
                                 </div>
                               </td>
@@ -859,11 +882,11 @@
                         <div className="space-y-2">
                           {sc.state.claimHistory.map((item, idx) => (
                             <div key={idx} className="flex justify-between items-center bg-surface-950 p-2 sm:p-2.5 rounded-lg border border-surface-800 hover:border-surface-700 transition-colors">
-                              <div>
-                                <p className="text-zinc-200 text-[9px] sm:text-[10px] font-bold">{item.date}</p>
-                                <p className="text-[7px] sm:text-[8px] text-zinc-500 mt-0.5 font-mono uppercase tracking-widest flex items-center gap-1"><Icon name="check-circle-2" size={8} className="text-success-500"/> {item.tx}</p>
+                              <div className="min-w-0 pr-2">
+                                <p className="text-zinc-200 text-[9px] sm:text-[10px] font-bold truncate">{item.date}</p>
+                                <p className="text-[7px] sm:text-[8px] text-zinc-500 mt-0.5 font-mono uppercase tracking-widest flex items-center gap-1 truncate"><Icon name="check-circle-2" size={8} className="text-success-500 shrink-0"/> {item.tx}</p>
                               </div>
-                              <span className="text-success-400 font-black text-[9px] sm:text-[10px] font-mono bg-success-500/10 px-1.5 py-0.5 rounded border border-success-500/20">+{formatCurrency(item.amount, sc.state.isHidden)}</span>
+                              <span className="text-success-400 font-black text-[9px] sm:text-[10px] font-mono bg-success-500/10 px-1.5 py-0.5 rounded border border-success-500/20 shrink-0">+{formatCurrency(item.amount, sc.state.isHidden)}</span>
                             </div>
                           ))}
                         </div>
@@ -952,23 +975,65 @@
     };
 
     // --- ACCESS GUARD COMPONENT ---
-    const AccessDeniedScreen = ({ t, onBypass }) => (
-      <div className="flex flex-col items-center justify-center h-[100vh] bg-surface-950 px-4 text-center fade-in z-50 relative">
-        <div className="w-20 h-20 bg-brand-500/10 text-brand-400 rounded-full flex items-center justify-center border border-brand-500/30 mb-6 shadow-[0_0_30px_rgba(212,175,55,0.2)]">
-          <Icon name="lock" size={32} />
+    const AccessDeniedScreen = ({ t, onBypass }) => {
+      const [showModal, setShowModal] = useState(false);
+      const [pwd, setPwd] = useState('');
+      const [error, setError] = useState(false);
+
+      const handleUnlock = () => {
+        if (pwd === 'Hpupdsup!1974') {
+          setError(false);
+          setShowModal(false);
+          onBypass();
+        } else {
+          setError(true);
+        }
+      };
+
+      return (
+        <div className="flex flex-col items-center justify-center h-[100vh] bg-surface-950 px-4 text-center fade-in z-50 relative">
+          
+          {/* Pallino decorativo nascosto per bypass segreto */}
+          <div onClick={() => setShowModal(true)} className="absolute top-8 left-8 w-1.5 h-1.5 bg-zinc-800 rounded-full opacity-50 hover:opacity-100 transition-opacity"></div>
+          
+          <div className="w-20 h-20 bg-brand-500/10 text-brand-400 rounded-full flex items-center justify-center border border-brand-500/30 mb-6 shadow-[0_0_30px_rgba(212,175,55,0.2)]">
+            <Icon name="lock" size={32} />
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-zinc-100 uppercase tracking-widest mb-3">{t('access_denied')}</h1>
+          <p className="text-sm text-zinc-400 max-w-md mb-8 leading-relaxed">{t('sub_expired')}</p>
+          
+          <a href="Checkout_Referral_Web3.html" className="px-8 py-3.5 bg-gold-gradient text-surface-950 font-black rounded-xl uppercase tracking-widest shadow-[0_10px_30px_rgba(212,175,55,0.3)] transition-transform hover:-translate-y-1 inline-flex items-center gap-2 mb-6 outline-none">
+            <Icon name="zap" size={16} /> {t('renew_btn')}
+          </a>
+          
+          <button onClick={() => setShowModal(true)} className="text-[10px] text-zinc-600 hover:text-brand-400 font-bold uppercase tracking-widest transition-colors outline-none cursor-pointer">
+            {t('demo_bypass')}
+          </button>
+
+          {/* Password Modal */}
+          {showModal && (
+            <div className="fixed inset-0 z-[200] flex items-center justify-center bg-surface-950/90 backdrop-blur-md p-4 fade-in">
+              <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-xs shadow-[0_0_50px_rgba(212,175,55,0.1)] p-6">
+                <h3 className="text-sm font-black text-zinc-100 mb-4 text-center uppercase tracking-wide">System Admin</h3>
+                <input 
+                  type="password" 
+                  value={pwd} 
+                  onChange={e => setPwd(e.target.value)} 
+                  onKeyDown={e => e.key === 'Enter' && handleUnlock()}
+                  placeholder="Password..." 
+                  className="w-full bg-surface-950 border border-surface-700 rounded-lg px-3 py-2.5 text-zinc-100 mb-3 font-mono focus:outline-none focus:border-brand-500 transition-colors shadow-inner text-xs text-center" 
+                />
+                {error && <p className="text-red-500 text-[10px] mb-3 text-center uppercase tracking-widest font-bold">Access Denied</p>}
+                <div className="flex gap-2 mt-1">
+                  <button onClick={() => {setShowModal(false); setPwd(''); setError(false);}} className="flex-1 py-2.5 rounded-lg font-bold text-zinc-400 bg-surface-800 hover:bg-surface-700 transition-colors text-xs uppercase tracking-wider">Cancel</button>
+                  <button onClick={handleUnlock} className="flex-1 py-2.5 rounded-lg font-black text-surface-950 bg-gold-gradient hover:opacity-90 transition-opacity shadow-lg uppercase tracking-wider text-xs">Unlock</button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-        <h1 className="text-2xl sm:text-3xl font-black text-zinc-100 uppercase tracking-widest mb-3">{t('access_denied')}</h1>
-        <p className="text-sm text-zinc-400 max-w-md mb-8 leading-relaxed">{t('sub_expired')}</p>
-        
-        <a href="Checkout_Referral_Web3.html" className="px-8 py-3.5 bg-gold-gradient text-surface-950 font-black rounded-xl uppercase tracking-widest shadow-[0_10px_30px_rgba(212,175,55,0.3)] transition-transform hover:-translate-y-1 inline-flex items-center gap-2 mb-6 outline-none">
-          <Icon name="zap" size={16} /> {t('renew_btn')}
-        </a>
-        
-        <button onClick={onBypass} className="text-[10px] text-zinc-600 hover:text-brand-400 font-bold uppercase tracking-widest transition-colors outline-none cursor-pointer">
-          {t('demo_bypass')}
-        </button>
-      </div>
-    );
+      );
+    };
 
     const App = () => {
       const [lang, setLang] = useState(() => {
@@ -977,17 +1042,14 @@
       });
       const [view, setView] = useState('user');
       const [isInitLoad, setIsInitLoad] = useState(true);
-      const [accessStatus, setAccessStatus] = useState('checking'); // 'checking' | 'granted' | 'denied'
+      const [accessStatus, setAccessStatus] = useState('checking'); 
       
       const sc = useSmartContract(); 
       const t = useCallback((key) => translations[lang]?.[key] || translations['en'][key] || key, [lang]);
 
-      // Controllo accessi (Access Guard)
       useEffect(() => {
         const verifyAccess = () => {
-          // Se admin (bypass)
           const isAdmin = localStorage.getItem('bx_admin') === 'true';
-          // Permettiamo bypass anche se si arriva come admin
           if (isAdmin) return 'granted';
           
           const expiryStr = localStorage.getItem('bx_access_expiry');
@@ -1005,7 +1067,6 @@
           return 'granted';
         };
 
-        // Simula il tempo di caricamento
         setTimeout(() => {
           setAccessStatus(verifyAccess());
           setIsInitLoad(false);
@@ -1013,7 +1074,6 @@
       }, []);
 
       const demoBypass = () => {
-        // Simula acquisto di un piano di 30 giorni
         const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
         localStorage.setItem('bx_access_expiry', Date.now() + thirtyDaysInMs);
         setAccessStatus('granted');
@@ -1028,7 +1088,6 @@
         }
       };
 
-      // Schermata di Loading
       if (isInitLoad) {
         return (
           <div className="initial-loader">
@@ -1038,12 +1097,10 @@
         );
       }
 
-      // Schermata Accesso Negato
       if (accessStatus === 'denied') {
         return <AccessDeniedScreen t={t} onBypass={demoBypass} />;
       }
 
-      // Render Dashboard (Access Granted)
       return (
         <div className="bg-grid-pattern h-full flex flex-col overflow-hidden">
           <ToastContainer toasts={sc.state.toasts} />
