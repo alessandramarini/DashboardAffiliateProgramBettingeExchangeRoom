@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#050a05">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Room AI | Global Exchange Academy</title>
+    <title>Betting Exchange Room | Academy</title>
     <meta name="description" content="Interactive Academy for Betting Exchange. Learn math, risk management, and emotional detachment.">
 
     <!-- Pre-connessioni ai CDN per caricamento fulmineo (GitHub Pages / Vercel) -->
@@ -128,14 +128,17 @@
 
     <header class="sticky top-0 z-50 bg-[#050a05]/90 backdrop-blur-md border-b border-[#99E814]/20 px-4 py-2 flex items-center justify-between shadow-lg">
         <div class="flex items-center gap-3 overflow-hidden">
-            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full border border-[#99E814] bg-[#99E814]/10 flex items-center justify-center font-black text-[#99E814] text-xs shrink-0 pulse-neon-fx">BE</div>
-            <h1 class="font-black text-xs md:text-sm tracking-wider uppercase truncate">
-                <span class="hidden sm:inline" data-i18n="headerPrefix">EXCHANGE</span> 
-                <span class="text-[#99E814]">ROOM</span>
+            <!-- Nuovo Logo Immagine -->
+            <img src="logo-tondo.jpeg" alt="Logo" class="w-8 h-8 md:w-10 md:h-10 rounded-full border border-[#99E814] bg-[#99E814]/10 object-cover shrink-0 pulse-neon-fx">
+            
+            <!-- Nuovo Titolo -->
+            <h1 class="font-black text-xs md:text-sm tracking-wider uppercase truncate flex items-center flex-wrap">
+                <span data-i18n="headerPrefix">BETTING EXCHANGE</span> 
+                <span class="text-[#99E814] ml-1">ROOM</span>
             </h1>
         </div>
         
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-4 shrink-0">
             <!-- Centralized Flag Switcher (EN, ES, PT, IT) -->
             <div class="flex items-center gap-2 bg-black/60 p-1.5 rounded-lg border border-gray-800 shadow-inner">
                 <button onclick="window.changeLang('en')" class="lang-flag" data-lang="en" title="English">
@@ -145,7 +148,7 @@
                     <img src="https://flagcdn.com/w80/es.png" alt="Español">
                 </button>
                 <button onclick="window.changeLang('pt')" class="lang-flag" data-lang="pt" title="Português">
-                    <img src="https://flagcdn.com/w80/br.png" alt="Português"> <!-- Using BR flag as standard for PT betting -->
+                    <img src="https://flagcdn.com/w80/br.png" alt="Português">
                 </button>
                 <button onclick="window.changeLang('it')" class="lang-flag" data-lang="it" title="Italiano">
                     <img src="https://flagcdn.com/w80/it.png" alt="Italiano">
@@ -276,7 +279,7 @@
             </div>
         </div>
 
-        <!-- Pulsante Prossima Lezione (AGGIORNATO CON NUOVO LINK E NOME) -->
+        <!-- Pulsante Prossima Lezione -->
         <div class="mt-8 flex flex-col items-center justify-center w-full">
             <a href="https://www.bettingexchangeroom.com" onclick="SoundEngine.click()" class="bg-gradient-to-r from-[#0a140f] to-[#112211] text-[#99E814] border border-[#99E814] font-black w-full max-w-md flex justify-center items-center px-6 py-4 rounded-xl hover:bg-[#99E814] hover:text-black transition-all duration-300 text-xs md:text-sm uppercase tracking-widest shadow-[0_0_20px_rgba(153,232,20,0.2)] group transform-gpu active:scale-95">
                 <span data-i18n="navNextLesson">UNLOCK YOUR PATH</span> 
@@ -392,10 +395,10 @@
                 </div>
             `;
 
-            // Dizionario rigoroso (EN, ES, PT, IT) AGGIORNATO CON NUOVA CHIAVE "navNextLesson"
+            // Dizionario rigoroso (EN, ES, PT, IT) AGGIORNATO CON NUOVO TITOLO INTERNAZIONALE
             const dict = {
                 en: {
-                    headerPrefix: "EXCHANGE",
+                    headerPrefix: "BETTING EXCHANGE",
                     moduleTitle: "DAY 1/30", lessonTitle: "ZERO TO HERO", lessonDesc: "No gambling. Only math, risk management, and emotional detachment.",
                     finLabel: "MINDSET", finQuote: "Bankroll is business capital, not a personal ATM. Withdraw to make it yours.",
                     demoBadge: "INTERACTIVE DEMO", startSimulator: "Start Simulator",
@@ -419,7 +422,7 @@
                         "The Formula (Back)", "Net = [ Stake × (Odds - 1) ] × (1 - Comm.)", "The trader follows liquidity, the gambler follows the team.")
                 },
                 es: {
-                    headerPrefix: "EXCHANGE",
+                    headerPrefix: "BETTING EXCHANGE",
                     moduleTitle: "DÍA 1/30", lessonTitle: "ZERO TO HERO", lessonDesc: "Cero apuestas. Solo matemáticas, gestión del riesgo y desapego emocional.",
                     finLabel: "MINDSET", finQuote: "El Bankroll es capital de trabajo, no un cajero. Retira para que sea tuyo.",
                     demoBadge: "DEMO INTERACTIVA", startSimulator: "Iniciar Simulador",
@@ -443,7 +446,7 @@
                         "La Fórmula (Back)", "Neto = [ Stake × (Cuota - 1) ] × (1 - Com.)", "El trader sigue la liquidez, el apostador al equipo.")
                 },
                 pt: {
-                    headerPrefix: "EXCHANGE",
+                    headerPrefix: "BETTING EXCHANGE",
                     moduleTitle: "DIA 1/30", lessonTitle: "ZERO TO HERO", lessonDesc: "Zero apostas. Apenas matemática, gestão de risco e desapego emocional.",
                     finLabel: "MINDSET", finQuote: "O Bankroll é capital de negócio, não um multibanco. Retire para ser seu.",
                     demoBadge: "DEMO INTERATIVA", startSimulator: "Iniciar Simulador",
@@ -467,7 +470,7 @@
                         "A Fórmula (Back)", "Líquido = [ Stake × (Odd - 1) ] × (1 - Com.)", "O trader segue a liquidez, o apostador a equipa.")
                 },
                 it: {
-                    headerPrefix: "EXCHANGE",
+                    headerPrefix: "BETTING EXCHANGE",
                     moduleTitle: "GIORNO 1/30", lessonTitle: "ZERO TO HERO", lessonDesc: "Zero scommesse. Solo matematica, gestione del rischio e distacco emotivo.",
                     finLabel: "MINDSET", finQuote: "Il Bankroll è capitale aziendale, non il tuo bancomat. Preleva per renderlo tuo.",
                     demoBadge: "DEMO INTERATTIVA", startSimulator: "Avvia Simulatore",
