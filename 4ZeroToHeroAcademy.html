@@ -10,12 +10,10 @@
     <title>Room AI | Global Exchange Academy - Day 4</title>
     <meta name="description" content="Interactive Academy for Betting Exchange. Day 4: Market Micro-Structure: The Hidden Cost of Execution.">
 
-    <!-- Pre-connessioni ai CDN per caricamento fulmineo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://flagcdn.com">
     
-    <!-- Font e Tailwind -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -123,14 +121,12 @@
 </head>
 <body class="flex flex-col min-h-[100dvh]">
 
-<header class="sticky top-0 z-50 bg-[#050a05]/90 backdrop-blur-md border-b border-[#99E814]/20 px-4 py-2 flex items-center justify-between shadow-lg">
-        <!-- LOGO AGGIORNATO -->
+    <header class="sticky top-0 z-50 bg-[#050a05]/90 backdrop-blur-md border-b border-[#99E814]/20 px-4 py-2 flex items-center justify-between shadow-lg">
         <div class="flex items-center gap-3 overflow-hidden">
-            <img src="logo-tondo.jpeg" alt="Betting Exchange Room" class="w-10 h-10 md:w-12 md:h-12 rounded-full border border-[#99E814] shadow-[0_0_15px_rgba(153,232,20,0.2)] pulse-neon-fx object-cover shrink-0">
+            <img src="logo-tondo.jpeg" alt="Betting Exchange Room Logo" class="w-10 h-10 md:w-12 md:h-12 rounded-full border border-[#99E814] object-cover shrink-0 pulse-neon-fx shadow-[0_0_15px_rgba(153,232,20,0.3)]">
         </div>
         
         <div class="flex items-center gap-4">
-            <!-- Centralized Flag Switcher -->
             <div class="flex items-center gap-2 bg-black/60 p-1.5 rounded-lg border border-gray-800 shadow-inner">
                 <button onclick="window.changeLang('en')" class="lang-flag" data-lang="en" title="English">
                     <img src="https://flagcdn.com/w80/gb.png" alt="English">
@@ -146,7 +142,6 @@
                 </button>
             </div>
             
-            <!-- XP Badge -->
             <div class="hidden sm:flex items-center bg-black/80 border border-gray-700 px-3 py-1.5 rounded-full shadow-inner">
                 <span class="text-yellow-400 text-xs mr-1 drop-shadow-[0_0_5px_rgba(250,204,21,0.8)]">⚡</span>
                 <span id="xp-counter" class="font-mono font-bold text-xs text-white">0 XP</span>
@@ -156,26 +151,21 @@
 
     <main class="flex-1 w-full max-w-[1400px] mx-auto p-3 md:p-6 flex flex-col justify-center">
         
-        <!-- Header Section -->
         <div class="text-center mb-4 md:mb-6 flex flex-col items-center">
             <span class="text-[#99E814] font-black text-[10px] md:text-xs tracking-[0.3em] uppercase bg-[#99E814]/10 px-3 py-1 rounded-full border border-[#99E814]/30 mb-2 float-fx" data-i18n="moduleTitle">DAY 4/30</span>
             <h2 class="text-fluid-h1 font-black text-white uppercase tracking-tighter drop-shadow-md" data-i18n="lessonTitle">ZERO TO HERO</h2>
             <p class="text-gray-400 max-w-xl mx-auto text-[11px] md:text-sm font-medium mt-1" data-i18n="lessonDesc">Microstruttura del Mercato: Il Costo Nascosto dell'Esecuzione.</p>
         </div>
 
-        <!-- MASTER GRID -->
         <div class="master-grid">
             
-            <!-- COLONNA SINISTRA: Video e Podcast -->
             <div class="col-video flex flex-col gap-4 w-full h-full">
-                <!-- Wrapper Video -->
                 <section class="glass-panel border-cyan p-2 w-full flex flex-col flex-1 shadow-[0_0_30px_rgba(0,229,255,0.05)]">
                     <div class="video-wrapper relative w-full aspect-video bg-black rounded-xl overflow-hidden shadow-inner">
                         <iframe id="main-video" class="absolute inset-0 w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
                     </div>
                 </section>
                 
-                <!-- Pulsanti Azione (Podcast & Ebook) -->
                 <div class="grid grid-cols-2 gap-3 md:gap-4 shrink-0">
                     <a id="btn-podcast" href="#" target="_blank" onclick="SoundEngine.click()" class="premium-btn flex flex-col items-center justify-center p-3 md:p-5 bg-gradient-to-b from-gray-900 to-black rounded-xl border border-gray-700/80 hover:border-[#00e5ff] transform-gpu hover:-translate-y-1 active:scale-95 shadow-lg group">
                         <svg class="w-7 h-7 md:w-9 md:h-9 mb-2.5 text-[#00e5ff] drop-shadow-[0_0_8px_rgba(0,229,255,0.6)] group-hover:drop-shadow-[0_0_15px_rgba(0,229,255,1)] group-hover:scale-110 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -195,10 +185,8 @@
                 </div>
             </div>
 
-            <!-- COLONNA DESTRA: Quiz e Interattività -->
             <div class="col-right flex flex-col gap-4 w-full h-full">
                 
-                <!-- QUIZ Section -->
                 <section class="glass-panel border-gold p-4 md:p-6 flex flex-col shadow-[0_0_20px_rgba(212,175,55,0.05)] w-full relative">
                     <div id="quiz-container" class="flex-1 flex flex-col">
                         <div class="flex justify-between items-center mb-4">
@@ -215,13 +203,11 @@
                         <div id="quiz-options-container" class="space-y-2"></div>
                     </div>
                     
-                    <!-- Feedback Modal -->
                     <div id="quiz-feedback" class="hidden mt-4 p-3 rounded-xl text-center border backdrop-blur-sm">
                         <div id="quiz-feedback-icon" class="text-2xl mb-1"></div>
                         <p id="quiz-feedback-text" class="text-[10px] sm:text-xs font-black uppercase tracking-wide"></p>
                     </div>
 
-                    <!-- Screen Completamento -->
                     <div id="quiz-completed-screen" class="hidden flex-col items-center justify-center text-center py-6">
                         <div class="text-5xl mb-3 drop-shadow-[0_0_15px_rgba(212,175,55,0.8)]">🏆</div>
                         <h4 class="text-[#d4af37] font-black text-xl uppercase tracking-widest mb-1" data-i18n="quizCompletedTitle">Passed!</h4>
@@ -230,17 +216,14 @@
                     </div>
                 </section>
 
-                <!-- Demo & Gioco -->
                 <div class="grid grid-cols-2 gap-4 w-full flex-1">
                     
-                    <!-- Simulator Demo -->
                     <section class="glass-panel border-neon p-4 flex flex-col justify-center items-center text-center premium-btn cursor-pointer transform-gpu hover:-translate-y-1 active:scale-95 shadow-[0_0_15px_rgba(153,232,20,0.05)]" onclick="window.open('Demo-4Day.html', '_blank'); SoundEngine.click()">
                         <svg class="w-8 h-8 md:w-10 md:h-10 text-[#99E814] drop-shadow-[0_0_10px_rgba(153,232,20,0.8)] mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <p class="text-[#99E814] font-black text-[9px] md:text-[10px] tracking-widest uppercase mb-1" data-i18n="demoBadge">INTERACTIVE DEMO</p>
                         <h3 class="text-white font-bold text-xs md:text-sm" data-i18n="startSimulator">Start Simulator</h3>
                     </section>
 
-                    <!-- Gioco Educativo SVG -->
                     <section class="glass-panel border-purple p-4 flex flex-col justify-center items-center text-center premium-btn cursor-pointer transform-gpu hover:-translate-y-1 active:scale-95 shadow-[0_0_15px_rgba(168,85,247,0.05)]" onclick="window.open('Game-4day.html', '_blank'); SoundEngine.click()">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" class="w-12 h-12 md:w-16 md:h-16 mb-2 drop-shadow-[0_0_15px_rgba(59,130,246,0.6)]">
                             <defs>
@@ -285,7 +268,6 @@
                     </section>
                 </div>
 
-                <!-- Pillola Finanziaria -->
                 <section class="glass-panel border-white/10 p-4 md:p-5 flex flex-col justify-center relative overflow-hidden bg-gradient-to-br from-gray-900 to-[#050a05] w-full">
                     <div class="absolute -right-2 -top-4 text-7xl text-white/5 font-serif pointer-events-none">"</div>
                     <div class="flex items-center gap-2 mb-2">
@@ -298,7 +280,6 @@
             </div>
         </div>
 
-        <!-- Pulsante Prossima Lezione -->
         <div class="mt-8 flex flex-col items-center justify-center w-full">
             <a href="https://affiliate-program-bettinge-exchange.vercel.app/SummaryZeroToHeroAcademy.html" onclick="SoundEngine.click()" class="bg-gradient-to-r from-[#0a140f] to-[#112211] text-[#99E814] border border-[#99E814] font-black w-full max-w-md flex justify-center items-center px-6 py-4 rounded-xl hover:bg-[#99E814] hover:text-black transition-all duration-300 text-xs md:text-sm uppercase tracking-widest shadow-[0_0_20px_rgba(153,232,20,0.2)] group transform-gpu active:scale-95">
                 <span data-i18n="navNextLesson">NEXT LESSON</span> 
@@ -308,10 +289,8 @@
         </div>
     </main>
 
-    <!-- EBOOK MODAL -->
     <div id="ebook-modal" class="fixed inset-0 z-[100] hidden flex-col items-center justify-center bg-black/90 backdrop-blur-md opacity-0 transition-opacity duration-300">
         <div id="ebook-modal-content" class="bg-[#050a05] w-full h-full md:w-[90vw] md:h-[90vh] md:max-w-4xl md:rounded-2xl border border-gray-800 flex flex-col overflow-hidden transform scale-95 transition-transform duration-300 shadow-2xl">
-            <!-- Header Modal -->
             <div class="flex justify-between items-center px-5 py-4 border-b border-gray-800 bg-black shrink-0">
                 <div class="flex items-center gap-3">
                     <svg class="w-5 h-5 text-[#ffb703]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253"></path></svg>
@@ -321,14 +300,12 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-            <!-- Contenuto Modal -->
             <div class="flex-1 overflow-y-auto p-5 md:p-10 bg-[#0a0f0a]">
                 <div class="max-w-3xl mx-auto w-full" id="ebook-content-container" data-i18n-html="ebookContent"></div>
             </div>
         </div>
     </div>
 
-    <!-- LOGICA E DATI JAVASCRIPT -->
     <script>
         const SoundEngine = {
             ctx: null, unlocked: false,
