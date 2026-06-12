@@ -248,7 +248,7 @@
         elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "Evento Live", viral_task_tag: "TASK VIRALE",
         welcome_title: "HUB OPERATIVO", system_status_ok: "STATO SISTEMA: OTTIMALE", sign_tx: "Firma la transazione nel tuo wallet.", users_label: "Utenti", elite_platform: "Piattaforma Elite", init_env: "Inizializzazione Ambiente...",
         realtime_leaderboard: "Classifica in Tempo Reale", bot_managed: "Gestita da Bot Python", training_setup: "Formazione e Setup", signals_access: "Segnali Premium", merch_store: "Store Ufficiale",
-        access_denied: "ACCESSO NEGADO", sub_expired: "Il tuo abbonamento è scaduto o non è stato trovato alcun piano attivo.", renew_btn: "RINNOVA ABBONAMENTO", demo_bypass: "AREA ADMIN",
+        access_denied: "ACCESSO NEGATO", sub_expired: "Il tuo abbonamento è scaduto o non è stato trovato alcun piano attivo.", renew_btn: "RINNOVA ABBONAMENTO", demo_bypass: "AREA ADMIN",
         you_tag: "(TU)", docs_short: "Docs", deposit_short: "Deposita", audit_short: "Audit", top_10_short: "Top 10"
       }
     };
@@ -439,49 +439,59 @@
 
     // --- DASHBOARDS ---
 
-    const UserDashboard = ({ t }) => (
-      <div className="flex-1 flex flex-col h-full py-4 fade-in">
-        <div className="w-full flex flex-col h-full gap-4 max-w-5xl mx-auto">
-          
-          <div className="shrink-0 p-4 sm:p-5 glass-panel rounded-xl border-l-4 border-l-brand-500 flex items-center justify-between shadow-lg">
-            <div className="min-w-0 pr-4">
-              <h2 className="text-lg sm:text-2xl font-black text-zinc-100 uppercase tracking-widest leading-none truncate">{t('welcome_title')}</h2>
-              <p className="text-success-400 font-mono text-[10px] sm:text-xs mt-1.5 font-bold flex items-center gap-1.5 truncate">
-                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-success-500 animate-pulse shrink-0"></span>
-                {t('system_status_ok')}
-              </p>
-            </div>
-            <Icon name="activity" className="text-brand-500 opacity-80 shrink-0" size={28} />
-          </div>
+    const UserDashboard = ({ t, lang }) => {
+      const tgLinks = {
+        en: 'https://t.me/c/3966363262',
+        es: 'https://t.me/c/3929284405',
+        pt: 'https://t.me/c/3510579028',
+        it: 'https://t.me/c/3958807227'
+      };
+      const currentTgLink = tgLinks[lang] || tgLinks['en'];
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <a href="#" className="relative flex flex-col items-center justify-center p-6 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-brand-500/20 hover:border-brand-500 min-h-[180px]">
-              <div className="w-14 h-14 rounded-full bg-surface-900 border border-brand-500/40 flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(212,175,55,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
-                <Icon name="graduation-cap" size={24} className="text-brand-400" />
-              </div>
-              <h3 className="text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('academy_btn')}</h3>
-              <p className="text-[10px] text-zinc-500 mt-2 uppercase tracking-widest font-bold text-center relative z-10">{t('training_setup')}</p>
-            </a>
+      return (
+        <div className="flex-1 flex flex-col h-full py-4 fade-in">
+          <div className="w-full flex flex-col h-full gap-4 max-w-5xl mx-auto">
             
-            <a href="#" className="relative flex flex-col items-center justify-center p-6 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#2AABEE]/20 hover:border-[#2AABEE] min-h-[180px]">
-              <div className="w-14 h-14 rounded-full bg-surface-900 border border-[#2AABEE]/40 flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(42,171,238,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
-                <Icon name="send" size={24} className="text-[#2AABEE]" />
+            <div className="shrink-0 p-4 sm:p-5 glass-panel rounded-xl border-l-4 border-l-brand-500 flex items-center justify-between shadow-lg">
+              <div className="min-w-0 pr-4">
+                <h2 className="text-lg sm:text-2xl font-black text-zinc-100 uppercase tracking-widest leading-none truncate">{t('welcome_title')}</h2>
+                <p className="text-success-400 font-mono text-[10px] sm:text-xs mt-1.5 font-bold flex items-center gap-1.5 truncate">
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-success-500 animate-pulse shrink-0"></span>
+                  {t('system_status_ok')}
+                </p>
               </div>
-              <h3 className="text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('signals_btn')}</h3>
-              <p className="text-[10px] text-zinc-500 mt-2 uppercase tracking-widest font-bold text-center relative z-10">{t('signals_access')}</p>
-            </a>
+              <Icon name="activity" className="text-brand-500 opacity-80 shrink-0" size={28} />
+            </div>
 
-            <a href="#" className="relative flex flex-col items-center justify-center p-6 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#ec4899]/20 hover:border-[#ec4899] min-h-[180px]">
-              <div className="w-14 h-14 rounded-full bg-surface-900 border border-[#ec4899]/40 flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(236,72,153,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
-                <Icon name="shopping-bag" size={24} className="text-[#ec4899]" />
-              </div>
-              <h3 className="text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('brand_shop')}</h3>
-              <p className="text-[10px] text-zinc-500 mt-2 uppercase tracking-widest font-bold text-center relative z-10">{t('merch_store')}</p>
-            </a>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <a href="SummaryZeroToHeroAcademy.html" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-6 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-brand-500/20 hover:border-brand-500 min-h-[180px]">
+                <div className="w-14 h-14 rounded-full bg-surface-900 border border-brand-500/40 flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(212,175,55,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
+                  <Icon name="graduation-cap" size={24} className="text-brand-400" />
+                </div>
+                <h3 className="text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('academy_btn')}</h3>
+                <p className="text-[10px] text-zinc-500 mt-2 uppercase tracking-widest font-bold text-center relative z-10">{t('training_setup')}</p>
+              </a>
+              
+              <a href={currentTgLink} target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-6 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#2AABEE]/20 hover:border-[#2AABEE] min-h-[180px]">
+                <div className="w-14 h-14 rounded-full bg-surface-900 border border-[#2AABEE]/40 flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(42,171,238,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
+                  <Icon name="send" size={24} className="text-[#2AABEE]" />
+                </div>
+                <h3 className="text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('signals_btn')}</h3>
+                <p className="text-[10px] text-zinc-500 mt-2 uppercase tracking-widest font-bold text-center relative z-10">{t('signals_access')}</p>
+              </a>
+
+              <a href="brandshop.html" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-6 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#ec4899]/20 hover:border-[#ec4899] min-h-[180px]">
+                <div className="w-14 h-14 rounded-full bg-surface-900 border border-[#ec4899]/40 flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(236,72,153,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
+                  <Icon name="shopping-bag" size={24} className="text-[#ec4899]" />
+                </div>
+                <h3 className="text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('brand_shop')}</h3>
+                <p className="text-[10px] text-zinc-500 mt-2 uppercase tracking-widest font-bold text-center relative z-10">{t('merch_store')}</p>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    };
 
     const CompanyDashboard = ({ sc, t }) => {
       const [isSimulating, setIsSimulating] = useState(false);
@@ -520,7 +530,7 @@
             </div>
           </div>
 
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-4 overflow-y-auto lg:overflow-hidden custom-scrollbar">
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-4">
             
             {/* Top row stats */}
             <div className="lg:col-span-4 grid grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
@@ -659,14 +669,14 @@
       };
 
       const FUNNELS = [
-        { id: 1, title: t('funnel_1'), tag: t('promo_50_tag'), link: '#', colorClass: 'text-emerald-400', borderClass: 'border-emerald-500/20', bgClass: 'bg-emerald-500/10', icon: 'sparkles' },
-        { id: 2, title: t('funnel_2'), tag: t('live_event_tag'), link: '#', colorClass: 'text-purple-400', borderClass: 'border-purple-500/20', bgClass: 'bg-purple-500/10', icon: 'graduation-cap' },
-        { id: 3, title: t('funnel_3'), tag: t('viral_task_tag'), link: '#', colorClass: 'text-brand-400', borderClass: 'border-brand-500/30', bgClass: 'bg-brand-500/10', icon: 'infinity' }
+        { id: 1, title: t('funnel_1'), tag: t('promo_50_tag'), link: 'promo-50.html', colorClass: 'text-emerald-400', borderClass: 'border-emerald-500/20', bgClass: 'bg-emerald-500/10', icon: 'sparkles' },
+        { id: 2, title: t('funnel_2'), tag: t('live_event_tag'), link: 'promo-masterclass.html', colorClass: 'text-purple-400', borderClass: 'border-purple-500/20', bgClass: 'bg-purple-500/10', icon: 'graduation-cap' },
+        { id: 3, title: t('funnel_3'), tag: t('viral_task_tag'), link: 'taskfreeweek.html', colorClass: 'text-brand-400', borderClass: 'border-brand-500/30', bgClass: 'bg-brand-500/10', icon: 'infinity' }
       ];
 
       return (
         <div className="flex flex-col flex-1 h-full fade-in pt-4">
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 overflow-y-auto lg:overflow-hidden custom-scrollbar">
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4">
             
             {/* Left Col (3) */}
             <div className="lg:col-span-3 flex flex-col gap-4">
@@ -1085,7 +1095,7 @@
             <div className="max-w-[1400px] mx-auto px-4 h-14 sm:h-16 flex items-center justify-between gap-4">
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden shrink-0 border border-brand-500/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] p-0.5 bg-surface-950">
-                   <img src="https://ui-avatars.com/api/?name=ER&background=18181b&color=d4af37" alt="Logo" className="w-full h-full object-cover rounded-full" />
+                   <img src="logo-tondo.jpeg" onError={(e) => e.target.src='https://ui-avatars.com/api/?name=ER&background=18181b&color=d4af37'} alt="Logo" className="w-full h-full object-cover rounded-full" />
                 </div>
                 <div className="flex flex-col justify-center min-w-0 hidden sm:flex">
                   <h1 className="text-xs font-black tracking-widest text-zinc-100 leading-tight uppercase truncate">{t('app_title')}</h1>
@@ -1110,7 +1120,7 @@
             </div>
           </nav>
 
-          <main className="max-w-[1400px] mx-auto px-2 sm:px-4 lg:px-6 flex-1 flex flex-col w-full relative z-10 w-full md:pb-4 pb-20">
+          <main className="max-w-[1400px] mx-auto px-2 sm:px-4 lg:px-6 flex-1 flex flex-col w-full relative z-10 md:pb-4 pb-20">
             {!sc.state.walletConnected ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6 fade-in mt-20">
                 <div className="w-24 h-24 bg-surface-900 text-brand-400 rounded-3xl flex items-center justify-center border border-brand-500/50 shadow-[0_0_40px_rgba(212,175,55,0.2)] relative">
@@ -1125,7 +1135,7 @@
                 </button>
               </div>
             ) : (
-              view === 'user' ? <UserDashboard t={t} /> :
+              view === 'user' ? <UserDashboard t={t} lang={lang} /> :
               view === 'company' ? <CompanyDashboard sc={sc} t={t} /> : 
               <PromoterDashboard sc={sc} t={t} lang={lang} />
             )}
