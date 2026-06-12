@@ -13,18 +13,20 @@
     
     <style>
         /* ==========================================
-           RESET & VARIABILI
+           RESET & VARIABILI (TEMA DARK/YELLOW)
            ========================================== */
         :root {
-            --bg-color: #f3f4f6; 
-            --card-bg: #ffffff;
-            --text-main: #111827; 
-            --text-muted: #4b5563;
-            --accent-color: #111827; 
-            --accent-hover: #374151;
-            --btn-text: #ffffff;
-            --shadow-card: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
-            --shadow-flag: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --bg-color: #000000; /* Sfondo Nero Puro */
+            --card-bg: #0a0a0a;  /* Sfondo Card leggermente più chiaro */
+            --text-main: #ffffff; /* Testo bianco */
+            --text-muted: #9ca3af; /* Testo grigio chiaro */
+            --accent-color: #FFD700; /* Giallo Oro vibrante */
+            --accent-hover: #e6c200; /* Giallo più scuro per hover */
+            --btn-text: #000000;    /* Testo nero sui bottoni gialli */
+            
+            /* Effetti Glow */
+            --glow-accent: 0 0 20px rgba(255, 215, 0, 0.4);
+            --shadow-card: 0 30px 60px -15px rgba(0, 0, 0, 1), 0 0 30px rgba(255, 215, 0, 0.1) inset;
         }
 
         * {
@@ -36,7 +38,7 @@
         }
 
         /* ==========================================
-           LAYOUT GLOBALE (FLUIDO E ADATTIVO)
+           LAYOUT GLOBALE E SFONDO
            ========================================== */
         body {
             background-color: var(--bg-color);
@@ -47,65 +49,89 @@
             justify-content: center;
             align-items: center;
             padding: clamp(1rem, 4vw, 2rem);
-            /* Nessun overflow: hidden, permette lo scroll se lo schermo è minuscolo */
+            
+            /* Motivo di sfondo geometrico sottile in giallo/grigio */
+            background-image: 
+                linear-gradient(45deg, rgba(255, 215, 0, 0.03) 25%, transparent 25%), 
+                linear-gradient(-45deg, rgba(255, 215, 0, 0.03) 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, rgba(255, 215, 0, 0.03) 75%), 
+                linear-gradient(-45deg, transparent 75%, rgba(255, 215, 0, 0.03) 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
 
         .container {
             display: flex;
             flex-direction: column;
             width: 100%;
-            max-width: 1100px;
+            max-width: 1200px; /* Leggermente più largo */
             background: var(--card-bg);
             border-radius: 24px;
             box-shadow: var(--shadow-card);
-            overflow: hidden; /* Nasconde gli angoli dell'immagine interna */
+            overflow: hidden;
             position: relative;
+            border: 1px solid rgba(255, 215, 0, 0.1); /* Sottile bordo giallo */
         }
 
         /* Desktop Layout */
-        @media (min-width: 850px) {
+        @media (min-width: 900px) {
             .container {
                 flex-direction: row;
-                min-height: 65vh;
-                height: 700px;
-                max-height: 80vh;
+                min-height: 70vh;
+                align-items: stretch;
             }
         }
 
         /* ==========================================
-           AREA LOGO / IMMAGINE
+           AREA IMMAGINE (CYBORG RIELABORATO)
            ========================================== */
         .image-area {
-            background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);
+            position: relative;
+            background: linear-gradient(to bottom, #0a0a0a, #000000);
             display: flex;
             justify-content: center;
-            align-items: center;
-            padding: clamp(2rem, 6vw, 4rem);
+            align-items: flex-end; /* Allinea l'immagine in basso */
+            padding: 0;
             flex: 1;
-            min-height: 250px;
+            min-height: 400px;
+            overflow: hidden;
         }
 
         .image-area img {
-            width: 100%;
-            max-width: 220px;
-            aspect-ratio: 1 / 1;
+            width: auto;
+            height: 110%; /* Leggermente più alto del contenitore per effetto immersivo */
+            max-width: none;
             object-fit: cover;
-            border-radius: 50%; /* Rende il logo perfettamente tondo */
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background-color: white;
+            
+            /* FILTRI CYBERPUNK: Converte il verde in tonalità oro/giallo e aumenta il contrasto drammatico */
+            filter: grayscale(100%) sepia(100%) hue-rotate(5deg) saturate(300%) contrast(1.3) brightness(0.9);
+            
+            /* Maschera per sfumare l'immagine nel nero della card */
+            mask-image: linear-gradient(to bottom, black 50%, transparent 95%);
+            -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 95%);
+            
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.5s ease;
         }
 
-        .image-area img:hover {
-            transform: scale(1.05);
+        .image-area:hover img {
+            transform: scale(1.03);
+            /* Aumenta la luminosità e il bagliore all'hover */
+            filter: grayscale(100%) sepia(100%) hue-rotate(5deg) saturate(350%) contrast(1.4) brightness(1.1) drop-shadow(0 0 15px rgba(255, 215, 0, 0.5));
         }
 
-        @media (min-width: 850px) {
+        @media (min-width: 900px) {
             .image-area {
-                flex: 0.8; /* L'immagine prende meno spazio su desktop */
+                flex: 1.1;
+                height: auto;
+                align-items: center;
             }
             .image-area img {
-                max-width: 320px;
+                height: auto;
+                width: 120%;
+                /* Su desktop, sfuma verso destra verso il contenuto */
+                mask-image: linear-gradient(to right, black 60%, transparent 100%);
+                -webkit-mask-image: linear-gradient(to right, black 60%, transparent 100%);
+                margin-left: -10%; /* Centra meglio l'azione */
             }
         }
 
@@ -113,84 +139,94 @@
            AREA CONTENUTO E TESTI
            ========================================== */
         .content-area {
-            flex: 1.2;
-            padding: clamp(1.5rem, 5vw, 4rem);
+            flex: 1;
+            padding: clamp(2rem, 5vw, 5rem);
             display: flex;
             flex-direction: column;
             justify-content: center;
-            background: var(--card-bg);
+            background: transparent;
+            z-index: 2; /* Assicura che il testo sia sopra l'eventuale sfumatura dell'immagine */
         }
 
-        /* Header del contenuto (Etichetta + Bandiere allineate) */
         .content-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap-reverse;
+            align-items: center;
+            flex-wrap: wrap;
             gap: 1.5rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2.5rem;
         }
 
         .brand-badge {
             display: inline-block;
-            font-size: 0.75rem;
-            font-weight: 800;
+            font-size: 0.7rem;
+            font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 0.15em;
-            color: #ffffff;
+            letter-spacing: 0.2em;
+            /* Colori invertiti per il tema giallo */
+            color: var(--bg-color);
             background-color: var(--accent-color);
-            padding: 0.5rem 1.2rem;
-            border-radius: 50px;
-            white-space: nowrap;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2px; /* Angoli più spigolosi per look tech */
+            box-shadow: var(--glow-accent);
         }
 
         /* ==========================================
-           SELETTORE LINGUE (BANDIERE HD RETTANGOLARI)
+           SELETTORE LINGUE
            ========================================== */
         .language-selector {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
         }
 
         .flag {
-            width: 28px;
-            height: 20px;
-            object-fit: cover;
-            border-radius: 3px;
+            width: 24px;
+            height: auto;
+            border-radius: 2px;
             cursor: pointer;
-            opacity: 0.35;
+            opacity: 0.4;
+            filter: grayscale(80%); /* Bandiere spente in un tema scuro */
             transition: all 0.3s ease;
-            box-shadow: var(--shadow-flag);
-            border: 1px solid rgba(0,0,0,0.05);
         }
 
         .flag:hover, .flag.active {
             opacity: 1;
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            border-color: rgba(0,0,0,0.1);
+            filter: grayscale(0%); /* Colore pieno quando attive */
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); /* Bagliore giallo */
         }
 
         /* ==========================================
-           TIPOGRAFIA E BOTTONE
+           TIPOGRAFIA
            ========================================== */
         h1 {
-            font-size: clamp(2rem, 4vw, 3.5rem);
-            line-height: 1.1;
-            margin-bottom: 1.2rem;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            line-height: 1;
+            margin-bottom: 1.5rem;
             font-weight: 800;
             letter-spacing: -0.03em;
+            /* Gradiente testuale giallo/bianco */
+            background: linear-gradient(to right, var(--text-main), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         p {
-            font-size: clamp(1rem, 1.8vw, 1.15rem);
-            line-height: 1.6;
+            font-size: clamp(1rem, 1.5vw, 1.125rem);
+            line-height: 1.7;
             color: var(--text-muted);
-            margin-bottom: 2.5rem;
-            max-width: 95%;
+            margin-bottom: 3rem;
+            max-width: 90%;
         }
 
+        /* ==========================================
+           BOTTONE GIALLO CYBERPUNK
+           ========================================== */
         .cta-button {
             display: inline-flex;
             justify-content: center;
@@ -198,30 +234,53 @@
             background-color: var(--accent-color);
             color: var(--btn-text);
             text-decoration: none;
-            padding: 1.1rem 2.5rem;
+            padding: 1.2rem 3rem;
             font-size: 1.1rem;
-            font-weight: 600;
-            border-radius: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 4px; /* Angoli spigolosi */
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             width: 100%;
-            box-shadow: 0 10px 15px -3px rgba(17, 24, 39, 0.2);
+            box-shadow: var(--glow-accent);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Effetto riflesso sul bottone */
+        .cta-button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to bottom right, rgba(255,255,255,0.4) 0%, transparent 50%, transparent 100%);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+            opacity: 0;
         }
 
         @media (min-width: 600px) {
             .cta-button {
                 width: max-content;
-                padding: 1.2rem 3rem;
             }
         }
 
         .cta-button:hover {
             background-color: var(--accent-hover);
-            transform: translateY(-3px);
-            box-shadow: 0 20px 25px -5px rgba(17, 24, 39, 0.3);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 30px -5px rgba(255, 215, 0, 0.6); /* Bagliore più intenso */
+        }
+        
+        .cta-button:hover::after {
+            opacity: 1;
+            left: 0;
+            top: 0;
         }
 
         .cta-button:active {
-            transform: translateY(0);
+            transform: translateY(0) scale(0.98);
         }
     </style>
 </head>
@@ -229,42 +288,40 @@
 
     <div class="container">
         
-        <!-- Area Immagine -->
+        <!-- Area Immagine: Cyborg Rielaborato -->
         <div class="image-area">
-            <img src="logo-tondo.jpeg" alt="Betting Exchange Room Logo" onerror="this.src='https://placehold.co/400x400/111827/FFFFFF?text=Logo+Tondo'">
+            <!-- NOTA: Utilizzo l'immagine fornita 'cyborgcalciatore.jpeg' ma applico filtri CSS pesanti per trasformarla nel tema giallo/oro -->
+            <img src="cyborgcalciatore.jpeg" alt="Betting Exchange Cyborg Striker">
         </div>
 
         <!-- Area Contenuto -->
         <div class="content-area">
             
-            <!-- Header con Badge e Bandiere allineate per evitare sovrapposizioni -->
             <div class="content-header">
                 <div class="brand-badge" id="badge">Official Community Gear</div>
                 
-                <!-- Bandiere ad Alta Definizione: Ordine EN, ES, PT, IT -->
                 <div class="language-selector">
-                    <img src="https://flagcdn.com/w80/gb.png" alt="English" data-lang="en" class="flag" onclick="setLanguage('en')">
-                    <img src="https://flagcdn.com/w80/es.png" alt="Español" data-lang="es" class="flag" onclick="setLanguage('es')">
-                    <img src="https://flagcdn.com/w80/pt.png" alt="Português" data-lang="pt" class="flag" onclick="setLanguage('pt')">
-                    <img src="https://flagcdn.com/w80/it.png" alt="Italiano" data-lang="it" class="flag" onclick="setLanguage('it')">
+                    <img src="https://flagcdn.com/w40/gb.png" alt="English" data-lang="en" class="flag" onclick="setLanguage('en')">
+                    <img src="https://flagcdn.com/w40/es.png" alt="Español" data-lang="es" class="flag" onclick="setLanguage('es')">
+                    <img src="https://flagcdn.com/w40/pt.png" alt="Português" data-lang="pt" class="flag" onclick="setLanguage('pt')">
+                    <img src="https://flagcdn.com/w40/it.png" alt="Italiano" data-lang="it" class="flag" onclick="setLanguage('it')">
                 </div>
             </div>
 
-            <!-- Testi -->
             <h1 id="title">Betting Exchange Room</h1>
             <p id="desc">Join the elite trading team. Wear our premium apparel to support the community and show your passion. Worldwide shipping available.</p>
             
-            <!-- Bottone Acquista -->
+            <!-- Bottone Acquista Giallo -->
             <a href="https://bettingexchangeroom-shop.fourthwall.com/" class="cta-button" id="btn" target="_blank" rel="noopener noreferrer">Shop the Collection</a>
             
         </div>
     </div>
 
     <!-- ==========================================
-         SCRIPT: LINGUA E RILEVAMENTO AUTOMATICO
+         SCRIPT: LINGUA (INVARIATO)
          ========================================== -->
     <script>
-        // Dizionario traduzioni ottimizzato
+        // Dizionario traduzioni
         const translations = {
             en: {
                 badge: "Official Community Gear",
@@ -292,29 +349,22 @@
             }
         };
 
-        // Lingue supportate nel loro ordine esatto
         const supportedLangs = ['en', 'es', 'pt', 'it'];
 
         function initLanguage() {
-            // Rileva la lingua del browser (es. 'it-IT' diventa 'it')
             const userLang = (navigator.language || navigator.userLanguage).slice(0, 2).toLowerCase();
-            
-            // Imposta la lingua rilevata se supportata, altrimenti default 'en'
             const targetLang = supportedLangs.includes(userLang) ? userLang : 'en';
             setLanguage(targetLang);
         }
 
         function setLanguage(lang) {
-            // Aggiorna i testi del DOM
             document.getElementById('badge').innerText = translations[lang].badge;
             document.getElementById('title').innerText = translations[lang].title;
             document.getElementById('desc').innerText = translations[lang].desc;
             document.getElementById('btn').innerText = translations[lang].btn;
 
-            // SEO e Accessibilità
             document.documentElement.lang = lang;
 
-            // Aggiorna lo stato visivo (opacità) delle bandierine
             document.querySelectorAll('.flag').forEach(flag => {
                 flag.classList.remove('active');
             });
@@ -324,7 +374,6 @@
             }
         }
 
-        // Esegue l'inizializzazione non appena il DOM è pronto (velocissimo)
         document.addEventListener('DOMContentLoaded', initLanguage);
     </script>
 </body>
