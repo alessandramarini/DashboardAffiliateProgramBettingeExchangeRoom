@@ -15,19 +15,27 @@
   <link rel="preconnect" href="https://flagcdn.com" crossorigin>
 
   <style>
-    /* Reset & App-like behavior */
+    /* Reset & App-like behavior - Optimized for Hybrid Scrolling */
     body, html {
       margin: 0; padding: 0;
-      background-color: #09090b !important; color: #f4f4f5 !important;
+      background-color: #09090b !important; 
+      color: #f4f4f5 !important;
       font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      overflow: hidden; 
-      height: 100%; width: 100%;
+      width: 100%;
       overscroll-behavior-y: none;
     }
     
-    #root { height: 100vh; height: 100dvh; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+    /* Desktop: Locked Screen with internal scroll. Mobile: Natural Page Scroll */
+    @media (min-width: 768px) {
+      body, html { overflow: hidden; height: 100%; }
+      #root { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+    }
+    @media (max-width: 767px) {
+      body, html { overflow-x: hidden; min-height: 100vh; }
+      #root { min-height: 100vh; display: flex; flex-direction: column; }
+    }
     
     /* Background grid optimization */
     .bg-grid-pattern {
@@ -40,7 +48,7 @@
       position: relative;
     }
     .bg-grid-pattern::before {
-      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      content: ''; position: fixed; top: 0; left: 50%; transform: translateX(-50%);
       width: 100%; max-width: 1000px; height: 600px;
       background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, rgba(9, 9, 11, 0) 70%);
       pointer-events: none; z-index: 0;
@@ -53,7 +61,7 @@
     .bg-gold-gradient { background: linear-gradient(135deg, #fcd34d 0%, #d4af37 50%, #b45309 100%); }
 
     /* Performance Loaders & Animations */
-    .initial-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; height: 100dvh; background: #09090b; color: #d4af37; font-weight: 500; z-index: 9999; }
+    .initial-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #09090b; color: #d4af37; font-weight: 500; z-index: 9999; position: fixed; inset: 0; }
     .spinner-ring { width: 48px; height: 48px; border: 3px solid rgba(212, 175, 55, 0.1); border-radius: 50%; border-top-color: #d4af37; animation: spin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite; margin-bottom: 24px; }
     
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -79,7 +87,7 @@
     .flag-icon { width: 16px; height: 11px; object-fit: cover; border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.5); flex-shrink: 0; }
   </style>
 
-  <!-- Tailwind CDN (In Production use built CSS) -->
+  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -121,7 +129,7 @@
       return <span ref={spanRef} className={`inline-flex items-center justify-center shrink-0 ${className}`}></span>;
     };
 
-    // Strict Language Order Requirement
+    // Strict Language Order Requirement: EN, ES, PT, IT
     const LANGUAGES = [
       { code: 'en', name: 'ENG', flag: 'gb' },
       { code: 'es', name: 'ESP', flag: 'es' },
@@ -156,7 +164,6 @@
         elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "Live Event", viral_task_tag: "VIRAL TASK",
         welcome_title: "OPERATIONS HUB", system_status_ok: "SYSTEM STATUS: OPTIMAL", sign_tx: "Sign transaction in your wallet.", users_label: "Users", elite_platform: "Elite Platform", init_env: "Initializing Elite Environment...",
         realtime_leaderboard: "Live Leaderboard", bot_managed: "Auto-updated by Python Bot", training_setup: "Training & Setup", signals_access: "Premium Signals", merch_store: "Merch Store",
-        /* Access Guard Text */
         access_denied: "ACCESS DENIED", sub_expired: "Your subscription has expired or no active plan was found on this account.", renew_btn: "RENEW SUBSCRIPTION", demo_bypass: "ADMIN LOGIN",
         you_tag: "(YOU)", docs_short: "Docs", deposit_short: "Deposit", audit_short: "Audit", top_10_short: "Top 10"
       },
@@ -185,7 +192,6 @@
         elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "En Vivo", viral_task_tag: "TAREA VIRAL",
         welcome_title: "CENTRO DE OPERACIONES", system_status_ok: "ESTADO SISTEMA: ÓPTIMO", sign_tx: "Firma la transacción en tu billetera.", users_label: "Usuarios", elite_platform: "Plataforma Élite", init_env: "Inicializando Entorno...",
         realtime_leaderboard: "Clasificación en Vivo", bot_managed: "Actualizado por Bot Python", training_setup: "Formación y Setup", signals_access: "Señales Premium", merch_store: "Tienda Oficial",
-        /* Access Guard Text */
         access_denied: "ACCESO DENEGADO", sub_expired: "Tu suscripción ha expirado o no se ha encontrado ningún plan activo.", renew_btn: "RENOVAR SUSCRIPCIÓN", demo_bypass: "ÁREA ADMIN",
         you_tag: "(TÚ)", docs_short: "Docs", deposit_short: "Depósito", audit_short: "Auditoría", top_10_short: "Top 10"
       },
@@ -214,7 +220,6 @@
         elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "Ao Vivo", viral_task_tag: "TAREFA VIRAL",
         welcome_title: "CENTRAL DE OPERAÇÕES", system_status_ok: "STATUS SISTEMA: IDEAL", sign_tx: "Assine a transação na sua carteira.", users_label: "Usuários", elite_platform: "Plataforma Elite", init_env: "Inicializando Ambiente...",
         realtime_leaderboard: "Classificação ao Vivo", bot_managed: "Atualizado por Bot Python", training_setup: "Treinamento e Setup", signals_access: "Sinais Premium", merch_store: "Loja Oficial",
-        /* Access Guard Text */
         access_denied: "ACESSO NEGADO", sub_expired: "Sua assinatura expirou ou não encontramos nenhum plano ativo associado.", renew_btn: "RENOVAR ASSINATURA", demo_bypass: "ÁREA ADMIN",
         you_tag: "(VOCÊ)", docs_short: "Docs", deposit_short: "Depósito", audit_short: "Auditoria", top_10_short: "Top 10"
       },
@@ -243,8 +248,7 @@
         elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "Evento Live", viral_task_tag: "TASK VIRALE",
         welcome_title: "HUB OPERATIVO", system_status_ok: "STATO SISTEMA: OTTIMALE", sign_tx: "Firma la transazione nel tuo wallet.", users_label: "Utenti", elite_platform: "Piattaforma Elite", init_env: "Inizializzazione Ambiente...",
         realtime_leaderboard: "Classifica in Tempo Reale", bot_managed: "Gestita da Bot Python", training_setup: "Formazione e Setup", signals_access: "Segnali Premium", merch_store: "Store Ufficiale",
-        /* Access Guard Text */
-        access_denied: "ACCESSO NEGATO", sub_expired: "Il tuo abbonamento è scaduto o non è stato trovato alcun piano attivo.", renew_btn: "RINNOVA ABBONAMENTO", demo_bypass: "AREA ADMIN",
+        access_denied: "ACCESSO NEGADO", sub_expired: "Il tuo abbonamento è scaduto o non è stato trovato alcun piano attivo.", renew_btn: "RINNOVA ABBONAMENTO", demo_bypass: "AREA ADMIN",
         you_tag: "(TU)", docs_short: "Docs", deposit_short: "Deposita", audit_short: "Audit", top_10_short: "Top 10"
       }
     };
@@ -286,7 +290,7 @@
       { rank: 8, name: 'David_G', vol: 18000, isMe: false },
       { rank: 9, name: 'Paul_Smith', vol: 16500, isMe: false },
       { rank: 10, name: 'Mike_T', vol: 15000, isMe: false },
-      { rank: 11, name: 'Alex De Souza', vol: 14500, isMe: true }, // Out of top 10
+      { rank: 11, name: 'Alex De Souza', vol: 14500, isMe: true },
     ];
 
     // Shared Components
@@ -307,8 +311,8 @@
     );
 
     const StatCard = ({ title, value, subtext, icon, colorClass, highlight = false }) => (
-      <Card padding="p-3 sm:p-4" className={`justify-center h-full w-full ${highlight ? 'ring-1 ring-inset ring-brand-500/40 bg-gradient-to-br from-surface-900 to-surface-800/80 shadow-[0_0_20px_rgba(212,175,55,0.05)]' : ''}`}>
-        <div className="flex justify-between items-start gap-2 h-full min-h-0">
+      <Card padding="p-3 sm:p-4" className={`justify-center h-full w-full min-h-[90px] ${highlight ? 'ring-1 ring-inset ring-brand-500/40 bg-gradient-to-br from-surface-900 to-surface-800/80 shadow-[0_0_20px_rgba(212,175,55,0.05)]' : ''}`}>
+        <div className="flex justify-between items-start gap-2 h-full">
           <div className="flex-1 min-w-0 flex flex-col justify-center">
             <p className="text-zinc-500 font-bold mb-1 text-[9px] sm:text-[10px] lg:text-xs uppercase tracking-widest leading-tight truncate">{title}</p>
             <h3 className="text-lg sm:text-xl font-black text-zinc-100 mb-1 tracking-tight drop-shadow-sm truncate">{value}</h3>
@@ -342,6 +346,7 @@
     const LanguageSelector = ({ lang, setLang }) => {
       const [isOpen, setIsOpen] = useState(false);
       const dropdownRef = useRef(null);
+      
       useEffect(() => {
         const handleClickOutside = (event) => { if (dropdownRef.current && !dropdownRef.current.contains(event.target)) setIsOpen(false); };
         document.addEventListener("mousedown", handleClickOutside);
@@ -350,14 +355,14 @@
 
       const currentLang = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
       return (
-        <div className="relative" ref={dropdownRef}>
+        <div className="relative z-50" ref={dropdownRef}>
           <button onClick={(e) => { e.preventDefault(); setIsOpen(!isOpen); }} className="flex items-center gap-1.5 sm:gap-2 bg-surface-950/80 border border-surface-700 hover:border-brand-500/50 transition-all rounded-lg px-2 sm:px-2.5 py-1.5 sm:py-2 shadow-inner group">
             <img src={`https://flagcdn.com/${currentLang.flag}.svg`} alt={currentLang.name} className="flag-icon opacity-90 group-hover:opacity-100" />
             <span className="text-[10px] sm:text-[11px] font-bold text-zinc-300 tracking-wider hidden sm:block">{currentLang.name}</span>
             <Icon name="chevron-down" size={12} className="text-zinc-500 group-hover:text-zinc-300 transition-colors" />
           </button>
           {isOpen && (
-            <div className="absolute right-0 mt-2 w-32 sm:w-36 bg-surface-900 border border-surface-700 rounded-xl shadow-2xl overflow-hidden z-50 fade-in">
+            <div className="absolute right-0 mt-2 w-32 sm:w-36 bg-surface-900 border border-surface-700 rounded-xl shadow-2xl overflow-hidden z-[100] fade-in">
               {LANGUAGES.map((l) => (
                 <button key={l.code} onClick={() => { setLang(l.code); setIsOpen(false); }} className={`w-full flex items-center gap-3 px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-surface-800 transition-colors ${lang === l.code ? 'bg-surface-800/80 text-brand-400' : 'text-zinc-300'}`}>
                   <img src={`https://flagcdn.com/${l.flag}.svg`} alt={l.name} className="flag-icon" />
@@ -372,6 +377,7 @@
 
     const formatCurrency = (amount, isHidden) => isHidden ? '••,•••.••' : amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+    // Modals
     const TonWalletModal = ({ isOpen, onClose, onSave, currentWallet, t }) => {
       const [val, setVal] = useState('');
       useEffect(() => { if (isOpen) setVal(currentWallet || ''); }, [isOpen, currentWallet]);
@@ -400,7 +406,7 @@
       const handleConfirm = () => { setIsSigning(true); setTimeout(() => { setIsSigning(false); onConfirm(); }, 1500); };
       
       return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-surface-950/90 backdrop-blur-md p-4 fade-in">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-surface-950/90 backdrop-blur-md p-4 fade-in">
           <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-sm shadow-[0_0_50px_rgba(212,175,55,0.1)] overflow-hidden min-w-0 max-h-[90vh] overflow-y-auto">
             <div className="p-5 text-center border-b border-surface-800">
               <div className="w-10 h-10 bg-surface-950 rounded-full flex items-center justify-center text-brand-400 mx-auto mb-3 border border-surface-800"><Icon name="shield-check" size={20} /></div>
@@ -431,57 +437,52 @@
       );
     };
 
-    // User Dashboard Component
-    const UserDashboard = ({ t }) => {
-      return (
-        <div className="flex-1 flex flex-col h-full min-h-0 py-2 sm:py-4 fade-in">
-          <div className="w-full flex flex-col h-full gap-4 max-w-5xl mx-auto min-h-0">
-            
-            <div className="shrink-0 p-4 sm:p-5 glass-panel rounded-xl border-l-4 border-l-brand-500 flex items-center justify-between shadow-lg">
-              <div className="min-w-0 pr-4">
-                <h2 className="text-lg sm:text-2xl font-black text-zinc-100 uppercase tracking-widest leading-none truncate">{t('welcome_title')}</h2>
-                <p className="text-success-400 font-mono text-[10px] sm:text-xs mt-1.5 font-bold flex items-center gap-1.5 truncate">
-                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-success-500 animate-pulse shrink-0"></span>
-                  {t('system_status_ok')}
-                </p>
+    // --- DASHBOARDS ---
+
+    const UserDashboard = ({ t }) => (
+      <div className="flex-1 flex flex-col h-full py-4 fade-in">
+        <div className="w-full flex flex-col h-full gap-4 max-w-5xl mx-auto">
+          
+          <div className="shrink-0 p-4 sm:p-5 glass-panel rounded-xl border-l-4 border-l-brand-500 flex items-center justify-between shadow-lg">
+            <div className="min-w-0 pr-4">
+              <h2 className="text-lg sm:text-2xl font-black text-zinc-100 uppercase tracking-widest leading-none truncate">{t('welcome_title')}</h2>
+              <p className="text-success-400 font-mono text-[10px] sm:text-xs mt-1.5 font-bold flex items-center gap-1.5 truncate">
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-success-500 animate-pulse shrink-0"></span>
+                {t('system_status_ok')}
+              </p>
+            </div>
+            <Icon name="activity" className="text-brand-500 opacity-80 shrink-0" size={28} />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a href="#" className="relative flex flex-col items-center justify-center p-6 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-brand-500/20 hover:border-brand-500 min-h-[180px]">
+              <div className="w-14 h-14 rounded-full bg-surface-900 border border-brand-500/40 flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(212,175,55,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
+                <Icon name="graduation-cap" size={24} className="text-brand-400" />
               </div>
-              <Icon name="activity" className="text-brand-500 opacity-80 shrink-0" size={28} />
-            </div>
+              <h3 className="text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('academy_btn')}</h3>
+              <p className="text-[10px] text-zinc-500 mt-2 uppercase tracking-widest font-bold text-center relative z-10">{t('training_setup')}</p>
+            </a>
+            
+            <a href="#" className="relative flex flex-col items-center justify-center p-6 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#2AABEE]/20 hover:border-[#2AABEE] min-h-[180px]">
+              <div className="w-14 h-14 rounded-full bg-surface-900 border border-[#2AABEE]/40 flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(42,171,238,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
+                <Icon name="send" size={24} className="text-[#2AABEE]" />
+              </div>
+              <h3 className="text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('signals_btn')}</h3>
+              <p className="text-[10px] text-zinc-500 mt-2 uppercase tracking-widest font-bold text-center relative z-10">{t('signals_access')}</p>
+            </a>
 
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 min-h-0 overflow-y-auto custom-scrollbar md:overflow-visible pb-4 md:pb-0">
-              <a href="SummaryZeroToHeroAcademy.html" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-5 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-brand-500/20 hover:border-brand-500 md:hover:-translate-y-1 h-full min-h-[160px]">
-                <div className="absolute inset-0 bg-gradient-to-br from-brand-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl pointer-events-none"></div>
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-surface-900 border border-brand-500/40 flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(212,175,55,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
-                  <Icon name="graduation-cap" size={24} className="text-brand-400" />
-                </div>
-                <h3 className="text-xs sm:text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10 px-2">{t('academy_btn')}</h3>
-                <p className="text-[9px] sm:text-[10px] text-zinc-500 mt-1 uppercase tracking-widest font-bold text-center relative z-10">{t('training_setup')}</p>
-              </a>
-              
-              <a href="https://t.me/BettingExchangeRoom" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-5 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#2AABEE]/20 hover:border-[#2AABEE] md:hover:-translate-y-1 h-full min-h-[160px]">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#2AABEE]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl pointer-events-none"></div>
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-surface-900 border border-[#2AABEE]/40 flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(42,171,238,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
-                  <Icon name="send" size={24} className="text-[#2AABEE]" />
-                </div>
-                <h3 className="text-xs sm:text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10 px-2">{t('signals_btn')}</h3>
-                <p className="text-[9px] sm:text-[10px] text-zinc-500 mt-1 uppercase tracking-widest font-bold text-center relative z-10">{t('signals_access')}</p>
-              </a>
-
-              <a href="brandshop.html" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-5 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#ec4899]/20 hover:border-[#ec4899] md:hover:-translate-y-1 h-full min-h-[160px]">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#ec4899]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl pointer-events-none"></div>
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-surface-900 border border-[#ec4899]/40 flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(236,72,153,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
-                  <Icon name="shopping-bag" size={24} className="text-[#ec4899]" />
-                </div>
-                <h3 className="text-xs sm:text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10 px-2">{t('brand_shop')}</h3>
-                <p className="text-[9px] sm:text-[10px] text-zinc-500 mt-1 uppercase tracking-widest font-bold text-center relative z-10">{t('merch_store')}</p>
-              </a>
-            </div>
+            <a href="#" className="relative flex flex-col items-center justify-center p-6 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#ec4899]/20 hover:border-[#ec4899] min-h-[180px]">
+              <div className="w-14 h-14 rounded-full bg-surface-900 border border-[#ec4899]/40 flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(236,72,153,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
+                <Icon name="shopping-bag" size={24} className="text-[#ec4899]" />
+              </div>
+              <h3 className="text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('brand_shop')}</h3>
+              <p className="text-[10px] text-zinc-500 mt-2 uppercase tracking-widest font-bold text-center relative z-10">{t('merch_store')}</p>
+            </a>
           </div>
         </div>
-      );
-    };
+      </div>
+    );
 
-    // Company Dashboard Component
     const CompanyDashboard = ({ sc, t }) => {
       const [isSimulating, setIsSimulating] = useState(false);
       const [statusSort, setStatusSort] = useState('activeFirst'); 
@@ -505,34 +506,32 @@
       };
 
       return (
-        <div className="flex flex-col flex-1 h-full fade-in min-h-0 pt-2 lg:pt-0">
+        <div className="flex flex-col flex-1 h-full fade-in pt-4">
           
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shrink-0 mb-3 sm:mb-4 bg-surface-900/50 p-3 sm:p-4 rounded-xl border border-surface-800">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shrink-0 mb-4 bg-surface-900/50 p-4 rounded-xl border border-surface-800">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-brand-500/10 rounded-lg flex items-center justify-center text-brand-400 shrink-0 border border-brand-500/20"><Icon name="building" size={18} /></div>
-              <h2 className="text-base sm:text-lg font-black text-zinc-100 truncate uppercase tracking-widest">{t('treasury_center')}</h2>
+              <div className="w-10 h-10 bg-brand-500/10 rounded-lg flex items-center justify-center text-brand-400 shrink-0 border border-brand-500/20"><Icon name="building" size={18} /></div>
+              <h2 className="text-lg font-black text-zinc-100 truncate uppercase tracking-widest">{t('treasury_center')}</h2>
             </div>
             <div className="w-full sm:w-auto shrink-0 flex gap-2">
-              <a href="pricing.html" target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none px-4 py-2 sm:py-2.5 bg-surface-950 hover:bg-surface-800 border border-surface-700 text-brand-400 rounded-lg text-[10px] sm:text-xs font-black flex items-center justify-center gap-1.5 transition-colors uppercase tracking-wide shadow-sm">
-                <Icon name="file-text" size={14} /> <span className="hidden sm:inline">{t('pricing_docs')}</span><span className="sm:hidden">{t('docs_short')}</span>
-              </a>
-              <button onClick={async () => { setIsSimulating(true); await sc.simulateDeposit(t); setIsSimulating(false); }} disabled={isSimulating} className="flex-[2] sm:flex-none px-4 py-2 sm:py-2.5 bg-gold-gradient hover:opacity-90 text-surface-950 rounded-lg text-[10px] sm:text-xs font-black flex items-center justify-center gap-1.5 disabled:opacity-50 transition-opacity uppercase tracking-wide shadow-sm">
-                {isSimulating ? <Icon name="loader-2" size={14} className="animate-spin" /> : <Icon name="plus" size={14} />} <span className="hidden sm:inline">{t('simulate_deposit')}</span><span className="sm:hidden">{t('deposit_short')}</span>
+              <button onClick={async () => { setIsSimulating(true); await sc.simulateDeposit(t); setIsSimulating(false); }} disabled={isSimulating} className="flex-1 sm:flex-none px-4 py-2.5 bg-gold-gradient hover:opacity-90 text-surface-950 rounded-lg text-xs font-black flex items-center justify-center gap-1.5 disabled:opacity-50 transition-opacity uppercase tracking-wide shadow-sm">
+                {isSimulating ? <Icon name="loader-2" size={14} className="animate-spin" /> : <Icon name="plus" size={14} />} {t('simulate_deposit')}
               </button>
             </div>
           </div>
 
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 lg:grid-rows-[auto_minmax(0,1fr)] gap-3 sm:gap-4 min-h-0 overflow-y-auto lg:overflow-hidden custom-scrollbar lg:pr-2 pb-4 lg:pb-0">
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-4 overflow-y-auto lg:overflow-hidden custom-scrollbar">
             
-            <div className="lg:col-span-4 grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 shrink-0">
+            {/* Top row stats */}
+            <div className="lg:col-span-4 grid grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
               <StatCard title={t('processed_volume')} value={formatCurrency(sc.state.totalProcessed, sc.state.isHidden)} subtext={t('real_usdt')} icon="bar-chart-2" colorClass="text-brand-400" />
               <StatCard title={t('company_reserve')} value={formatCurrency(sc.state.contractBalance, sc.state.isHidden)} subtext={t('withdrawable_funds')} icon="wallet" colorClass="text-success-400" highlight={true} />
               <StatCard title={t('active_nodes')} value={sc.state.activePromoters.toString()} subtext={t('registered_pools')} icon="users" colorClass="text-blue-400" />
               
-              <Card padding="p-2 sm:p-3" className="flex flex-col h-full min-h-[100px]">
-                <h3 className="text-[9px] sm:text-[10px] font-bold text-zinc-100 mb-1 uppercase tracking-widest flex items-center gap-1.5 shrink-0"><Icon name="globe-2" size={12} className="text-brand-500" /> {t('geo_dist')}</h3>
-                <div className="flex-1 w-full relative min-h-0 flex items-center">
-                  <div className="w-1/2 h-full absolute left-0">
+              <Card padding="p-3" className="flex flex-col h-full min-h-[120px]">
+                <h3 className="text-[10px] font-bold text-zinc-100 mb-1 uppercase tracking-widest flex items-center gap-1.5 shrink-0"><Icon name="globe-2" size={12} className="text-brand-500" /> {t('geo_dist')}</h3>
+                <div className="flex-1 w-full relative flex items-center">
+                  <div className="w-1/2 h-full absolute left-0 min-h-[80px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie data={GEO_DATA} cx="50%" cy="50%" innerRadius="60%" outerRadius="90%" paddingAngle={2} dataKey="value" stroke="none">
@@ -543,7 +542,7 @@
                   </div>
                   <div className="w-1/2 ml-auto flex flex-col justify-center gap-1 pl-1">
                     {GEO_DATA.map((item, idx) => (
-                      <div key={idx} className="flex items-center gap-1 text-[8px] sm:text-[9px]">
+                      <div key={idx} className="flex items-center gap-1 text-[9px]">
                         <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: item.color }}></div>
                         <span className="text-zinc-300 font-bold truncate">{item.name}</span>
                         <span className="text-zinc-500 ml-auto font-mono">{item.value}%</span>
@@ -554,40 +553,39 @@
               </Card>
             </div>
 
-            <div className="lg:col-span-2 flex flex-col gap-3 min-h-[250px] lg:min-h-0 h-full">
-              <Card className="flex flex-col flex-1 h-full min-h-0" padding="p-3 sm:p-4">
-                <div className="flex justify-between items-center mb-2 sm:mb-4 shrink-0">
-                  <h3 className="text-[10px] sm:text-xs font-bold text-zinc-100 flex items-center gap-2 uppercase tracking-widest"><Icon name="activity" size={14} className="text-brand-500"/> {t('cash_flow')}</h3>
+            {/* Bottom Row: Chart & Table */}
+            <div className="lg:col-span-2 flex flex-col gap-4 h-full min-h-[300px]">
+              <Card className="flex flex-col flex-1 h-full" padding="p-4">
+                <div className="flex justify-between items-center mb-4 shrink-0">
+                  <h3 className="text-xs font-bold text-zinc-100 flex items-center gap-2 uppercase tracking-widest"><Icon name="activity" size={14} className="text-brand-500"/> {t('cash_flow')}</h3>
                 </div>
-                <div className="flex-1 w-full relative min-h-0">
-                  <div className="absolute inset-0">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -25, bottom: 0}}>
-                        <defs><linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#d4af37" stopOpacity={0.4}/><stop offset="95%" stopColor="#d4af37" stopOpacity={0}/></linearGradient></defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
-                        <XAxis dataKey="name" stroke="#71717a" tick={{fill: '#71717a', fontSize: 9, fontWeight: 700, textTransform:'uppercase'}} axisLine={false} tickLine={false} dy={10} />
-                        <YAxis stroke="#71717a" tick={{fill: '#71717a', fontSize: 9, fontWeight: 700}} axisLine={false} tickLine={false} dx={-10} width={40} />
-                        <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '8px', color: '#fff', fontSize:'10px' }} itemStyle={{ color: '#fcd34d', fontWeight: 'bold' }} />
-                        <Area type="monotone" dataKey="amount" stroke="#d4af37" strokeWidth={2} fillOpacity={1} fill="url(#colorAmount)" />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
+                <div className="flex-1 w-full relative min-h-[200px]">
+                  <ResponsiveContainer width="100%" height="100%" className="absolute inset-0">
+                    <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -25, bottom: 0}}>
+                      <defs><linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#d4af37" stopOpacity={0.4}/><stop offset="95%" stopColor="#d4af37" stopOpacity={0}/></linearGradient></defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+                      <XAxis dataKey="name" stroke="#71717a" tick={{fill: '#71717a', fontSize: 9, fontWeight: 700, textTransform:'uppercase'}} axisLine={false} tickLine={false} dy={10} />
+                      <YAxis stroke="#71717a" tick={{fill: '#71717a', fontSize: 9, fontWeight: 700}} axisLine={false} tickLine={false} dx={-10} width={40} />
+                      <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '8px', color: '#fff', fontSize:'10px' }} itemStyle={{ color: '#fcd34d', fontWeight: 'bold' }} />
+                      <Area type="monotone" dataKey="amount" stroke="#d4af37" strokeWidth={2} fillOpacity={1} fill="url(#colorAmount)" />
+                    </AreaChart>
+                  </ResponsiveContainer>
                 </div>
               </Card>
             </div>
 
-            <div className="lg:col-span-2 flex flex-col gap-3 min-h-[250px] lg:min-h-0 h-full">
-              <Card padding="p-0" className="flex flex-col flex-1 h-full min-h-0">
-                <div className="p-2.5 sm:p-3 border-b border-surface-800 bg-surface-900/50 flex justify-between items-center shrink-0">
-                  <h3 className="text-zinc-100 font-bold uppercase tracking-widest text-[9px] sm:text-[10px] flex items-center gap-1.5"><Icon name="users-2" size={14} className="text-brand-500" /> {t('network_dir')}</h3>
+            <div className="lg:col-span-2 flex flex-col gap-4 h-full min-h-[300px]">
+              <Card padding="p-0" className="flex flex-col flex-1 h-full">
+                <div className="p-3 border-b border-surface-800 bg-surface-900/50 flex justify-between items-center shrink-0">
+                  <h3 className="text-zinc-100 font-bold uppercase tracking-widest text-[10px] flex items-center gap-1.5"><Icon name="users-2" size={14} className="text-brand-500" /> {t('network_dir')}</h3>
                 </div>
-                <div className="flex-1 w-full overflow-y-auto custom-scrollbar relative bg-surface-950/30 min-h-0">
+                <div className="flex-1 w-full overflow-y-auto custom-scrollbar bg-surface-950/30">
                   <table className="w-full text-left border-collapse">
                     <thead className="sticky top-0 z-10 bg-surface-900 shadow-md">
-                      <tr className="text-[8px] sm:text-[9px] uppercase tracking-wider text-zinc-500 border-b border-surface-800">
-                        <th className="px-2 sm:px-3 py-2 font-bold">{t('promoter')}</th>
-                        <th className="px-2 sm:px-3 py-2 font-bold text-right">{t('volume')}</th>
-                        <th className="px-2 sm:px-3 py-2 font-bold cursor-pointer hover:text-brand-400 transition-colors text-center" onClick={handleSortClick}>
+                      <tr className="text-[9px] uppercase tracking-wider text-zinc-500 border-b border-surface-800">
+                        <th className="px-3 py-2 font-bold">{t('promoter')}</th>
+                        <th className="px-3 py-2 font-bold text-right">{t('volume')}</th>
+                        <th className="px-3 py-2 font-bold cursor-pointer hover:text-brand-400 transition-colors text-center" onClick={handleSortClick}>
                           <div className="flex items-center justify-center gap-1">{t('status')} <Icon name={statusSort === 'none' ? 'chevrons-up-down' : statusSort === 'inactiveFirst' ? 'chevron-down' : 'chevron-up'} size={10} className="opacity-50" /></div>
                         </th>
                       </tr>
@@ -595,17 +593,17 @@
                     <tbody className="divide-y divide-surface-800/50">
                       {sortedMembers.map(member => (
                         <tr key={member.id} className="hover:bg-surface-900/50 transition-colors">
-                          <td className="px-2 sm:px-3 py-2">
+                          <td className="px-3 py-2">
                             <div className="flex items-center gap-1.5">
                               {member.flag && <img src={`https://flagcdn.com/${member.flag}.svg`} alt="flag" className="flag-icon" />}
                               <div className="flex flex-col min-w-0">
-                                <span className="text-zinc-100 font-bold text-[9px] sm:text-[10px] truncate max-w-[100px]">{member.name}</span>
+                                <span className="text-zinc-100 font-bold text-[10px] truncate max-w-[120px]">{member.name}</span>
                                 <TgLink username={member.username} className="text-[8px] mt-0.5 truncate" />
                               </div>
                             </div>
                           </td>
-                          <td className="px-2 sm:px-3 py-2 font-mono text-success-400 font-bold text-[9px] sm:text-[10px] text-right whitespace-nowrap">{formatCurrency(member.volume, false)}</td>
-                          <td className="px-2 sm:px-3 py-2 text-center">
+                          <td className="px-3 py-2 font-mono text-success-400 font-bold text-[10px] text-right whitespace-nowrap">{formatCurrency(member.volume, false)}</td>
+                          <td className="px-3 py-2 text-center">
                             <span className={`inline-flex items-center px-1 py-0.5 rounded text-[7px] font-black uppercase tracking-wider border ${member.statusKey === 'status_active' ? 'bg-success-500/10 text-success-400 border-success-500/20' : 'bg-surface-800 text-zinc-500 border-surface-700'}`}>
                               {t(member.statusKey)}
                             </span>
@@ -623,7 +621,6 @@
       );
     };
 
-    // Promoter Dashboard Component
     const PromoterDashboard = ({ sc, t, lang }) => {
       const [isClaiming, setIsClaiming] = useState(false);
       const [copied, setCopied] = useState(false);
@@ -645,7 +642,6 @@
       const pTarget = sc.state.tenthPlaceVolume;
       const isQualified = pVol >= pTarget;
       const poolTotal = sc.state.weeklyPoolTotal; 
-
       const displayAddress = sc.state.walletAddress ? sc.state.walletAddress.substring(0,8) : "ABCDEF";
 
       const copyReferral = () => {
@@ -663,52 +659,47 @@
       };
 
       const FUNNELS = [
-        { id: 1, title: t('funnel_1'), tag: t('promo_50_tag'), link: 'promo-50.html', colorClass: 'text-emerald-400', borderClass: 'border-emerald-500/20 hover:border-emerald-500/40', bgClass: 'bg-emerald-500/10 hover:bg-emerald-500/20', icon: 'sparkles' },
-        { id: 2, title: t('funnel_2'), tag: t('live_event_tag'), link: 'promo-masterclass.html', colorClass: 'text-purple-400', borderClass: 'border-purple-500/20 hover:border-purple-500/40', bgClass: 'bg-purple-500/10 hover:bg-purple-500/20', icon: 'graduation-cap' },
-        { id: 3, title: t('funnel_3'), tag: t('viral_task_tag'), link: 'taskfreeweek.html', colorClass: 'text-brand-400', borderClass: 'border-brand-500/30 hover:border-brand-500/50', bgClass: 'bg-brand-500/10 hover:bg-brand-500/20', icon: 'infinity' }
+        { id: 1, title: t('funnel_1'), tag: t('promo_50_tag'), link: '#', colorClass: 'text-emerald-400', borderClass: 'border-emerald-500/20', bgClass: 'bg-emerald-500/10', icon: 'sparkles' },
+        { id: 2, title: t('funnel_2'), tag: t('live_event_tag'), link: '#', colorClass: 'text-purple-400', borderClass: 'border-purple-500/20', bgClass: 'bg-purple-500/10', icon: 'graduation-cap' },
+        { id: 3, title: t('funnel_3'), tag: t('viral_task_tag'), link: '#', colorClass: 'text-brand-400', borderClass: 'border-brand-500/30', bgClass: 'bg-brand-500/10', icon: 'infinity' }
       ];
 
       return (
-        <div className="flex flex-col flex-1 h-full fade-in min-h-0 pt-2 lg:pt-0 pb-4 lg:pb-0">
-          
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 lg:grid-rows-[minmax(0,1fr)_minmax(0,1fr)] gap-3 sm:gap-4 min-h-0 overflow-y-auto lg:overflow-hidden custom-scrollbar lg:pr-1">
+        <div className="flex flex-col flex-1 h-full fade-in pt-4">
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 overflow-y-auto lg:overflow-hidden custom-scrollbar">
             
             {/* Left Col (3) */}
-            <div className="lg:col-span-3 flex flex-col gap-3 sm:gap-4 min-h-0 lg:row-span-2">
-              <Card className="flex flex-col border-l-2 border-l-brand-500 shrink-0" padding="p-3 sm:p-4">
-                <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-                  <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-surface-950 flex items-center justify-center shrink-0 border-2 border-brand-500/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] overflow-hidden">
-                     <img src={`https://ui-avatars.com/api/?name=${tgUser.first_name}+${tgUser.last_name}&background=18181b&color=d4af37&size=128`} alt="Profile" loading="lazy" className="absolute inset-0 w-full h-full object-cover z-10" />
+            <div className="lg:col-span-3 flex flex-col gap-4">
+              <Card className="flex flex-col border-l-2 border-l-brand-500 shrink-0" padding="p-4">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="relative w-12 h-12 rounded-full bg-surface-950 flex items-center justify-center shrink-0 border-2 border-brand-500/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] overflow-hidden">
+                     <img src={`https://ui-avatars.com/api/?name=${tgUser.first_name}+${tgUser.last_name}&background=18181b&color=d4af37&size=128`} alt="Profile" className="absolute inset-0 w-full h-full object-cover z-10" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h2 className="text-sm sm:text-base font-black text-zinc-100 truncate tracking-wide">{tgUser.first_name} {tgUser.last_name}</h2>
-                    <TgLink username={tgUser.username} className="text-[9px] sm:text-[10px]" />
-                  </div>
-                  <div className="shrink-0 self-start bg-brand-500/10 px-1.5 py-0.5 rounded border border-brand-500/30">
-                    <span className="text-[7px] sm:text-[8px] font-black text-brand-400 flex items-center gap-0.5"><Icon name="star" size={10}/> {t('elite_status')}</span>
+                    <h2 className="text-base font-black text-zinc-100 truncate tracking-wide">{tgUser.first_name} {tgUser.last_name}</h2>
+                    <TgLink username={tgUser.username} className="text-[10px]" />
                   </div>
                 </div>
                 
-                <div className="flex items-center bg-surface-950 rounded-xl border border-surface-700 p-1 shadow-inner mb-3">
-                  <div className="px-2 text-[10px] sm:text-xs text-zinc-300 truncate flex-1 font-mono">tonpull.app/ref/{displayAddress}</div>
-                  <button onClick={copyReferral} className={`shrink-0 flex items-center gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[9px] sm:text-[10px] font-black transition-all uppercase tracking-wide shadow-md ${copied ? 'bg-success-500 text-white shadow-success-500/20' : 'bg-surface-800 hover:bg-surface-700 text-zinc-100'}`}>
+                <div className="flex items-center bg-surface-950 rounded-xl border border-surface-700 p-1 shadow-inner mb-4">
+                  <div className="px-2 text-xs text-zinc-300 truncate flex-1 font-mono">tonpull.app/ref/{displayAddress}</div>
+                  <button onClick={copyReferral} className={`shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-[10px] font-black transition-all uppercase tracking-wide shadow-md ${copied ? 'bg-success-500 text-white shadow-success-500/20' : 'bg-surface-800 hover:bg-surface-700 text-zinc-100'}`}>
                     <Icon name={copied ? 'check' : 'copy'} size={12} /> <span className="hidden sm:inline">{copied ? t('copied') : t('copy_link')}</span>
                   </button>
                 </div>
 
-                <div className="flex flex-col gap-1.5 w-full mt-1 border-t border-surface-800/60 pt-3">
+                <div className="flex flex-col gap-2 w-full mt-1 border-t border-surface-800/60 pt-3">
                   <h4 className="text-[9px] font-bold uppercase tracking-widest text-zinc-400 mb-1 flex items-center gap-1.5">
                     <Icon name="megaphone" size={12} className="text-brand-500" /> {t('marketing_funnels')}
                   </h4>
-                  
                   {FUNNELS.map(f => (
-                    <div key={f.id} className={`flex items-center justify-between p-2 rounded-lg border bg-surface-900/30 shadow-sm transition-colors ${f.borderClass}`}>
+                    <div key={f.id} className={`flex items-center justify-between p-2 rounded-lg border bg-surface-900/30 shadow-sm ${f.borderClass}`}>
                       <div className="flex flex-col min-w-0 pr-2">
                         <div className={`flex items-center gap-1 ${f.colorClass}`}>
                           <Icon name={f.icon} size={10} className="shrink-0" />
-                          <span className="font-black text-[8px] sm:text-[9px] uppercase tracking-wider truncate">{f.title}</span>
+                          <span className="font-black text-[9px] uppercase tracking-wider truncate">{f.title}</span>
                         </div>
-                        <span className="text-[7px] text-zinc-500 mt-0.5 font-bold uppercase tracking-wider">{f.tag}</span>
+                        <span className="text-[8px] text-zinc-500 mt-0.5 font-bold uppercase tracking-wider">{f.tag}</span>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
                         <button onClick={() => copyFunnelLink(f.link, `funnel_${f.id}`)} className="p-1.5 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded text-[9px] transition-colors"><Icon name="copy" size={10} /></button>
@@ -721,24 +712,26 @@
             </div>
 
             {/* Middle Col (5) */}
-            <div className="lg:col-span-5 flex flex-col gap-3 sm:gap-4 min-h-0 lg:row-span-2">
-              <Card className="flex flex-col items-center justify-center text-center relative overflow-hidden bg-gradient-to-b from-surface-900 to-surface-950 border-t-2 border-t-success-500 shrink-0" padding="p-4">
-                <p className="text-[9px] sm:text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-1 leading-tight">{t('vault_available')}</p>
-                <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-zinc-100 mb-2 tracking-tight truncate w-full font-mono drop-shadow-md">{formatCurrency(sc.state.promoterAvailable, sc.state.isHidden)} {!sc.state.isHidden && <span className="text-xs sm:text-base text-success-400 ml-1 font-sans tracking-normal">USDT</span>}</div>
-                <div className="mb-4">
-                  <button onClick={sc.toggleHidden} className="text-zinc-500 hover:text-zinc-300 transition-colors p-1 px-2.5 bg-surface-950 rounded-md border border-surface-800 flex items-center gap-1.5 text-[9px] font-bold uppercase mx-auto"><Icon name={sc.state.isHidden ? 'eye' : 'eye-off'} size={10} /> {sc.state.isHidden ? t('show_balances') : t('hide_balances')}</button>
+            <div className="lg:col-span-5 flex flex-col gap-4">
+              <Card className="flex flex-col items-center justify-center text-center relative overflow-hidden bg-gradient-to-b from-surface-900 to-surface-950 border-t-2 border-t-success-500 shrink-0" padding="p-6">
+                <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-2 leading-tight">{t('vault_available')}</p>
+                <div className="text-3xl lg:text-4xl font-black text-zinc-100 mb-2 tracking-tight truncate w-full font-mono drop-shadow-md">
+                  {formatCurrency(sc.state.promoterAvailable, sc.state.isHidden)} {!sc.state.isHidden && <span className="text-sm lg:text-base text-success-400 ml-1 font-sans tracking-normal">USDT</span>}
+                </div>
+                <div className="mb-5">
+                  <button onClick={sc.toggleHidden} className="text-zinc-500 hover:text-zinc-300 transition-colors p-1.5 px-3 bg-surface-950 rounded-md border border-surface-800 flex items-center gap-1.5 text-[9px] font-bold uppercase mx-auto"><Icon name={sc.state.isHidden ? 'eye' : 'eye-off'} size={12} /> {sc.state.isHidden ? t('show_balances') : t('hide_balances')}</button>
                 </div>
 
-                <div className="w-full max-w-[240px] mx-auto mt-auto">
+                <div className="w-full max-w-[280px] mx-auto mt-auto">
                   {!sc.state.tonWallet ? (
-                    <button onClick={() => setShowWalletModal(true)} className="w-full py-2.5 rounded-xl font-black text-[10px] sm:text-[11px] uppercase tracking-widest flex items-center justify-center gap-2 transition-transform hover:-translate-y-0.5 bg-gold-gradient text-surface-950 hover:opacity-90 shadow-[0_10px_20px_rgba(212,175,55,0.2)]"><Icon name="wallet" size={14} /> {t('setup_wallet')}</button>
+                    <button onClick={() => setShowWalletModal(true)} className="w-full py-3 rounded-xl font-black text-[11px] uppercase tracking-widest flex items-center justify-center gap-2 transition-transform hover:-translate-y-0.5 bg-gold-gradient text-surface-950 hover:opacity-90 shadow-[0_10px_20px_rgba(212,175,55,0.2)]"><Icon name="wallet" size={14} /> {t('setup_wallet')}</button>
                   ) : (
                     <div className="flex flex-col gap-2">
-                      <button onClick={() => setShowWalletModal(true)} className="flex items-center justify-center gap-2 text-[10px] font-mono text-zinc-400 bg-surface-900 border border-surface-800 hover:border-brand-500/50 py-1.5 rounded-lg transition-colors group">
-                        <span className="truncate max-w-[150px]">{sc.state.tonWallet}</span>
+                      <button onClick={() => setShowWalletModal(true)} className="flex items-center justify-center gap-2 text-[10px] font-mono text-zinc-400 bg-surface-900 border border-surface-800 py-2 rounded-lg transition-colors group hover:border-brand-500/50">
+                        <span className="truncate max-w-[200px]">{sc.state.tonWallet}</span>
                         <Icon name="pencil" size={10} className="group-hover:text-brand-400" />
                       </button>
-                      <button onClick={() => { if(sc.state.promoterAvailable > 0) setShowSecureModal(true); }} disabled={isClaiming || sc.state.promoterAvailable <= 0} className={`w-full py-2.5 rounded-xl font-black text-[10px] sm:text-[11px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${sc.state.promoterAvailable <= 0 ? 'bg-surface-950 border border-surface-800 text-zinc-600' : isClaiming ? 'bg-success-600 text-white cursor-wait' : 'bg-success-600 hover:bg-success-500 text-white shadow-[0_10px_20px_rgba(16,185,129,0.3)] hover:-translate-y-0.5'}`}>
+                      <button onClick={() => { if(sc.state.promoterAvailable > 0) setShowSecureModal(true); }} disabled={isClaiming || sc.state.promoterAvailable <= 0} className={`w-full py-3 rounded-xl font-black text-[11px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${sc.state.promoterAvailable <= 0 ? 'bg-surface-950 border border-surface-800 text-zinc-600' : isClaiming ? 'bg-success-600 text-white cursor-wait' : 'bg-success-600 hover:bg-success-500 text-white shadow-[0_10px_20px_rgba(16,185,129,0.3)] hover:-translate-y-0.5'}`}>
                         {sc.state.promoterAvailable <= 0 ? (<><Icon name="lock" size={14} /> {t('no_funds')}</>) : isClaiming ? (<><Icon name="loader-2" size={14} className="animate-spin" /> {t('signing')}</>) : (<><Icon name="fingerprint" size={16} /> {t('unlock_withdraw')}</>)}
                       </button>
                     </div>
@@ -746,84 +739,80 @@
                 </div>
               </Card>
 
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 shrink-0">
+              <div className="grid grid-cols-2 gap-4 shrink-0">
                 <StatCard title={t('lifetime_deposit')} value={formatCurrency(sc.state.promoterLifetime, sc.state.isHidden)} subtext="USDT" icon="coins" colorClass="text-brand-400" />
                 <StatCard title={t('daily_subs')} value="3,105" subtext={t('registered_subtext')} icon="infinity" colorClass="text-purple-400" highlight={true} />
-                <StatCard title={t('conv_rate')} value="18.5%" subtext={t('conv_subtext')} icon="pie-chart" colorClass="text-brand-400" />
-                <StatCard title={t('bot_interactions')} value="1,240" subtext={t('clicks_subtext')} icon="mouse-pointer-click" colorClass="text-cyan-400" />
               </div>
 
-              <Card className="flex flex-col flex-1 min-h-[200px]" padding="p-4">
-                <h3 className="text-[10px] sm:text-xs font-bold text-zinc-100 mb-2 uppercase tracking-widest flex items-center gap-2 shrink-0"><Icon name="bar-chart-3" size={16} className="text-success-500" /> {t('earnings_chart')}</h3>
-                <div className="flex-1 w-full relative min-h-[150px]">
-                  <div className="absolute inset-0">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -20, bottom: 0}}>
-                        <defs><linearGradient id="colorPromoterAmount" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/><stop offset="95%" stopColor="#10b981" stopOpacity={0}/></linearGradient></defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
-                        <XAxis dataKey="name" stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700, textTransform:'uppercase'}} axisLine={false} tickLine={false} dy={10} />
-                        <YAxis stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700}} axisLine={false} tickLine={false} dx={-10} width={50} />
-                        <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '12px', color: '#fff' }} itemStyle={{ color: '#34d399', fontWeight: 'bold' }} />
-                        <Area type="monotone" dataKey="amount" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorPromoterAmount)" activeDot={{r: 5, fill: '#10b981', stroke: '#fff', strokeWidth: 2}} />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
+              <Card className="flex flex-col flex-1 min-h-[250px]" padding="p-4">
+                <h3 className="text-xs font-bold text-zinc-100 mb-4 uppercase tracking-widest flex items-center gap-2 shrink-0"><Icon name="bar-chart-3" size={16} className="text-success-500" /> {t('earnings_chart')}</h3>
+                <div className="flex-1 w-full relative">
+                  <ResponsiveContainer width="100%" height="100%" className="absolute inset-0">
+                    <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -20, bottom: 0}}>
+                      <defs><linearGradient id="colorPromoterAmount" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/><stop offset="95%" stopColor="#10b981" stopOpacity={0}/></linearGradient></defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+                      <XAxis dataKey="name" stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700, textTransform:'uppercase'}} axisLine={false} tickLine={false} dy={10} />
+                      <YAxis stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700}} axisLine={false} tickLine={false} dx={-10} width={50} />
+                      <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '12px', color: '#fff' }} itemStyle={{ color: '#34d399', fontWeight: 'bold' }} />
+                      <Area type="monotone" dataKey="amount" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorPromoterAmount)" activeDot={{r: 5, fill: '#10b981', stroke: '#fff', strokeWidth: 2}} />
+                    </AreaChart>
+                  </ResponsiveContainer>
                 </div>
               </Card>
             </div>
 
-            {/* Right Col (4) - TABBED INTERFACE COMPATTA E SCORREVOLE */}
-            <div className="lg:col-span-4 flex flex-col gap-3 sm:gap-4 min-h-0 lg:row-span-2">
-              <Card padding="p-0" className="flex flex-col flex-1 min-h-[350px] lg:min-h-0 shrink-0">
+            {/* Right Col (4) */}
+            <div className="lg:col-span-4 flex flex-col gap-4">
+              <Card padding="p-0" className="flex flex-col h-[500px] lg:h-full">
                 <div className="flex border-b border-surface-800 bg-surface-900/50 shrink-0">
-                  <button onClick={() => setActiveTab('top10')} className={`flex-1 p-2.5 sm:p-3 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'top10' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="trophy" size={14} /> {t('top_10_short')}</button>
-                  <button onClick={() => setActiveTab('network')} className={`flex-1 p-2.5 sm:p-3 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'network' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="users" size={14} /> {t('my_network')}</button>
-                  <button onClick={() => setActiveTab('history')} className={`flex-1 p-2.5 sm:p-3 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'history' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="history" size={14} /> {t('audit_short')}</button>
+                  <button onClick={() => setActiveTab('top10')} className={`flex-1 p-3 text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'top10' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="trophy" size={14} /> {t('top_10_short')}</button>
+                  <button onClick={() => setActiveTab('network')} className={`flex-1 p-3 text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'network' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="users" size={14} /> {t('my_network')}</button>
+                  <button onClick={() => setActiveTab('history')} className={`flex-1 p-3 text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'history' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="history" size={14} /> {t('audit_short')}</button>
                 </div>
                 
-                <div className="flex-1 w-full overflow-y-auto custom-scrollbar relative bg-surface-950/30 flex flex-col min-h-0">
+                <div className="flex-1 w-full overflow-y-auto custom-scrollbar relative bg-surface-950/30 flex flex-col">
                   {activeTab === 'top10' && (
                     <div className="flex flex-col h-full fade-in">
-                      <div className={`p-3 sm:p-4 border-b border-surface-800 shrink-0 ${isQualified ? 'bg-brand-500/5' : 'bg-surface-900/30'}`}>
+                      <div className={`p-4 border-b border-surface-800 shrink-0 ${isQualified ? 'bg-brand-500/5' : 'bg-surface-900/30'}`}>
                         <div className="flex justify-between items-end mb-3">
                           <div>
                             <p className="text-[9px] text-zinc-500 uppercase font-bold tracking-widest mb-0.5">{t('global_pool')}</p>
-                            <p className="text-lg sm:text-xl font-mono font-black text-brand-400 leading-none">{formatCurrency(poolTotal, sc.state.isHidden)} <span className="text-[9px] sm:text-[10px] text-zinc-500 font-sans tracking-widest">USDT</span></p>
+                            <p className="text-xl font-mono font-black text-brand-400 leading-none">{formatCurrency(poolTotal, sc.state.isHidden)} <span className="text-[10px] text-zinc-500 font-sans tracking-widest">USDT</span></p>
                           </div>
                           <div className="text-right">
                             <p className="text-[8px] text-zinc-500 uppercase font-bold tracking-widest mb-1">{t('ends_sat')}</p>
-                            <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[7px] sm:text-[8px] font-black uppercase tracking-wider border ${isQualified ? 'bg-brand-500/10 text-brand-400 border-brand-500/30 shadow-[0_0_10px_rgba(212,175,55,0.2)]' : 'bg-surface-800 text-zinc-500 border-surface-700'}`}>
+                            <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider border ${isQualified ? 'bg-brand-500/10 text-brand-400 border-brand-500/30 shadow-[0_0_10px_rgba(212,175,55,0.2)]' : 'bg-surface-800 text-zinc-500 border-surface-700'}`}>
                               {isQualified ? t('pool_qualified') : t('pool_unqualified')}
                             </span>
                           </div>
                         </div>
                         <div className="w-full">
-                          <div className="flex justify-between text-[7px] sm:text-[8px] font-black uppercase tracking-wider mb-1.5">
+                          <div className="flex justify-between text-[8px] font-black uppercase tracking-wider mb-1.5">
                             <span className="text-zinc-400">{t('target')}: {formatCurrency(pTarget, sc.state.isHidden)}</span>
                             <span className={isQualified ? 'text-brand-400' : 'text-zinc-100'}>{formatCurrency(pVol, sc.state.isHidden)}</span>
                           </div>
-                          <div className="h-1.5 sm:h-2 w-full bg-surface-950 rounded-full overflow-hidden shadow-inner border border-surface-800/50">
+                          <div className="h-2 w-full bg-surface-950 rounded-full overflow-hidden shadow-inner border border-surface-800/50">
                             <div className={`h-full rounded-full transition-all duration-1000 ${isQualified ? 'bg-brand-500 shadow-[0_0_10px_rgba(212,175,55,0.5)]' : 'bg-zinc-600'}`} style={{width: `${Math.min((pVol/pTarget)*100, 100)}%`}}></div>
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex-1 overflow-y-auto custom-scrollbar p-2">
+                      <div className="flex-1 p-2">
                         <div className="flex items-center justify-between px-2 mb-2 mt-1">
-                          <span className="text-[8px] sm:text-[9px] font-bold text-zinc-400 uppercase tracking-widest truncate">{t('realtime_leaderboard')}</span>
+                          <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest truncate">{t('realtime_leaderboard')}</span>
                           <span className="text-[7px] font-mono text-success-500 font-bold flex items-center gap-1 bg-success-500/10 px-1.5 py-0.5 rounded border border-success-500/20 shrink-0"><Icon name="bot" size={10}/> <span className="hidden sm:inline">{t('bot_managed')}</span></span>
                         </div>
                         <table className="w-full text-left border-separate border-spacing-y-1">
                           <tbody>
                             {TOP_10_LEADERS.map((leader) => (
                               <tr key={leader.rank} className={`flex items-center p-2 rounded-lg ${leader.isMe ? 'bg-brand-500/10 border border-brand-500/30 shadow-[0_0_15px_rgba(212,175,55,0.1)]' : 'bg-surface-950 border border-surface-800'}`}>
-                                <td className={`w-6 sm:w-8 text-center font-black text-[10px] sm:text-xs ${leader.rank <= 3 ? 'text-brand-400' : 'text-zinc-500'}`}>{leader.rank}</td>
-                                <td className="flex-1 px-1 sm:px-2 min-w-0">
-                                  <span className={`font-bold text-[9px] sm:text-[10px] truncate block uppercase tracking-wider ${leader.isMe ? 'text-brand-400' : 'text-zinc-200'}`}>
+                                <td className={`w-8 text-center font-black text-xs ${leader.rank <= 3 ? 'text-brand-400' : 'text-zinc-500'}`}>{leader.rank}</td>
+                                <td className="flex-1 px-2 min-w-0">
+                                  <span className={`font-bold text-[10px] truncate block uppercase tracking-wider ${leader.isMe ? 'text-brand-400' : 'text-zinc-200'}`}>
                                     {leader.name} {leader.isMe && <span className="text-[7px] ml-1 bg-brand-500 text-surface-950 px-1 py-0.5 rounded-sm">{t('you_tag')}</span>}
                                   </span>
                                 </td>
-                                <td className="text-right font-mono text-[9px] sm:text-[10px] font-bold text-success-400 shrink-0">
+                                <td className="text-right font-mono text-[10px] font-bold text-success-400 shrink-0">
                                   {formatCurrency(leader.vol, false)}
                                 </td>
                               </tr>
@@ -835,10 +824,10 @@
                   )}
 
                   {activeTab === 'network' && (
-                    <div className="flex-1 overflow-y-auto custom-scrollbar fade-in p-1">
+                    <div className="flex-1 p-1">
                       <table className="w-full text-left border-collapse">
                         <thead className="sticky top-0 z-10 bg-surface-900 shadow-md">
-                          <tr className="text-[8px] sm:text-[9px] uppercase tracking-wider text-zinc-500 border-b border-surface-800">
+                          <tr className="text-[9px] uppercase tracking-wider text-zinc-500 border-b border-surface-800">
                             <th className="px-3 py-2 font-bold truncate">{t('user_col')}</th>
                             <th className="px-3 py-2 font-bold truncate">{t('action_col')}</th>
                             <th className="px-3 py-2 font-bold text-right truncate">{t('vol_col')}</th>
@@ -852,18 +841,18 @@
                                    <div className={`p-1.5 rounded-lg shrink-0 border hidden sm:block ${lead.typeKey === 'action_deposit' ? 'bg-success-500/10 text-success-400 border-success-500/30' : 'bg-brand-500/10 text-brand-400 border-brand-500/30'}`}><Icon name={lead.typeKey === 'action_deposit' ? 'coins' : 'user-plus'} size={12} /></div>
                                    {lead.flag && <img src={`https://flagcdn.com/${lead.flag}.svg`} alt="flag" className="flag-icon" />}
                                    <div className="min-w-0">
-                                     <TgLink username={lead.username} className="text-[9px] sm:text-[10px] truncate block" />
-                                     <p className="text-[7px] sm:text-[8px] text-zinc-500 uppercase tracking-wider font-bold mt-0.5 truncate">{t(lead.timeKey)}</p>
+                                     <TgLink username={lead.username} className="text-[10px] truncate block" />
+                                     <p className="text-[8px] text-zinc-500 uppercase tracking-wider font-bold mt-0.5 truncate">{t(lead.timeKey)}</p>
                                    </div>
                                 </div>
                               </td>
                               <td className="px-3 py-2 text-xs text-zinc-400">
-                                <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[7px] sm:text-[8px] font-black uppercase tracking-wider border ${lead.statusKey === 'status_active' ? 'bg-success-500/10 text-success-400 border-success-500/20' : 'bg-surface-800 text-zinc-500 border-surface-700'}`}>
+                                <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider border ${lead.statusKey === 'status_active' ? 'bg-success-500/10 text-success-400 border-success-500/20' : 'bg-surface-800 text-zinc-500 border-surface-700'}`}>
                                   {t(lead.statusKey)}
                                 </span>
                               </td>
                               <td className="px-3 py-2 text-right">
-                                <span className={`font-mono text-[8px] sm:text-[9px] font-bold ${lead.total_vol > 0 ? 'text-brand-400' : 'text-zinc-500'} whitespace-nowrap`}>
+                                <span className={`font-mono text-[9px] font-bold ${lead.total_vol > 0 ? 'text-brand-400' : 'text-zinc-500'} whitespace-nowrap`}>
                                   {lead.total_vol > 0 ? `${lead.total_vol} USDT` : '-'}
                                 </span>
                               </td>
@@ -875,18 +864,18 @@
                   )}
 
                   {activeTab === 'history' && (
-                    <div className="flex-1 p-3 overflow-y-auto custom-scrollbar fade-in">
+                    <div className="flex-1 p-3">
                       {sc.state.claimHistory.length === 0 ? (
                         <div className="h-full flex flex-col items-center justify-center text-zinc-600"><Icon name="history" size={20} className="mb-2 opacity-50" /><p className="text-[9px] font-bold uppercase tracking-widest">{t('no_tx')}</p></div>
                       ) : (
                         <div className="space-y-2">
                           {sc.state.claimHistory.map((item, idx) => (
-                            <div key={idx} className="flex justify-between items-center bg-surface-950 p-2 sm:p-2.5 rounded-lg border border-surface-800 hover:border-surface-700 transition-colors">
+                            <div key={idx} className="flex justify-between items-center bg-surface-950 p-2.5 rounded-lg border border-surface-800">
                               <div className="min-w-0 pr-2">
-                                <p className="text-zinc-200 text-[9px] sm:text-[10px] font-bold truncate">{item.date}</p>
-                                <p className="text-[7px] sm:text-[8px] text-zinc-500 mt-0.5 font-mono uppercase tracking-widest flex items-center gap-1 truncate"><Icon name="check-circle-2" size={8} className="text-success-500 shrink-0"/> {item.tx}</p>
+                                <p className="text-zinc-200 text-[10px] font-bold truncate">{item.date}</p>
+                                <p className="text-[8px] text-zinc-500 mt-0.5 font-mono uppercase tracking-widest flex items-center gap-1 truncate"><Icon name="check-circle-2" size={8} className="text-success-500 shrink-0"/> {item.tx}</p>
                               </div>
-                              <span className="text-success-400 font-black text-[9px] sm:text-[10px] font-mono bg-success-500/10 px-1.5 py-0.5 rounded border border-success-500/20 shrink-0">+{formatCurrency(item.amount, sc.state.isHidden)}</span>
+                              <span className="text-success-400 font-black text-[10px] font-mono bg-success-500/10 px-1.5 py-0.5 rounded border border-success-500/20 shrink-0">+{formatCurrency(item.amount, sc.state.isHidden)}</span>
                             </div>
                           ))}
                         </div>
@@ -896,7 +885,6 @@
                 </div>
               </Card>
             </div>
-            
           </div>
           
           <SecurityModal isOpen={showSecureModal} onClose={() => setShowSecureModal(false)} onConfirm={async () => { setShowSecureModal(false); setIsClaiming(true); await sc.processClaim(t); setIsClaiming(false); }} amount={sc.state.promoterAvailable} walletAddress={sc.state.tonWallet || sc.state.walletAddress} t={t} />
@@ -904,6 +892,8 @@
         </div>
       );
     };
+
+    // --- LOGIC HOOKS ---
 
     const useSmartContract = () => {
       const [walletConnected, setWalletConnected] = useState(false);
@@ -991,10 +981,8 @@
       };
 
       return (
-        <div className="flex flex-col items-center justify-center h-[100vh] bg-surface-950 px-4 text-center fade-in z-50 relative">
-          
-          {/* Pallino decorativo nascosto per bypass segreto */}
-          <div onClick={() => setShowModal(true)} className="absolute top-8 left-8 w-1.5 h-1.5 bg-zinc-800 rounded-full opacity-50 hover:opacity-100 transition-opacity"></div>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-surface-950 px-4 text-center fade-in z-50 relative">
+          <div onClick={() => setShowModal(true)} className="absolute top-8 left-8 w-1.5 h-1.5 bg-zinc-800 rounded-full opacity-50 hover:opacity-100 transition-opacity cursor-pointer"></div>
           
           <div className="w-20 h-20 bg-brand-500/10 text-brand-400 rounded-full flex items-center justify-center border border-brand-500/30 mb-6 shadow-[0_0_30px_rgba(212,175,55,0.2)]">
             <Icon name="lock" size={32} />
@@ -1002,27 +990,19 @@
           <h1 className="text-2xl sm:text-3xl font-black text-zinc-100 uppercase tracking-widest mb-3">{t('access_denied')}</h1>
           <p className="text-sm text-zinc-400 max-w-md mb-8 leading-relaxed">{t('sub_expired')}</p>
           
-          <a href="Checkout_Referral_Web3.html" className="px-8 py-3.5 bg-gold-gradient text-surface-950 font-black rounded-xl uppercase tracking-widest shadow-[0_10px_30px_rgba(212,175,55,0.3)] transition-transform hover:-translate-y-1 inline-flex items-center gap-2 mb-6 outline-none">
+          <a href="#" className="px-8 py-3.5 bg-gold-gradient text-surface-950 font-black rounded-xl uppercase tracking-widest shadow-[0_10px_30px_rgba(212,175,55,0.3)] transition-transform hover:-translate-y-1 inline-flex items-center gap-2 mb-6">
             <Icon name="zap" size={16} /> {t('renew_btn')}
           </a>
           
-          <button onClick={() => setShowModal(true)} className="text-[10px] text-zinc-600 hover:text-brand-400 font-bold uppercase tracking-widest transition-colors outline-none cursor-pointer">
+          <button onClick={() => setShowModal(true)} className="text-[10px] text-zinc-600 hover:text-brand-400 font-bold uppercase tracking-widest transition-colors cursor-pointer">
             {t('demo_bypass')}
           </button>
 
-          {/* Password Modal */}
           {showModal && (
             <div className="fixed inset-0 z-[200] flex items-center justify-center bg-surface-950/90 backdrop-blur-md p-4 fade-in">
               <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-xs shadow-[0_0_50px_rgba(212,175,55,0.1)] p-6">
                 <h3 className="text-sm font-black text-zinc-100 mb-4 text-center uppercase tracking-wide">System Admin</h3>
-                <input 
-                  type="password" 
-                  value={pwd} 
-                  onChange={e => setPwd(e.target.value)} 
-                  onKeyDown={e => e.key === 'Enter' && handleUnlock()}
-                  placeholder="Password..." 
-                  className="w-full bg-surface-950 border border-surface-700 rounded-lg px-3 py-2.5 text-zinc-100 mb-3 font-mono focus:outline-none focus:border-brand-500 transition-colors shadow-inner text-xs text-center" 
-                />
+                <input type="password" value={pwd} onChange={e => setPwd(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleUnlock()} placeholder="Password..." className="w-full bg-surface-950 border border-surface-700 rounded-lg px-3 py-2.5 text-zinc-100 mb-3 font-mono focus:outline-none focus:border-brand-500 transition-colors shadow-inner text-xs text-center" />
                 {error && <p className="text-red-500 text-[10px] mb-3 text-center uppercase tracking-widest font-bold">Access Denied</p>}
                 <div className="flex gap-2 mt-1">
                   <button onClick={() => {setShowModal(false); setPwd(''); setError(false);}} className="flex-1 py-2.5 rounded-lg font-bold text-zinc-400 bg-surface-800 hover:bg-surface-700 transition-colors text-xs uppercase tracking-wider">Cancel</button>
@@ -1035,6 +1015,7 @@
       );
     };
 
+    // --- MAIN APP COMPONENT ---
     const App = () => {
       const [lang, setLang] = useState(() => {
         const browserLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
@@ -1053,16 +1034,11 @@
           if (isAdmin) return 'granted';
           
           const expiryStr = localStorage.getItem('bx_access_expiry');
-          if (!expiryStr) {
-            return 'denied'; 
-          }
+          if (!expiryStr) return 'denied'; 
           
           const expiryTime = parseInt(expiryStr, 10);
           const now = new Date().getTime();
-          
-          if (now > expiryTime) {
-            return 'denied';
-          }
+          if (now > expiryTime) return 'denied';
           
           return 'granted';
         };
@@ -1070,7 +1046,7 @@
         setTimeout(() => {
           setAccessStatus(verifyAccess());
           setIsInitLoad(false);
-        }, 1200);
+        }, 800);
       }, []);
 
       const demoBypass = () => {
@@ -1102,49 +1078,49 @@
       }
 
       return (
-        <div className="bg-grid-pattern h-full flex flex-col overflow-hidden">
+        <div className="bg-grid-pattern min-h-screen flex flex-col relative w-full">
           <ToastContainer toasts={sc.state.toasts} />
           
-          <nav className="glass-panel border-b border-surface-800 z-40 shadow-sm shrink-0">
-            <div className="max-w-[1400px] mx-auto px-3 sm:px-6 h-12 sm:h-14 flex items-center justify-between gap-2 sm:gap-4">
-              <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                <div className="relative w-7 h-7 sm:w-9 sm:h-9 rounded-full overflow-hidden shrink-0 border border-brand-500/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] p-0.5 bg-surface-950">
-                   <img src="logo-tondo.jpeg" alt="Logo" loading="lazy" className="w-full h-full object-cover rounded-full" onError={(e)=>{e.target.src='https://ui-avatars.com/api/?name=ER&background=18181b&color=d4af37'}} />
+          <nav className="glass-panel border-b border-surface-800 z-50 shadow-sm sticky top-0 w-full shrink-0">
+            <div className="max-w-[1400px] mx-auto px-4 h-14 sm:h-16 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden shrink-0 border border-brand-500/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] p-0.5 bg-surface-950">
+                   <img src="https://ui-avatars.com/api/?name=ER&background=18181b&color=d4af37" alt="Logo" className="w-full h-full object-cover rounded-full" />
                 </div>
-                <div className="flex flex-col justify-center min-w-0">
-                  <h1 className="text-[9px] sm:text-[12px] font-black tracking-widest text-zinc-100 leading-tight uppercase truncate">{t('app_title')}</h1>
+                <div className="flex flex-col justify-center min-w-0 hidden sm:flex">
+                  <h1 className="text-xs font-black tracking-widest text-zinc-100 leading-tight uppercase truncate">{t('app_title')}</h1>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+              <div className="flex items-center gap-3 sm:gap-4 shrink-0">
                 <LanguageSelector lang={lang} setLang={setLang} />
 
                 {sc.state.walletConnected && (
                   <div className="hidden md:flex items-center bg-surface-950/80 border border-surface-800 rounded-lg p-1 shadow-inner">
-                    <button onClick={() => setView('user')} className={`px-3 py-1.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${view === 'user' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}>{t('user_dash')}</button>
-                    <button onClick={() => setView('promoter')} className={`px-3 py-1.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${view === 'promoter' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}>{t('partner_dash')}</button>
-                    <button onClick={() => setView('company')} className={`px-3 py-1.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${view === 'company' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}>{t('company_dash')}</button>
+                    <button onClick={() => setView('user')} className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${view === 'user' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}>{t('user_dash')}</button>
+                    <button onClick={() => setView('promoter')} className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${view === 'promoter' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}>{t('partner_dash')}</button>
+                    <button onClick={() => setView('company')} className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${view === 'company' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}>{t('company_dash')}</button>
                   </div>
                 )}
 
-                <button onClick={handleWalletToggle} className={`flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-black text-[9px] sm:text-[10px] uppercase tracking-wider transition-all shadow-lg ${sc.state.walletConnected ? 'bg-surface-900 border border-surface-700 text-zinc-300 hover:bg-surface-800 hover:text-white' : 'bg-gold-gradient text-surface-950 hover:opacity-90 hover:-translate-y-0.5 shadow-[0_5px_20px_rgba(212,175,55,0.2)]'}`}>
+                <button onClick={handleWalletToggle} className={`flex items-center gap-1.5 px-4 py-2 rounded-lg font-black text-[10px] uppercase tracking-wider transition-all shadow-lg ${sc.state.walletConnected ? 'bg-surface-900 border border-surface-700 text-zinc-300 hover:bg-surface-800 hover:text-white' : 'bg-gold-gradient text-surface-950 hover:opacity-90 hover:-translate-y-0.5 shadow-[0_5px_20px_rgba(212,175,55,0.2)]'}`}>
                   {sc.state.walletConnected ? (<><Icon name="log-out" size={12} className="text-zinc-500 shrink-0"/><span className="hidden sm:inline">{t('logout')}</span></>) : (<><Icon name="log-in" size={12} className="shrink-0"/> <span className="hidden sm:inline">{t('login')}</span></>)}
                 </button>
               </div>
             </div>
           </nav>
 
-          <main className={`max-w-[1400px] mx-auto px-2 sm:px-6 flex-1 flex flex-col w-full min-h-0 relative z-10 ${sc.state.walletConnected ? 'pb-16 md:pb-4' : 'py-4'}`}>
+          <main className="max-w-[1400px] mx-auto px-2 sm:px-4 lg:px-6 flex-1 flex flex-col w-full relative z-10 w-full md:pb-4 pb-20">
             {!sc.state.walletConnected ? (
-              <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6 fade-in h-full min-h-0">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-surface-900 text-brand-400 rounded-3xl flex items-center justify-center border border-brand-500/50 mb-2 shadow-[0_0_40px_rgba(212,175,55,0.2)] relative shrink-0">
+              <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6 fade-in mt-20">
+                <div className="w-24 h-24 bg-surface-900 text-brand-400 rounded-3xl flex items-center justify-center border border-brand-500/50 shadow-[0_0_40px_rgba(212,175,55,0.2)] relative">
                   <div className="absolute inset-0 bg-brand-500/10 rounded-3xl animate-pulse"></div>
                   <Icon name="infinity" size={32} className="relative z-10" />
                 </div>
-                <div className="max-w-md px-4 shrink-0">
-                  <h2 className="text-xl sm:text-2xl font-black text-zinc-100 uppercase tracking-wide">{t('elite_platform')}</h2>
+                <div className="max-w-md px-4">
+                  <h2 className="text-2xl font-black text-zinc-100 uppercase tracking-wide">{t('elite_platform')}</h2>
                 </div>
-                <button onClick={handleWalletToggle} className="px-6 py-3 bg-gold-gradient text-surface-950 rounded-xl font-black text-[10px] sm:text-xs uppercase tracking-widest shadow-[0_10px_30px_rgba(212,175,55,0.3)] transition-transform hover:-translate-y-1 flex items-center gap-2 shrink-0">
+                <button onClick={handleWalletToggle} className="px-8 py-3 bg-gold-gradient text-surface-950 rounded-xl font-black text-xs uppercase tracking-widest shadow-[0_10px_30px_rgba(212,175,55,0.3)] transition-transform hover:-translate-y-1 flex items-center gap-2">
                    {t('login')} <Icon name="arrow-right" size={14} />
                 </button>
               </div>
@@ -1154,15 +1130,16 @@
               <PromoterDashboard sc={sc} t={t} lang={lang} />
             )}
             
-            {/* Mobile Bottom Navigation */}
-            {sc.state.walletConnected && (
-              <div className="md:hidden fixed bottom-3 left-3 right-3 bg-surface-950/95 backdrop-blur-xl border border-surface-800 rounded-xl p-1.5 flex shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-40 gap-1.5 shrink-0">
-                <button onClick={() => setView('user')} className={`flex-1 py-2.5 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all ${view === 'user' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}>{t('user_dash')}</button>
-                <button onClick={() => setView('promoter')} className={`flex-1 py-2.5 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all ${view === 'promoter' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}>{t('partner_dash')}</button>
-                <button onClick={() => setView('company')} className={`flex-1 py-2.5 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all ${view === 'company' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}>{t('company_dash')}</button>
-              </div>
-            )}
           </main>
+          
+          {/* Mobile Bottom Navigation - Fisso e sempre in primo piano */}
+          {sc.state.walletConnected && (
+            <div className="md:hidden fixed bottom-3 left-3 right-3 bg-surface-950/95 backdrop-blur-xl border border-surface-800 rounded-xl p-1.5 flex shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 gap-1.5">
+              <button onClick={() => setView('user')} className={`flex-1 py-3 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all ${view === 'user' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}>{t('user_dash')}</button>
+              <button onClick={() => setView('promoter')} className={`flex-1 py-3 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all ${view === 'promoter' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}>{t('partner_dash')}</button>
+              <button onClick={() => setView('company')} className={`flex-1 py-3 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all ${view === 'company' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}>{t('company_dash')}</button>
+            </div>
+          )}
         </div>
       );
     };
