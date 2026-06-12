@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Betting Exchange Room - Official Shop</title>
     
-    <!-- Preconnect for instantaneous flag and font loading -->
+    <!-- Preconnect per caricamento istantaneo di font e bandiere -->
     <link rel="preconnect" href="https://flagcdn.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,18 +13,18 @@
     
     <style>
         /* ==========================================
-           RESET & CSS VARIABLES
+           RESET & VARIABILI
            ========================================== */
         :root {
-            --bg-color: #f3f4f6; /* Modern, clean slate background */
+            --bg-color: #f3f4f6; 
             --card-bg: #ffffff;
-            --text-main: #111827; /* High contrast for readability */
+            --text-main: #111827; 
             --text-muted: #4b5563;
-            --accent-color: #111827; /* Deep, authoritative brand color */
+            --accent-color: #111827; 
             --accent-hover: #374151;
             --btn-text: #ffffff;
-            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-card: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+            --shadow-flag: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         * {
@@ -36,81 +36,81 @@
         }
 
         /* ==========================================
-           GLOBAL LAYOUT (NO SCROLL, PERFECT FIT)
+           LAYOUT GLOBALE (FLUIDO E ADATTIVO)
            ========================================== */
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
+            min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             justify-content: center;
             align-items: center;
-            /* dvh ensures exact viewport height even with mobile browser UI bars */
-            min-height: 100dvh; 
-            overflow: hidden; 
+            padding: clamp(1rem, 4vw, 2rem);
+            /* Nessun overflow: hidden, permette lo scroll se lo schermo è minuscolo */
         }
 
         .container {
             display: flex;
             flex-direction: column;
-            width: 92%;
+            width: 100%;
             max-width: 1100px;
             background: var(--card-bg);
             border-radius: 24px;
-            box-shadow: var(--shadow-xl);
-            overflow: hidden;
-            /* Dynamic sizing to prevent overflows */
-            height: 90dvh; 
-            max-height: 800px;
+            box-shadow: var(--shadow-card);
+            overflow: hidden; /* Nasconde gli angoli dell'immagine interna */
             position: relative;
         }
 
-        /* Desktop Layout (Horizontal) */
-        @media (min-width: 800px) {
+        /* Desktop Layout */
+        @media (min-width: 850px) {
             .container {
                 flex-direction: row;
-                height: 75dvh;
+                min-height: 65vh;
+                height: 700px;
+                max-height: 80vh;
             }
         }
 
         /* ==========================================
-           BRAND LOGO AREA
+           AREA LOGO / IMMAGINE
            ========================================== */
         .image-area {
-            flex: 0.8;
             background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: clamp(1rem, 5vw, 3rem);
-            position: relative;
+            padding: clamp(2rem, 6vw, 4rem);
+            flex: 1;
+            min-height: 250px;
         }
 
         .image-area img {
             width: 100%;
-            max-width: 250px;
+            max-width: 220px;
             aspect-ratio: 1 / 1;
             object-fit: cover;
-            border-radius: 50%; /* Ensures "logo-tondo" is perfectly circular */
+            border-radius: 50%; /* Rende il logo perfettamente tondo */
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background-color: white; /* Fallback for transparency */
+            background-color: white;
         }
 
         .image-area img:hover {
             transform: scale(1.05);
         }
 
-        @media (min-width: 800px) {
+        @media (min-width: 850px) {
             .image-area {
-                flex: 1;
+                flex: 0.8; /* L'immagine prende meno spazio su desktop */
             }
             .image-area img {
-                max-width: 350px;
+                max-width: 320px;
             }
         }
 
         /* ==========================================
-           CONTENT & MARKETING AREA
+           AREA CONTENUTO E TESTI
            ========================================== */
         .content-area {
             flex: 1.2;
@@ -118,17 +118,19 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            position: relative;
-            background: #ffffff;
+            background: var(--card-bg);
         }
 
-        @media (min-width: 800px) {
-            .content-area {
-                flex: 1;
-            }
+        /* Header del contenuto (Etichetta + Bandiere allineate) */
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap-reverse;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
-        /* Typography optimized for conversion */
         .brand-badge {
             display: inline-block;
             font-size: 0.75rem;
@@ -137,30 +139,58 @@
             letter-spacing: 0.15em;
             color: #ffffff;
             background-color: var(--accent-color);
-            padding: 0.4rem 1rem;
+            padding: 0.5rem 1.2rem;
             border-radius: 50px;
-            margin-bottom: 1rem;
-            width: max-content;
+            white-space: nowrap;
         }
 
+        /* ==========================================
+           SELETTORE LINGUE (BANDIERE HD RETTANGOLARI)
+           ========================================== */
+        .language-selector {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .flag {
+            width: 28px;
+            height: 20px;
+            object-fit: cover;
+            border-radius: 3px;
+            cursor: pointer;
+            opacity: 0.35;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-flag);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .flag:hover, .flag.active {
+            opacity: 1;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            border-color: rgba(0,0,0,0.1);
+        }
+
+        /* ==========================================
+           TIPOGRAFIA E BOTTONE
+           ========================================== */
         h1 {
-            /* Fluid typography scales smoothly based on screen width */
-            font-size: clamp(1.8rem, 4.5vw, 3.5rem);
+            font-size: clamp(2rem, 4vw, 3.5rem);
             line-height: 1.1;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
             font-weight: 800;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.03em;
         }
 
         p {
-            font-size: clamp(0.95rem, 2vw, 1.15rem);
+            font-size: clamp(1rem, 1.8vw, 1.15rem);
             line-height: 1.6;
             color: var(--text-muted);
             margin-bottom: 2.5rem;
-            max-width: 90%;
+            max-width: 95%;
         }
 
-        /* High-Conversion Button */
         .cta-button {
             display: inline-flex;
             justify-content: center;
@@ -172,14 +202,12 @@
             font-size: 1.1rem;
             font-weight: 600;
             border-radius: 14px;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             width: 100%;
-            box-shadow: 0 10px 15px -3px rgba(17, 24, 39, 0.3);
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(17, 24, 39, 0.2);
         }
 
-        @media (min-width: 800px) {
+        @media (min-width: 600px) {
             .cta-button {
                 width: max-content;
                 padding: 1.2rem 3rem;
@@ -189,43 +217,11 @@
         .cta-button:hover {
             background-color: var(--accent-hover);
             transform: translateY(-3px);
-            box-shadow: 0 20px 25px -5px rgba(17, 24, 39, 0.4);
+            box-shadow: 0 20px 25px -5px rgba(17, 24, 39, 0.3);
         }
 
         .cta-button:active {
             transform: translateY(0);
-        }
-
-        /* ==========================================
-           LANGUAGE SELECTOR (HD FLAGS)
-           ========================================== */
-        .language-selector {
-            position: absolute;
-            top: clamp(1rem, 3vw, 2rem);
-            right: clamp(1rem, 3vw, 2rem);
-            display: flex;
-            gap: 12px;
-            z-index: 10;
-        }
-
-        .flag {
-            /* High Definition setup: w80 images scaled down via CSS to 30px width */
-            width: 32px;
-            height: 24px;
-            object-fit: cover;
-            border-radius: 4px;
-            cursor: pointer;
-            opacity: 0.5;
-            transition: all 0.2s ease;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .flag:hover, .flag.active {
-            opacity: 1;
-            transform: scale(1.15);
-            box-shadow: var(--shadow-xl);
-            border-color: rgba(0,0,0,0.1);
         }
     </style>
 </head>
@@ -233,38 +229,42 @@
 
     <div class="container">
         
-        <!-- Brand Logo Area -->
+        <!-- Area Immagine -->
         <div class="image-area">
             <img src="logo-tondo.jpeg" alt="Betting Exchange Room Logo" onerror="this.src='https://placehold.co/400x400/111827/FFFFFF?text=Logo+Tondo'">
         </div>
 
-        <!-- Content & Marketing Area -->
+        <!-- Area Contenuto -->
         <div class="content-area">
             
-            <!-- Ordered High-Definition Flags: EN, ES, PT, IT -->
-            <!-- Using /w80/ from flagcdn ensures Retina-display crispness when styled to 32px -->
-            <div class="language-selector">
-                <img src="https://flagcdn.com/w80/gb.png" alt="English" data-lang="en" class="flag" onclick="setLanguage('en')">
-                <img src="https://flagcdn.com/w80/es.png" alt="Español" data-lang="es" class="flag" onclick="setLanguage('es')">
-                <img src="https://flagcdn.com/w80/pt.png" alt="Português" data-lang="pt" class="flag" onclick="setLanguage('pt')">
-                <img src="https://flagcdn.com/w80/it.png" alt="Italiano" data-lang="it" class="flag" onclick="setLanguage('it')">
+            <!-- Header con Badge e Bandiere allineate per evitare sovrapposizioni -->
+            <div class="content-header">
+                <div class="brand-badge" id="badge">Official Community Gear</div>
+                
+                <!-- Bandiere ad Alta Definizione: Ordine EN, ES, PT, IT -->
+                <div class="language-selector">
+                    <img src="https://flagcdn.com/w80/gb.png" alt="English" data-lang="en" class="flag" onclick="setLanguage('en')">
+                    <img src="https://flagcdn.com/w80/es.png" alt="Español" data-lang="es" class="flag" onclick="setLanguage('es')">
+                    <img src="https://flagcdn.com/w80/pt.png" alt="Português" data-lang="pt" class="flag" onclick="setLanguage('pt')">
+                    <img src="https://flagcdn.com/w80/it.png" alt="Italiano" data-lang="it" class="flag" onclick="setLanguage('it')">
+                </div>
             </div>
 
-            <div class="brand-badge" id="badge">Official Community Gear</div>
+            <!-- Testi -->
             <h1 id="title">Betting Exchange Room</h1>
             <p id="desc">Join the elite trading team. Wear our premium apparel to support the community and show your passion. Worldwide shipping available.</p>
             
-            <!-- Universal Shop Link -->
+            <!-- Bottone Acquista -->
             <a href="https://bettingexchangeroom-shop.fourthwall.com/" class="cta-button" id="btn" target="_blank" rel="noopener noreferrer">Shop the Collection</a>
             
         </div>
     </div>
 
     <!-- ==========================================
-         SCRIPT: EXACT TRANSLATIONS & AUTO-DETECT
+         SCRIPT: LINGUA E RILEVAMENTO AUTOMATICO
          ========================================== -->
     <script>
-        // Highly optimized translation dictionary focusing on community and conversion
+        // Dizionario traduzioni ottimizzato
         const translations = {
             en: {
                 badge: "Official Community Gear",
@@ -273,48 +273,48 @@
                 btn: "Shop the Collection"
             },
             es: {
-                badge: "Mercancía de la Comunidad",
+                badge: "Mercancía Oficial",
                 title: "Betting Exchange Room",
-                desc: "Únete al equipo de trading de élite. Usa nuestra ropa premium para apoyar a la comunidad y mostrar tu pasión. Envío mundial.",
+                desc: "Únete al equipo de trading de élite. Usa nuestra ropa premium para apoyar a la comunidad y mostrar tu pasión. Envío a nivel mundial.",
                 btn: "Explorar Colección"
             },
             pt: {
-                badge: "Vestuário da Comunidade",
+                badge: "Equipamento Oficial",
                 title: "Betting Exchange Room",
-                desc: "Junte-se à equipe de elite do trading. Use nosso vestuário premium para apoiar a comunidade e mostrar sua paixão. Envio global.",
+                desc: "Junte-se à equipe de elite do trading. Use nosso vestuário premium para apoiar a comunidade e mostrar sua paixão. Envio mundial disponível.",
                 btn: "Explorar Coleção"
             },
             it: {
-                badge: "Community Merchandising",
+                badge: "Merchandising Ufficiale",
                 title: "Betting Exchange Room",
-                desc: "Unisciti al team di trading d'élite. Indossa il nostro abbigliamento premium per supportare la community e mostrare la tua passione. Spedizione globale.",
+                desc: "Unisciti al team di trading d'élite. Indossa il nostro abbigliamento premium per supportare la community e mostrare la tua passione. Spedizioni in tutto il mondo.",
                 btn: "Esplora la Collezione"
             }
         };
 
-        // Allowed languages mapped in strict order
+        // Lingue supportate nel loro ordine esatto
         const supportedLangs = ['en', 'es', 'pt', 'it'];
 
         function initLanguage() {
-            // Detect user's device/browser language automatically
-            const userLang = navigator.language.slice(0, 2).toLowerCase();
+            // Rileva la lingua del browser (es. 'it-IT' diventa 'it')
+            const userLang = (navigator.language || navigator.userLanguage).slice(0, 2).toLowerCase();
             
-            // Set language if supported, fallback to 'en'
+            // Imposta la lingua rilevata se supportata, altrimenti default 'en'
             const targetLang = supportedLangs.includes(userLang) ? userLang : 'en';
             setLanguage(targetLang);
         }
 
         function setLanguage(lang) {
-            // Update UI elements instantly
+            // Aggiorna i testi del DOM
             document.getElementById('badge').innerText = translations[lang].badge;
             document.getElementById('title').innerText = translations[lang].title;
             document.getElementById('desc').innerText = translations[lang].desc;
             document.getElementById('btn').innerText = translations[lang].btn;
 
-            // Set HTML lang attribute for Accessibility & SEO
+            // SEO e Accessibilità
             document.documentElement.lang = lang;
 
-            // Update active state of HD Flags visually
+            // Aggiorna lo stato visivo (opacità) delle bandierine
             document.querySelectorAll('.flag').forEach(flag => {
                 flag.classList.remove('active');
             });
@@ -324,7 +324,7 @@
             }
         }
 
-        // Execute immediately upon DOM load to act fast like a Vercel-hosted SPA
+        // Esegue l'inizializzazione non appena il DOM è pronto (velocissimo)
         document.addEventListener('DOMContentLoaded', initLanguage);
     </script>
 </body>
