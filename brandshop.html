@@ -13,20 +13,20 @@
     
     <style>
         /* ==========================================
-           RESET & VARIABILI (TEMA DARK/YELLOW)
+           RESET & VARIABILI (TEMA DARK/NEON SHOP)
            ========================================== */
         :root {
-            --bg-color: #000000; /* Sfondo Nero Puro */
-            --card-bg: #0a0a0a;  /* Sfondo Card leggermente più chiaro */
+            --bg-color: #121212; /* Sfondo grigio scuro come lo shop */
+            --card-bg: #1c1c1c;  /* Sfondo Card leggermente a contrasto */
             --text-main: #ffffff; /* Testo bianco */
-            --text-muted: #9ca3af; /* Testo grigio chiaro */
-            --accent-color: #FFD700; /* Giallo Oro vibrante */
-            --accent-hover: #e6c200; /* Giallo più scuro per hover */
-            --btn-text: #000000;    /* Testo nero sui bottoni gialli */
+            --text-muted: #a1a1aa; /* Testo grigio chiaro */
+            --accent-color: #eaff00; /* Giallo Neon identico allo store */
+            --accent-hover: #d4e600; /* Giallo Neon per hover */
+            --btn-text: #000000;    /* Testo nero sui bottoni neon */
             
-            /* Effetti Glow */
-            --glow-accent: 0 0 20px rgba(255, 215, 0, 0.4);
-            --shadow-card: 0 30px 60px -15px rgba(0, 0, 0, 1), 0 0 30px rgba(255, 215, 0, 0.1) inset;
+            /* Effetti Glow alleggeriti per un look più moderno e pulito */
+            --glow-accent: 0 0 15px rgba(234, 255, 0, 0.15);
+            --shadow-card: 0 30px 60px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(234, 255, 0, 0.05);
         }
 
         * {
@@ -49,28 +49,19 @@
             justify-content: center;
             align-items: center;
             padding: clamp(1rem, 4vw, 2rem);
-            
-            /* Motivo di sfondo geometrico sottile in giallo/grigio */
-            background-image: 
-                linear-gradient(45deg, rgba(255, 215, 0, 0.03) 25%, transparent 25%), 
-                linear-gradient(-45deg, rgba(255, 215, 0, 0.03) 25%, transparent 25%), 
-                linear-gradient(45deg, transparent 75%, rgba(255, 215, 0, 0.03) 75%), 
-                linear-gradient(-45deg, transparent 75%, rgba(255, 215, 0, 0.03) 75%);
-            background-size: 20px 20px;
-            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            /* Sfondo a tinta unita pulito, per coerenza con lo shop */
         }
 
         .container {
             display: flex;
             flex-direction: column;
             width: 100%;
-            max-width: 1200px; /* Leggermente più largo */
+            max-width: 1200px;
             background: var(--card-bg);
             border-radius: 24px;
             box-shadow: var(--shadow-card);
             overflow: hidden;
             position: relative;
-            border: 1px solid rgba(255, 215, 0, 0.1); /* Sottile bordo giallo */
         }
 
         /* Desktop Layout */
@@ -83,14 +74,14 @@
         }
 
         /* ==========================================
-           AREA IMMAGINE (CYBORG RIELABORATO)
+           AREA IMMAGINE (CYBORG ORIGINALE)
            ========================================== */
         .image-area {
             position: relative;
-            background: linear-gradient(to bottom, #0a0a0a, #000000);
+            background: linear-gradient(to bottom, #1c1c1c, #121212);
             display: flex;
             justify-content: center;
-            align-items: flex-end; /* Allinea l'immagine in basso */
+            align-items: flex-end;
             padding: 0;
             flex: 1;
             min-height: 400px;
@@ -99,24 +90,24 @@
 
         .image-area img {
             width: auto;
-            height: 110%; /* Leggermente più alto del contenitore per effetto immersivo */
+            height: 110%;
             max-width: none;
             object-fit: cover;
             
-            /* FILTRI CYBERPUNK: Converte il verde in tonalità oro/giallo e aumenta il contrasto drammatico */
-            filter: grayscale(100%) sepia(100%) hue-rotate(5deg) saturate(300%) contrast(1.3) brightness(0.9);
+            /* NESSUN FILTRO COLORE: Mantiene i colori originali del cyborg */
+            filter: contrast(1.1) brightness(0.95);
             
             /* Maschera per sfumare l'immagine nel nero della card */
             mask-image: linear-gradient(to bottom, black 50%, transparent 95%);
             -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 95%);
             
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.5s ease;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.5s ease;
         }
 
         .image-area:hover img {
             transform: scale(1.03);
-            /* Aumenta la luminosità e il bagliore all'hover */
-            filter: grayscale(100%) sepia(100%) hue-rotate(5deg) saturate(350%) contrast(1.4) brightness(1.1) drop-shadow(0 0 15px rgba(255, 215, 0, 0.5));
+            /* Aumenta leggermente luminosità e contrasto senza intaccare i colori */
+            filter: contrast(1.15) brightness(1.05);
         }
 
         @media (min-width: 900px) {
@@ -128,10 +119,9 @@
             .image-area img {
                 height: auto;
                 width: 120%;
-                /* Su desktop, sfuma verso destra verso il contenuto */
                 mask-image: linear-gradient(to right, black 60%, transparent 100%);
                 -webkit-mask-image: linear-gradient(to right, black 60%, transparent 100%);
-                margin-left: -10%; /* Centra meglio l'azione */
+                margin-left: -10%;
             }
         }
 
@@ -145,7 +135,7 @@
             flex-direction: column;
             justify-content: center;
             background: transparent;
-            z-index: 2; /* Assicura che il testo sia sopra l'eventuale sfumatura dell'immagine */
+            z-index: 2;
         }
 
         .content-header {
@@ -159,15 +149,15 @@
 
         .brand-badge {
             display: inline-block;
-            font-size: 0.7rem;
-            font-weight: 900;
+            font-size: 0.75rem;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.2em;
-            /* Colori invertiti per il tema giallo */
-            color: var(--bg-color);
+            letter-spacing: 0.15em;
+            /* Testo nero su sfondo neon, come il banner "Shop new arrivals" */
+            color: var(--btn-text);
             background-color: var(--accent-color);
-            padding: 0.6rem 1.2rem;
-            border-radius: 2px; /* Angoli più spigolosi per look tech */
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
             box-shadow: var(--glow-accent);
         }
 
@@ -178,10 +168,10 @@
             display: flex;
             gap: 10px;
             align-items: center;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             padding: 8px;
             border-radius: 12px;
-            border: 1px solid rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(234, 255, 0, 0.05);
         }
 
         .flag {
@@ -189,16 +179,16 @@
             height: auto;
             border-radius: 2px;
             cursor: pointer;
-            opacity: 0.4;
-            filter: grayscale(80%); /* Bandiere spente in un tema scuro */
+            opacity: 0.3;
+            filter: grayscale(80%);
             transition: all 0.3s ease;
         }
 
         .flag:hover, .flag.active {
             opacity: 1;
-            filter: grayscale(0%); /* Colore pieno quando attive */
+            filter: grayscale(0%);
             transform: scale(1.1);
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); /* Bagliore giallo */
+            box-shadow: 0 0 10px rgba(234, 255, 0, 0.3);
         }
 
         /* ==========================================
@@ -206,14 +196,12 @@
            ========================================== */
         h1 {
             font-size: clamp(2.5rem, 5vw, 4rem);
-            line-height: 1;
-            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            margin-bottom: 1.2rem;
             font-weight: 800;
-            letter-spacing: -0.03em;
-            /* Gradiente testuale giallo/bianco */
-            background: linear-gradient(to right, var(--text-main), var(--accent-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+            /* Giallo Neon a tinta unita per matchare il logo "BettingExchangeRoom" */
+            color: var(--accent-color);
         }
 
         p {
@@ -225,7 +213,7 @@
         }
 
         /* ==========================================
-           BOTTONE GIALLO CYBERPUNK
+           BOTTONE NEON
            ========================================== */
         .cta-button {
             display: inline-flex;
@@ -234,12 +222,12 @@
             background-color: var(--accent-color);
             color: var(--btn-text);
             text-decoration: none;
-            padding: 1.2rem 3rem;
+            padding: 1.1rem 2.5rem;
             font-size: 1.1rem;
-            font-weight: 800;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            border-radius: 4px; /* Angoli spigolosi */
+            border-radius: 6px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             width: 100%;
             box-shadow: var(--glow-accent);
@@ -247,7 +235,6 @@
             overflow: hidden;
         }
 
-        /* Effetto riflesso sul bottone */
         .cta-button::after {
             content: '';
             position: absolute;
@@ -270,7 +257,7 @@
         .cta-button:hover {
             background-color: var(--accent-hover);
             transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 10px 30px -5px rgba(255, 215, 0, 0.6); /* Bagliore più intenso */
+            box-shadow: 0 10px 25px -5px rgba(234, 255, 0, 0.4);
         }
         
         .cta-button:hover::after {
