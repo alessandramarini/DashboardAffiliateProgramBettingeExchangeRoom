@@ -164,7 +164,7 @@
         #checkout-container { overscroll-behavior-y: none; }
         .screen {
             display: none; animation: fadeIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-            width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: flex-start;
+            width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center;
         }
         .screen.active { display: flex; }
         
@@ -581,7 +581,6 @@
                     <span class="text-white font-bold text-sm lg:text-base leading-tight" data-i18n="cta_title">Begin your journey today</span>
                     <span class="text-brand-gray text-[9px] lg:text-[10px] font-bold uppercase tracking-widest mt-0.5" data-i18n="no_card_req">NO CREDIT CARD REQUIRED</span>
                 </div>
-                <!-- MODIFICATO QUI: cambiato href in freestart.html -->
                 <a href="freestart.html" class="w-full sm:w-auto flex-1 max-w-xs bg-brand-neon hover:bg-brand-neonDark text-brand-dark font-black py-3 sm:py-3.5 px-5 rounded-xl text-xs sm:text-sm flex items-center justify-center uppercase tracking-wider transition-all duration-300 outline-none animate-pulse-soft shadow-[0_0_15px_rgba(163,230,53,0.3)] mx-auto sm:mx-0">
                     <i class="fa-solid fa-play mr-2 text-sm"></i> <span data-i18n="cta_button">FIRST LESSON FREE</span>
                 </a>
@@ -594,7 +593,7 @@
     <!-- ==========================================
          PART 2: CHECKOUT FLOW (SPA)
     =========================================== -->
-    <div id="checkout-container" class="hidden w-full h-[100vh] h-[100svh] flex-col items-center justify-start overflow-hidden px-3 sm:px-4 pt-3 sm:pt-5 bg-[#05070A]">
+    <div id="checkout-container" class="hidden min-h-[100svh] w-full flex-col items-center justify-start overflow-hidden px-3 sm:px-4 pt-3 sm:pt-5 bg-[#05070A]">
         
         <div class="flex flex-col items-center justify-center shrink-0 w-full mb-3 sm:mb-4">
             <img src="logo-tondo.jpeg" onerror="this.src='https://ui-avatars.com/api/?name=BE&background=111827&color=D4AF37&rounded=true'" alt="Logo" class="w-10 h-10 sm:w-16 sm:h-16 rounded-full border border-gray-700 shadow-[0_4px_15px_rgba(0,0,0,0.3)] object-cover mb-2">
@@ -603,15 +602,15 @@
             </h1>
         </div>
 
-        <div class="flex-1 w-full max-w-[420px] relative overflow-hidden flex flex-col">
+        <div class="flex-1 w-full max-w-[800px] relative overflow-hidden flex flex-col justify-center">
 
             <!-- 1. Countdown Offer Screen -->
             <div id="screen-offer" class="screen">
-                <div class="scroll-container justify-center pt-2">
-                    <div class="bg-panel-bg rounded-3xl border border-gray-800 p-5 sm:p-6 w-full relative flex flex-col items-center shadow-2xl flex-shrink-0">
+                <div class="scroll-container justify-center">
+                    <div class="bg-panel-bg mx-auto rounded-3xl border border-gray-800 p-5 sm:p-6 w-full max-w-md relative flex flex-col items-center shadow-2xl flex-shrink-0">
                         
                         <h2 data-i18n="offer_title" class="text-white font-black text-xl mb-1 uppercase tracking-widest text-center">Checkout</h2>
-                        <p id="checkout-plan-name" class="text-bf-yellow text-[11px] font-bold tracking-widest uppercase mb-4">PLAN NAME</p>
+                        <p id="checkout-plan-name" class="text-bf-yellow text-[11px] font-bold tracking-widest uppercase mb-4">PLAN</p>
                         
                         <div class="flex items-baseline justify-center mb-6">
                             <span class="text-6xl sm:text-7xl font-black text-white tracking-tighter drop-shadow-sm price-display">94</span>
@@ -619,12 +618,12 @@
                         </div>
                         
                         <div class="bg-dark-bg rounded-xl py-3.5 px-4 mb-6 flex flex-col items-center border border-gray-800 w-full shrink-0">
-                            <span data-i18n="expires_in" class="text-[10px] text-gray-400 font-semibold mb-1.5 uppercase tracking-widest">OFFER VALID FOR 24 HOURS:</span>
+                            <span data-i18n="expires_in" class="text-[10px] text-gray-400 font-semibold mb-1.5 uppercase tracking-widest text-center">OFFER VALID FOR 24 HOURS:</span>
                             <div id="flash-timer" class="text-3xl sm:text-4xl font-mono font-medium text-white flex items-center gap-1 tracking-wider">24:00:00</div>
                         </div>
                         
                         <button onclick="goToPayment()" class="w-full btn-premium-action rounded-xl py-3.5 sm:py-4 text-[14px] sm:text-[16px] font-bold flex items-center justify-center gap-2 shrink-0 cursor-pointer mb-4">
-                            <i class="fa-solid fa-lock"></i> <span data-i18n="lock_price">PROCED TO PAYMENT</span>
+                            <i class="fa-solid fa-lock"></i> <span data-i18n="lock_price">PROCEED TO PAYMENT</span>
                         </button>
                         
                         <p class="text-[10px] sm:text-[11px] text-gray-500 shrink-0 font-medium flex items-center justify-center gap-1.5"><i class="fa-solid fa-shield-halved"></i> <span data-i18n="no_payment">Secure Web3 Payment</span></p>
@@ -638,238 +637,246 @@
 
             <!-- 2. Payment Action Screen -->
             <div id="screen-payment" class="screen">
-                <div class="scroll-container no-scrollbar justify-start pt-2 w-full pb-[80px]">
-                    
-                    <div class="w-full bg-[#111827] rounded-3xl border border-gray-700 shadow-2xl relative overflow-hidden flex flex-col items-center px-4 py-5 sm:py-6 mb-4 sm:mb-5 flex-shrink-0">
-                        <p data-i18n="pl_subtitle" class="text-[12px] sm:text-[13px] text-gray-400 text-center mb-4 sm:mb-5 font-medium px-2">Complete payment to unlock the Premium Room:</p>
-                        <div class="text-white font-black text-[22px] sm:text-[24px] mb-2"><span class="price-display">94</span> USDT</div>
-                        <div id="checkout-duration" class="bg-gray-800 text-gray-300 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4 sm:mb-5">Days of continuous access</div>
-                        
-                        <div class="w-full bg-[#070B14] border border-gray-800 rounded-2xl p-4 mb-5 sm:mb-6 shadow-inner">
-                            <ul class="space-y-3 text-[11px] sm:text-[13px] text-gray-200 font-semibold">
-                                <li class="flex items-center gap-3">
-                                    <div class="w-5 h-5 rounded-full bg-bf-green/20 border border-bf-green/50 flex items-center justify-center shrink-0"><i class="fa-solid fa-check text-bf-green text-[9px]"></i></div> 
-                                    <span data-i18n="vp_1">Access to Zero To Hero Academy</span>
-                                </li>
-                                <li class="flex items-center gap-3">
-                                    <div class="w-5 h-5 rounded-full bg-bf-green/20 border border-bf-green/50 flex items-center justify-center shrink-0"><i class="fa-solid fa-check text-bf-green text-[9px]"></i></div> 
-                                    <span data-i18n="vp_2">Access to Premium Telegram Signals Room</span>
-                                </li>
-                                <li class="flex items-center gap-3">
-                                    <div class="w-5 h-5 rounded-full bg-bf-green/20 border border-bf-green/50 flex items-center justify-center shrink-0"><i class="fa-solid fa-check text-bf-green text-[9px]"></i></div> 
-                                    <span data-i18n="vp_3">No lock-in contract</span>
-                                </li>
-                            </ul>
-                        </div>
+                <div class="scroll-container no-scrollbar justify-center pb-[80px]">
+                    <div class="w-full max-w-md mx-auto">
+                        <div class="w-full bg-[#111827] rounded-3xl border border-gray-700 shadow-2xl relative overflow-hidden flex flex-col items-center px-4 py-5 sm:py-6 mb-4 sm:mb-5 flex-shrink-0">
+                            <p data-i18n="pl_subtitle" class="text-[12px] sm:text-[13px] text-gray-400 text-center mb-4 sm:mb-5 font-medium px-2">Complete payment to unlock the Premium Room:</p>
+                            <div class="text-white font-black text-[22px] sm:text-[24px] mb-2"><span class="price-display">94</span> USDT</div>
+                            <div id="checkout-duration" class="bg-gray-800 text-gray-300 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4 sm:mb-5 text-center">Days of continuous access</div>
+                            
+                            <div class="w-full bg-[#070B14] border border-gray-800 rounded-2xl p-4 mb-5 sm:mb-6 shadow-inner">
+                                <ul class="space-y-3 text-[11px] sm:text-[13px] text-gray-200 font-semibold">
+                                    <li class="flex items-center gap-3">
+                                        <div class="w-5 h-5 rounded-full bg-bf-green/20 border border-bf-green/50 flex items-center justify-center shrink-0"><i class="fa-solid fa-check text-bf-green text-[9px]"></i></div> 
+                                        <span data-i18n="vp_1">Access to Zero To Hero Academy</span>
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <div class="w-5 h-5 rounded-full bg-bf-green/20 border border-bf-green/50 flex items-center justify-center shrink-0"><i class="fa-solid fa-check text-bf-green text-[9px]"></i></div> 
+                                        <span data-i18n="vp_2">Access to Premium Telegram Signals Room</span>
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <div class="w-5 h-5 rounded-full bg-bf-green/20 border border-bf-green/50 flex items-center justify-center shrink-0"><i class="fa-solid fa-check text-bf-green text-[9px]"></i></div> 
+                                        <span data-i18n="vp_3">No lock-in contract</span>
+                                    </li>
+                                </ul>
+                            </div>
 
-                        <button onclick="openPromoModal()" class="w-full btn-premium-action rounded-2xl py-3.5 sm:py-4 text-[14px] sm:text-[16px] font-black flex items-center justify-center gap-2 cursor-pointer relative overflow-hidden group">
-                            <div class="absolute inset-0 w-1/4 h-full bg-white/20 skew-x-12 -translate-x-full group-hover:animate-shine"></div>
-                            <i class="fa-solid fa-bolt text-white"></i> <span data-i18n="pay_now">UNLOCK ACCESS NOW</span>
-                        </button>
-                        
-                        <!-- Nuovo indicatore visivo che ricorda la possibilità del codice sconto -->
-                        <p data-i18n="promo_hint" class="text-[10px] text-gray-500 mt-4 font-medium text-center">
-                            Have a Referral Link? You can enter it in the next step.
-                        </p>
-                    </div>
-
-                    <div class="w-full flex flex-col items-center flex-shrink-0 px-1">
-                        <div class="flex items-center gap-3 w-full mb-4">
-                            <div class="h-px bg-gray-800 flex-1"></div>
-                            <span data-i18n="new_to_crypto" class="text-[10px] text-gray-500 font-bold uppercase tracking-widest text-center">First crypto payment?</span>
-                            <div class="h-px bg-gray-800 flex-1"></div>
-                        </div>
-                        
-                        <div class="flex flex-col sm:flex-row gap-3 w-full">
-                            <button onclick="openTutorial('wallet')" class="flex-1 glass-btn hover:bg-white/5 py-2.5 sm:py-3 px-3.5 rounded-xl flex items-center gap-3 transition-colors text-left border border-gray-800 shadow-sm active:scale-95 cursor-pointer">
-                                <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 text-white font-black text-[13px] border border-gray-700 shadow-inner"><i class="fa-solid fa-1"></i></div>
-                                <div>
-                                    <div data-i18n="how_wallet_title" class="text-[12px] font-bold text-tg-blue">Create Wallet</div>
-                                    <div data-i18n="how_wallet_sub" class="text-[10px] text-gray-500 mt-0.5 font-medium">Takes 1 minute</div>
-                                </div>
+                            <button onclick="openPromoModal()" class="w-full btn-premium-action rounded-2xl py-3.5 sm:py-4 text-[14px] sm:text-[16px] font-black flex items-center justify-center gap-2 cursor-pointer relative overflow-hidden group">
+                                <div class="absolute inset-0 w-1/4 h-full bg-white/20 skew-x-12 -translate-x-full group-hover:animate-shine"></div>
+                                <i class="fa-solid fa-bolt text-white"></i> <span data-i18n="pay_now">UNLOCK ACCESS NOW</span>
                             </button>
-                            <button onclick="openTutorial('usdt')" class="flex-1 glass-btn hover:bg-white/5 py-2.5 sm:py-3 px-3.5 rounded-xl flex items-center gap-3 transition-colors text-left border border-gray-800 shadow-sm active:scale-95 cursor-pointer">
-                                <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 text-white font-black text-[13px] border border-gray-700 shadow-inner"><i class="fa-solid fa-2"></i></div>
-                                <div>
-                                    <div data-i18n="how_usdt_title" class="text-[12px] font-bold text-tg-blue">Buy USDT</div>
-                                    <div data-i18n="how_usdt_sub" class="text-[10px] text-gray-500 mt-0.5 font-medium">Step-by-step guide</div>
-                                </div>
-                            </button>
-                        </div>
-
-                        <div class="mt-4 w-full bg-blue-900/10 border border-blue-500/20 rounded-xl p-3 flex gap-3 items-start shrink-0 backdrop-blur-sm">
-                            <i class="fa-solid fa-link text-blue-400 mt-0.5 text-[12px] shrink-0"></i>
-                            <p data-i18n="trust_crypto" class="text-[10px] text-gray-400 leading-relaxed font-medium">
-                                Blockchain payment infrastructure. Transparent, secure transactions independent of banking intermediaries.
+                            
+                            <p data-i18n="promo_hint" class="text-[10px] text-gray-500 mt-4 font-medium text-center">
+                                Have a Referral Link? You can enter it in the next step.
                             </p>
                         </div>
 
-                        <button onclick="openSecurityModal()" class="mt-5 text-gray-400 hover:text-white transition-colors text-[11px] flex items-center gap-2 font-medium cursor-pointer bg-transparent border-none">
-                            <i class="fa-solid fa-shield-halved opacity-70"></i> <span data-i18n="sec_btn" class="underline underline-offset-4">What is Gas (TON), USDT & Security?</span>
-                        </button>
-                        
-                        <button onclick="showScreen('screen-offer')" class="mt-6 sm:mt-8 text-gray-600 hover:text-white transition-colors text-[11px] uppercase tracking-widest font-bold cursor-pointer mb-4 bg-transparent border-none">
-                            <i class="fa-solid fa-arrow-left"></i> <span data-i18n="back_home">BACK TO OFFER</span>
-                        </button>
+                        <div class="w-full flex flex-col items-center flex-shrink-0 px-1">
+                            <div class="flex items-center gap-3 w-full mb-4">
+                                <div class="h-px bg-gray-800 flex-1"></div>
+                                <span data-i18n="new_to_crypto" class="text-[10px] text-gray-500 font-bold uppercase tracking-widest text-center">First crypto payment?</span>
+                                <div class="h-px bg-gray-800 flex-1"></div>
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row gap-3 w-full">
+                                <button onclick="openTutorial('wallet')" class="flex-1 glass-btn hover:bg-white/5 py-2.5 sm:py-3 px-3.5 rounded-xl flex items-center gap-3 transition-colors text-left border border-gray-800 shadow-sm active:scale-95 cursor-pointer">
+                                    <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 text-white font-black text-[13px] border border-gray-700 shadow-inner"><i class="fa-solid fa-1"></i></div>
+                                    <div>
+                                        <div data-i18n="how_wallet_title" class="text-[12px] font-bold text-tg-blue">Create Wallet</div>
+                                        <div data-i18n="how_wallet_sub" class="text-[10px] text-gray-500 mt-0.5 font-medium">Takes 1 minute</div>
+                                    </div>
+                                </button>
+                                <button onclick="openTutorial('usdt')" class="flex-1 glass-btn hover:bg-white/5 py-2.5 sm:py-3 px-3.5 rounded-xl flex items-center gap-3 transition-colors text-left border border-gray-800 shadow-sm active:scale-95 cursor-pointer">
+                                    <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center shrink-0 text-white font-black text-[13px] border border-gray-700 shadow-inner"><i class="fa-solid fa-2"></i></div>
+                                    <div>
+                                        <div data-i18n="how_usdt_title" class="text-[12px] font-bold text-tg-blue">Buy USDT</div>
+                                        <div data-i18n="how_usdt_sub" class="text-[10px] text-gray-500 mt-0.5 font-medium">Step-by-step guide</div>
+                                    </div>
+                                </button>
+                            </div>
+
+                            <div class="mt-4 w-full bg-blue-900/10 border border-blue-500/20 rounded-xl p-3 flex gap-3 items-start shrink-0 backdrop-blur-sm">
+                                <i class="fa-solid fa-link text-blue-400 mt-0.5 text-[12px] shrink-0"></i>
+                                <p data-i18n="trust_crypto" class="text-[10px] text-gray-400 leading-relaxed font-medium">
+                                    Blockchain payment infrastructure. Transparent, secure transactions independent of banking intermediaries.
+                                </p>
+                            </div>
+
+                            <button onclick="openSecurityModal()" class="mt-5 text-gray-400 hover:text-white transition-colors text-[11px] flex items-center gap-2 font-medium cursor-pointer bg-transparent border-none">
+                                <i class="fa-solid fa-shield-halved opacity-70"></i> <span data-i18n="sec_btn" class="underline underline-offset-4">What is Gas (TON), USDT & Security?</span>
+                            </button>
+                            
+                            <button onclick="showScreen('screen-offer')" class="mt-6 sm:mt-8 text-gray-600 hover:text-white transition-colors text-[11px] uppercase tracking-widest font-bold cursor-pointer mb-4 bg-transparent border-none">
+                                <i class="fa-solid fa-arrow-left"></i> <span data-i18n="back_home">BACK TO OFFER</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- 3. Tutorial Wallet Section -->
             <div id="screen-tutorial-wallet" class="screen">
-                <div class="scroll-container no-scrollbar">
-                    <div class="bg-gray-800/50 border border-gray-700 text-gray-300 text-[10px] font-semibold uppercase tracking-widest px-3 py-1.5 rounded-full mb-3 flex items-center gap-2 shrink-0">
+                <div class="scroll-container no-scrollbar justify-center">
+                    <div class="bg-gray-800/50 border border-gray-700 text-gray-300 text-[10px] font-semibold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4 mx-auto flex items-center gap-2 shrink-0">
                         <i class="fa-solid fa-info-circle"></i> <span data-i18n="tut_badge">Tutorial - Simulation</span>
                     </div>
 
-                    <div class="sim-phone mb-4">
-                        <div class="phone-notch"></div>
-                        <div id="sim-tw-1" class="sim-screen active">
-                            <div class="bg-tg-panel px-3 py-2 flex items-center gap-2 z-10 border-b border-gray-800 shrink-0">
-                                <div class="w-6 h-6 bg-tg-blue rounded-full flex items-center justify-center text-white text-xs shrink-0"><i class="fa-solid fa-wallet"></i></div>
-                                <div>
-                                    <div class="text-white text-[11px] font-semibold">Wallet</div>
-                                    <div class="text-tg-blue text-[9px] leading-tight">bot</div>
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-6 w-full max-w-3xl">
+                        <div class="sim-phone mx-auto md:mx-0 shrink-0">
+                            <div class="phone-notch"></div>
+                            <div id="sim-tw-1" class="sim-screen active">
+                                <div class="bg-tg-panel px-3 py-2 flex items-center gap-2 z-10 border-b border-gray-800 shrink-0">
+                                    <div class="w-6 h-6 bg-tg-blue rounded-full flex items-center justify-center text-white text-xs shrink-0"><i class="fa-solid fa-wallet"></i></div>
+                                    <div>
+                                        <div class="text-white text-[11px] font-semibold">Wallet</div>
+                                        <div class="text-tg-blue text-[9px] leading-tight">bot</div>
+                                    </div>
+                                </div>
+                                <div class="flex-1 p-3 flex flex-col justify-end gap-3 bg-[#0f1621] min-h-0 overflow-y-auto no-scrollbar">
+                                    <div data-i18n="sim_w_welcome" class="bg-tg-panel p-2.5 rounded-xl rounded-bl-sm text-white text-[10px] self-start max-w-[90%]">Welcome to Wallet!</div>
+                                    <div class="mt-1 mb-2 flex justify-center w-full shrink-0">
+                                        <div class="bg-tg-blue text-white font-medium py-2.5 px-3 rounded-xl text-[11px] w-full text-center shrink-0"><span data-i18n="sim_w_open">Open Wallet</span></div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="flex-1 p-3 flex flex-col justify-end gap-3 bg-[#0f1621] min-h-0 overflow-y-auto no-scrollbar">
-                                <div data-i18n="sim_w_welcome" class="bg-tg-panel p-2.5 rounded-xl rounded-bl-sm text-white text-[10px] self-start max-w-[90%]">Welcome to Wallet!</div>
-                                <div class="mt-1 mb-2 flex justify-center w-full shrink-0">
-                                    <div class="bg-tg-blue text-white font-medium py-2.5 px-3 rounded-xl text-[11px] w-full text-center shrink-0"><span data-i18n="sim_w_open">Open Wallet</span></div>
+                            <div id="sim-tw-2" class="sim-screen">
+                                <div class="bg-tg-panel px-3 py-2 flex justify-center z-10 border-b border-gray-800 shrink-0"><div data-i18n="sim_w_settings" class="text-white text-[12px] font-semibold">Settings</div></div>
+                                <div class="flex-1 p-3 flex flex-col gap-2 mt-1 min-h-0 overflow-y-auto no-scrollbar">
+                                    <div data-i18n="sim_w_features" class="text-tg-blue text-[10px] font-semibold uppercase ml-1">Features</div>
+                                    <div class="bg-tg-panel rounded-xl p-3 flex justify-between items-center border border-gray-700/50 shrink-0">
+                                        <div class="flex items-center gap-3"><div class="w-6 h-6 bg-blue-500 rounded-md text-white flex items-center justify-center text-[10px] shrink-0"><i class="fa-solid fa-gem"></i></div><span class="text-white text-[12px] font-medium leading-tight">TON Space Beta</span></div>
+                                        <div class="tg-toggle"></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div id="sim-tw-2" class="sim-screen">
-                            <div class="bg-tg-panel px-3 py-2 flex justify-center z-10 border-b border-gray-800 shrink-0"><div data-i18n="sim_w_settings" class="text-white text-[12px] font-semibold">Settings</div></div>
-                            <div class="flex-1 p-3 flex flex-col gap-2 mt-1 min-h-0 overflow-y-auto no-scrollbar">
-                                <div data-i18n="sim_w_features" class="text-tg-blue text-[10px] font-semibold uppercase ml-1">Features</div>
-                                <div class="bg-tg-panel rounded-xl p-3 flex justify-between items-center border border-gray-700/50 shrink-0">
-                                    <div class="flex items-center gap-3"><div class="w-6 h-6 bg-blue-500 rounded-md text-white flex items-center justify-center text-[10px] shrink-0"><i class="fa-solid fa-gem"></i></div><span class="text-white text-[12px] font-medium leading-tight">TON Space Beta</span></div>
-                                    <div class="tg-toggle"></div>
+                            <div id="sim-tw-3" class="sim-screen">
+                                <div class="bg-tg-panel px-3 py-2 flex justify-center z-10 border-b border-gray-800 shrink-0"><div data-i18n="sim_w_recovery" class="text-white text-[12px] font-semibold">Your Recovery Phrase</div></div>
+                                <div class="flex-1 p-3 flex flex-col items-center mt-1 min-h-0 overflow-y-auto no-scrollbar">
+                                    <p data-i18n="sim_w_write" class="text-[10px] text-gray-400 text-center mb-3 shrink-0">Write down these 24 words.</p>
+                                    <div class="grid grid-cols-2 gap-2 w-full mb-4 shrink-0">
+                                        <div class="bg-tg-panel rounded-md py-1.5 px-2 text-[10px] text-white border border-gray-700"><span class="text-gray-500 mr-1.5">1.</span> apple</div>
+                                        <div class="bg-tg-panel rounded-md py-1.5 px-2 text-[10px] text-white border border-gray-700"><span class="text-gray-500 mr-1.5">2.</span> bravo</div>
+                                        <div class="col-span-2 text-center text-gray-500 text-xs mt-1">. . .</div>
+                                    </div>
+                                    <div data-i18n="sim_w_saved" class="bg-tg-blue w-full py-2.5 rounded-xl text-center text-white text-[11px] font-medium mb-2 shrink-0 mt-auto">I saved them</div>
                                 </div>
                             </div>
-                        </div>
-                        <div id="sim-tw-3" class="sim-screen">
-                            <div class="bg-tg-panel px-3 py-2 flex justify-center z-10 border-b border-gray-800 shrink-0"><div data-i18n="sim_w_recovery" class="text-white text-[12px] font-semibold">Your Recovery Phrase</div></div>
-                            <div class="flex-1 p-3 flex flex-col items-center mt-1 min-h-0 overflow-y-auto no-scrollbar">
-                                <p data-i18n="sim_w_write" class="text-[10px] text-gray-400 text-center mb-3 shrink-0">Write down these 24 words.</p>
-                                <div class="grid grid-cols-2 gap-2 w-full mb-4 shrink-0">
-                                    <div class="bg-tg-panel rounded-md py-1.5 px-2 text-[10px] text-white border border-gray-700"><span class="text-gray-500 mr-1.5">1.</span> apple</div>
-                                    <div class="bg-tg-panel rounded-md py-1.5 px-2 text-[10px] text-white border border-gray-700"><span class="text-gray-500 mr-1.5">2.</span> bravo</div>
-                                    <div class="col-span-2 text-center text-gray-500 text-xs mt-1">. . .</div>
+                            <div id="sim-tw-4" class="sim-screen">
+                                <div class="bg-tg-panel px-3 py-3 flex justify-center z-10 border-b border-gray-800 shrink-0 shadow-md"><div data-i18n="sim_w_ready" class="text-white text-[13px] font-bold tracking-wide">Ready!</div></div>
+                                <div class="flex-1 p-5 flex flex-col items-center justify-center mt-1 min-h-0 relative bg-gradient-to-b from-[#1c242f] to-[#0f1621] overflow-y-auto no-scrollbar">
+                                    <div class="w-20 h-20 bg-gradient-to-br from-[#3390ec] to-[#1c74d4] rounded-[22px] flex items-center justify-center text-white text-4xl shadow-[0_10px_30px_rgba(51,144,236,0.3)] mb-6 transform rotate-3 hover:rotate-0 transition-transform border border-blue-400/20 shrink-0"><i class="fa-brands fa-telegram"></i></div>
+                                    <h3 data-i18n="sim_w_done_title" class="text-white text-[16px] font-bold mb-2">Setup Complete</h3>
+                                    <a href="https://t.me/wallet" target="_blank" class="w-full bg-[#2AABEE] hover:bg-[#2298D6] py-3.5 rounded-2xl flex items-center justify-center gap-2.5 text-white font-bold text-[14px] mt-4 shrink-0"><i class="fa-solid fa-wallet text-[12px]"></i> <span data-i18n="tw_btn_open">Open Wallet</span></a>
                                 </div>
-                                <div data-i18n="sim_w_saved" class="bg-tg-blue w-full py-2.5 rounded-xl text-center text-white text-[11px] font-medium mb-2 shrink-0 mt-auto">I saved them</div>
                             </div>
+                            <div class="phone-home-indicator"></div>
                         </div>
-                        <div id="sim-tw-4" class="sim-screen">
-                            <div class="bg-tg-panel px-3 py-3 flex justify-center z-10 border-b border-gray-800 shrink-0 shadow-md"><div data-i18n="sim_w_ready" class="text-white text-[13px] font-bold tracking-wide">Ready!</div></div>
-                            <div class="flex-1 p-5 flex flex-col items-center justify-center mt-1 min-h-0 relative bg-gradient-to-b from-[#1c242f] to-[#0f1621] overflow-y-auto no-scrollbar">
-                                <div class="w-20 h-20 bg-gradient-to-br from-[#3390ec] to-[#1c74d4] rounded-[22px] flex items-center justify-center text-white text-4xl shadow-[0_10px_30px_rgba(51,144,236,0.3)] mb-6 transform rotate-3 hover:rotate-0 transition-transform border border-blue-400/20 shrink-0"><i class="fa-brands fa-telegram"></i></div>
-                                <h3 data-i18n="sim_w_done_title" class="text-white text-[16px] font-bold mb-2">Setup Complete</h3>
-                                <a href="https://t.me/wallet" target="_blank" class="w-full bg-[#2AABEE] hover:bg-[#2298D6] py-3.5 rounded-2xl flex items-center justify-center gap-2.5 text-white font-bold text-[14px] mt-4 shrink-0"><i class="fa-solid fa-wallet text-[12px]"></i> <span data-i18n="tw_btn_open">Open Wallet</span></a>
-                            </div>
-                        </div>
-                        <div class="phone-home-indicator"></div>
-                    </div>
 
-                    <div class="bg-panel-bg w-full p-4 rounded-2xl border border-gray-800 shadow-xl flex flex-col justify-between relative shrink-0">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 id="tw-title" class="font-bold text-[13px] text-white">...</h3>
-                            <span class="text-gray-400 font-medium text-[10px]"><span data-i18n="step">Step</span> <span id="tw-step-num">1</span>/4</span>
-                        </div>
-                        <p id="tw-desc" class="text-[12px] text-gray-400 leading-snug min-h-[50px] mb-3">...</p>
-                        <div class="flex justify-between items-center pt-3 border-t border-gray-800/50">
-                            <button id="tw-btn-prev" onclick="navTutorial('wallet', -1)" class="text-gray-500 hover:text-white text-[11px] flex items-center gap-1 font-medium bg-transparent border-none cursor-pointer"><i class="fa-solid fa-chevron-left"></i> <span data-i18n="prev">Prev</span></button>
-                            <div class="flex gap-1.5" id="tw-dots-container"></div>
-                            <button id="tw-btn-next" onclick="navTutorial('wallet', 1)" class="text-blue-400 font-semibold text-[11px] flex items-center gap-1 bg-transparent border-none cursor-pointer"><span id="tw-next-text" data-i18n="next">Next</span> <i id="tw-next-icon" class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                        <div class="flex flex-col w-full max-w-md mx-auto md:mx-0">
+                            <div class="bg-panel-bg w-full p-4 rounded-2xl border border-gray-800 shadow-xl flex flex-col justify-between relative shrink-0">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h3 id="tw-title" class="font-bold text-[13px] text-white">...</h3>
+                                    <span class="text-gray-400 font-medium text-[10px]"><span data-i18n="step">Step</span> <span id="tw-step-num">1</span>/4</span>
+                                </div>
+                                <p id="tw-desc" class="text-[12px] text-gray-400 leading-snug min-h-[50px] mb-3">...</p>
+                                <div class="flex justify-between items-center pt-3 border-t border-gray-800/50">
+                                    <button id="tw-btn-prev" onclick="navTutorial('wallet', -1)" class="text-gray-500 hover:text-white text-[11px] flex items-center gap-1 font-medium bg-transparent border-none cursor-pointer"><i class="fa-solid fa-chevron-left"></i> <span data-i18n="prev">Prev</span></button>
+                                    <div class="flex gap-1.5" id="tw-dots-container"></div>
+                                    <button id="tw-btn-next" onclick="navTutorial('wallet', 1)" class="text-blue-400 font-semibold text-[11px] flex items-center gap-1 bg-transparent border-none cursor-pointer"><span id="tw-next-text" data-i18n="next">Next</span> <i id="tw-next-icon" class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                                </div>
+                            </div>
+                            <button onclick="showScreen('screen-payment')" class="mt-5 mx-auto text-gray-500 hover:text-white text-[12px] underline underline-offset-4 bg-transparent border-none cursor-pointer mb-2"><span data-i18n="close_tut">Close Tutorial</span></button>
                         </div>
                     </div>
-                    <button onclick="showScreen('screen-payment')" class="mt-5 text-gray-500 hover:text-white text-[12px] underline underline-offset-4 bg-transparent border-none cursor-pointer mb-2"><span data-i18n="close_tut">Close Tutorial</span></button>
                 </div>
             </div>
 
             <!-- 4. Tutorial USDT Section -->
             <div id="screen-tutorial-usdt" class="screen">
-                <div class="scroll-container no-scrollbar">
-                    <div class="bg-gray-800/50 border border-gray-700 text-gray-300 text-[10px] font-semibold uppercase tracking-widest px-3 py-1.5 rounded-full mb-3 flex items-center gap-2 shrink-0">
+                <div class="scroll-container no-scrollbar justify-center">
+                    <div class="bg-gray-800/50 border border-gray-700 text-gray-300 text-[10px] font-semibold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4 mx-auto flex items-center gap-2 shrink-0">
                         <i class="fa-solid fa-info-circle"></i> <span data-i18n="tut_badge">Tutorial - Simulation</span>
                     </div>
 
-                    <div class="sim-phone mb-4">
-                        <div class="phone-notch"></div>
-                        <div id="sim-tu-1" class="sim-screen active">
-                            <div class="flex-1 p-4 flex flex-col items-center pt-8 min-h-0 overflow-y-auto no-scrollbar">
-                                <div data-i18n="sim_u_total" class="text-gray-400 text-[11px] mb-1 font-medium mt-4 shrink-0">Total Balance</div>
-                                <div class="text-white text-3xl font-bold mb-6 tracking-tight shrink-0">$0.00</div>
-                                <div class="flex justify-center gap-3 w-full shrink-0">
-                                    <div class="flex-1 bg-tg-blue rounded-[12px] py-2 flex items-center justify-center gap-1.5"><i class="fa-solid fa-plus text-white text-[10px]"></i> <span data-i18n="sim_u_add" class="text-white text-[10px]">Add Crypto</span></div>
-                                    <div class="flex-1 bg-tg-panel rounded-[12px] py-2 flex items-center justify-center gap-1.5 opacity-60 border border-gray-700"><span data-i18n="sim_u_send" class="text-white text-[10px]">Send</span></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="sim-tu-2" class="sim-screen">
-                            <div class="flex-1 bg-black/60 relative backdrop-blur-md min-h-0">
-                                <div class="absolute bottom-0 w-full bg-tg-panel rounded-t-2xl p-4 flex flex-col gap-3">
-                                    <div class="w-8 h-1 bg-gray-600 rounded-full mx-auto mb-1 shrink-0"></div>
-                                    <div data-i18n="sim_u_add" class="text-white font-semibold text-[13px] text-center mb-1 shrink-0">Add Crypto</div>
-                                    <div class="flex items-center gap-3 bg-[#1c242f] p-3 rounded-xl border border-gray-700/50 shrink-0">
-                                        <div class="w-8 h-8 rounded-full bg-tg-blue/10 flex items-center justify-center shrink-0"><i class="fa-regular fa-credit-card text-tg-blue text-[12px]"></i></div>
-                                        <div><div data-i18n="sim_u_bank" class="text-white text-[12px]">Bank Card</div><div data-i18n="sim_u_fastest" class="text-gray-400 text-[10px]">Fastest method</div></div>
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-6 w-full max-w-3xl">
+                        <div class="sim-phone mx-auto md:mx-0 shrink-0">
+                            <div class="phone-notch"></div>
+                            <div id="sim-tu-1" class="sim-screen active">
+                                <div class="flex-1 p-4 flex flex-col items-center pt-8 min-h-0 overflow-y-auto no-scrollbar">
+                                    <div data-i18n="sim_u_total" class="text-gray-400 text-[11px] mb-1 font-medium mt-4 shrink-0">Total Balance</div>
+                                    <div class="text-white text-3xl font-bold mb-6 tracking-tight shrink-0">$0.00</div>
+                                    <div class="flex justify-center gap-3 w-full shrink-0">
+                                        <div class="flex-1 bg-tg-blue rounded-[12px] py-2 flex items-center justify-center gap-1.5"><i class="fa-solid fa-plus text-white text-[10px]"></i> <span data-i18n="sim_u_add" class="text-white text-[10px]">Add Crypto</span></div>
+                                        <div class="flex-1 bg-tg-panel rounded-[12px] py-2 flex items-center justify-center gap-1.5 opacity-60 border border-gray-700"><span data-i18n="sim_u_send" class="text-white text-[10px]">Send</span></div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div id="sim-tu-3" class="sim-screen">
-                            <div class="bg-tg-panel px-4 py-3 flex items-center z-10 border-b border-gray-800 shrink-0"><i class="fa-solid fa-arrow-left text-white text-[12px]"></i><div data-i18n="sim_u_choose" class="text-white text-[13px] font-semibold ml-4">Choose Crypto</div></div>
-                            <div class="flex-1 p-3 flex flex-col gap-2 relative pt-4 min-h-0 overflow-y-auto no-scrollbar">
-                                <div class="bg-tg-panel p-3 rounded-xl flex items-center gap-3 border border-gray-800"><img src="https://cryptologos.cc/logos/tether-usdt-logo.png?v=025" class="w-7 h-7 shrink-0"><div class="flex-1"><div class="text-white text-[12px]">Tether</div><div class="text-gray-400 text-[10px]">USDT</div></div></div>
-                            </div>
-                        </div>
-                        <div id="sim-tu-4" class="sim-screen">
-                            <div class="bg-tg-panel px-4 py-3 flex items-center z-10 border-b border-gray-800 shrink-0"><div data-i18n="sim_u_buy" class="text-white text-[13px] font-semibold ml-4">Buy Crypto</div></div>
-                            <div class="flex-1 p-4 flex flex-col items-center pt-6 relative min-h-0">
-                                <div class="bg-tg-bg border border-gray-800 w-full rounded-2xl p-4 flex flex-col items-center shrink-0">
-                                    <div class="text-white text-4xl font-bold flex items-baseline gap-1.5 mb-2"><span class="price-display text-white">94</span> <span class="text-[12px] text-gray-400">USDT</span></div>
-                                </div>
-                                <div class="mt-auto w-full pt-4 shrink-0"><div data-i18n="sim_u_continue" class="bg-tg-blue w-full py-3 rounded-xl text-center text-white text-[12px] font-semibold">Continue</div></div>
-                            </div>
-                        </div>
-                        <div id="sim-tu-5" class="sim-screen">
-                            <div class="bg-tg-panel px-4 py-3 flex items-center z-10 border-b border-gray-800 shrink-0"><div data-i18n="sim_u_buy" class="text-white text-[13px] font-semibold ml-4">Buy Crypto</div></div>
-                            <div class="flex-1 p-4 flex flex-col items-center pt-6 relative min-h-0">
-                                <div class="bg-tg-bg border border-gray-800 w-full rounded-2xl p-4 flex flex-col items-center shrink-0">
-                                    <div class="text-white text-4xl font-bold flex items-baseline gap-1.5 mb-2"><span class="text-white">1</span> <span class="text-[12px] text-gray-400">TON</span></div>
-                                </div>
-                                <div class="mt-auto w-full pt-4 shrink-0"><div data-i18n="sim_u_continue" class="bg-tg-blue w-full py-3 rounded-xl text-center text-white text-[12px] font-semibold">Continue</div></div>
-                            </div>
-                        </div>
-                        <div id="sim-tu-6" class="sim-screen">
-                            <div class="flex-1 bg-black/70 relative backdrop-blur-md flex flex-col justify-end pb-3 min-h-0">
-                                <div class="bg-tg-panel rounded-2xl p-4 w-[92%] mx-auto flex flex-col gap-3 border border-gray-700">
-                                    <div data-i18n="sim_u_confirm_tx" class="text-white font-semibold text-[13px] text-center shrink-0">Confirm Transaction</div>
-                                    <div class="bg-[#1c242f] rounded-xl p-3 border border-gray-700/50 flex flex-col gap-2 shrink-0">
-                                        <div class="flex justify-between items-center"><span data-i18n="sim_u_amount" class="text-gray-400 text-[10px]">Amount</span><span class="text-white font-medium text-[11px]"><span class="price-display">94</span> USDT</span></div>
+                            <div id="sim-tu-2" class="sim-screen">
+                                <div class="flex-1 bg-black/60 relative backdrop-blur-md min-h-0">
+                                    <div class="absolute bottom-0 w-full bg-tg-panel rounded-t-2xl p-4 flex flex-col gap-3">
+                                        <div class="w-8 h-1 bg-gray-600 rounded-full mx-auto mb-1 shrink-0"></div>
+                                        <div data-i18n="sim_u_add" class="text-white font-semibold text-[13px] text-center mb-1 shrink-0">Add Crypto</div>
+                                        <div class="flex items-center gap-3 bg-[#1c242f] p-3 rounded-xl border border-gray-700/50 shrink-0">
+                                            <div class="w-8 h-8 rounded-full bg-tg-blue/10 flex items-center justify-center shrink-0"><i class="fa-regular fa-credit-card text-tg-blue text-[12px]"></i></div>
+                                            <div><div data-i18n="sim_u_bank" class="text-white text-[12px]">Bank Card</div><div data-i18n="sim_u_fastest" class="text-gray-400 text-[10px]">Fastest method</div></div>
+                                        </div>
                                     </div>
-                                    <div class="mt-1 shrink-0"><div data-i18n="sim_u_confirm_pay" class="bg-tg-blue w-full py-2.5 rounded-xl text-center text-white text-[12px] font-semibold">Confirm Payment</div></div>
                                 </div>
                             </div>
+                            <div id="sim-tu-3" class="sim-screen">
+                                <div class="bg-tg-panel px-4 py-3 flex items-center z-10 border-b border-gray-800 shrink-0"><i class="fa-solid fa-arrow-left text-white text-[12px]"></i><div data-i18n="sim_u_choose" class="text-white text-[13px] font-semibold ml-4">Choose Crypto</div></div>
+                                <div class="flex-1 p-3 flex flex-col gap-2 relative pt-4 min-h-0 overflow-y-auto no-scrollbar">
+                                    <div class="bg-tg-panel p-3 rounded-xl flex items-center gap-3 border border-gray-800"><img src="https://cryptologos.cc/logos/tether-usdt-logo.png?v=025" alt="Tether" class="w-7 h-7 shrink-0"><div class="flex-1"><div class="text-white text-[12px]">Tether</div><div class="text-gray-400 text-[10px]">USDT</div></div></div>
+                                </div>
+                            </div>
+                            <div id="sim-tu-4" class="sim-screen">
+                                <div class="bg-tg-panel px-4 py-3 flex items-center z-10 border-b border-gray-800 shrink-0"><div data-i18n="sim_u_buy" class="text-white text-[13px] font-semibold ml-4">Buy Crypto</div></div>
+                                <div class="flex-1 p-4 flex flex-col items-center pt-6 relative min-h-0">
+                                    <div class="bg-tg-bg border border-gray-800 w-full rounded-2xl p-4 flex flex-col items-center shrink-0">
+                                        <div class="text-white text-4xl font-bold flex items-baseline gap-1.5 mb-2"><span class="price-display text-white">94</span> <span class="text-[12px] text-gray-400">USDT</span></div>
+                                    </div>
+                                    <div class="mt-auto w-full pt-4 shrink-0"><div data-i18n="sim_u_continue" class="bg-tg-blue w-full py-3 rounded-xl text-center text-white text-[12px] font-semibold">Continue</div></div>
+                                </div>
+                            </div>
+                            <div id="sim-tu-5" class="sim-screen">
+                                <div class="bg-tg-panel px-4 py-3 flex items-center z-10 border-b border-gray-800 shrink-0"><div data-i18n="sim_u_buy" class="text-white text-[13px] font-semibold ml-4">Buy Crypto</div></div>
+                                <div class="flex-1 p-4 flex flex-col items-center pt-6 relative min-h-0">
+                                    <div class="bg-tg-bg border border-gray-800 w-full rounded-2xl p-4 flex flex-col items-center shrink-0">
+                                        <div class="text-white text-4xl font-bold flex items-baseline gap-1.5 mb-2"><span class="text-white">1</span> <span class="text-[12px] text-gray-400">TON</span></div>
+                                    </div>
+                                    <div class="mt-auto w-full pt-4 shrink-0"><div data-i18n="sim_u_continue" class="bg-tg-blue w-full py-3 rounded-xl text-center text-white text-[12px] font-semibold">Continue</div></div>
+                                </div>
+                            </div>
+                            <div id="sim-tu-6" class="sim-screen">
+                                <div class="flex-1 bg-black/70 relative backdrop-blur-md flex flex-col justify-end pb-3 min-h-0">
+                                    <div class="bg-tg-panel rounded-2xl p-4 w-[92%] mx-auto flex flex-col gap-3 border border-gray-700">
+                                        <div data-i18n="sim_u_confirm_tx" class="text-white font-semibold text-[13px] text-center shrink-0">Confirm Transaction</div>
+                                        <div class="bg-[#1c242f] rounded-xl p-3 border border-gray-700/50 flex flex-col gap-2 shrink-0">
+                                            <div class="flex justify-between items-center"><span data-i18n="sim_u_amount" class="text-gray-400 text-[10px]">Amount</span><span class="text-white font-medium text-[11px]"><span class="price-display">94</span> USDT</span></div>
+                                        </div>
+                                        <div class="mt-1 shrink-0"><div data-i18n="sim_u_confirm_pay" class="bg-tg-blue w-full py-2.5 rounded-xl text-center text-white text-[12px] font-semibold">Confirm Payment</div></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="phone-home-indicator"></div>
                         </div>
-                        <div class="phone-home-indicator"></div>
-                    </div>
 
-                    <div class="bg-panel-bg w-full p-4 rounded-2xl border border-gray-800 shadow-xl flex flex-col justify-between relative shrink-0">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 id="tu-title" class="font-bold text-[13px] text-white">...</h3>
-                            <span class="text-gray-400 font-medium text-[10px]"><span data-i18n="step">Step</span> <span id="tu-step-num">1</span>/6</span>
-                        </div>
-                        <p id="tu-desc" class="text-[12px] text-gray-400 leading-snug min-h-[55px] mb-3">...</p>
-                        <div class="flex justify-between items-center pt-3 border-t border-gray-800/50">
-                            <button id="tu-btn-prev" onclick="navTutorial('usdt', -1)" class="text-gray-500 hover:text-white text-[11px] flex items-center gap-1 font-medium bg-transparent border-none cursor-pointer"><i class="fa-solid fa-chevron-left"></i> <span data-i18n="prev">Prev</span></button>
-                            <div class="flex gap-1.5" id="tu-dots-container"></div>
-                            <button id="tu-btn-next" onclick="navTutorial('usdt', 1)" class="text-blue-400 font-semibold text-[11px] flex items-center gap-1 bg-transparent border-none cursor-pointer"><span id="tu-next-text" data-i18n="next">Next</span> <i id="tu-next-icon" class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                        <div class="flex flex-col w-full max-w-md mx-auto md:mx-0">
+                            <div class="bg-panel-bg w-full p-4 rounded-2xl border border-gray-800 shadow-xl flex flex-col justify-between relative shrink-0">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h3 id="tu-title" class="font-bold text-[13px] text-white">...</h3>
+                                    <span class="text-gray-400 font-medium text-[10px]"><span data-i18n="step">Step</span> <span id="tu-step-num">1</span>/6</span>
+                                </div>
+                                <p id="tu-desc" class="text-[12px] text-gray-400 leading-snug min-h-[55px] mb-3">...</p>
+                                <div class="flex justify-between items-center pt-3 border-t border-gray-800/50">
+                                    <button id="tu-btn-prev" onclick="navTutorial('usdt', -1)" class="text-gray-500 hover:text-white text-[11px] flex items-center gap-1 font-medium bg-transparent border-none cursor-pointer"><i class="fa-solid fa-chevron-left"></i> <span data-i18n="prev">Prev</span></button>
+                                    <div class="flex gap-1.5" id="tu-dots-container"></div>
+                                    <button id="tu-btn-next" onclick="navTutorial('usdt', 1)" class="text-blue-400 font-semibold text-[11px] flex items-center gap-1 bg-transparent border-none cursor-pointer"><span id="tu-next-text" data-i18n="next">Next</span> <i id="tu-next-icon" class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                                </div>
+                            </div>
+                            <button onclick="showScreen('screen-payment')" class="mt-5 mx-auto text-gray-500 hover:text-white text-[12px] underline underline-offset-4 bg-transparent border-none cursor-pointer mb-2"><span data-i18n="close_tut">Close Tutorial</span></button>
                         </div>
                     </div>
-                    <button onclick="showScreen('screen-payment')" class="mt-5 text-gray-500 hover:text-white text-[12px] underline underline-offset-4 bg-transparent border-none cursor-pointer mb-2"><span data-i18n="close_tut">Close Tutorial</span></button>
                 </div>
             </div>
         </div>
@@ -937,49 +944,50 @@
 
     <!-- Security Modal -->
     <div id="security-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center z-[100] p-4">
-        <div class="bg-panel-bg border border-gray-800 rounded-3xl p-5 w-full max-w-sm relative overflow-hidden shadow-2xl modal-enter max-h-[90vh] overflow-y-auto">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl"></div>
-            <div class="relative z-10">
-                <div class="flex justify-between items-center mb-5 sticky top-0 bg-panel-bg pb-3 z-20 border-b border-gray-800">
-                    <h3 data-i18n="sec_title" class="text-base font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-shield-halved text-gray-400"></i> Security Info
-                    </h3>
-                    <button onclick="closeSecurityModal()" class="text-gray-500 hover:text-white bg-transparent border-none cursor-pointer"><i class="fa-solid fa-xmark text-xl"></i></button>
-                </div>
-                <div class="space-y-5">
-                    <div class="flex gap-3 items-start">
-                        <div class="mt-0.5 w-8 h-8 rounded-full bg-gray-800 text-gray-300 flex items-center justify-center shrink-0 text-sm"><i class="fa-solid fa-globe"></i></div>
-                        <div>
-                            <h4 data-i18n="sec_lock_title" class="font-bold text-white text-[13px] mb-1">Global Web 3.0 Payments</h4>
-                            <p data-i18n="sec_lock_desc" class="text-[12px] text-gray-400 leading-snug">With Blockchain, you pay from anywhere in the world without borders.</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-3 items-start">
-                        <div class="mt-0.5 w-8 h-8 rounded-full bg-gray-800 text-gray-300 flex items-center justify-center shrink-0 text-sm"><i class="fa-solid fa-dollar-sign"></i></div>
-                        <div>
-                            <h4 data-i18n="sec_usdt_title" class="font-bold text-white text-[13px] mb-1">What is USDT?</h4>
-                            <p data-i18n="sec_usdt_desc" class="text-[12px] text-gray-400 leading-snug">It's the 'digital dollar'. 1 USDT is always worth exactly 1 US Dollar.</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-3 items-start bg-gray-800/30 p-3 rounded-xl border border-gray-700/50">
-                        <div class="mt-0.5 w-8 h-8 rounded-full bg-gray-800 text-gray-300 flex items-center justify-center shrink-0 text-sm"><i class="fa-solid fa-gas-pump"></i></div>
-                        <div>
-                            <h4 data-i18n="sec_gas_title" class="font-bold text-white text-[13px] mb-1">Why do I also need Toncoin (TON)?</h4>
-                            <p data-i18n="sec_gas_desc" class="text-[12px] text-gray-300 leading-snug">Every transaction requires a tiny 'transport fee' (Gas) that is paid <b>only in Toncoin (TON)</b>.</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-3 items-start">
-                        <div class="mt-0.5 w-8 h-8 rounded-full bg-gray-800 text-gray-300 flex items-center justify-center shrink-0 text-sm"><i class="fa-brands fa-telegram"></i></div>
-                        <div>
-                            <h4 data-i18n="sec_tg_title" class="font-bold text-white text-[13px] mb-1">Is it secure?</h4>
-                            <p data-i18n="sec_tg_desc" class="text-[12px] text-gray-400 leading-snug">Absolutely. The Wallet is an official Telegram feature.</p>
-                        </div>
-                    </div>
-                </div>
-                <button onclick="closeSecurityModal()" class="w-full mt-6 bg-white text-black font-bold py-3.5 rounded-xl text-[14px] active:scale-95 cursor-pointer border-none">
-                    <span data-i18n="close_understood">I understand, close</span>
-                </button>
+        <div class="bg-panel-bg border border-gray-800 rounded-3xl p-5 w-full max-w-sm relative overflow-hidden shadow-2xl modal-enter max-h-[90vh] flex flex-col">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="flex justify-between items-center mb-5 shrink-0 border-b border-gray-800 pb-3">
+                <h3 data-i18n="sec_title" class="text-base font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-gray-400"></i> Security Info
+                </h3>
+                <button onclick="closeSecurityModal()" class="text-gray-500 hover:text-white bg-transparent border-none cursor-pointer"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
+            
+            <div class="space-y-5 overflow-y-auto no-scrollbar flex-1 pr-1">
+                <div class="flex gap-3 items-start">
+                    <div class="mt-0.5 w-8 h-8 rounded-full bg-gray-800 text-gray-300 flex items-center justify-center shrink-0 text-sm"><i class="fa-solid fa-globe"></i></div>
+                    <div>
+                        <h4 data-i18n="sec_lock_title" class="font-bold text-white text-[13px] mb-1">Global Web 3.0 Payments</h4>
+                        <p data-i18n="sec_lock_desc" class="text-[12px] text-gray-400 leading-snug">With Blockchain, you pay from anywhere in the world without borders.</p>
+                    </div>
+                </div>
+                <div class="flex gap-3 items-start">
+                    <div class="mt-0.5 w-8 h-8 rounded-full bg-gray-800 text-gray-300 flex items-center justify-center shrink-0 text-sm"><i class="fa-solid fa-dollar-sign"></i></div>
+                    <div>
+                        <h4 data-i18n="sec_usdt_title" class="font-bold text-white text-[13px] mb-1">What is USDT?</h4>
+                        <p data-i18n="sec_usdt_desc" class="text-[12px] text-gray-400 leading-snug">It's the 'digital dollar'. 1 USDT is always worth exactly 1 US Dollar.</p>
+                    </div>
+                </div>
+                <div class="flex gap-3 items-start bg-gray-800/30 p-3 rounded-xl border border-gray-700/50">
+                    <div class="mt-0.5 w-8 h-8 rounded-full bg-gray-800 text-gray-300 flex items-center justify-center shrink-0 text-sm"><i class="fa-solid fa-gas-pump"></i></div>
+                    <div>
+                        <h4 data-i18n="sec_gas_title" class="font-bold text-white text-[13px] mb-1">Why do I also need Toncoin (TON)?</h4>
+                        <p data-i18n="sec_gas_desc" class="text-[12px] text-gray-300 leading-snug">Every transaction requires a tiny 'transport fee' (Gas) that is paid <b>only in Toncoin (TON)</b>.</p>
+                    </div>
+                </div>
+                <div class="flex gap-3 items-start">
+                    <div class="mt-0.5 w-8 h-8 rounded-full bg-gray-800 text-gray-300 flex items-center justify-center shrink-0 text-sm"><i class="fa-brands fa-telegram"></i></div>
+                    <div>
+                        <h4 data-i18n="sec_tg_title" class="font-bold text-white text-[13px] mb-1">Is it secure?</h4>
+                        <p data-i18n="sec_tg_desc" class="text-[12px] text-gray-400 leading-snug">Absolutely. The Wallet is an official Telegram feature.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <button onclick="closeSecurityModal()" class="w-full mt-4 bg-white text-black font-bold py-3.5 rounded-xl text-[14px] active:scale-95 cursor-pointer border-none shrink-0">
+                <span data-i18n="close_understood">I understand, close</span>
+            </button>
         </div>
     </div>
 
@@ -1024,6 +1032,7 @@
         let currentBasePrice = 94; 
         let currentDiscountedPrice = 94;
         let isPromoApplied = false;
+        let currentPlanName = "Starter";
         
         let currentLang = 'en'; 
         const supportedLangs = ['en', 'es', 'pt', 'it']; // Strict order requested
@@ -1056,7 +1065,7 @@
                 legal_18: "🔞 Gambling is strictly prohibited for minors under 18 years of age. Trading involves risk of loss. Play responsibly.",
                 cta_title: "Begin your journey today", cta_button: "FIRST LESSON FREE", no_card_req: "NO CREDIT CARD REQUIRED",
 
-                offer_title: "Checkout", expires_in: "OFFER VALID FOR 24 HOURS:", lock_price: "PROCEED TO PAYMENT",
+                plan: "PLAN", offer_title: "Checkout", expires_in: "OFFER VALID FOR 24 HOURS:", lock_price: "PROCEED TO PAYMENT",
                 no_payment: "Secure Web3 Payment", back_home: "BACK TO HOME", days_access: "Days of continuous access",
                 pl_subtitle: "Complete payment to unlock the Premium Room:", vp_1: "Access to Zero To Hero Academy",
                 vp_2: "Access to Premium Telegram Signals Room", vp_3: "No lock-in contract", pay_now: "UNLOCK ACCESS NOW",
@@ -1124,7 +1133,7 @@
                 legal_18: "🔞 El juego está estrictamente prohibido para menores de 18 años. El trading implica riesgo de pérdida. Juega responsablemente.",
                 cta_title: "Comienza tu viaje hoy", cta_button: "PRIMERA LECCIÓN GRATIS", no_card_req: "NO SE REQUIERE TARJETA",
 
-                offer_title: "Caja", expires_in: "OFERTA VÁLIDA POR 24 HORAS:", lock_price: "PROCEDER AL PAGO",
+                plan: "PLAN", offer_title: "Caja", expires_in: "OFERTA VÁLIDA POR 24 HORAS:", lock_price: "PROCEDER AL PAGO",
                 no_payment: "Pago Seguro Web3", back_home: "VOLVER AL INICIO", days_access: "Días de acceso continuo",
                 pl_subtitle: "Completa el pago para desbloquear la Premium Room:", vp_1: "Acceso a la Zero To Hero Academy",
                 vp_2: "Acceso a la Sala de Señales Premium de Telegram", vp_3: "Sin permanencia", pay_now: "DESBLOQUEAR ACCESO AHORA",
@@ -1192,7 +1201,7 @@
                 legal_18: "🔞 O jogo é estritamente proibido a menores de 18 anos. A negociação envolve risco de perda. Jogue com responsabilidade.",
                 cta_title: "Comece a sua jornada hoje", cta_button: "PRIMEIRA AULA GRÁTIS", no_card_req: "NÃO REQUER CARTÃO",
 
-                offer_title: "Caixa", expires_in: "OFERTA VÁLIDA POR 24 HORAS:", lock_price: "PROSSEGUIR PARA PAGAMENTO",
+                plan: "PLANO", offer_title: "Caixa", expires_in: "OFERTA VÁLIDA POR 24 HORAS:", lock_price: "PROSSEGUIR PARA PAGAMENTO",
                 no_payment: "Pagamento Seguro Web3", back_home: "VOLTAR AO INÍCIO", days_access: "Dias de acesso contínuo",
                 pl_subtitle: "Conclua o pagamento para desbloquear a Premium Room:", vp_1: "Acesso à Zero To Hero Academy",
                 vp_2: "Acesso à Sala de Sinais Premium do Telegram", vp_3: "Sem fidelidade", pay_now: "DESBLOQUEAR ACESSO AGORA",
@@ -1260,7 +1269,7 @@
                 legal_18: "🔞 Il gioco d'azzardo è severamente vietato ai minori di 18 anni. Il trading comporta rischi di perdita del capitale. Gioca responsabilmente.",
                 cta_title: "Inizia subito il tuo percorso", cta_button: "PRIMA LEZIONE GRATIS", no_card_req: "NESSUNA CARTA RICHIESTA",
 
-                offer_title: "Checkout", expires_in: "OFFERTA VALIDA X 24 ORE:", lock_price: "PROCEDI AL PAGAMENTO",
+                plan: "PIANO", offer_title: "Checkout", expires_in: "OFFERTA VALIDA X 24 ORE:", lock_price: "PROCEDI AL PAGAMENTO",
                 no_payment: "Pagamento Sicuro Web3", back_home: "TORNA ALLA HOME", days_access: "Giorni di accesso continuo",
                 pl_subtitle: "Completa il pagamento per sbloccare la Premium Room:", vp_1: "Accesso alla Zero To Hero Academy",
                 vp_2: "Accesso alla Sala Segnali Telegram Premium", vp_3: "Nessun vincolo", pay_now: "SBLOCCA ACCESSO ORA",
@@ -1287,7 +1296,7 @@
                 sim_w_features: "Funzionalità", sim_w_recovery: "Frase di Recupero", sim_w_write: "Trascrivi queste 24 parole nell'ordine esatto.",
                 sim_w_saved: "Le ho salvate", sim_w_ready: "Pronto!", sim_w_done_title: "Configurazione Completata", sim_w_done_desc: "Hai salvato correttamente il wallet. Custodisci la frase al sicuro.",
                 sim_u_total: "Saldo Totale", sim_u_add: "Aggiungi Crypto", sim_u_send: "Invia", sim_u_bank: "Carta Bancaria", sim_u_fastest: "Metodo più veloce",
-                sim_u_p2p: "Mercado P2P", sim_u_local: "Metodi di pagamento locali", sim_u_choose: "Scegli Crypto", sim_u_buy: "Compra Crypto",
+                sim_u_p2p: "Mercato P2P", sim_u_local: "Metodi di pagamento locali", sim_u_choose: "Scegli Crypto", sim_u_buy: "Compra Crypto",
                 sim_u_continue: "Continua", sim_u_confirm_tx: "Conferma Transazione", sim_u_amount: "Importo", sim_u_network_fee: "Costo di Rete",
                 sim_u_to_address: "Indirizzo Destinatario", sim_u_confirm_pay: "Conferma Pagamento",
                 tw_t1: "1. Apri @wallet", tw_d1: "Cerca <b>@wallet</b> nella barra di ricerca in alto. Clicca <b>Avvia</b> e poi premi sul pulsante <b>Open Wallet</b> o digita sul browser: <a href='https://t.me/wallet' target='_blank' class='text-tg-blue underline'>https://t.me/wallet</a>.",
@@ -1318,10 +1327,12 @@
         // CHECKOUT LOGIC & SPA
         // -------------------------
         function startCheckout(planName, priceUsdt, days) {
+            currentPlanName = planName;
             currentBasePrice = priceUsdt;
             currentDiscountedPrice = isPromoApplied ? (currentBasePrice * 0.5) : currentBasePrice;
 
-            document.getElementById('checkout-plan-name').innerText = planName.toUpperCase() + " PLAN";
+            const planTranslation = translations[currentLang]['plan'] || "PLAN";
+            document.getElementById('checkout-plan-name').innerText = planTranslation + " " + planName.toUpperCase();
             document.getElementById('checkout-duration').innerText = days + " " + translations[currentLang]['days_access'];
             
             updatePriceDisplay();
@@ -1574,6 +1585,12 @@
             
             // Re-render prices dynamically with the correct language specific features if needed
             updatePriceDisplay();
+
+            // Refresh Plan name correctly if in checkout
+            if (document.getElementById('checkout-container').classList.contains('flex')) {
+                const planTranslation = translations[currentLang]['plan'] || "PLAN";
+                document.getElementById('checkout-plan-name').innerText = planTranslation + " " + currentPlanName.toUpperCase();
+            }
         }
 
         function setLang(lang) {
@@ -1606,17 +1623,8 @@
             }, 1000);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const revealObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('revealed');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
-            document.querySelectorAll('.lazy-reveal').forEach(el => revealObserver.observe(el));
-
+        // Initialize immediately to prevent Flash of Untranslated Content
+        (function initLanguage() {
             try {
                 const saved = localStorage.getItem('bx_lang');
                 const systemLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
@@ -1629,7 +1637,21 @@
                 }
             } catch(e) {}
             
-            setLang(currentLang);
+            // Apply straight away for initial load
+            applyTranslations();
+        })();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+            document.querySelectorAll('.lazy-reveal').forEach(el => revealObserver.observe(el));
+
             checkForReferralInURL();
             startFlashTimer(24 * 60 * 60);
 
