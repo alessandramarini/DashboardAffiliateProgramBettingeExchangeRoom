@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://flagcdn.com" crossorigin>
 
   <style>
-    /* Scorrimento Naturale e Barra Laterale Abilitata */
+    /* Scorrimento Naturale della pagina abilitato */
     body, html {
       margin: 0; padding: 0;
       background-color: #09090b !important; 
@@ -26,8 +26,7 @@
       width: 100%;
       min-height: 100vh;
       overflow-x: hidden;
-      overflow-y: auto; /* Abilita la barra laterale di scorrimento */
-      overscroll-behavior-y: none;
+      overflow-y: auto; /* Abilita lo scroll naturale verticale */
     }
     
     #root { 
@@ -67,7 +66,7 @@
     @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     
-    /* Scrollbars visibili ed eleganti */
+    /* Scrollbars visibili ed eleganti per tutta la pagina */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: #09090b; }
     ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
@@ -114,7 +113,7 @@
 
   <script type="text/babel">
     const { useState, useEffect, useCallback, useRef, useMemo } = React;
-    const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } = window.Recharts; 
+    const { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } = window.Recharts; 
 
     // Lucide Icon Component wrapper
     const Icon = ({ name, size = 24, className = '', ...props }) => {
@@ -165,7 +164,35 @@
         realtime_leaderboard: "Live Leaderboard", bot_managed: "Auto-updated by Python Bot", training_setup: "Training & Setup", signals_access: "Premium Signals", merch_store: "Merch Store",
         access_denied: "ACCESS DENIED", sub_expired: "Your subscription has expired or no active plan was found on this account.", renew_btn: "RENEW SUBSCRIPTION", demo_bypass: "ADMIN LOGIN",
         you_tag: "(YOU)", docs_short: "Docs", deposit_short: "Deposit", audit_short: "Audit", top_10_short: "Top 10",
-        whitepaper: "Whitepaper", smart_contract: "Smart Contract", contract_address: "Contract Address", read_docs: "Read Documentation"
+        whitepaper: "Blueprint", smart_contract: "Smart Contract", contract_address: "Contract Address", read_docs: "Read Documentation",
+        // Blueprint Translations
+        nav_arch: "Architecture", nav_revenue: "Revenue Split", nav_security: "Zero-Trust Auth", nav_prompt: "Dev_Spec.md",
+        wp_title: "Web3 System Architecture V3", wp_v: "Viral Loop Model • Security Addon",
+        wp_sec1_title: "1. Architecture Mandate", wp_sec1_desc: "Strict separation: Off-Chain (Python Backend + DB) is the absolute Source of Truth. On-Chain (TON Smart Contract) acts strictly as a Dumb Vault.",
+        wp_academy_title: "Identity Engine", wp_academy_desc: "Telegram_ID is the immutable Primary Key. Downlines are permanently attached.",
+        wp_signals_desc: "1 Credit = 24 Hours. Expiration updates automatically upon payment.",
+        wp_sec4_title: "4. The Infinity Viral Loop", wp_sec4_desc: "The core growth engine. A user clicks a Promoter's link. To unlock the platform, they must: 1. Connect Wallet 2. Join Telegram 3. Invite 2 Friends. Upon completion, all 3 receive 7 Days Free Access. Zero cost to the company, infinite lead generation. Post-trial, FOMO drives high-conversion upgrades at the discounted Promoter Price.",
+        wp_promo_title: "Public Web Price", wp_affiliate_title: "Promoter Link Price (-50%)",
+        wp_sec2_title: "2. Revenue Split Engine", wp_sec2_desc: "Revenue is split automatically off-chain based on the source of the transaction (Referred vs Direct).",
+        scenario_a: "SCENARIO A: Referred Sales (3-Tier)", scenario_b: "SCENARIO B: Direct Web Sales",
+        level_1: "Level 1 (Direct)", level_2: "Level 2 (Mentor)", level_3: "Level 3 (Master)", 
+        treasury_comp: "Treasury (Company)", events_pool_top10: "Top 10 Events Pool", marketing_pool: "Marketing & Dev Fund",
+        wp_sec3_title: "3. Top 10 Weekly Pool", 
+        wp_sec3_a_title: "A. Allocation", wp_sec3_a_desc: "10% of promoter sales flows into this pool dedicated to the week's 10 best sellers.",
+        wp_sec3_b_title: "B. Weekly Liquidation", wp_sec3_b_desc: "Liquidated every Sunday (23:59 UTC), divided among the Top 10 proportional to their volume. Ties are broken by chronological order of sales.",
+        wp_sec3_c_title: "C. The Psychology", wp_sec3_c_desc: "Incentivizes elite competition, rewarding absolute excellence and speed of execution.",
+        wp_tech_1_title: "1. On-Chain Signatures", wp_tech_1_desc: "claim() MUST verify ED25519 signature from backend: Hash(Amount, Wallet, Nonce).",
+        wp_tech_2_title: "2. Strict Deduplication", wp_tech_2_desc: "DB enforces UNIQUE constraint on TON tx_hash.", 
+        wp_tech_3_title: "3. Wallet Change Time-Lock", wp_tech_3_desc: "Updating Active_Wallet triggers a 72-hour freeze on withdrawals.",
+        wp_tech_4_title: "4. Admin Thresholds", wp_tech_4_desc: "Payouts > 1,000 USDT get flagged as Pending_Manual_Review.", 
+        wp_tech_5_title: "5. Offline Cold Storage", wp_tech_5_desc: "Smart contract has an emergency sweep function to move funds to a hardware wallet.",
+        motor_title: "Anti-Fraud Math Engine", motor_desc: "The primary attack vector is Payload Spoofing: a malicious user alters the frontend to send an 'Elite' payload (180 days) but only attaches 'Starter' funds (47 USDT). The backend ignores the text payload and adjusts days based solely on the real on-chain collateral.",
+        sim_label: "Spoofing Simulator", back_res: "Backend Resolution", btn_copy: "Copy Prompt", btn_copied: "Copied!",
+        opt_spoof: "Hacker Spoofing (Payload Elite [197 USDT] but pays 47 USDT)",
+        opt_honest_p: "Honest via Link (Pays 197 USDT - Receives 180 days)",
+        opt_honest_w: "Honest from Web (Pays 394 USDT - Receives 180 days)",
+        prompt_title: "AI Developer Prompt", prompt_subtitle: "Use this system prompt to instruct an AI or developer to write the TON smart contract with Zero-Trust logic.",
+        label_chart_1: "Expected", label_chart_2: "Assigned"
       },
       es: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programa de Afiliados", user_dash: "Área Usuario", partner_dash: "Área Socios", company_dash: "Tesorería",
@@ -194,7 +221,35 @@
         realtime_leaderboard: "Clasificación en Vivo", bot_managed: "Actualizado por Bot Python", training_setup: "Formación y Setup", signals_access: "Señales Premium", merch_store: "Tienda Oficial",
         access_denied: "ACCESO DENEGADO", sub_expired: "Tu suscripción ha expirado o no se ha encontrado ningún plan activo.", renew_btn: "RENOVAR SUSCRIPCIÓN", demo_bypass: "ÁREA ADMIN",
         you_tag: "(TÚ)", docs_short: "Docs", deposit_short: "Depósito", audit_short: "Auditoría", top_10_short: "Top 10",
-        whitepaper: "Libro Blanco", smart_contract: "Contrato Inteligente", contract_address: "Dirección del Contrato", read_docs: "Leer Documentación"
+        whitepaper: "Libro Blanco", smart_contract: "Contrato Inteligente", contract_address: "Dirección Contrato", read_docs: "Leer Documentación",
+        // Blueprint Translations
+        nav_arch: "Arquitectura", nav_revenue: "Distribución", nav_security: "Zero-Trust Auth", nav_prompt: "Dev_Spec.md",
+        wp_title: "Arquitectura Web3 V3", wp_v: "Modelo Viral Loop • Addon de Seguridad",
+        wp_sec1_title: "1. Mandato de Arquitectura", wp_sec1_desc: "Separación estricta: Off-Chain (Python Backend + DB) es la Fuente de Verdad. On-Chain es un Smart Contract pasivo (Dumb Vault).",
+        wp_academy_title: "Motor de Identidad", wp_academy_desc: "Telegram_ID es la llave primaria. Las líneas descendentes se unen de por vida.",
+        wp_signals_desc: "1 Crédito = 24 Horas. La expiración se actualiza al instante.",
+        wp_sec4_title: "4. The Infinity Viral Loop", wp_sec4_desc: "El motor de crecimiento. Un usuario hace clic en el enlace. Para desbloquear debe: 1. Conectar Wallet 2. Unirse a Telegram 3. Invitar 2 Amigos. Todos reciben 7 Días Gratis. Cero costo para la empresa, generación infinita de leads. Luego, el FOMO impulsa la actualización al Precio Promotor.",
+        wp_promo_title: "Precio Web Público", wp_affiliate_title: "Precio Link Promotor (-50%)",
+        wp_sec2_title: "2. Motor de Ingresos", wp_sec2_desc: "Reparto de ingresos automatizado según el origen de la venta.",
+        scenario_a: "ESCENARIO A: Ventas por Referidos (3 Niveles)", scenario_b: "ESCENARIO B: Ventas Web Directas",
+        level_1: "Nivel 1 (Directo)", level_2: "Nivel 2 (Mentor)", level_3: "Nivel 3 (Maestro)", 
+        treasury_comp: "Tesorería (Empresa)", events_pool_top10: "Pool Eventos Top 10", marketing_pool: "Fondo de Marketing & Dev",
+        wp_sec3_title: "3. Top 10 Weekly Pool", 
+        wp_sec3_a_title: "A. Asignación", wp_sec3_a_desc: "El 10% de las ventas promotores fluye a este pool dedicado a los 10 mejores vendedores.",
+        wp_sec3_b_title: "B. Liquidación Semanal", wp_sec3_b_desc: "Liquidado cada Domingo (23:59 UTC), dividido entre los Top 10 en proporción a su volumen. Los empates se rompen por orden cronológico.",
+        wp_sec3_c_title: "C. La Psicología", wp_sec3_c_desc: "Incentiva la competencia de élite, premiando la excelencia absoluta y la velocidad.",
+        wp_tech_1_title: "1. Firmas On-Chain", wp_tech_1_desc: "claim() DEBE verificar firma ED25519: Hash(Amount, Wallet, Nonce).",
+        wp_tech_2_title: "2. Deduplicación Estricta", wp_tech_2_desc: "La DB aplica restricción UNIQUE en tx_hash de TON.", 
+        wp_tech_3_title: "3. Bloqueo por Cambio de Wallet", wp_tech_3_desc: "Cambiar wallet bloquea los retiros por 72 horas.",
+        wp_tech_4_title: "4. Umbrales de Administrador", wp_tech_4_desc: "Pagos > 1,000 USDT requieren revisión manual.", 
+        wp_tech_5_title: "5. Almacenamiento en Frío", wp_tech_5_desc: "Función de barrido de emergencia hacia hardware wallet.",
+        motor_title: "Motor Matemático Anti-Fraude", motor_desc: "El ataque principal es el Payload Spoofing: enviar un payload 'Elite' (180 días) pero pagar solo 'Starter' (47 USDT). El backend recalcula los días según el colateral real on-chain.",
+        sim_label: "Simulador Spoofing", back_res: "Resolución Backend", btn_copy: "Copiar Prompt", btn_copied: "¡Copiado!",
+        opt_spoof: "Hacker Spoofing (Payload Elite [197 USDT] pero paga 47 USDT)",
+        opt_honest_p: "Honesto por Enlace (Paga 197 USDT - Recibe 180 días)",
+        opt_honest_w: "Honesto desde Web (Paga 394 USDT - Recibe 180 días)",
+        prompt_title: "AI Developer Prompt", prompt_subtitle: "Use este prompt para instruir a una IA a escribir el contrato en TON con lógica Zero-Trust.",
+        label_chart_1: "Esperados", label_chart_2: "Asignados"
       },
       pt: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programa Afiliados", user_dash: "Área Usuário", partner_dash: "Área Sócios", company_dash: "Tesouraria",
@@ -223,7 +278,35 @@
         realtime_leaderboard: "Classificação ao Vivo", bot_managed: "Atualizado por Bot Python", training_setup: "Treinamento e Setup", signals_access: "Sinais Premium", merch_store: "Loja Oficial",
         access_denied: "ACESSO NEGADO", sub_expired: "Sua assinatura expirou ou não encontramos nenhum plano ativo associado.", renew_btn: "RENOVAR ASSINATURA", demo_bypass: "ÁREA ADMIN",
         you_tag: "(VOCÊ)", docs_short: "Docs", deposit_short: "Depósito", audit_short: "Auditoria", top_10_short: "Top 10",
-        whitepaper: "Whitepaper", smart_contract: "Contrato Inteligente", contract_address: "Endereço do Contrato", read_docs: "Ler Documentação"
+        whitepaper: "Blueprint", smart_contract: "Contrato Inteligente", contract_address: "Endereço Contrato", read_docs: "Ler Documentação",
+        // Blueprint Translations
+        nav_arch: "Arquitetura", nav_revenue: "Distribuição", nav_security: "Zero-Trust Auth", nav_prompt: "Dev_Spec.md",
+        wp_title: "Arquitetura Web3 V3", wp_v: "Modelo Viral Loop • Addon de Segurança",
+        wp_sec1_title: "1. Mandato de Arquitetura", wp_sec1_desc: "Separação estrita: Off-Chain (Python + DB) é a Fonte de Verdade. On-Chain é um Cofre Passivo.",
+        wp_academy_title: "Motor de Identidade", wp_academy_desc: "Telegram_ID é a chave primária. Redes são vinculadas de forma vitalícia.",
+        wp_signals_desc: "1 Crédito = 24 Horas. Expiração atualiza instantaneamente.",
+        wp_sec4_title: "4. The Infinity Viral Loop", wp_sec4_desc: "O motor de crescimento. Para desbloquear a plataforma, o usuário deve: 1. Conectar Carteira 2. Entrar no Telegram 3. Convidar 2 Amigos. Todos ganham 7 Dias Grátis. Custo zero para a empresa, leads infinitos. O FOMO impulsiona atualizações para o Preço Promotor.",
+        wp_promo_title: "Preço Web Público", wp_affiliate_title: "Preço Link Promotor (-50%)",
+        wp_sec2_title: "2. Motor de Receita", wp_sec2_desc: "Divisão automática baseada na origem da transação.",
+        scenario_a: "CENÁRIO A: Vendas por Referência (3 Níveis)", scenario_b: "CENÁRIO B: Vendas Web Diretas",
+        level_1: "Nível 1 (Direto)", level_2: "Nível 2 (Mentor)", level_3: "Nível 3 (Mestre)", 
+        treasury_comp: "Tesouraria (Empresa)", events_pool_top10: "Pool Eventos Top 10", marketing_pool: "Fundo Marketing & Dev",
+        wp_sec3_title: "3. Top 10 Weekly Pool", 
+        wp_sec3_a_title: "A. Alocação", wp_sec3_a_desc: "10% das vendas dos promotores flui para esta pool dedicada aos 10 melhores vendedores.",
+        wp_sec3_b_title: "B. Liquidação Semanal", wp_sec3_b_desc: "Liquidado todo Domingo (23:59 UTC), dividido entre os Top 10 proporcional ao volume. Empates são decididos pela ordem cronológica.",
+        wp_sec3_c_title: "C. A Psicologia", wp_sec3_c_desc: "Incentiva a competição de elite, recompensando a excelência absoluta e a velocidade.",
+        wp_tech_1_title: "1. Assinaturas On-Chain", wp_tech_1_desc: "claim() DEBE verificar a assinatura ED25519: Hash(Amount, Wallet, Nonce).",
+        wp_tech_2_title: "2. Deduplicação Estrita", wp_tech_2_desc: "DB impõe restrição UNIQUE no tx_hash.", 
+        wp_tech_3_title: "3. Bloqueio por Mudança de Carteira", wp_tech_3_desc: "Alterar a carteira bloqueia os saques por 72 horas.",
+        wp_tech_4_title: "4. Limites Administrativos", wp_tech_4_desc: "Saques > 1.000 USDT exigem revisão manual.", 
+        wp_tech_5_title: "5. Armazenamento Frio", wp_tech_5_desc: "Função de varredura para hardware wallet.",
+        motor_title: "Motor Matemático Anti-Fraude", motor_desc: "O principal vetor de ataque é o Payload Spoofing: enviar um payload 'Elite' (180 dias) mas enviar fundos de 'Starter' (47 USDT). O backend recalcula os dias com base no colateral real.",
+        sim_label: "Simulador Spoofing", back_res: "Resolução Backend", btn_copy: "Copiar Prompt", btn_copied: "Copiado!",
+        opt_spoof: "Hacker Spoofing (Payload Elite [197 USDT] mas paga 47 USDT)",
+        opt_honest_p: "Honesto via Link (Paga 197 USDT - Recebe 180 dias)",
+        opt_honest_w: "Honesto do Web (Paga 394 USDT - Recebe 180 dias)",
+        prompt_title: "AI Developer Prompt", prompt_subtitle: "Use este prompt para instruir uma IA a escrever o contrato na TON com lógica Zero-Trust.",
+        label_chart_1: "Esperados", label_chart_2: "Atribuídos"
       },
       it: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programma Affiliati", user_dash: "Area Utente", partner_dash: "Area Partner", company_dash: "Tesoreria",
@@ -252,7 +335,35 @@
         realtime_leaderboard: "Classifica in Tempo Reale", bot_managed: "Gestita da Bot Python", training_setup: "Formazione e Setup", signals_access: "Segnali Premium", merch_store: "Store Ufficiale",
         access_denied: "ACCESSO NEGATO", sub_expired: "Il tuo abbonamento è scaduto o non è stato trovato alcun piano attivo.", renew_btn: "RINNOVA ABBONAMENTO", demo_bypass: "AREA ADMIN",
         you_tag: "(TU)", docs_short: "Docs", deposit_short: "Deposita", audit_short: "Audit", top_10_short: "Top 10",
-        whitepaper: "Whitepaper", smart_contract: "Smart Contract", contract_address: "Indirizzo Contratto", read_docs: "Leggi Documentazione"
+        whitepaper: "Blueprint", smart_contract: "Smart Contract", contract_address: "Indirizzo Contratto", read_docs: "Leggi Documentazione",
+        // Blueprint Translations
+        nav_arch: "Architettura", nav_revenue: "Revenue Split", nav_security: "Zero-Trust Auth", nav_prompt: "Dev_Spec.md",
+        wp_title: "Architettura Web3 V3", wp_v: "Modello Viral Loop • Security Addon",
+        wp_sec1_title: "1. Architettura (Separazione Netta)", wp_sec1_desc: "Off-Chain (Python Backend + DB) è l'assoluta fonte di verità. On-Chain (TON Smart Contract) agisce strettamente come 'Dumb Vault'.",
+        wp_academy_title: "Motore d'Identità", wp_academy_desc: "Telegram_ID è la chiave primaria. Le downline sono collegate a vita.",
+        wp_signals_desc: "1 Credito = 24 Ore. La scadenza viene aggiornata istantaneamente al pagamento.",
+        wp_sec4_title: "4. The Infinity Viral Loop", wp_sec4_desc: "Il vero motore di crescita. Un utente clicca il link del Promoter. Per sbloccare la piattaforma non paga nulla, ma deve: 1. Connettere il Wallet 2. Entrare su Telegram 3. Invitare 2 Amici. Completato il task, tutti ricevono 7 Giorni Gratis (costo zero per l'azienda, lead infiniti generati). Alla scadenza, la FOMO spinge l'utente ad acquistare l'abbonamento al Prezzo Scontato Promoter, garantendo tassi di conversione altissimi.",
+        wp_promo_title: "Prezzo Pubblico (Ancoraggio)", wp_affiliate_title: "Prezzo Link Promoter (-50%)",
+        wp_sec2_title: "2. Motore di Ricavo (Collaborativo)", wp_sec2_desc: "L'airdrop passivo è sostituito dall'Infinity Viral Loop. La ripartizione calcolata off-chain massimizza le commissioni.",
+        scenario_a: "SCENARIO A: Vendite da Promoter (3 Livelli)", scenario_b: "SCENARIO B: Vendite Dirette dal Web",
+        level_1: "Livello 1 (Diretto)", level_2: "Livello 2 (Mentore)", level_3: "Livello 3 (Master)", 
+        treasury_comp: "Tesoreria Aziendale", events_pool_top10: "Pool Eventi Top 10", marketing_pool: "Fondo Marketing & Sviluppo",
+        wp_sec3_title: "3. Top 10 Weekly Pool", 
+        wp_sec3_a_title: "A. Assegnazione", wp_sec3_a_desc: "Il 10% delle vendite promoter confluisce in questa pool per i 10 migliori venditori.",
+        wp_sec3_b_title: "B. Liquidazione Settimanale", wp_sec3_b_desc: "Liquidato ogni Domenica (23:59 UTC), diviso tra i Top 10 in proporzione al volume. A parità di volume, vince chi ha venduto prima.",
+        wp_sec3_c_title: "C. La Psicologia", wp_sec3_c_desc: "Incentiva una competizione elitaria, premiando l'eccellenza assoluta e la velocità di esecuzione.",
+        wp_tech_1_title: "1. Firme Server On-Chain", wp_tech_1_desc: "claim() DEVE verificare la firma ED25519 dal backend: Hash(Amount, Wallet, Nonce).",
+        wp_tech_2_title: "2. Deduplicazione Severa", wp_tech_2_desc: "Il DB applica un vincolo UNIQUE su tx_hash di TON per evitare Replay Attacks.", 
+        wp_tech_3_title: "3. Time-Lock Cambio Wallet", wp_tech_3_desc: "Cambiare il wallet attivo fa scattare un blocco di 72 ore sui prelievi (Anti-Hijacking).",
+        wp_tech_4_title: "4. Soglie Amministrative", wp_tech_4_desc: "I prelievi > 1.000 USDT vengono contrassegnati per la revisione manuale.", 
+        wp_tech_5_title: "5. Cold Storage Offline", wp_tech_5_desc: "Lo Smart Contract ha una funzione di sweep di emergenza per spostare la tesoreria su un hardware wallet.",
+        motor_title: "Motore Matematico Anti-Frode", motor_desc: "Il vettore di attacco è il Payload Spoofing: inviare un payload 'Elite' (180 gg) ma allegando fondi 'Starter' (47 USDT). Il backend ri-proporziona i giorni basandosi unicamente sul collaterale reale.",
+        sim_label: "Simulatore Spoofing", back_res: "Risoluzione Backend", btn_copy: "Copia Prompt", btn_copied: "Copiato!",
+        opt_spoof: "Hacker Spoofing (Payload Elite [197 USDT] ma paga 47 USDT)",
+        opt_honest_p: "Onesto via Link (Paga 197 USDT - Riceve 180 gg)",
+        opt_honest_w: "Onesto dal Web (Paga 394 USDT - Riceve 180 gg)",
+        prompt_title: "AI Developer Prompt", prompt_subtitle: "Usa questo prompt di sistema per generare lo Smart Contract TON con logiche Zero-Trust.",
+        label_chart_1: "Attesi", label_chart_2: "Assegnati"
       }
     };
 
@@ -314,8 +425,8 @@
     );
 
     const StatCard = ({ title, value, subtext, icon, colorClass, highlight = false }) => (
-      <Card padding="p-3 sm:p-4" className={`justify-center h-full w-full min-h-[90px] ${highlight ? 'ring-1 ring-inset ring-brand-500/40 bg-gradient-to-br from-surface-900 to-surface-800/80 shadow-[0_0_20px_rgba(212,175,55,0.05)]' : ''}`}>
-        <div className="flex justify-between items-start gap-2 h-full">
+      <Card padding="p-3 sm:p-4" className={`justify-center w-full ${highlight ? 'ring-1 ring-inset ring-brand-500/40 bg-gradient-to-br from-surface-900 to-surface-800/80 shadow-[0_0_20px_rgba(212,175,55,0.05)]' : ''}`}>
+        <div className="flex justify-between items-start gap-2">
           <div className="flex-1 min-w-0 flex flex-col justify-center">
             <p className="text-zinc-500 font-bold mb-1 text-[9px] sm:text-[10px] lg:text-xs uppercase tracking-widest leading-tight truncate">{title}</p>
             <h3 className="text-lg sm:text-xl font-black text-zinc-100 mb-1 tracking-tight drop-shadow-sm truncate">{value}</h3>
@@ -442,7 +553,7 @@
 
     // --- DASHBOARDS ---
 
-    const UserDashboard = ({ t, lang, sc }) => {
+    const UserDashboard = ({ t, lang, sc, setView }) => {
       const tgLinks = {
         en: 'https://t.me/c/3966363262',
         es: 'https://t.me/c/3929284405',
@@ -464,7 +575,6 @@
                 </p>
               </div>
               
-              {/* Box Smart Contract & Whitepaper in User Dashboard */}
               <div className="flex items-center gap-3 bg-surface-950 p-2 sm:p-3 rounded-lg border border-surface-800 shadow-inner">
                 <div className="flex flex-col min-w-0">
                   <span className="text-[9px] sm:text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-0.5">{t('smart_contract')}</span>
@@ -473,9 +583,9 @@
                   </a>
                 </div>
                 <div className="w-px h-8 bg-surface-800 mx-1"></div>
-                <a href="whitepaper.html" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-colors">
+                <button onClick={() => setView('blueprint')} className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-colors">
                   <Icon name="file-text" size={14} className="text-brand-500" /> {t('whitepaper')}
-                </a>
+                </button>
               </div>
             </div>
 
@@ -509,7 +619,7 @@
       );
     };
 
-    const CompanyDashboard = ({ sc, t }) => {
+    const CompanyDashboard = ({ sc, t, setView }) => {
       const [isSimulating, setIsSimulating] = useState(false);
       const [statusSort, setStatusSort] = useState('activeFirst'); 
 
@@ -545,9 +655,9 @@
               </div>
             </div>
             <div className="w-full sm:w-auto shrink-0 flex gap-2">
-              <a href="whitepaper.html" target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none px-4 py-2.5 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded-lg text-xs font-black flex items-center justify-center gap-1.5 transition-colors uppercase tracking-wide shadow-sm border border-surface-700">
+              <button onClick={() => setView('blueprint')} className="flex-1 sm:flex-none px-4 py-2.5 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded-lg text-xs font-black flex items-center justify-center gap-1.5 transition-colors uppercase tracking-wide shadow-sm border border-surface-700">
                 <Icon name="file-text" size={14} /> {t('whitepaper')}
-              </a>
+              </button>
               <button onClick={async () => { setIsSimulating(true); await sc.simulateDeposit(t); setIsSimulating(false); }} disabled={isSimulating} className="flex-1 sm:flex-none px-4 py-2.5 bg-gold-gradient hover:opacity-90 text-surface-950 rounded-lg text-xs font-black flex items-center justify-center gap-1.5 disabled:opacity-50 transition-opacity uppercase tracking-wide shadow-sm">
                 {isSimulating ? <Icon name="loader-2" size={14} className="animate-spin" /> : <Icon name="plus" size={14} />} {t('simulate_deposit')}
               </button>
@@ -589,11 +699,11 @@
 
             {/* Bottom Row: Chart & Table */}
             <div className="lg:col-span-2 flex flex-col gap-4">
-              <Card className="flex flex-col h-[300px]" padding="p-4">
+              <Card className="flex flex-col" padding="p-4">
                 <div className="flex justify-between items-center mb-4 shrink-0">
                   <h3 className="text-xs font-bold text-zinc-100 flex items-center gap-2 uppercase tracking-widest"><Icon name="activity" size={14} className="text-brand-500"/> {t('cash_flow')}</h3>
                 </div>
-                <div className="flex-1 w-full relative">
+                <div className="flex-1 w-full relative min-h-[250px]">
                   <ResponsiveContainer width="100%" height="100%" className="absolute inset-0">
                     <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -25, bottom: 0}}>
                       <defs><linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#d4af37" stopOpacity={0.4}/><stop offset="95%" stopColor="#d4af37" stopOpacity={0}/></linearGradient></defs>
@@ -609,13 +719,13 @@
             </div>
 
             <div className="lg:col-span-2 flex flex-col gap-4">
-              <Card padding="p-0" className="flex flex-col h-[300px]">
+              <Card padding="p-0" className="flex flex-col">
                 <div className="p-3 border-b border-surface-800 bg-surface-900/50 flex justify-between items-center shrink-0">
                   <h3 className="text-zinc-100 font-bold uppercase tracking-widest text-[10px] flex items-center gap-1.5"><Icon name="users-2" size={14} className="text-brand-500" /> {t('network_dir')}</h3>
                 </div>
-                <div className="flex-1 w-full overflow-y-auto bg-surface-950/30 relative">
+                <div className="flex-1 w-full bg-surface-950/30">
                   <table className="w-full text-left border-collapse">
-                    <thead className="sticky top-0 z-10 bg-surface-900 shadow-md">
+                    <thead className="bg-surface-900 shadow-md">
                       <tr className="text-[9px] uppercase tracking-wider text-zinc-500 border-b border-surface-800">
                         <th className="px-3 py-2 font-bold">{t('promoter')}</th>
                         <th className="px-3 py-2 font-bold text-right">{t('volume')}</th>
@@ -627,7 +737,7 @@
                     <tbody className="divide-y divide-surface-800/50">
                       {sortedMembers.map(member => (
                         <tr key={member.id} className="hover:bg-surface-900/50 transition-colors">
-                          <td className="px-3 py-2">
+                          <td className="px-3 py-3">
                             <div className="flex items-center gap-1.5">
                               {member.flag && <img src={`https://flagcdn.com/${member.flag}.svg`} alt="flag" className="flag-icon" />}
                               <div className="flex flex-col min-w-0">
@@ -636,8 +746,8 @@
                               </div>
                             </div>
                           </td>
-                          <td className="px-3 py-2 font-mono text-success-400 font-bold text-[10px] text-right whitespace-nowrap">{formatCurrency(member.volume, false)}</td>
-                          <td className="px-3 py-2 text-center">
+                          <td className="px-3 py-3 font-mono text-success-400 font-bold text-[10px] text-right whitespace-nowrap">{formatCurrency(member.volume, false)}</td>
+                          <td className="px-3 py-3 text-center">
                             <span className={`inline-flex items-center px-1 py-0.5 rounded text-[7px] font-black uppercase tracking-wider border ${member.statusKey === 'status_active' ? 'bg-success-500/10 text-success-400 border-success-500/20' : 'bg-surface-800 text-zinc-500 border-surface-700'}`}>
                               {t(member.statusKey)}
                             </span>
@@ -778,9 +888,9 @@
                 <StatCard title={t('daily_subs')} value="3,105" subtext={t('registered_subtext')} icon="infinity" colorClass="text-purple-400" highlight={true} />
               </div>
 
-              <Card className="flex flex-col h-[280px]" padding="p-4">
+              <Card className="flex flex-col" padding="p-4">
                 <h3 className="text-xs font-bold text-zinc-100 mb-4 uppercase tracking-widest flex items-center gap-2 shrink-0"><Icon name="bar-chart-3" size={16} className="text-success-500" /> {t('earnings_chart')}</h3>
-                <div className="flex-1 w-full relative">
+                <div className="flex-1 w-full relative min-h-[250px]">
                   <ResponsiveContainer width="100%" height="100%" className="absolute inset-0">
                     <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -20, bottom: 0}}>
                       <defs><linearGradient id="colorPromoterAmount" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/><stop offset="95%" stopColor="#10b981" stopOpacity={0}/></linearGradient></defs>
@@ -797,7 +907,7 @@
 
             {/* Right Col (4) */}
             <div className="lg:col-span-4 flex flex-col gap-4">
-              <Card padding="p-0" className="flex flex-col overflow-hidden">
+              <Card padding="p-0" className="flex flex-col">
                 <div className="flex border-b border-surface-800 bg-surface-900/50 shrink-0">
                   <button onClick={() => setActiveTab('top10')} className={`flex-1 p-3 text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'top10' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="trophy" size={14} /> {t('top_10_short')}</button>
                   <button onClick={() => setActiveTab('network')} className={`flex-1 p-3 text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'network' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="users" size={14} /> {t('my_network')}</button>
@@ -831,7 +941,7 @@
                         </div>
                       </div>
 
-                      <div className="p-2 overflow-y-auto custom-scrollbar" style={{maxHeight: '400px'}}>
+                      <div className="p-2">
                         <div className="flex items-center justify-between px-2 mb-2 mt-1">
                           <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest truncate">{t('realtime_leaderboard')}</span>
                           <span className="text-[7px] font-mono text-success-500 font-bold flex items-center gap-1 bg-success-500/10 px-1.5 py-0.5 rounded border border-success-500/20 shrink-0"><Icon name="bot" size={10}/> <span className="hidden sm:inline">{t('bot_managed')}</span></span>
@@ -858,9 +968,9 @@
                   )}
 
                   {activeTab === 'network' && (
-                    <div className="p-1 overflow-y-auto custom-scrollbar" style={{maxHeight: '550px'}}>
+                    <div className="p-1">
                       <table className="w-full text-left border-collapse">
-                        <thead className="sticky top-0 z-10 bg-surface-900 shadow-md">
+                        <thead className="bg-surface-900 shadow-md">
                           <tr className="text-[9px] uppercase tracking-wider text-zinc-500 border-b border-surface-800">
                             <th className="px-3 py-2 font-bold truncate">{t('user_col')}</th>
                             <th className="px-3 py-2 font-bold truncate">{t('action_col')}</th>
@@ -870,7 +980,7 @@
                         <tbody className="divide-y divide-surface-800/50">
                           {sortedNetworkData.map((lead, idx) => (
                             <tr key={idx} className="hover:bg-surface-900/50 transition-colors">
-                              <td className="px-3 py-2">
+                              <td className="px-3 py-3">
                                 <div className="flex items-center gap-2">
                                    <div className={`p-1.5 rounded-lg shrink-0 border hidden sm:block ${lead.typeKey === 'action_deposit' ? 'bg-success-500/10 text-success-400 border-success-500/30' : 'bg-brand-500/10 text-brand-400 border-brand-500/30'}`}><Icon name={lead.typeKey === 'action_deposit' ? 'coins' : 'user-plus'} size={12} /></div>
                                    {lead.flag && <img src={`https://flagcdn.com/${lead.flag}.svg`} alt="flag" className="flag-icon" />}
@@ -880,12 +990,12 @@
                                    </div>
                                 </div>
                               </td>
-                              <td className="px-3 py-2 text-xs text-zinc-400">
+                              <td className="px-3 py-3 text-xs text-zinc-400">
                                 <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider border ${lead.statusKey === 'status_active' ? 'bg-success-500/10 text-success-400 border-success-500/20' : 'bg-surface-800 text-zinc-500 border-surface-700'}`}>
                                   {t(lead.statusKey)}
                                 </span>
                               </td>
-                              <td className="px-3 py-2 text-right">
+                              <td className="px-3 py-3 text-right">
                                 <span className={`font-mono text-[9px] font-bold ${lead.total_vol > 0 ? 'text-brand-400' : 'text-zinc-500'} whitespace-nowrap`}>
                                   {lead.total_vol > 0 ? `${lead.total_vol} USDT` : '-'}
                                 </span>
@@ -898,7 +1008,7 @@
                   )}
 
                   {activeTab === 'history' && (
-                    <div className="p-3 overflow-y-auto custom-scrollbar" style={{maxHeight: '400px'}}>
+                    <div className="p-3">
                       {sc.state.claimHistory.length === 0 ? (
                         <div className="h-full min-h-[200px] flex flex-col items-center justify-center text-zinc-600"><Icon name="history" size={20} className="mb-2 opacity-50" /><p className="text-[9px] font-bold uppercase tracking-widest">{t('no_tx')}</p></div>
                       ) : (
@@ -923,6 +1033,345 @@
           
           <SecurityModal isOpen={showSecureModal} onClose={() => setShowSecureModal(false)} onConfirm={async () => { setShowSecureModal(false); setIsClaiming(true); await sc.processClaim(t); setIsClaiming(false); }} amount={sc.state.promoterAvailable} walletAddress={sc.state.tonWallet || sc.state.walletAddress} t={t} />
           <TonWalletModal isOpen={showWalletModal} onClose={() => setShowWalletModal(false)} onSave={(val) => { sc.setTonWallet(val); sc.addToast(t('toast_success_title'), t('save_wallet'), 'success'); }} currentWallet={sc.state.tonWallet} t={t} />
+        </div>
+      );
+    };
+
+    // --- BLUEPRINT / WHITEPAPER DASHBOARD ---
+    const BlueprintDashboard = ({ t, lang }) => {
+      const [activeTab, setActiveTab] = useState('arch');
+      const [scenario, setScenario] = useState('spoof_promoter');
+      const [copied, setCopied] = useState(false);
+
+      const copyPrompt = () => {
+        const text = `# CONTEXT\nYou are an elite enterprise Smart Contract developer specializing in the TON blockchain, using Tact. You are tasked with creating the "Vault" contract for the Betting Exchange Room architecture.\n\n# ARCHITECTURE MANDATE (ZERO-TRUST)\n1. The Smart Contract is a "Dumb Vault". It does NOT hold business logic regarding users, credits, or referral trees.\n2. The Off-chain Python Backend & Firestore DB are the absolute source of truth.\n3. Pricing: 94 USDT (30 days) / 234 USDT (90 days) / 394 USDT (180 days). Promoter pricing: 47 USDT (30 days) / 117 USDT (90 days) / 197 USDT (180 days).\n\n# SMART CONTRACT REQUIREMENTS\nDevelop a smart contract that handles Jetton (USDT) transactions with the following security primitives:\n\n## 1. Deposit & Verification\n- Accept incoming USDT transfers.\n- STRICT Fake Token Shield: Match the official TON USDT address (EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs).\n- Payload parsing: Memo must contain the user's Telegram_ID as an immutable string/integer.\n- Underpayment Recalibration: Backend recalculates days dynamically against the actual USDT received.\n\n## 2. Withdrawal Mechanism\n- Cryptographic ED25519 signature verification on claim().\n- Signed payload: Amount + Destination Wallet Address + Nonce.\n- Tracker on-chain to prevent Replay Attacks.\n\n## 3. Administrator Controls\n- Emergency sweep() function to pull assets to cold storage.\n- Admin Threshold mechanism for transfers over 1,000 USDT (requires manual multi-sig approval).`;
+        navigator.clipboard.writeText(text).then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        });
+      };
+
+      let expected = 180;
+      let assigned = 180;
+      let formulaText = "";
+      let formulaClass = "";
+
+      if (scenario === 'spoof_promoter') {
+        assigned = (47 / 197) * 180;
+        if(lang === 'it') formulaText = `(47 / 197) * 180 = ${assigned.toFixed(1)} gg.\nSpoofing neutralizzato.`;
+        else if(lang === 'es') formulaText = `(47 / 197) * 180 = ${assigned.toFixed(1)} días.\nSpoofing neutralizado.`;
+        else if(lang === 'pt') formulaText = `(47 / 197) * 180 = ${assigned.toFixed(1)} dias.\nSpoofing neutralizado.`;
+        else formulaText = `(47 / 197) * 180 = ${assigned.toFixed(1)} days.\nSpoofing neutralized.`;
+        formulaClass = "text-red-400";
+      } else {
+        assigned = 180;
+        const u = scenario === 'honest_web' ? '394' : '197';
+        if(lang === 'it') formulaText = `Pagamento congruo (${u} USDT).\nAssegnazione = 180 giorni.`;
+        else if(lang === 'es') formulaText = `Pago congruente (${u} USDT).\nAsignación = 180 días.`;
+        else if(lang === 'pt') formulaText = `Pagamento congruente (${u} USDT).\nAtribuição = 180 dias.`;
+        else formulaText = `Consistent payment (${u} USDT).\nAllocation = 180 days.`;
+        formulaClass = "text-success-400";
+      }
+
+      const spoofData = [
+        { name: t('label_chart_1'), value: expected, fill: '#d4af37' },
+        { name: t('label_chart_2'), value: parseFloat(assigned.toFixed(1)), fill: scenario === 'spoof_promoter' ? '#ef4444' : '#10b981' }
+      ];
+
+      return (
+        <div className="flex flex-col lg:flex-row flex-1 fade-in pt-4 pb-12 gap-6 items-start relative z-10">
+          {/* Sidebar */}
+          <nav className="w-full lg:w-64 shrink-0 glass-panel rounded-2xl flex flex-col shadow-xl lg:sticky lg:top-24 border border-surface-800">
+            <div className="p-5 border-b border-surface-800 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center border border-brand-500/20 text-brand-500 shrink-0">
+                <Icon name="shield-check" size={20} />
+              </div>
+              <div>
+                <h1 className="text-sm font-black tracking-widest text-zinc-100 uppercase leading-tight">Tech Blueprint</h1>
+                <p className="text-[9px] text-brand-500 font-mono font-bold tracking-widest uppercase mt-0.5">TON Smart Contract V3</p>
+              </div>
+            </div>
+            
+            <div className="flex flex-row lg:flex-col overflow-x-auto lg:overflow-x-hidden p-3 gap-2 custom-scrollbar">
+              <button onClick={() => setActiveTab('arch')} className={`text-left px-4 py-3 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wide transition-all border flex items-center gap-2 whitespace-nowrap ${activeTab === 'arch' ? 'bg-surface-800 text-brand-400 border-surface-700 shadow-sm' : 'text-zinc-500 border-transparent hover:text-zinc-300'}`}>
+                <Icon name="network" size={16} /> {t('nav_arch')}
+              </button>
+              <button onClick={() => setActiveTab('revenue')} className={`text-left px-4 py-3 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wide transition-all border flex items-center gap-2 whitespace-nowrap ${activeTab === 'revenue' ? 'bg-surface-800 text-brand-400 border-surface-700 shadow-sm' : 'text-zinc-500 border-transparent hover:text-zinc-300'}`}>
+                <Icon name="database" size={16} /> {t('nav_revenue')}
+              </button>
+              <button onClick={() => setActiveTab('security')} className={`text-left px-4 py-3 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wide transition-all border flex items-center gap-2 whitespace-nowrap ${activeTab === 'security' ? 'bg-surface-800 text-brand-400 border-surface-700 shadow-sm' : 'text-zinc-500 border-transparent hover:text-zinc-300'}`}>
+                <Icon name="shield-alert" size={16} /> {t('nav_security')}
+              </button>
+              <div className="hidden lg:block lg:flex-1 min-h-[50px]"></div>
+              <button onClick={() => setActiveTab('prompt')} className={`text-left px-4 py-3 rounded-xl text-[10px] font-mono font-bold tracking-widest transition-all border flex items-center gap-2 whitespace-nowrap ${activeTab === 'prompt' ? 'bg-surface-800 text-brand-400 border-surface-700 shadow-sm' : 'text-brand-500/70 hover:text-brand-400 border-brand-500/20 bg-brand-500/5'}`}>
+                <Icon name="terminal" size={14} /> {t('nav_prompt')}
+              </button>
+            </div>
+          </nav>
+
+          {/* Main Content Area */}
+          <div className="flex-1 w-full max-w-5xl mx-auto flex flex-col gap-6">
+            
+            {activeTab === 'arch' && (
+              <div className="flex flex-col gap-6 fade-in">
+                <header>
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-zinc-100 mb-2 tracking-widest uppercase flex items-center gap-3">
+                    <Icon name="network" size={28} className="text-brand-500 hidden sm:block" /> <span className="text-gold-gradient">{t('wp_title')}</span>
+                  </h2>
+                  <p className="text-[10px] sm:text-xs text-brand-400 bg-brand-500/10 inline-block px-3 py-1.5 rounded-lg border border-brand-500/20 font-bold uppercase tracking-widest">{t('wp_v')}</p>
+                </header>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="glass-panel p-5 rounded-2xl border-t-2 border-t-brand-500 flex flex-col justify-between gap-4">
+                    <div>
+                      <h3 className="text-sm font-black text-zinc-100 mb-2 flex items-center gap-2 uppercase tracking-wide">
+                        <Icon name="lock" size={16} className="text-brand-500" /> {t('wp_sec1_title')}
+                      </h3>
+                      <p className="text-xs text-zinc-400 leading-relaxed">{t('wp_sec1_desc')}</p>
+                    </div>
+                    <div className="bg-surface-950 p-3 rounded-xl font-mono text-[10px] sm:text-[11px] text-zinc-500 border-l-2 border-blue-500 shadow-inner leading-loose">
+                      <span className="text-zinc-300 font-bold">Backend (Python/DB)</span> {'->'} Source of Truth<br/>
+                      <span className="text-zinc-300 font-bold">Smart Contract (TON)</span> {'->'} Escrow & Liquidity
+                    </div>
+                  </div>
+                  
+                  <div className="glass-panel p-5 rounded-2xl border-t-2 border-t-purple-500 flex flex-col justify-between gap-4">
+                    <div>
+                      <h3 className="text-sm font-black text-zinc-100 mb-2 flex items-center gap-2 uppercase tracking-wide">
+                        <Icon name="fingerprint" size={16} className="text-purple-500" /> {t('wp_academy_title')}
+                      </h3>
+                      <p className="text-xs text-zinc-400 leading-relaxed">{t('wp_academy_desc')}</p>
+                    </div>
+                    <div className="bg-brand-500/10 p-3 rounded-xl text-xs text-brand-300 border border-brand-500/20 font-bold tracking-wide">
+                      {t('wp_signals_desc')}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-surface-900 to-surface-950 p-5 md:p-6 rounded-2xl border border-brand-500/30 relative overflow-hidden shadow-lg">
+                  <div className="absolute top-0 right-0 p-8 opacity-5"><Icon name="infinity" size={120} className="text-brand-500" /></div>
+                  <h3 className="text-base md:text-lg font-black mb-4 text-brand-400 uppercase tracking-widest flex items-center gap-2 relative z-10">
+                    <Icon name="infinity" size={20} /> {t('wp_sec4_title')}
+                  </h3>
+                  <p className="text-xs text-zinc-300 leading-relaxed relative z-10 font-bold bg-surface-950/50 p-4 rounded-xl border border-surface-800">
+                    {t('wp_sec4_desc')}
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-black text-zinc-100 mb-3 uppercase tracking-widest flex items-center gap-2">
+                    <Icon name="shopping-cart" size={16} className="text-brand-500" /> <span>Universal Pricing Matrix</span>
+                  </h3>
+                  <div className="overflow-x-auto rounded-2xl border border-surface-800 glass-panel">
+                    <table className="w-full text-left text-xs min-w-[500px] md:min-w-0">
+                      <thead className="bg-surface-900 border-b border-surface-800 text-zinc-400 font-bold uppercase tracking-wider text-[10px]">
+                        <tr>
+                          <th className="p-4">Access Tier</th>
+                          <th className="p-4">{t('wp_promo_title')}</th>
+                          <th className="p-4 text-brand-400">{t('wp_affiliate_title')}</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-surface-800/50 font-mono text-zinc-300 bg-surface-950/30">
+                        <tr className="hover:bg-surface-900/50 transition-colors">
+                          <td className="p-4 font-sans font-bold">Starter (30 days)</td>
+                          <td className="p-4">94 USDT</td>
+                          <td className="p-4 font-black text-success-400 bg-success-500/5">47 USDT</td>
+                        </tr>
+                        <tr className="hover:bg-surface-900/50 transition-colors">
+                          <td className="p-4 font-sans font-bold">Pro (90 days)</td>
+                          <td className="p-4">234 USDT</td>
+                          <td className="p-4 font-black text-success-400 bg-success-500/5">117 USDT</td>
+                        </tr>
+                        <tr className="hover:bg-surface-900/50 transition-colors">
+                          <td className="p-4 font-sans font-bold">Elite (180 days)</td>
+                          <td className="p-4">394 USDT</td>
+                          <td className="p-4 font-black text-success-400 bg-success-500/5">197 USDT</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'revenue' && (
+              <div className="flex flex-col gap-6 fade-in">
+                <header>
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-zinc-100 mb-2 tracking-widest uppercase flex items-center gap-3">
+                    <Icon name="database" size={28} className="text-brand-500 hidden sm:block" /> <span className="text-gold-gradient">{t('wp_sec2_title')}</span>
+                  </h2>
+                  <p className="text-xs text-zinc-400 bg-surface-900/50 inline-block px-3 py-1.5 rounded-lg border border-surface-800">{t('wp_sec2_desc')}</p>
+                </header>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="glass-panel p-5 rounded-2xl">
+                    <h3 className="font-black text-brand-400 mb-4 uppercase tracking-widest text-[10px] border-b border-surface-800 pb-2">{t('scenario_a')}</h3>
+                    <div className="space-y-1 font-mono text-xs text-zinc-400">
+                      <div className="flex justify-between items-center p-2 hover:bg-surface-800 rounded transition-colors">
+                        <span>{t('level_1')}</span><span className="font-bold text-success-400">50%</span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 hover:bg-surface-800 rounded transition-colors">
+                        <span>{t('level_2')}</span><span className="font-bold text-success-400">10%</span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 hover:bg-surface-800 rounded transition-colors">
+                        <span>{t('level_3')}</span><span className="font-bold text-success-400">5%</span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 border-t border-surface-800/50 mt-2">
+                        <span>{t('treasury_comp')}</span><span className="font-bold text-zinc-100">25%</span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 bg-brand-500/10 border border-brand-500/20 rounded-lg text-brand-400 font-bold mt-2">
+                        <span>{t('wp_sec3_title')}</span><span>10%</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="glass-panel p-5 rounded-2xl">
+                    <h3 className="font-black text-blue-400 mb-4 uppercase tracking-widest text-[10px] border-b border-surface-800 pb-2">{t('scenario_b')}</h3>
+                    <div className="space-y-1 font-mono text-xs text-zinc-400">
+                      <div className="flex justify-between items-center p-2 hover:bg-surface-800 rounded transition-colors">
+                        <span>{t('treasury_comp')}</span><span className="font-bold text-zinc-100">80%</span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 hover:bg-surface-800 rounded transition-colors mt-2">
+                        <span>{t('events_pool_top10')}</span><span className="font-bold text-purple-400">10%</span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 hover:bg-surface-800 rounded transition-colors mt-2">
+                        <span>{t('marketing_pool')}</span><span className="font-bold text-cyan-400">10%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-surface-900 to-surface-950 p-5 md:p-6 rounded-2xl border border-brand-500/30 relative overflow-hidden shadow-lg">
+                  <div className="absolute top-0 right-0 p-8 opacity-5"><Icon name="globe" size={120} className="text-brand-500" /></div>
+                  <h3 className="text-base font-black mb-4 text-brand-400 uppercase tracking-widest flex items-center gap-2 relative z-10">
+                    <Icon name="globe" size={20} /> {t('wp_sec3_title')}
+                  </h3>
+                  <div className="space-y-3 text-xs text-zinc-400 relative z-10">
+                    <p className="flex items-start gap-2 bg-brand-500/5 p-3 rounded-r-xl border-l-4 border-brand-500">
+                      <span><strong className="text-brand-300 block mb-1 uppercase tracking-wider text-[10px]">{t('wp_sec3_a_title')}</strong> <span className="text-zinc-300">{t('wp_sec3_a_desc')}</span></span>
+                    </p>
+                    <p className="flex items-start gap-2 bg-success-500/5 p-3 rounded-r-xl border-l-4 border-success-500">
+                      <span><strong className="text-success-300 block mb-1 uppercase tracking-wider text-[10px]">{t('wp_sec3_b_title')}</strong> <span className="text-zinc-100 font-bold">{t('wp_sec3_b_desc')}</span></span>
+                    </p>
+                    <p className="flex items-start gap-2 bg-blue-500/5 p-3 rounded-r-xl border-l-4 border-blue-500">
+                      <span><strong className="text-blue-300 block mb-1 uppercase tracking-wider text-[10px]">{t('wp_sec3_c_title')}</strong> <span className="text-zinc-300">{t('wp_sec3_c_desc')}</span></span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'security' && (
+              <div className="flex flex-col gap-6 fade-in">
+                <header>
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-zinc-100 mb-2 tracking-widest uppercase flex items-center gap-3">
+                    <Icon name="shield-alert" size={28} className="text-brand-500 hidden sm:block" /> <span className="text-gold-gradient">Enterprise Cybersecurity</span>
+                  </h2>
+                  <p className="text-xs text-zinc-400 bg-surface-900/50 inline-block px-3 py-1.5 rounded-lg border border-surface-800">Threat modeling and automated defense mechanisms.</p>
+                </header>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                  <div className="glass-panel p-4 rounded-xl border-t-2 border-t-brand-500 flex flex-col">
+                    <Icon name="key" size={20} className="text-brand-500 mb-2" />
+                    <h4 className="font-black text-zinc-200 text-xs mb-1">{t('wp_tech_1_title')}</h4>
+                    <p className="text-[10px] text-zinc-400 font-mono leading-relaxed">{t('wp_tech_1_desc')}</p>
+                  </div>
+                  <div className="glass-panel p-4 rounded-xl border-t-2 border-t-success-500 flex flex-col">
+                    <Icon name="copy-x" size={20} className="text-success-500 mb-2" />
+                    <h4 className="font-black text-zinc-200 text-xs mb-1">{t('wp_tech_2_title')}</h4>
+                    <p className="text-[10px] text-zinc-400 font-mono leading-relaxed">{t('wp_tech_2_desc')}</p>
+                  </div>
+                  <div className="glass-panel p-4 rounded-xl border-t-2 border-t-purple-500 flex flex-col">
+                    <Icon name="lock" size={20} className="text-purple-500 mb-2" />
+                    <h4 className="font-black text-zinc-200 text-xs mb-1">{t('wp_tech_3_title')}</h4>
+                    <p className="text-[10px] text-zinc-400 font-mono leading-relaxed">{t('wp_tech_3_desc')}</p>
+                  </div>
+                  <div className="glass-panel p-4 rounded-xl border-t-2 border-t-warning-500 flex flex-col">
+                    <Icon name="alert-triangle" size={20} className="text-warning-500 mb-2" />
+                    <h4 className="font-black text-zinc-200 text-xs mb-1">{t('wp_tech_4_title')}</h4>
+                    <p className="text-[10px] text-zinc-400 font-mono leading-relaxed">{t('wp_tech_4_desc')}</p>
+                  </div>
+                  <div className="glass-panel p-4 rounded-xl border-t-2 border-t-red-500 flex flex-col bg-red-500/5">
+                    <Icon name="hard-drive" size={20} className="text-red-500 mb-2" />
+                    <h4 className="font-black text-red-400 text-xs mb-1">{t('wp_tech_5_title')}</h4>
+                    <p className="text-[10px] text-red-300/80 font-mono leading-relaxed">{t('wp_tech_5_desc')}</p>
+                  </div>
+                </div>
+
+                <div className="glass-panel p-5 rounded-2xl flex flex-col gap-5 border border-surface-800">
+                  <div>
+                    <h3 className="text-sm font-black text-brand-400 mb-2 uppercase tracking-widest flex items-center gap-2">
+                      <Icon name="cpu" size={20} /> {t('motor_title')}
+                    </h3>
+                    <p className="text-xs text-zinc-400 bg-surface-950/50 p-3 rounded-lg border border-surface-800">
+                      {t('motor_desc')}
+                    </p>
+                  </div>
+                  
+                  <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center bg-surface-900/80 p-4 rounded-xl border border-surface-700">
+                    <div className="flex-1">
+                      <label className="block text-[10px] font-bold text-zinc-500 mb-2 uppercase tracking-widest flex items-center gap-1.5">
+                        <Icon name="crosshair" size={12} className="text-red-400" /> {t('sim_label')}
+                      </label>
+                      <select value={scenario} onChange={(e) => setScenario(e.target.value)} className="w-full border border-surface-700 rounded-lg px-3 py-2.5 bg-surface-950 text-zinc-200 focus:outline-none focus:border-brand-500 font-bold transition-all shadow-inner text-xs">
+                        <option value="spoof_promoter">{t('opt_spoof')}</option>
+                        <option value="honest_promoter">{t('opt_honest_p')}</option>
+                        <option value="honest_web">{t('opt_honest_w')}</option>
+                      </select>
+                    </div>
+                    <div className="flex-1 bg-surface-950 p-3 rounded-xl border border-surface-800 shadow-inner flex flex-col justify-center min-h-[70px]">
+                      <div className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                        <Icon name="server-cog" size={12} className="text-brand-500" /> {t('back_res')}
+                      </div>
+                      <div className={`font-mono text-[11px] font-bold whitespace-pre-line ${formulaClass}`}>{formulaText}</div>
+                    </div>
+                  </div>
+                  
+                  <div className="w-full h-[250px] sm:h-[300px] mt-2">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={spoofData} margin={{top: 20, right: 0, left: -20, bottom: 0}}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+                        <XAxis dataKey="name" stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700}} axisLine={false} tickLine={false} />
+                        <YAxis stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700}} axisLine={false} tickLine={false} domain={[0, 200]} />
+                        <Tooltip cursor={{fill: 'transparent'}} contentStyle={{ backgroundColor: '#18181b', borderColor: '#3f3f46', borderRadius: '8px', color: '#fff', fontSize: '11px', fontWeight: 'bold' }} />
+                        <Bar dataKey="value" radius={[6, 6, 6, 6]} barSize={80}>
+                          {spoofData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.fill} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'prompt' && (
+              <div className="flex flex-col gap-6 fade-in h-[500px] md:h-[600px]">
+                <header className="shrink-0">
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-zinc-100 mb-2 tracking-widest uppercase flex items-center gap-3">
+                    <Icon name="bot" size={28} className="text-brand-500 hidden sm:block" /> <span className="text-gold-gradient">{t('prompt_title')}</span>
+                  </h2>
+                  <p className="text-xs text-zinc-400 bg-surface-900/50 inline-block px-3 py-1.5 rounded-lg border border-surface-800">{t('prompt_subtitle')}</p>
+                </header>
+
+                <div className="flex-1 bg-surface-950 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.5)] border border-surface-800 flex flex-col overflow-hidden relative">
+                  <div className="absolute inset-0 bg-brand-500/5 pointer-events-none"></div>
+                  
+                  <div className="bg-surface-900 px-4 py-3 flex justify-between items-center border-b border-surface-800 shrink-0 relative z-10">
+                    <span className="text-[11px] font-mono text-brand-400 flex items-center gap-2 font-bold">
+                      <div className="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></div> System_Prompt.md
+                    </span>
+                    <button onClick={copyPrompt} className={`text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 border ${copied ? 'bg-success-500/10 border-success-500/50 text-success-400' : 'bg-surface-800 hover:bg-surface-700 text-zinc-300 border-surface-700 hover:border-brand-500/50'}`}>
+                      <Icon name={copied ? 'check' : 'copy'} size={12} /> {copied ? t('btn_copied') : t('btn_copy')}
+                    </button>
+                  </div>
+                  <textarea className="w-full flex-1 bg-transparent text-success-400 font-mono text-xs p-4 md:p-6 focus:outline-none resize-none overflow-y-auto custom-scrollbar relative z-10 leading-relaxed" readOnly value={`# CONTEXT\nYou are an elite enterprise Smart Contract developer specializing in the TON blockchain, using Tact. You are tasked with creating the "Vault" contract for the Betting Exchange Room architecture.\n\n# ARCHITECTURE MANDATE (ZERO-TRUST)\n1. The Smart Contract is a "Dumb Vault". It does NOT hold business logic regarding users, credits, or referral trees.\n2. The Off-chain Python Backend & Firestore DB are the absolute source of truth.\n3. Pricing: 94 USDT (30 days) / 234 USDT (90 days) / 394 USDT (180 days). Promoter pricing: 47 USDT (30 days) / 117 USDT (90 days) / 197 USDT (180 days).\n\n# SMART CONTRACT REQUIREMENTS\nDevelop a smart contract that handles Jetton (USDT) transactions with the following security primitives:\n\n## 1. Deposit & Verification\n- Accept incoming USDT transfers.\n- STRICT Fake Token Shield: Match the official TON USDT address (EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs).\n- Payload parsing: Memo must contain the user's Telegram_ID as an immutable string/integer.\n- Underpayment Recalibration: Backend recalculates days dynamically against the actual USDT received.\n\n## 2. Withdrawal Mechanism\n- Cryptographic ED25519 signature verification on claim().\n- Signed payload: Amount + Destination Wallet Address + Nonce.\n- Tracker on-chain to prevent Replay Attacks.\n\n## 3. Administrator Controls\n- Emergency sweep() function to pull assets to cold storage.\n- Admin Threshold mechanism for transfers over 1,000 USDT (requires manual multi-sig approval).`} />
+                </div>
+              </div>
+            )}
+
+          </div>
         </div>
       );
     };
@@ -1095,7 +1544,7 @@
           sc.disconnect();
           sc.addToast(t('logout'), "", "info");
         } else {
-          sc.connect(view);
+          sc.connect(view === 'blueprint' ? 'user' : view);
         }
       };
 
@@ -1119,10 +1568,10 @@
           <nav className="glass-panel border-b border-surface-800 z-50 shadow-sm sticky top-0 w-full shrink-0">
             <div className="max-w-[1400px] mx-auto px-4 h-14 sm:h-16 flex items-center justify-between gap-4">
               <div className="flex items-center gap-3 flex-1 min-w-0">
-                <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden shrink-0 border border-brand-500/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] p-0.5 bg-surface-950">
+                <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden shrink-0 border border-brand-500/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] p-0.5 bg-surface-950 cursor-pointer" onClick={() => setView('user')}>
                    <img src="logo-tondo.jpeg" onError={(e) => e.target.src='https://ui-avatars.com/api/?name=ER&background=18181b&color=d4af37'} alt="Logo" className="w-full h-full object-cover rounded-full" />
                 </div>
-                <div className="flex flex-col justify-center min-w-0 hidden sm:flex">
+                <div className="flex flex-col justify-center min-w-0 hidden sm:flex cursor-pointer" onClick={() => setView('user')}>
                   <h1 className="text-xs font-black tracking-widest text-zinc-100 leading-tight uppercase truncate">{t('app_title')}</h1>
                 </div>
               </div>
@@ -1131,10 +1580,14 @@
                 <LanguageSelector lang={lang} setLang={setLang} />
 
                 {sc.state.walletConnected && (
-                  <div className="hidden md:flex items-center bg-surface-950/80 border border-surface-800 rounded-lg p-1 shadow-inner">
+                  <div className="hidden md:flex items-center bg-surface-950/80 border border-surface-800 rounded-lg p-1 shadow-inner gap-1">
                     <button onClick={() => setView('user')} className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${view === 'user' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}>{t('user_dash')}</button>
                     <button onClick={() => setView('promoter')} className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${view === 'promoter' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}>{t('partner_dash')}</button>
                     <button onClick={() => setView('company')} className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${view === 'company' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}>{t('company_dash')}</button>
+                    <div className="w-px h-4 bg-surface-700 mx-1"></div>
+                    <button onClick={() => setView('blueprint')} className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all flex items-center gap-1.5 ${view === 'blueprint' ? 'bg-brand-500/10 text-brand-400 border border-brand-500/20 shadow-sm' : 'text-brand-500/70 hover:text-brand-400'}`}>
+                      <Icon name="file-code-2" size={12} /> Blueprint
+                    </button>
                   </div>
                 )}
 
@@ -1145,7 +1598,7 @@
             </div>
           </nav>
 
-          <main className="max-w-[1400px] mx-auto px-2 sm:px-4 lg:px-6 flex-1 flex flex-col w-full relative z-10 md:pb-4 pb-20">
+          <main className="max-w-[1400px] mx-auto px-2 sm:px-4 lg:px-6 flex-1 flex flex-col w-full relative z-10 md:pb-4 pb-24">
             {!sc.state.walletConnected ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6 fade-in mt-20">
                 <div className="w-24 h-24 bg-surface-900 text-brand-400 rounded-3xl flex items-center justify-center border border-brand-500/50 shadow-[0_0_40px_rgba(212,175,55,0.2)] relative">
@@ -1160,19 +1613,20 @@
                 </button>
               </div>
             ) : (
-              view === 'user' ? <UserDashboard t={t} lang={lang} sc={sc} /> :
-              view === 'company' ? <CompanyDashboard sc={sc} t={t} /> : 
+              view === 'blueprint' ? <BlueprintDashboard t={t} lang={lang} /> :
+              view === 'user' ? <UserDashboard t={t} lang={lang} sc={sc} setView={setView} /> :
+              view === 'company' ? <CompanyDashboard sc={sc} t={t} setView={setView} /> : 
               <PromoterDashboard sc={sc} t={t} lang={lang} />
             )}
-            
           </main>
           
           {/* Mobile Bottom Navigation - Fisso e sempre in primo piano */}
           {sc.state.walletConnected && (
-            <div className="md:hidden fixed bottom-3 left-3 right-3 bg-surface-950/95 backdrop-blur-xl border border-surface-800 rounded-xl p-1.5 flex shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 gap-1.5">
-              <button onClick={() => setView('user')} className={`flex-1 py-3 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all ${view === 'user' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}>{t('user_dash')}</button>
-              <button onClick={() => setView('promoter')} className={`flex-1 py-3 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all ${view === 'promoter' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}>{t('partner_dash')}</button>
-              <button onClick={() => setView('company')} className={`flex-1 py-3 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all ${view === 'company' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}>{t('company_dash')}</button>
+            <div className="md:hidden fixed bottom-3 left-3 right-3 bg-surface-950/95 backdrop-blur-xl border border-surface-800 rounded-xl p-1.5 flex shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 gap-1">
+              <button onClick={() => setView('user')} className={`flex-1 py-3 rounded-lg text-[8px] font-bold uppercase tracking-wider transition-all flex flex-col items-center gap-1 ${view === 'user' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}><Icon name="user" size={14} /> {t('user_dash')}</button>
+              <button onClick={() => setView('promoter')} className={`flex-1 py-3 rounded-lg text-[8px] font-bold uppercase tracking-wider transition-all flex flex-col items-center gap-1 ${view === 'promoter' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}><Icon name="users" size={14} /> {t('partner_dash')}</button>
+              <button onClick={() => setView('company')} className={`flex-1 py-3 rounded-lg text-[8px] font-bold uppercase tracking-wider transition-all flex flex-col items-center gap-1 ${view === 'company' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}><Icon name="building" size={14} /> {t('company_dash')}</button>
+              <button onClick={() => setView('blueprint')} className={`flex-1 py-3 rounded-lg text-[8px] font-bold uppercase tracking-wider transition-all flex flex-col items-center gap-1 ${view === 'blueprint' ? 'bg-brand-500/10 text-brand-400 border border-brand-500/20 shadow-sm' : 'text-brand-500/70'}`}><Icon name="file-code-2" size={14} /> Blueprint</button>
             </div>
           )}
         </div>
