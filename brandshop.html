@@ -13,20 +13,19 @@
     
     <style>
         /* ==========================================
-           RESET & VARIABILI (TEMA DARK/NEON SHOP)
+           RESET & VARIABILI (TEMA DARK/NEON)
            ========================================== */
         :root {
-            --bg-color: #121212; /* Sfondo grigio scuro come lo shop */
-            --card-bg: #1c1c1c;  /* Sfondo Card leggermente a contrasto */
-            --text-main: #ffffff; /* Testo bianco */
-            --text-muted: #a1a1aa; /* Testo grigio chiaro */
-            --accent-color: #eaff00; /* Giallo Neon identico allo store */
-            --accent-hover: #d4e600; /* Giallo Neon per hover */
-            --btn-text: #000000;    /* Testo nero sui bottoni neon */
+            --bg-color: #121212; 
+            --card-bg: #1c1c1c;  
+            --text-main: #ffffff; 
+            --text-muted: #a1a1aa; 
+            --accent-color: #eaff00; 
+            --accent-hover: #d4e600; 
+            --btn-text: #000000;    
             
-            /* Effetti Glow alleggeriti per un look più moderno e pulito */
             --glow-accent: 0 0 15px rgba(234, 255, 0, 0.15);
-            --shadow-card: 0 30px 60px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(234, 255, 0, 0.05);
+            --shadow-card: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(234, 255, 0, 0.05);
         }
 
         * {
@@ -48,8 +47,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: clamp(1rem, 4vw, 2rem);
-            /* Sfondo a tinta unita pulito, per coerenza con lo shop */
+            padding: clamp(1rem, 3vw, 2rem);
         }
 
         .container {
@@ -64,77 +62,47 @@
             position: relative;
         }
 
-        /* Desktop Layout */
-        @media (min-width: 900px) {
-            .container {
-                flex-direction: row;
-                min-height: 70vh;
-                align-items: stretch;
-            }
-        }
-
         /* ==========================================
-           AREA IMMAGINE (CYBORG ORIGINALE)
+           AREA IMMAGINE (OTTIMIZZATA PER NON SOVRAPPORSI)
            ========================================== */
         .image-area {
             position: relative;
-            background: linear-gradient(to bottom, #1c1c1c, #121212);
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            padding: 0;
-            flex: 1;
-            min-height: 400px;
+            width: 100%;
+            height: 45vh; /* Altezza adattiva per smartphone */
+            min-height: 300px;
+            background: #121212;
             overflow: hidden;
+            display: flex;
         }
 
         .image-area img {
-            width: auto;
-            height: 110%;
-            max-width: none;
-            object-fit: cover;
-            
-            /* NESSUN FILTRO COLORE: Mantiene i colori originali del cyborg */
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Mantiene le proporzioni tagliando gli eccessi */
+            object-position: center top;
             filter: contrast(1.1) brightness(0.95);
             
-            /* Maschera per sfumare l'immagine nel nero della card */
-            mask-image: linear-gradient(to bottom, black 50%, transparent 95%);
-            -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 95%);
+            /* Maschera universale per sfumare il bordo dell'immagine */
+            -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+            mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
             
             transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.5s ease;
         }
 
         .image-area:hover img {
-            transform: scale(1.03);
-            /* Aumenta leggermente luminosità e contrasto senza intaccare i colori */
+            transform: scale(1.05);
             filter: contrast(1.15) brightness(1.05);
-        }
-
-        @media (min-width: 900px) {
-            .image-area {
-                flex: 1.1;
-                height: auto;
-                align-items: center;
-            }
-            .image-area img {
-                height: auto;
-                width: 120%;
-                mask-image: linear-gradient(to right, black 60%, transparent 100%);
-                -webkit-mask-image: linear-gradient(to right, black 60%, transparent 100%);
-                margin-left: -10%;
-            }
         }
 
         /* ==========================================
            AREA CONTENUTO E TESTI
            ========================================== */
         .content-area {
-            flex: 1;
-            padding: clamp(2rem, 5vw, 5rem);
+            width: 100%;
+            padding: clamp(1.5rem, 5vw, 4rem);
             display: flex;
             flex-direction: column;
             justify-content: center;
-            background: transparent;
             z-index: 2;
         }
 
@@ -143,20 +111,262 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
 
         .brand-badge {
             display: inline-block;
-            font-size: 0.75rem;
+            font-size: clamp(0.7rem, 2vw, 0.75rem);
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.15em;
-            /* Testo nero su sfondo neon, come il banner "Shop new arrivals" */
             color: var(--btn-text);
             background-color: var(--accent-color);
             padding: 0.5rem 1rem;
+            border-radius: 6px;
+            box-shadow: var(--glow-accent);
+            white-space: nowrap;
+        }
+
+        /* ==========================================
+           SELETTORE LINGUE
+           ========================================== */
+        .language-selector {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(234, 255, 0, 0.05);
+        }
+
+        .flag {
+            width: 26px;
+            height: auto;
+            border-radius: 3px;
+            cursor: pointer;
+            opacity: 0.4;
+            filter: grayscale(80%);
+            transition: all 0.3s ease;
+        }
+
+        .flag:hover, .flag.active {
+            opacity: 1;
+            filter: grayscale(0%);
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(234, 255, 0, 0.3);
+        }
+
+        /* ==========================================
+           TIPOGRAFIA
+           ========================================== */
+        h1 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--accent-color);
+            word-wrap: break-word;
+        }
+
+        p {
+            font-size: clamp(0.95rem, 1.5vw, 1.125rem);
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            max-width: 100%;
+        }
+
+        /* ==========================================
+           BOTTONE NEON
+           ========================================== */
+        .cta-button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--accent-color);
+            color: var(--btn-text);
+            text-decoration: none;
+            padding: 1rem 2rem;
+            font-size: clamp(0.95rem, 2vw, 1.1rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            box-shadow: var(--glow-accent);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .cta-button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to bottom right, rgba(255,255,255,0.5) 0%, transparent 40%, transparent 100%);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+
+        .cta-button:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(234, 255, 0, 0.5);
+        }
+        
+        .cta-button:hover::after {
+            opacity: 1;
+            left: 0;
+            top: 0;
+        }
+
+        .cta-button:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* ==========================================
+           MEDIA QUERIES (DESKTOP)
+           ========================================== */
+        @media (min-width: 900px) {
+            .container {
+                flex-direction: row;
+                min-height: 70vh;
+                align-items: stretch;
+            }
+
+            .image-area {
+                flex: 1 1 50%;
+                height: auto;
+                min-height: 100%;
+            }
+
+            .image-area img {
+                object-position: center center;
+                /* Su desktop la sfumatura è verso destra, non verso il basso */
+                -webkit-mask-image: linear-gradient(to right, black 70%, transparent 100%);
+                mask-image: linear-gradient(to right, black 70%, transparent 100%);
+            }
+
+            .content-area {
+                flex: 1 1 50%;
+                padding: 4rem;
+            }
+
+            p {
+                max-width: 90%;
+            }
+
+            .cta-button {
+                width: max-content; /* Su desktop il bottone ha la larghezza del testo */
+                padding: 1.1rem 2.5rem;
+            }
+        }
+    </style> <!-- IL TAG CORRETTO ORA E' QUI -->
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- Area Immagine -->
+        <div class="image-area">
+            <!-- Ho aggiunto un onerror: se il browser non trova subito "cyborgcalciatore.jpeg", mostra un'immagine provvisoria per non farti vedere tutto nero -->
+            <img src="cyborgcalciatore.jpeg" 
+                 onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1000&auto=format&fit=crop';" 
+                 alt="Betting Exchange Cyborg Striker">
+        </div>
+
+        <!-- Area Contenuto -->
+        <div class="content-area">
+            
+            <div class="content-header">
+                <div class="brand-badge" id="badge">Official Community Gear</div>
+                
+                <div class="language-selector">
+                    <img src="https://flagcdn.com/w40/gb.png" alt="English" data-lang="en" class="flag" onclick="setLanguage('en')">
+                    <img src="https://flagcdn.com/w40/es.png" alt="Español" data-lang="es" class="flag" onclick="setLanguage('es')">
+                    <img src="https://flagcdn.com/w40/pt.png" alt="Português" data-lang="pt" class="flag" onclick="setLanguage('pt')">
+                    <img src="https://flagcdn.com/w40/it.png" alt="Italiano" data-lang="it" class="flag" onclick="setLanguage('it')">
+                </div>
+            </div>
+
+            <h1 id="title">Betting Exchange Room</h1>
+            <p id="desc">Join the elite trading team. Wear our premium apparel to support the community and show your passion. Worldwide shipping available.</p>
+            
+            <a href="https://bettingexchangeroom-shop.fourthwall.com/" class="cta-button" id="btn" target="_blank" rel="noopener noreferrer">Shop the Collection</a>
+            
+        </div>
+    </div>
+
+    <!-- SCRIPT GESTIONE LINGUE -->
+    <script>
+        const translations = {
+            en: {
+                badge: "Official Community Gear",
+                title: "Betting Exchange Room",
+                desc: "Join the elite trading team. Wear our premium apparel to support the community and show your passion. Worldwide shipping available.",
+                btn: "Shop the Collection"
+            },
+            es: {
+                badge: "Mercancía Oficial",
+                title: "Betting Exchange Room",
+                desc: "Únete al equipo de trading de élite. Usa nuestra ropa premium para apoyar a la comunidad y mostrar tu pasión. Envío a nivel mundial.",
+                btn: "Explorar Colección"
+            },
+            pt: {
+                badge: "Equipamento Oficial",
+                title: "Betting Exchange Room",
+                desc: "Junte-se à equipe de elite do trading. Use nosso vestuário premium para apoiar a comunidade e mostrar sua paixão. Envio mundial disponível.",
+                btn: "Explorar Coleção"
+            },
+            it: {
+                badge: "Merchandising Ufficiale",
+                title: "Betting Exchange Room",
+                desc: "Unisciti al team di trading d'élite. Indossa il nostro abbigliamento premium per supportare la community e mostrare la tua passione. Spedizioni in tutto il mondo.",
+                btn: "Esplora la Collezione"
+            }
+        };
+
+        const supportedLangs = ['en', 'es', 'pt', 'it'];
+
+        function initLanguage() {
+            const userLang = (navigator.language || navigator.userLanguage).slice(0, 2).toLowerCase();
+            const targetLang = supportedLangs.includes(userLang) ? userLang : 'en';
+            setLanguage(targetLang);
+        }
+
+        function setLanguage(lang) {
+            document.getElementById('badge').innerText = translations[lang].badge;
+            document.getElementById('title').innerText = translations[lang].title;
+            document.getElementById('desc').innerText = translations[lang].desc;
+            document.getElementById('btn').innerText = translations[lang].btn;
+
+            document.documentElement.lang = lang;
+
+            document.querySelectorAll('.flag').forEach(flag => {
+                flag.classList.remove('active');
+            });
+            const activeFlag = document.querySelector(`.flag[data-lang="${lang}"]`);
+            if (activeFlag) {
+                activeFlag.classList.add('active');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initLanguage);
+    </script>
+</body>
+</html>
+
+
+```
             border-radius: 4px;
             box-shadow: var(--glow-accent);
         }
@@ -309,6 +519,373 @@
          ========================================== -->
     <script>
         // Dizionario traduzioni
+        const translations = {
+            en: {
+                badge: "Official Community Gear",
+                title: "Betting Exchange Room",
+                desc: "Join the elite trading team. Wear our premium apparel to support the community and show your passion. Worldwide shipping available.",
+                btn: "Shop the Collection"
+            },
+            es: {
+                badge: "Mercancía Oficial",
+                title: "Betting Exchange Room",
+                desc: "Únete al equipo de trading de élite. Usa nuestra ropa premium para apoyar a la comunidad y mostrar tu pasión. Envío a nivel mundial.",
+                btn: "Explorar Colección"
+            },
+            pt: {
+                badge: "Equipamento Oficial",
+                title: "Betting Exchange Room",
+                desc: "Junte-se à equipe de elite do trading. Use nosso vestuário premium para apoiar a comunidade e mostrar sua paixão. Envio mundial disponível.",
+                btn: "Explorar Coleção"
+            },
+            it: {
+                badge: "Merchandising Ufficiale",
+                title: "Betting Exchange Room",
+                desc: "Unisciti al team di trading d'élite. Indossa il nostro abbigliamento premium per supportare la community e mostrare la tua passione. Spedizioni in tutto il mondo.",
+                btn: "Esplora la Collezione"
+            }
+        };
+
+        const supportedLangs = ['en', 'es', 'pt', 'it'];
+
+        function initLanguage() {
+            const userLang = (navigator.language || navigator.userLanguage).slice(0, 2).toLowerCase();
+            const targetLang = supportedLangs.includes(userLang) ? userLang : 'en';
+            setLanguage(targetLang);
+        }
+
+        function setLanguage(lang) {
+            document.getElementById('badge').innerText = translations[lang].badge;
+            document.getElementById('title').innerText = translations[lang].title;
+            document.getElementById('desc').innerText = translations[lang].desc;
+            document.getElementById('btn').innerText = translations[lang].btn;
+
+            document.documentElement.lang = lang;
+
+            document.querySelectorAll('.flag').forEach(flag => {
+                flag.classList.remove('active');
+            });
+            const activeFlag = document.querySelector(`.flag[data-lang="${lang}"]`);
+            if (activeFlag) {
+                activeFlag.classList.add('active');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initLanguage);
+    </script>
+</body>
+</html>
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Betting Exchange Room - Official Shop</title>
+    
+    <!-- Preconnect per caricamento istantaneo di font e bandiere -->
+    <link rel="preconnect" href="https://flagcdn.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==========================================
+           RESET & VARIABILI (TEMA DARK/NEON)
+           ========================================== */
+        :root {
+            --bg-color: #121212; 
+            --card-bg: #1c1c1c;  
+            --text-main: #ffffff; 
+            --text-muted: #a1a1aa; 
+            --accent-color: #eaff00; 
+            --accent-hover: #d4e600; 
+            --btn-text: #000000;    
+            
+            --glow-accent: 0 0 15px rgba(234, 255, 0, 0.15);
+            --shadow-card: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(234, 255, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        /* ==========================================
+           LAYOUT GLOBALE E SFONDO
+           ========================================== */
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: clamp(1rem, 3vw, 2rem);
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 1200px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ==========================================
+           AREA IMMAGINE (OTTIMIZZATA PER NON SOVRAPPORSI)
+           ========================================== */
+        .image-area {
+            position: relative;
+            width: 100%;
+            height: 45vh; /* Altezza adattiva per smartphone */
+            min-height: 300px;
+            background: #121212;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .image-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Mantiene le proporzioni tagliando gli eccessi */
+            object-position: center top;
+            filter: contrast(1.1) brightness(0.95);
+            
+            /* Maschera universale per sfumare il bordo dell'immagine */
+            -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+            mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+            
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.5s ease;
+        }
+
+        .image-area:hover img {
+            transform: scale(1.05);
+            filter: contrast(1.15) brightness(1.05);
+        }
+
+        /* ==========================================
+           AREA CONTENUTO E TESTI
+           ========================================== */
+        .content-area {
+            width: 100%;
+            padding: clamp(1.5rem, 5vw, 4rem);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .brand-badge {
+            display: inline-block;
+            font-size: clamp(0.7rem, 2vw, 0.75rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--btn-text);
+            background-color: var(--accent-color);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            box-shadow: var(--glow-accent);
+            white-space: nowrap;
+        }
+
+        /* ==========================================
+           SELETTORE LINGUE
+           ========================================== */
+        .language-selector {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(234, 255, 0, 0.05);
+        }
+
+        .flag {
+            width: 26px;
+            height: auto;
+            border-radius: 3px;
+            cursor: pointer;
+            opacity: 0.4;
+            filter: grayscale(80%);
+            transition: all 0.3s ease;
+        }
+
+        .flag:hover, .flag.active {
+            opacity: 1;
+            filter: grayscale(0%);
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(234, 255, 0, 0.3);
+        }
+
+        /* ==========================================
+           TIPOGRAFIA
+           ========================================== */
+        h1 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--accent-color);
+            word-wrap: break-word;
+        }
+
+        p {
+            font-size: clamp(0.95rem, 1.5vw, 1.125rem);
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            max-width: 100%;
+        }
+
+        /* ==========================================
+           BOTTONE NEON
+           ========================================== */
+        .cta-button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--accent-color);
+            color: var(--btn-text);
+            text-decoration: none;
+            padding: 1rem 2rem;
+            font-size: clamp(0.95rem, 2vw, 1.1rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            box-shadow: var(--glow-accent);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .cta-button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to bottom right, rgba(255,255,255,0.5) 0%, transparent 40%, transparent 100%);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+
+        .cta-button:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(234, 255, 0, 0.5);
+        }
+        
+        .cta-button:hover::after {
+            opacity: 1;
+            left: 0;
+            top: 0;
+        }
+
+        .cta-button:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* ==========================================
+           MEDIA QUERIES (DESKTOP)
+           ========================================== */
+        @media (min-width: 900px) {
+            .container {
+                flex-direction: row;
+                min-height: 70vh;
+                align-items: stretch;
+            }
+
+            .image-area {
+                flex: 1 1 50%;
+                height: auto;
+                min-height: 100%;
+            }
+
+            .image-area img {
+                object-position: center center;
+                /* Su desktop la sfumatura è verso destra, non verso il basso */
+                -webkit-mask-image: linear-gradient(to right, black 70%, transparent 100%);
+                mask-image: linear-gradient(to right, black 70%, transparent 100%);
+            }
+
+            .content-area {
+                flex: 1 1 50%;
+                padding: 4rem;
+            }
+
+            p {
+                max-width: 90%;
+            }
+
+            .cta-button {
+                width: max-content; /* Su desktop il bottone ha la larghezza del testo */
+                padding: 1.1rem 2.5rem;
+            }
+        }
+    </style> <!-- IL TAG CORRETTO ORA E' QUI -->
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- Area Immagine -->
+        <div class="image-area">
+            <!-- Ho aggiunto un onerror: se il browser non trova subito "cyborgcalciatore.jpeg", mostra un'immagine provvisoria per non farti vedere tutto nero -->
+            <img src="cyborgcalciatore.jpeg" 
+                 onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1000&auto=format&fit=crop';" 
+                 alt="Betting Exchange Cyborg Striker">
+        </div>
+
+        <!-- Area Contenuto -->
+        <div class="content-area">
+            
+            <div class="content-header">
+                <div class="brand-badge" id="badge">Official Community Gear</div>
+                
+                <div class="language-selector">
+                    <img src="https://flagcdn.com/w40/gb.png" alt="English" data-lang="en" class="flag" onclick="setLanguage('en')">
+                    <img src="https://flagcdn.com/w40/es.png" alt="Español" data-lang="es" class="flag" onclick="setLanguage('es')">
+                    <img src="https://flagcdn.com/w40/pt.png" alt="Português" data-lang="pt" class="flag" onclick="setLanguage('pt')">
+                    <img src="https://flagcdn.com/w40/it.png" alt="Italiano" data-lang="it" class="flag" onclick="setLanguage('it')">
+                </div>
+            </div>
+
+            <h1 id="title">Betting Exchange Room</h1>
+            <p id="desc">Join the elite trading team. Wear our premium apparel to support the community and show your passion. Worldwide shipping available.</p>
+            
+            <a href="https://bettingexchangeroom-shop.fourthwall.com/" class="cta-button" id="btn" target="_blank" rel="noopener noreferrer">Shop the Collection</a>
+            
+        </div>
+    </div>
+
+    <!-- SCRIPT GESTIONE LINGUE -->
+    <script>
         const translations = {
             en: {
                 badge: "Official Community Gear",
