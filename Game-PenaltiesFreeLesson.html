@@ -40,7 +40,6 @@
             transform: translateZ(0); 
         }
 
-        /* --- Responsive No-Scroll Layout System --- */
         .ui-layer {
             position: absolute; inset: 0; z-index: 10;
             display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
@@ -93,7 +92,6 @@
         .btn-primary:active { transform: scale(0.96); box-shadow: 0 0 10px var(--neon-green-dim); }
         .btn-primary:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; transform: none; }
 
-        /* Flags */
         .lang-btn {
             border-radius: 0.35rem; border: 2px solid rgba(255, 255, 255, 0.15);
             transition: all 0.25s; cursor: pointer; overflow: hidden;
@@ -116,6 +114,9 @@
         .bet-btn.back-active { border-color: var(--bf-back); background-color: var(--bf-back-light); box-shadow: 0 0 15px rgba(43, 130, 201, 0.4); transform: scale(1.02); z-index: 2;}
         .bet-btn.lay-active { border-color: var(--bf-lay); background-color: var(--bf-lay-light); box-shadow: 0 0 15px rgba(216, 27, 96, 0.4); transform: scale(1.02); z-index: 2;}
         
+        .scen-btn { border: 1px solid rgba(255,255,255,0.1); transition: all 0.2s; cursor: pointer;}
+        .scen-btn.active { border-color: var(--neon-green); background-color: rgba(0, 255, 68, 0.15); box-shadow: 0 0 10px var(--neon-green-dim); }
+
         .tutor-box {
             background: linear-gradient(145deg, rgba(20,40,25,0.9), rgba(10,20,15,0.9));
             border-left: 3px solid var(--neon-green);
@@ -150,6 +151,10 @@
     </style>
 </head>
 <body>
+    <div style="display:none;">
+        <img id="custom-logo" src="logo-tondo.jpeg" alt="Logo" onerror="this.style.display='none'">
+    </div>
+
     <canvas id="gameCanvas"></canvas>
     <div id="touch-zone"></div>
 
@@ -173,12 +178,12 @@
                 </div>
                 
                 <div class="flex gap-3 mb-8 w-full justify-center shrink-0">
-                    <button class="lang-btn active" data-lang="en"><img src="https://flagcdn.com/w80/gb.png" alt="English"></button>
+                    <button class="lang-btn active" data-lang="it"><img src="https://flagcdn.com/w80/it.png" alt="Italiano"></button>
+                    <button class="lang-btn" data-lang="en"><img src="https://flagcdn.com/w80/gb.png" alt="English"></button>
                     <button class="lang-btn" data-lang="es"><img src="https://flagcdn.com/w80/es.png" alt="Español"></button>
                     <button class="lang-btn" data-lang="pt"><img src="https://flagcdn.com/w80/br.png" alt="Português"></button>
-                    <button class="lang-btn" data-lang="it"><img src="https://flagcdn.com/w80/it.png" alt="Italiano"></button>
                 </div>
-                <button id="btn-goto-bet" class="btn-primary">START ACADEMY</button>
+                <button id="btn-goto-bet" class="btn-primary">INIZIA ACADEMY</button>
             </div>
         </div>
     </div>
@@ -188,21 +193,40 @@
         <div class="glass-panel animate-slide-up mx-auto">
             <div class="glass-content">
                 <div class="flex justify-between items-center border-b border-white/10 pb-2 shrink-0">
-                    <h2 id="bet-title" class="text-white font-black responsive-text-xl uppercase">Your Bet</h2>
+                    <h2 id="bet-title" class="text-white font-black responsive-text-xl uppercase">La Tua Scommessa</h2>
                     <div class="text-right bg-black/40 px-3 py-1 rounded-lg border border-white/5">
-                        <span id="bet-bankroll-lbl" class="text-gray-400 responsive-text-xs uppercase block">Bankroll</span>
+                        <span id="bet-bankroll-lbl" class="text-gray-400 responsive-text-xs uppercase block">Cassa</span>
                         <span id="bet-bankroll-val" class="text-[var(--neon-green)] font-mono font-black responsive-text-sm">100.00€</span>
+                    </div>
+                </div>
+
+                <!-- Scenario Selector -->
+                <div class="bg-black/40 rounded-xl p-2 shrink-0 border border-white/5">
+                    <div class="text-center text-gray-400 text-[0.65rem] font-bold uppercase mb-1.5 tracking-widest" id="lbl-scenario">Probabilità Evento</div>
+                    <div class="flex gap-1.5">
+                        <button class="scen-btn active flex-1 bg-white/5 rounded py-1.5 text-xs text-white" data-scen="low">
+                            <span class="block font-bold" id="scen_lbl_low">ALTA</span>
+                            <span class="block text-[0.6rem] text-gray-400 mt-0.5">Quota < 2</span>
+                        </button>
+                        <button class="scen-btn flex-1 bg-white/5 rounded py-1.5 text-xs text-white" data-scen="mid">
+                            <span class="block font-bold" id="scen_lbl_mid">MEDIA</span>
+                            <span class="block text-[0.6rem] text-gray-400 mt-0.5">Quota = 2</span>
+                        </button>
+                        <button class="scen-btn flex-1 bg-white/5 rounded py-1.5 text-xs text-white" data-scen="high">
+                            <span class="block font-bold" id="scen_lbl_high">BASSA</span>
+                            <span class="block text-[0.6rem] text-gray-400 mt-0.5">Quota > 2</span>
+                        </button>
                     </div>
                 </div>
 
                 <div class="flex gap-2 shrink-0">
                     <button id="btn-back" class="bet-btn back-active bg-white opacity-100 cursor-pointer">
-                        <span id="lbl-btn-back" class="text-[var(--bf-back)] font-black responsive-text-xs uppercase block text-center mb-0.5">BACK (YES)</span>
-                        <span class="font-mono text-gray-900 font-black responsive-text-sm">@1.29</span>
+                        <span id="lbl-btn-back" class="text-[var(--bf-back)] font-black responsive-text-xs uppercase block text-center mb-0.5">PUNTA (SI)</span>
+                        <span id="lbl-odds-back" class="font-mono text-gray-900 font-black responsive-text-sm">@1.29</span>
                     </button>
                     <button id="btn-lay" class="bet-btn bg-white/90 opacity-60 hover:opacity-100 cursor-pointer">
-                        <span id="lbl-btn-lay" class="text-[var(--bf-lay)] font-black responsive-text-xs uppercase block text-center mb-0.5">LAY (NO)</span>
-                        <span class="font-mono text-gray-900 font-black responsive-text-sm">@1.31</span>
+                        <span id="lbl-btn-lay" class="text-[var(--bf-lay)] font-black responsive-text-xs uppercase block text-center mb-0.5">BANCA (NO)</span>
+                        <span id="lbl-odds-lay" class="font-mono text-gray-900 font-black responsive-text-sm">@1.31</span>
                     </button>
                 </div>
 
@@ -216,8 +240,8 @@
 
                 <div class="bg-black/50 rounded-xl p-3 border border-white/10 shrink-0">
                     <div class="flex justify-between text-gray-300 responsive-text-xs font-bold mb-2 uppercase">
-                        <span id="lbl-stake">Risk % of Bankroll</span>
-                        <span id="val-stake-perc" class="text-white bg-white/10 px-2 py-0.5 rounded">10%</span>
+                        <span id="lbl-stake">Stake (Puntata)</span>
+                        <span id="val-stake-perc" class="text-white bg-white/10 px-2 py-0.5 rounded">10% Cassa</span>
                     </div>
                     <input type="range" id="stake-slider" min="1" max="100" value="10" class="w-full">
                     <div class="flex justify-between gap-2 mt-2">
@@ -230,23 +254,23 @@
 
                 <div class="bg-white rounded-xl p-3 shadow-inner shrink-0">
                     <div class="flex justify-between items-center mb-1">
-                        <span class="text-gray-600 text-[0.65rem] font-bold uppercase" id="lbl-calc-stake">Your Stake</span>
+                        <span class="text-gray-600 text-[0.65rem] font-bold uppercase" id="lbl-calc-stake">La Tua Puntata (Stake)</span>
                         <span id="calc-stake" class="font-mono font-bold text-gray-800 responsive-text-sm">1.00€</span>
                     </div>
                     <div class="flex justify-between items-center mb-1.5 pb-1.5 border-b border-gray-200">
                         <span class="text-red-600 text-[0.65rem] font-black uppercase flex items-center gap-1">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                            <span id="lbl-calc-liability">Real Risk (Liability)</span>
+                            <span id="lbl-calc-liability">Rischio Reale (Liability)</span>
                         </span>
                         <span id="calc-liability" class="font-mono font-black text-red-600 responsive-text-sm">-1.00€</span>
                     </div>
                     <div class="flex justify-between items-center pt-0.5">
-                        <span class="text-green-600 text-[0.65rem] font-black uppercase" id="lbl-calc-profit">To Win Net (-5% Comm)</span>
+                        <span class="text-green-600 text-[0.65rem] font-black uppercase" id="lbl-calc-profit">Vincita Netta (-5%)</span>
                         <span id="calc-profit" class="font-mono font-black text-green-600 responsive-text-sm">+0.28€</span>
                     </div>
                 </div>
 
-                <button id="btn-confirm-bet" class="btn-primary">PLAY PENALTY</button>
+                <button id="btn-confirm-bet" class="btn-primary">GIOCA RIGORE</button>
             </div>
         </div>
     </div>
@@ -286,106 +310,108 @@
                     </div>
                     <div class="p-3 md:p-4 flex flex-col">
                         
-                        <!-- NEW: Educational Market Analysis Box -->
+                        <!-- Educational Market Analysis Box -->
                         <div id="res-edu-box" class="bg-[var(--bf-back-light)] rounded-lg p-2.5 mb-3 border border-[var(--bf-back)]">
-                            <span id="lbl-edu-title" class="text-[var(--bf-back)] text-[0.65rem] font-black uppercase block mb-1">🔍 Market Analysis</span>
+                            <span id="lbl-edu-title" class="text-[var(--bf-back)] text-[0.65rem] font-black uppercase block mb-1">🔍 Analisi Mercato</span>
                             <p id="res-edu-text" class="text-[0.75rem] text-gray-800 font-medium leading-tight">Analysis text here...</p>
                         </div>
 
                         <div class="bg-gray-50 rounded-lg p-3 mb-3 border border-gray-200">
-                            <span class="text-gray-500 text-[0.65rem] font-bold uppercase block mb-1.5" id="lbl-res-math">Math Breakdown</span>
+                            <span class="text-gray-500 text-[0.65rem] font-bold uppercase block mb-1.5" id="lbl-res-math">Dettaglio Matematico</span>
                             <div id="res-math-detail" class="text-[0.7rem] md:text-[0.8rem] font-mono leading-snug text-gray-800 space-y-1"></div>
                         </div>
                         <div class="flex justify-between items-end border-t border-gray-200 pt-2">
-                            <span class="text-gray-800 text-[0.7rem] font-black uppercase" id="lbl-res-net">Net Return</span>
+                            <span class="text-gray-800 text-[0.7rem] font-black uppercase" id="lbl-res-net">Variazione Cassa</span>
                             <span id="res-net-val" class="font-black responsive-text-xl font-mono leading-none"></span>
                         </div>
                     </div>
                 </div>
 
                 <div class="flex justify-between items-center py-2 px-1 border-t border-white/10 shrink-0 mt-2">
-                    <span class="text-gray-300 responsive-text-xs uppercase font-bold" id="lbl-new-bankroll">New Bankroll</span>
+                    <span class="text-gray-300 responsive-text-xs uppercase font-bold" id="lbl-new-bankroll">Nuova Cassa</span>
                     <span class="text-[var(--neon-green)] font-mono font-black text-2xl" id="val-new-bankroll" style="text-shadow: 0 0 10px rgba(0,255,68,0.5);">100.00€</span>
                 </div>
 
-                <button id="btn-next" class="btn-primary">NEXT BET</button>
+                <button id="btn-next" class="btn-primary">PROSSIMA SCOMMESSA</button>
             </div>
         </div>
     </div>
 
     <script>
-        /* --- Localization & i18n Dictionary --- */
         const i18n = {
-            en: {
-                brand: "Z2H ACADEMY", title: "ZERO TO HERO ACADEMY", sub: "Betting Simulator", start: "START ACADEMY",
-                bet_title: "Your Bet", bankroll: "Bankroll", 
-                back: "BACK (YES)", lay: "LAY (NO)",
-                tutor_b_head: "Tutor: Back Bet",
-                tutor_b_txt: "You are the Punter. You bet the goal WILL happen. The slider sets your Stake.",
-                tutor_l_head: "Tutor: Lay Bet",
-                tutor_l_txt: "You act as the Bookmaker. Liability = Stake × (Odds - 1). Since odds are < 2.00, your Risk is LOWER than the Stake!",
-                stake: "Stake %", max: "MAX",
-                lbl_stake_back: "Your Stake", lbl_stake_lay: "Backer's Stake (To Win)", 
-                lbl_liab: "Real Risk (Liability)", lbl_prof: "To Win Net (-5% comm)",
-                btn_bet: "PLAY PENALTY",
-                tap_pwr: "Tap for Power", tap_dir: "Tap for Direction", tap_hgt: "Tap for Height",
-                step1: "1. POWER", step2: "2. DIRECTION", step3: "3. HEIGHT",
-                res_goal: "GOAL!", res_saved: "SAVED!", res_miss: "MISSED!", res_post: "POST!",
-                sub_goal: "Perfect penalty", sub_saved: "Great keeper save", sub_miss: "Over the bar", sub_post: "Hit the woodwork",
-                res_bet: "You bet: ",
-                lbl_math: "Math Breakdown", lbl_net: "Net Return", lbl_new_br: "New Bankroll",
-                btn_next: "NEXT BET",
-                txt_stake: "Stake", txt_gross: "Gross Win", txt_comm: "5% Comm.", txt_liab: "Liability Paid", txt_lost: "Stake Lost",
-                bankrupt: "BANKRUPT! Reloaded 100€ to keep learning.",
-                edu_title: "Market Analysis",
-                edu_goal: "No keeper touch. Goal! Market suspends immediately. Backers win, Layers pay liability.",
-                edu_save: "Keeper TOUCHED the ball (Shot on Target). Pressure is still on! Lay odds drop significantly.",
-                edu_post: "NO keeper touch (Shot off Target). Hit the wood. Action dies, attacking team odds will drift upwards.",
-                edu_miss: "NO keeper touch (Shot off Target). Action over. Attacking team odds will drift upwards."
-            },
             it: {
                 brand: "Z2H ACADEMY", title: "ZERO TO HERO ACADEMY", sub: "Betting Simulator", start: "INIZIA ACADEMY",
                 bet_title: "La Tua Scommessa", bankroll: "Cassa", 
+                scen_lbl: "Probabilità / Quota", scen_low: "ALTA", scen_mid: "MEDIA", scen_high: "BASSA",
                 back: "PUNTA (SI)", lay: "BANCA (NO)",
-                tutor_b_head: "Tutor: Puntata (Back)",
-                tutor_b_txt: "Scommetti che il gol VERRÀ segnato. Lo slider imposta la tua Puntata (Stake).",
-                tutor_l_head: "Tutor: Bancata (Lay)",
-                tutor_l_txt: "Fai il banco! Liability = Stake × (Quota - 1). Essendo la quota < 2.00 (@1.31), il tuo rischio reale è INFERIORE alla puntata!",
-                stake: "Stake %", max: "MAX",
-                lbl_stake_back: "La tua Puntata", lbl_stake_lay: "Puntata Sfidante (Da Vincere)", 
+                tutor_b_head: "Tasto Azzurro (Punta / Back)",
+                tutor_b_txt: "Scommetti A FAVORE di un evento. Rischi solo l'importo che decidi di puntare (Stake).",
+                tutor_l_head: "Tasto Rosa (Banca / Lay)",
+                tutor_l_txt: "Scommetti CONTRO un evento (diventi tu il Bookmaker). Attenzione: il tuo rischio (Liability) si moltiplica in base alla quota!",
+                stake: "Stake (Puntata)", max: "MAX",
+                lbl_stake: "La Tua Puntata (Stake)", 
                 lbl_liab: "Rischio Reale (Liability)", lbl_prof: "Vincita Netta (-5%)",
-                btn_bet: "GIOCA RIGORE",
+                btn_bet: "GIOCA EVENTO",
                 tap_pwr: "Tocca per Potenza", tap_dir: "Tocca per Direzione", tap_hgt: "Tocca per Altezza",
                 step1: "1. POTENZA", step2: "2. DIREZIONE", step3: "3. ALTEZZA",
                 res_goal: "GOL!", res_saved: "PARATA!", res_miss: "FUORI!", res_post: "PALO!",
-                sub_goal: "Rigore perfetto", sub_saved: "Miracolo del portiere", sub_miss: "Palla in curva", sub_post: "Legno colpito",
+                sub_goal: "Azione perfetta", sub_saved: "Miracolo del portiere", sub_miss: "Palla in curva", sub_post: "Legno colpito",
                 res_bet: "Hai scommesso: ",
                 lbl_math: "Dettaglio Matematico", lbl_net: "Variazione Cassa", lbl_new_br: "Nuovo Bankroll",
                 btn_next: "PROSSIMA SCOMMESSA",
                 txt_stake: "Puntata", txt_gross: "Vincita Lorda", txt_comm: "5% Comm.", txt_liab: "Liability Pagata", txt_lost: "Puntata Persa",
                 bankrupt: "BANCAROTTA! Ricaricati 100€ per continuare.",
                 edu_title: "Analisi di Mercato",
-                edu_goal: "Nessun tocco. Gol! Il mercato sospende. Chi ha Puntato vince, chi ha Bancato paga la liability.",
-                edu_save: "Il portiere ha TOCCATO la palla (Tiro in Porta). Alta pressione! La quota si abbassa, ottimo per chi Banca.",
+                edu_goal: "Nessun tocco del portiere. Gol! Il mercato sospende. Chi ha Puntato vince, chi ha Bancato paga la liability.",
+                edu_save: "Il portiere ha TOCCATO la palla (Tiro in Porta). Alta pressione! La quota si abbassa.",
                 edu_post: "NESSUN tocco del portiere (Tiro Fuori). Palo! L'azione sfuma. La quota dell'attacco si alzerà (drift).",
                 edu_miss: "NESSUN tocco del portiere (Tiro Fuori). Palla persa. La quota dell'attacco si alzerà (drift)."
+            },
+            en: {
+                brand: "Z2H ACADEMY", title: "ZERO TO HERO ACADEMY", sub: "Betting Simulator", start: "START ACADEMY",
+                bet_title: "Your Bet", bankroll: "Bankroll", 
+                scen_lbl: "Probability / Odds", scen_low: "HIGH", scen_mid: "MEDIUM", scen_high: "LOW",
+                back: "BACK (YES)", lay: "LAY (NO)",
+                tutor_b_head: "Blue Button (Back)",
+                tutor_b_txt: "You bet FOR an event. Your maximum risk is exactly the amount you Stake.",
+                tutor_l_head: "Pink Button (Lay)",
+                tutor_l_txt: "You bet AGAINST an event (act as Bookmaker). Warning: your risk (Liability) multiplies based on the odds!",
+                stake: "Stake Amount", max: "MAX",
+                lbl_stake: "Your Stake", 
+                lbl_liab: "Real Risk (Liability)", lbl_prof: "Net Profit (-5%)",
+                btn_bet: "PLAY EVENT",
+                tap_pwr: "Tap for Power", tap_dir: "Tap for Direction", tap_hgt: "Tap for Height",
+                step1: "1. POWER", step2: "2. DIRECTION", step3: "3. HEIGHT",
+                res_goal: "GOAL!", res_saved: "SAVED!", res_miss: "MISSED!", res_post: "POST!",
+                sub_goal: "Perfect action", sub_saved: "Great keeper save", sub_miss: "Over the bar", sub_post: "Hit the woodwork",
+                res_bet: "You bet: ",
+                lbl_math: "Math Breakdown", lbl_net: "Net Return", lbl_new_br: "New Bankroll",
+                btn_next: "NEXT BET",
+                txt_stake: "Stake", txt_gross: "Gross Win", txt_comm: "5% Comm.", txt_liab: "Liability Paid", txt_lost: "Stake Lost",
+                bankrupt: "BANKRUPT! Reloaded 100€ to keep learning.",
+                edu_title: "Market Analysis",
+                edu_goal: "No keeper touch. Goal! Market suspends. Backers win, Layers pay liability.",
+                edu_save: "Keeper TOUCHED the ball (Shot on Target). Pressure is still on! Lay odds drop.",
+                edu_post: "NO keeper touch (Shot off Target). Hit the wood. Action dies, attacking odds drift upwards.",
+                edu_miss: "NO keeper touch (Shot off Target). Action over. Attacking odds drift upwards."
             },
             es: {
                 brand: "Z2H ACADEMIA", title: "ZERO TO HERO ACADEMY", sub: "Simulador Apuestas", start: "INICIAR ACADEMIA",
                 bet_title: "Tu Apuesta", bankroll: "Saldo", 
+                scen_lbl: "Probabilidad / Cuota", scen_low: "ALTA", scen_mid: "MEDIA", scen_high: "BAJA",
                 back: "A FAVOR (SÍ)", lay: "EN CONTRA (NO)",
-                tutor_b_head: "Tutor: A Favor",
-                tutor_b_txt: "Apuestas a que SÍ habrá gol. El deslizador ajusta tu Stake.",
-                tutor_l_head: "Tutor: En Contra",
-                tutor_l_txt: "Actúas como la casa. Liability = Stake × (Cuota - 1). Como la cuota es < 2.00, ¡tu riesgo real es MENOR que el stake!",
-                stake: "Stake %", max: "MÁX",
-                lbl_stake_back: "Tu Stake", lbl_stake_lay: "Stake del Rival (A ganar)", 
+                tutor_b_head: "Botón Azul (Back)",
+                tutor_b_txt: "Apuestas A FAVOR de un evento. Arriesgas solo la cantidad que decides apostar (Stake).",
+                tutor_l_head: "Botón Rosa (Lay)",
+                tutor_l_txt: "Apuestas EN CONTRA de un evento (eres la casa). Atención: tu riesgo (Liability) se multiplica según la cuota.",
+                stake: "Cantidad de Stake", max: "MÁX",
+                lbl_stake: "Tu Stake", 
                 lbl_liab: "Riesgo Real (Liab)", lbl_prof: "Beneficio Neto (-5%)",
-                btn_bet: "JUGAR PENALTI",
+                btn_bet: "JUGAR EVENTO",
                 tap_pwr: "Toca para Potencia", tap_dir: "Toca para Dirección", tap_hgt: "Toca para Altura",
                 step1: "1. POTENCIA", step2: "2. DIRECCIÓN", step3: "3. ALTURA",
                 res_goal: "¡GOL!", res_saved: "¡PARADÓN!", res_miss: "¡FUERA!", res_post: "¡POSTE!",
-                sub_goal: "Penalti perfecto", sub_saved: "El portero la saca", sub_miss: "A la grada", sub_post: "A la madera",
+                sub_goal: "Acción perfecta", sub_saved: "El portero la saca", sub_miss: "A la grada", sub_post: "A la madera",
                 res_bet: "Apostaste: ",
                 lbl_math: "Detalle Matemático", lbl_net: "Retorno Neto", lbl_new_br: "Nuevo Saldo",
                 btn_next: "SIGUIENTE APUESTA",
@@ -393,26 +419,27 @@
                 bankrupt: "¡BANCARROTA! Recargados 100€ para seguir.",
                 edu_title: "Análisis de Mercado",
                 edu_goal: "Sin toque. ¡Gol! Mercado suspendido. Gana el Back, el Lay paga la liability.",
-                edu_save: "El portero TOCÓ el balón (Tiro a puerta). La presión sigue. La cuota del ataque bajará.",
+                edu_save: "El portero TOCÓ el balón (Tiro a puerta). La presión sigue. La cuota bajará.",
                 edu_post: "SIN toque del portero (Tiro fuera). ¡Al palo! La acción muere. La cuota del ataque subirá.",
                 edu_miss: "SIN toque del portero (Tiro fuera). Acción terminada. La cuota del ataque subirá."
             },
             pt: {
                 brand: "Z2H ACADEMIA", title: "ZERO TO HERO ACADEMY", sub: "Simulador Apostas", start: "INICIAR ACADEMIA",
                 bet_title: "Sua Aposta", bankroll: "Banca", 
+                scen_lbl: "Probabilidade / Odd", scen_low: "ALTA", scen_mid: "MÉDIA", scen_high: "BAIXA",
                 back: "A FAVOR (SIM)", lay: "CONTRA (NÃO)",
-                tutor_b_head: "Tutor: A Favor (Back)",
-                tutor_b_txt: "Você aposta que o gol VAI acontecer. O controle define sua Stake.",
-                tutor_l_head: "Tutor: Contra (Lay)",
-                tutor_l_txt: "Você é a casa. Liability = Stake × (Odd - 1). Como a odd é < 2.00, seu risco real é MENOR que a stake!",
-                stake: "Stake %", max: "MÁX",
-                lbl_stake_back: "Sua Stake", lbl_stake_lay: "Stake Adversário (A ganhar)", 
+                tutor_b_head: "Botão Azul (Back)",
+                tutor_b_txt: "Você aposta A FAVOR de um evento. O risco máximo é exatamente a sua Stake.",
+                tutor_l_head: "Botão Rosa (Lay)",
+                tutor_l_txt: "Aposta CONTRA um evento (você é o Bookmaker). Atenção: seu risco (Liability) é multiplicado pela odd!",
+                stake: "Valor da Stake", max: "MÁX",
+                lbl_stake: "Sua Stake", 
                 lbl_liab: "Risco Real (Liab)", lbl_prof: "Lucro Líquido (-5%)",
-                btn_bet: "BATER PÊNALTI",
+                btn_bet: "BATER EVENTO",
                 tap_pwr: "Toque para Força", tap_dir: "Toque para Direção", tap_hgt: "Toque para Altura",
                 step1: "1. FORÇA", step2: "2. DIREÇÃO", step3: "3. ALTURA",
                 res_goal: "GOL!", res_saved: "DEFESA!", res_miss: "FORA!", res_post: "NA TRAVE!",
-                sub_goal: "Pênalti perfeito", sub_saved: "Grande defesa", sub_miss: "Isolou a bola", sub_post: "Bateu na trave",
+                sub_goal: "Ação perfeita", sub_saved: "Grande defesa", sub_miss: "Isolou a bola", sub_post: "Bateu na trave",
                 res_bet: "Você apostou: ",
                 lbl_math: "Detalhes", lbl_net: "Retorno Líquido", lbl_new_br: "Nova Banca",
                 btn_next: "PRÓXIMA APOSTA",
@@ -426,41 +453,36 @@
             }
         };
 
-        // Browser Language Detection
         const browserLangRaw = (navigator.language || navigator.userLanguage).substring(0, 2).toLowerCase();
-        let currentLang = ['en', 'es', 'pt', 'it'].includes(browserLangRaw) ? browserLangRaw : 'en';
+        let currentLang = ['en', 'es', 'pt', 'it'].includes(browserLangRaw) ? browserLangRaw : 'it'; // Default to Italian for Z2H context
 
         function updateTexts() {
             const t = i18n[currentLang];
             
-            // Global
             document.getElementById('header-brand').innerText = t.brand;
 
-            // Screen 1: Lang
             document.getElementById('main-title').firstChild.textContent = t.title;
             document.getElementById('main-subtitle').innerText = t.sub;
             document.getElementById('btn-goto-bet').innerText = t.start;
             
-            // Screen 2: Bet
             document.getElementById('bet-title').innerText = t.bet_title;
             document.getElementById('bet-bankroll-lbl').innerText = t.bankroll;
+            document.getElementById('lbl-scenario').innerText = t.scen_lbl;
+            document.getElementById('scen_lbl_low').innerText = t.scen_low;
+            document.getElementById('scen_lbl_mid').innerText = t.scen_mid;
+            document.getElementById('scen_lbl_high').innerText = t.scen_high;
+
             document.getElementById('lbl-btn-back').innerText = t.back;
             document.getElementById('lbl-btn-lay').innerText = t.lay;
             document.getElementById('lbl-stake').innerText = t.stake;
             document.getElementById('btn-max-stake').innerText = t.max;
-            
-            if(bet.type === 'back'){
-                document.getElementById('lbl-calc-stake').innerText = t.lbl_stake_back;
-            } else {
-                document.getElementById('lbl-calc-stake').innerText = t.lbl_stake_lay;
-            }
+            document.getElementById('lbl-calc-stake').innerText = t.lbl_stake;
 
             document.getElementById('lbl-calc-liability').innerText = t.lbl_liab;
             document.getElementById('lbl-calc-profit').innerText = t.lbl_prof;
             document.getElementById('btn-confirm-bet').innerText = t.btn_bet;
             updateTutorText();
 
-            // Screen 3: Game
             if(gameState === 'IDLE' || gameState === 'POWER') document.getElementById('hud-instruction').innerText = t.tap_pwr;
             else if(gameState === 'AIM_H') document.getElementById('hud-instruction').innerText = t.tap_dir;
             else if(gameState === 'AIM_V') document.getElementById('hud-instruction').innerText = t.tap_hgt;
@@ -468,14 +490,13 @@
             document.getElementById('hud-h-text').innerText = (gameState === 'AIM_H') ? t.step2 : t.step1;
             document.getElementById('hud-v-text').innerText = t.step3;
 
-            // Screen 4: Result
             document.getElementById('lbl-res-math').innerText = t.lbl_math;
             document.getElementById('lbl-res-net').innerText = t.lbl_net;
             document.getElementById('lbl-new-bankroll').innerText = t.lbl_new_br;
             document.getElementById('btn-next').innerText = t.btn_next;
             document.getElementById('lbl-edu-title').innerText = "🔍 " + t.edu_title;
 
-            if(gameState === 'RESULT') showResult(currentOutcome); // Refresh result text
+            if(gameState === 'RESULT') showResult(currentOutcome); 
         }
 
         document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -487,16 +508,133 @@
             });
         });
 
-        /* --- System State & Initialization --- */
         let bankroll = 100.00;
         let bet = { type: 'back', stakePerc: 10, stakeAmt: 10.00, oddsBack: 1.29, oddsLay: 1.31, comm: 0.05, liability: 0, profit: 0 };
         let gameState = 'IDLE'; 
+        
+        // Scenario definitions
+        const oddsScenarios = {
+            low: { b: 1.29, l: 1.31, diff: 'easy' }, // Alta prob gol (Rigore)
+            mid: { b: 2.00, l: 2.02, diff: 'medium' }, // 50/50
+            high: { b: 3.40, l: 3.50, diff: 'hard' } // Bassa prob gol (Tiro da lontano)
+        };
+        let currentScenario = 'low';
+
+        document.querySelectorAll('.scen-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.scen-btn').forEach(b => b.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                currentScenario = e.currentTarget.getAttribute('data-scen');
+                
+                bet.oddsBack = oddsScenarios[currentScenario].b;
+                bet.oddsLay = oddsScenarios[currentScenario].l;
+                
+                document.getElementById('lbl-odds-back').innerText = "@" + bet.oddsBack.toFixed(2);
+                document.getElementById('lbl-odds-lay').innerText = "@" + bet.oddsLay.toFixed(2);
+                
+                updateBetMath();
+            });
+        });
+
+        const screens = { lang: document.getElementById('screen-lang'), bet: document.getElementById('screen-bet'), game: document.getElementById('screen-game'), res: document.getElementById('screen-result') };
+        const touchZone = document.getElementById('touch-zone');
+
+        function switchScreen(screenName) {
+            Object.values(screens).forEach(s => s.classList.remove('ui-active'));
+            if(screenName !== 'none') screens[screenName].classList.add('ui-active');
+            touchZone.style.display = screenName === 'game' ? 'block' : 'none';
+        }
+
+        const slider = document.getElementById('stake-slider'), btnBack = document.getElementById('btn-back'), btnLay = document.getElementById('btn-lay'), btnConfirm = document.getElementById('btn-confirm-bet');
+
+        function openBetting() {
+            gameState = 'BETTING';
+            document.getElementById('bet-bankroll-val').innerText = bankroll.toFixed(2) + "€";
+            slider.value = bet.stakePerc;
+            updateBetMath(); switchScreen('bet');
+        }
+
+        function setBetType(type) {
+            bet.type = type;
+            if(type === 'back') {
+                btnBack.classList.add('back-active'); btnBack.classList.remove('opacity-60', 'hover:opacity-100');
+                btnLay.classList.remove('lay-active'); btnLay.classList.add('opacity-60', 'hover:opacity-100');
+                document.getElementById('lbl-calc-liability').style.color = '#dc2626';
+            } else {
+                btnLay.classList.add('lay-active'); btnLay.classList.remove('opacity-60', 'hover:opacity-100');
+                btnBack.classList.remove('back-active'); btnBack.classList.add('opacity-60', 'hover:opacity-100');
+                document.getElementById('lbl-calc-liability').style.color = 'var(--bf-lay)';
+            }
+            updateTutorText(); updateBetMath();
+        }
+
+        function updateTutorText() {
+            const t = i18n[currentLang];
+            const tutorBox = document.getElementById('tutor-box');
+            if(bet.type === 'back') {
+                document.getElementById('tutor-header').innerText = t.tutor_b_head;
+                document.getElementById('tutor-text').innerText = t.tutor_b_txt;
+                tutorBox.style.borderLeftColor = 'var(--bf-back)';
+            } else {
+                document.getElementById('tutor-header').innerText = t.tutor_l_head;
+                document.getElementById('tutor-text').innerText = t.tutor_l_txt;
+                tutorBox.style.borderLeftColor = 'var(--bf-lay)';
+            }
+            tutorBox.style.animation = 'none'; tutorBox.offsetHeight; tutorBox.style.animation = 'fadeIn 0.4s ease-out';
+        }
+
+        btnBack.addEventListener('click', () => setBetType('back'));
+        btnLay.addEventListener('click', () => setBetType('lay'));
+        slider.addEventListener('input', (e) => { bet.stakePerc = parseInt(e.target.value); updateBetMath(); });
+        document.querySelectorAll('.quick-stake').forEach(btn => btn.addEventListener('click', (e) => { bet.stakePerc = parseInt(e.target.getAttribute('data-val')); slider.value = bet.stakePerc; updateBetMath(); }));
+
+        // CORE MATH LOGIC - EXACTLY LIKE BETFAIR
+        function updateBetMath() {
+            document.getElementById('val-stake-perc').innerText = bet.stakePerc + "% Cassa";
+            
+            // L'utente sceglie LA PUNTATA (Stake) in percentuale alla cassa.
+            let baseStake = bankroll * (bet.stakePerc / 100);
+
+            if (bet.type === 'back') {
+                bet.stakeAmt = baseStake;
+                bet.liability = baseStake; // Nel Back, rischi quello che punti.
+                let gross = baseStake * (bet.oddsBack - 1);
+                bet.profit = gross * (1 - bet.comm);
+            } else { // LAY
+                bet.stakeAmt = baseStake;
+                // Nel Lay, la Liability è calcolata dalla quota.
+                bet.liability = baseStake * (bet.oddsLay - 1); 
+
+                // PROTEZIONE BANCAROTTA: Se la Liability supera la cassa, cap lo Stake.
+                if (bet.liability > bankroll) {
+                    bet.liability = bankroll;
+                    bet.stakeAmt = bankroll / (bet.oddsLay - 1);
+                    
+                    if(bankroll > 0) {
+                        document.getElementById('calc-liability').parentElement.classList.add('pulse-alert');
+                        setTimeout(() => document.getElementById('calc-liability').parentElement.classList.remove('pulse-alert'), 1000);
+                    }
+                }
+                
+                // Se banchi e vinci, incassi la puntata dello sfidante (Stake)
+                let gross = bet.stakeAmt; 
+                bet.profit = gross * (1 - bet.comm);
+            }
+
+            document.getElementById('calc-stake').innerText = bet.stakeAmt.toFixed(2) + "€";
+            document.getElementById('calc-liability').innerText = "-" + bet.liability.toFixed(2) + "€";
+            document.getElementById('calc-profit').innerText = "+" + bet.profit.toFixed(2) + "€";
+            
+            btnConfirm.disabled = (bet.stakeAmt <= 0.01);
+        }
+
+        btnConfirm.addEventListener('click', startGameLoop);
+
         let power = 0, aimH = 50, aimV = 50;
         let pDir = 1, hDir = 1, vDir = 1;
         let animFrame, idleTime = 0;
         let hasShot = false; 
 
-        // Canvas & Physics State
         let w, h, dpr = 1, isDesktop = false;
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -514,7 +652,6 @@
         window.requestAnimFrame = window.requestAnimationFrame || function(cb){ window.setTimeout(cb, 1000/60); };
         window.cancelAnimFrame = window.cancelAnimationFrame || window.clearTimeout;
 
-        /* --- Texture Builders --- */
         function createGrassTexture() {
             const tempCanvas = document.createElement('canvas');
             tempCanvas.width = 256; tempCanvas.height = 256;
@@ -540,97 +677,6 @@
             ctx.closePath();
         }
 
-        /* --- Betting Logic & Math --- */
-        const screens = { lang: document.getElementById('screen-lang'), bet: document.getElementById('screen-bet'), game: document.getElementById('screen-game'), res: document.getElementById('screen-result') };
-        const touchZone = document.getElementById('touch-zone');
-
-        function switchScreen(screenName) {
-            Object.values(screens).forEach(s => s.classList.remove('ui-active'));
-            if(screenName !== 'none') screens[screenName].classList.add('ui-active');
-            touchZone.style.display = screenName === 'game' ? 'block' : 'none';
-        }
-
-        const slider = document.getElementById('stake-slider'), btnBack = document.getElementById('btn-back'), btnLay = document.getElementById('btn-lay'), btnConfirm = document.getElementById('btn-confirm-bet');
-
-        function openBetting() {
-            gameState = 'BETTING';
-            document.getElementById('bet-bankroll-val').innerText = bankroll.toFixed(2) + "€";
-            if(bet.stakePerc === 100) bet.stakePerc = 10;
-            slider.value = bet.stakePerc;
-            updateBetMath(); switchScreen('bet');
-        }
-
-        function setBetType(type) {
-            bet.type = type;
-            if(type === 'back') {
-                btnBack.classList.add('back-active'); btnBack.classList.remove('opacity-60', 'hover:opacity-100');
-                btnLay.classList.remove('lay-active'); btnLay.classList.add('opacity-60', 'hover:opacity-100');
-                document.getElementById('lbl-calc-liability').style.color = '#dc2626';
-            } else {
-                btnLay.classList.add('lay-active'); btnLay.classList.remove('opacity-60', 'hover:opacity-100');
-                btnBack.classList.remove('back-active'); btnBack.classList.add('opacity-60', 'hover:opacity-100');
-                document.getElementById('lbl-calc-liability').style.color = 'var(--bf-lay)';
-            }
-            updateTexts(); updateTutorText(); updateBetMath();
-        }
-
-        function updateTutorText() {
-            const t = i18n[currentLang];
-            const tutorBox = document.getElementById('tutor-box');
-            if(bet.type === 'back') {
-                document.getElementById('tutor-header').innerText = t.tutor_b_head;
-                document.getElementById('tutor-text').innerText = t.tutor_b_txt;
-                tutorBox.style.borderLeftColor = 'var(--bf-back)';
-            } else {
-                document.getElementById('tutor-header').innerText = t.tutor_l_head;
-                document.getElementById('tutor-text').innerText = t.tutor_l_txt;
-                tutorBox.style.borderLeftColor = 'var(--bf-lay)';
-            }
-            tutorBox.style.animation = 'none'; tutorBox.offsetHeight; tutorBox.style.animation = 'fadeIn 0.4s ease-out';
-        }
-
-        btnBack.addEventListener('click', () => setBetType('back'));
-        btnLay.addEventListener('click', () => setBetType('lay'));
-        slider.addEventListener('input', (e) => { bet.stakePerc = parseInt(e.target.value); updateBetMath(); });
-        document.querySelectorAll('.quick-stake').forEach(btn => btn.addEventListener('click', (e) => { bet.stakePerc = parseInt(e.target.getAttribute('data-val')); slider.value = bet.stakePerc; updateBetMath(); }));
-
-        function updateBetMath() {
-            document.getElementById('val-stake-perc').innerText = bet.stakePerc + "%";
-            
-            // Lo Stake è SEMPRE la % della cassa calcolata come Puntata
-            let amt = bankroll * (bet.stakePerc / 100);
-
-            // Se è Lay, blocchiamo lo stake se la liability supererebbe la cassa
-            if (bet.type === 'lay') {
-                let maxStakeAllowed = bankroll / (bet.oddsLay - 1);
-                if (amt > maxStakeAllowed) {
-                    amt = maxStakeAllowed;
-                }
-            }
-
-            bet.stakeAmt = amt;
-
-            let gross = 0;
-            if (bet.type === 'back') {
-                bet.liability = amt; // Nel Back, il rischio = puntata
-                gross = amt * (bet.oddsBack - 1);
-            } else { // LAY
-                bet.liability = amt * (bet.oddsLay - 1); // Nel Lay, il rischio = puntata * (quota - 1)
-                gross = amt; // La vincita lorda è la puntata dello sfidante
-            }
-
-            bet.profit = gross * (1 - bet.comm);
-
-            document.getElementById('calc-stake').innerText = bet.stakeAmt.toFixed(2) + "€";
-            document.getElementById('calc-liability').innerText = "-" + bet.liability.toFixed(2) + "€";
-            document.getElementById('calc-profit').innerText = "+" + bet.profit.toFixed(2) + "€";
-            
-            btnConfirm.disabled = (bet.stakeAmt <= 0.01);
-        }
-
-        btnConfirm.addEventListener('click', startGameLoop);
-
-        /* --- Canvas Graphics Engine --- */
         function resize() {
             w = window.innerWidth; h = window.innerHeight;
             isDesktop = w >= 768;
@@ -707,13 +753,8 @@
             drawShadows();
 
             if (gameState === 'SHOOTING' || gameState === 'RESULT') {
-                if (currentOutcome === 'saved') {
-                    drawArticulatedKeeper(keeperAnim.x, keeperAnim.y, keeperAnim.stretch, instDx, currentOutcome);
-                    drawBall(ballAnim.x, ballAnim.y, ballAnim.scale);
-                } else {
-                    drawArticulatedKeeper(keeperAnim.x, keeperAnim.y, keeperAnim.stretch, instDx, currentOutcome);
-                    drawBall(ballAnim.x, ballAnim.y, ballAnim.scale);
-                }
+                drawArticulatedKeeper(keeperAnim.x, keeperAnim.y, keeperAnim.stretch, instDx, currentOutcome);
+                drawBall(ballAnim.x, ballAnim.y, ballAnim.scale);
             } else {
                 idleTime += 0.04;
                 keeperAnim.x = goalRect.cx + Math.sin(idleTime) * (goalRect.w * 0.08);
@@ -726,7 +767,6 @@
             ctx.restore();
         }
 
-        /* --- Draw Smooth Full HD Advertising Boards --- */
         function drawAdBoards() {
             const boardH = Math.max(35, h * 0.07);
             const boardY = goalRect.horizon - boardH;
@@ -798,7 +838,6 @@
             ctx.fill();
         }
 
-        /* --- 3D Goal & Net --- */
         function drawGoal() {
             const postThickness = Math.max(4, goalRect.w * 0.012);
             const netDepth = goalRect.w * 0.15;
@@ -861,7 +900,6 @@
             ctx.fillRect(goalRect.x - postThickness/2, goalRect.y + postThickness/2, goalRect.w + postThickness, 2);
         }
 
-        /* --- Ultra-Realistic Articulated Keeper --- */
         function drawArticulatedKeeper(x, y, stretch, dx, outcome) {
             ctx.save(); 
             ctx.translate(x, y);
@@ -975,7 +1013,6 @@
             ctx.strokeStyle = skinColor;
             let armSpread = size * 2.2 * actualStretch; 
 
-            // Left
             ctx.beginPath();
             ctx.moveTo(-torsoW/2, cy + size);
             let lGx, lGy;
@@ -987,7 +1024,6 @@
             }
             ctx.lineTo(lGx, lGy); ctx.stroke();
 
-            // Right
             ctx.beginPath();
             ctx.moveTo(torsoW/2, cy + size);
             let rGx, rGy;
@@ -1050,7 +1086,6 @@
             ctx.restore();
         }
 
-        /* --- Classic Ball --- */
         function drawBall(x, y, scale = 1) {
             const r = Math.max(12, Math.min(w * 0.05, 30)) * scale;
             ctx.save(); ctx.translate(x, y);
@@ -1131,7 +1166,6 @@
             ctx.globalAlpha = 1;
         }
 
-        /* --- Input & Pre-shot Logic --- */
         function startGameLoop() {
             hasShot = false; gameState = 'POWER';
             power = 0; aimH = 50; aimV = 50; pDir = 1; hDir = 1; vDir = 1;
@@ -1189,7 +1223,6 @@
         touchZone.addEventListener('touchstart', handleInput, { passive: false });
         window.addEventListener('keydown', (e) => { if (e.code === 'Space') handleInput(e); });
 
-        /* --- Deterministic Physics System --- */
         function calculateShoot() {
             gameState = 'SHOOTING'; window.cancelAnimFrame(animFrame); switchScreen('none');
             
@@ -1210,14 +1243,19 @@
             const isPostX = !isInsideX && rawTx >= goalRect.x - 12 && rawTx <= goalRect.x + goalRect.w + 12;
             const isPostY = !isInsideY && rawTy >= goalRect.y - 12 && rawTy <= goalRect.y + goalRect.h + 12;
 
-            // Logica Fisica Reale: Se la palla non è dentro la porta, IL PORTIERE NON LA TOCCA.
             if (!isInsideX || !isInsideY) {
                 currentOutcome = (isPostX || isPostY) ? 'post' : 'miss';
             } else {
                 let distCenter = Math.abs(rawTx - goalRect.cx) / (goalRect.w/2); 
                 let keeperDifficulty = (distCenter * 50) + (power * 0.5); 
-                let keeperReach = 30 + Math.random() * 70; 
-                currentOutcome = (keeperDifficulty > keeperReach && power > 30) ? 'goal' : 'saved';
+                
+                // Difficoltà portiere calcolata IN BASE ALLA QUOTA
+                let keeperReach;
+                if(currentScenario === 'low') keeperReach = 30 + Math.random() * 50; // Quota bassa (1.30): Portiere debole, alto rateo di gol
+                else if(currentScenario === 'mid') keeperReach = 40 + Math.random() * 60; // Quota 2.00: 50/50
+                else keeperReach = 60 + Math.random() * 80; // Quota alta (3.50): Portiere forte, basso rateo gol
+                
+                currentOutcome = (keeperDifficulty > keeperReach && power > 20) ? 'goal' : 'saved';
             }
 
             ballAnim.startX = ballAnim.x; ballAnim.startY = ballAnim.y;
@@ -1227,16 +1265,15 @@
             
             let bRad = Math.max(12, Math.min(w * 0.05, 30)) * ballAnim.endScale;
             
-            // Forza il pallone a sbattere esattamente sul palo (Legno)
             if (currentOutcome === 'post') {
                 let pThick = Math.max(4, goalRect.w * 0.012);
-                if (rawTy < goalRect.y + 10) { // Traversa
+                if (rawTy < goalRect.y + 10) { 
                     ballAnim.endY = goalRect.y - bRad + pThick/2;
                     ballAnim.endX = Math.max(goalRect.x, Math.min(goalRect.x + goalRect.w, rawTx));
-                } else if (rawTx < goalRect.cx) { // Palo Sinistro
+                } else if (rawTx < goalRect.cx) { 
                     ballAnim.endX = goalRect.x - bRad + pThick/2;
                     ballAnim.endY = Math.min(rawTy, goalRect.y + goalRect.h - bRad);
-                } else { // Palo Destro
+                } else { 
                     ballAnim.endX = goalRect.x + goalRect.w + bRad - pThick/2;
                     ballAnim.endY = Math.min(rawTy, goalRect.y + goalRect.h - bRad);
                 }
@@ -1244,10 +1281,8 @@
 
             keeperAnim.startX = keeperAnim.x; keeperAnim.startY = keeperAnim.y;
             
-            // EXACT INVERSE KINEMATICS FOR PERFECT GLOVE INTERCEPT (Solo su Saved)
             if (currentOutcome === 'saved') {
                 let diveDir = ballAnim.endX > goalRect.cx ? 1 : -1;
-                
                 let size = Math.max(6, goalRect.w * 0.028); 
                 let torsoW = size * 3.4;
                 let saveStretchTarget = 1.15; 
@@ -1274,7 +1309,6 @@
                 keeperAnim.endY = goalRect.y + goalRect.h * 0.6;
             }
             else {
-                // Miss o Post: Tuffo a vuoto
                 keeperAnim.endX = goalRect.cx + (ballAnim.endX - goalRect.cx) * 0.5;
                 keeperAnim.endY = goalRect.y + goalRect.h * 0.4;
             }
@@ -1336,7 +1370,6 @@
             animFrame = window.requestAnimFrame(updateShooting);
         }
 
-        /* --- Result View & Math Summary --- */
         function showResult(outcome) {
             const t = i18n[currentLang];
             const isGoal = outcome === 'goal';
@@ -1359,7 +1392,6 @@
                 else { titleEl.innerText = t.res_miss; subEl.innerText = t.sub_miss; }
             }
 
-            // Inietta l'Analisi di Mercato (Il lato Super Educativo)
             let eduKey = '';
             if (outcome === 'goal') eduKey = t.edu_goal;
             else if (outcome === 'saved') eduKey = t.edu_save;
@@ -1369,7 +1401,9 @@
 
             const cardHeader = document.getElementById('res-card-header');
             document.getElementById('res-bet-title').innerText = t.res_bet + (bet.type === 'back' ? t.back : t.lay);
-            document.getElementById('res-bet-odds').innerText = bet.type === 'back' ? "@1.29" : "@1.31";
+            
+            // Dynamic Odds
+            document.getElementById('res-bet-odds').innerText = bet.type === 'back' ? "@" + bet.oddsBack.toFixed(2) : "@" + bet.oddsLay.toFixed(2);
             
             if (bet.type === 'back') {
                 cardHeader.className = "px-4 py-2 flex justify-between items-center border-b bg-[var(--bf-back-light)] text-[var(--bf-back)]";
@@ -1387,9 +1421,7 @@
 
             if (betWon) {
                 let stakeDisp = bet.stakeAmt; 
-                let labelStake = bet.type === 'back' ? t.txt_stake : t.txt_backer_stake;
-                
-                mathHTML += `<div class="flex justify-between border-b border-gray-100 pb-1"><span>${labelStake}:</span> <span class="font-bold">${stakeDisp.toFixed(2)}€</span></div>`;
+                mathHTML += `<div class="flex justify-between border-b border-gray-100 pb-1"><span>${t.txt_stake}:</span> <span class="font-bold">${stakeDisp.toFixed(2)}€</span></div>`;
                 mathHTML += `<div class="flex justify-between border-b border-gray-100 py-1"><span>${t.txt_gross}:</span> <span class="text-green-600 font-bold">+${grossValue}€</span></div>`;
                 mathHTML += `<div class="flex justify-between pt-1"><span>${t.txt_comm}:</span> <span class="text-red-500 font-bold">-${commValue}€</span></div>`;
                 netValStr = `+${bet.profit.toFixed(2)}€`;
