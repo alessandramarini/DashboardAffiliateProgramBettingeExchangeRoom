@@ -1,26 +1,27 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#061a0d">
-    <meta name="description" content="Zero To Hero - Betting Academy Simulator">
-    <title>Zero To Hero - Betting Academy</title>
+    <meta name="description" content="Zero To Hero - Betting Simulator">
+    <title>Zero To Hero Academy - Betting Simulator</title>
     
     <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --neon-green: #00ff44;
+            --neon-green-dim: rgba(0, 255, 68, 0.3);
             --bf-back: #2b82c9;
             --bf-back-light: #e0f2fe;
             --bf-lay: #d81b60;
             --bf-lay-light: #fce7f3;
-            --bg-dark: #061a0d;
+            --bg-dark: #041209;
         }
 
         html, body {
@@ -29,8 +30,7 @@
             font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
             user-select: none; -webkit-user-select: none;
-            touch-action: none; 
-            overscroll-behavior: none; 
+            touch-action: none; overscroll-behavior: none; 
         }
 
         .font-mono { font-family: 'JetBrains Mono', monospace; }
@@ -40,403 +40,508 @@
             transform: translateZ(0); 
         }
 
+        /* --- Responsive No-Scroll Layout System --- */
         .ui-layer {
             position: absolute; inset: 0; z-index: 10;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            pointer-events: none;
-            opacity: 0; transition: opacity 0.3s ease-in-out;
-            padding: calc(env(safe-area-inset-top) + 4.5rem) 1rem env(safe-area-inset-bottom) 1rem;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+            pointer-events: none; opacity: 0; transition: opacity 0.3s ease-in-out;
+            padding: calc(env(safe-area-inset-top) + 3.5rem) 0.5rem calc(env(safe-area-inset-bottom) + 0.5rem) 0.5rem;
         }
+        
+        @media (min-width: 768px) {
+            .ui-layer { justify-content: center; align-items: center; }
+        }
+
         .ui-active { opacity: 1; pointer-events: auto; }
 
         .glass-panel {
-            background: rgba(10, 29, 18, 0.88);
+            background: rgba(8, 20, 12, 0.88);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 1.25rem;
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.15);
-            max-height: calc(100vh - 120px); /* Ensures single page layout with no global scrolling */
-            overflow-y: auto;
-            overflow-x: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255,255,255,0.1);
             display: flex; flex-direction: column;
             width: 100%; max-width: 420px;
+            max-height: 100%;
+            overflow: hidden;
         }
         
-        /* Hide scrollbars for cinematic UI */
-        .glass-panel::-webkit-scrollbar { width: 0px; background: transparent; }
+        .glass-content {
+            display: flex; flex-direction: column;
+            gap: clamp(0.5rem, 1.5vh, 1rem);
+            padding: clamp(1rem, 2vh, 1.5rem);
+            height: 100%; justify-content: flex-start;
+            overflow-y: auto; 
+            scrollbar-width: none; 
+        }
+        .glass-content::-webkit-scrollbar { display: none; }
+
+        .responsive-text-xl { font-size: clamp(1.1rem, 2.5vh, 1.5rem); line-height: 1.1; }
+        .responsive-text-sm { font-size: clamp(0.75rem, 1.8vh, 0.9rem); }
+        .responsive-text-xs { font-size: clamp(0.65rem, 1.5vh, 0.75rem); }
 
         .btn-primary {
             background: var(--neon-green); color: #000;
             font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em;
-            padding: clamp(0.6rem, 2.5vh, 0.9rem) 2rem; border-radius: 9999px;
-            box-shadow: 0 0 15px rgba(0, 255, 68, 0.25);
+            padding: clamp(0.8rem, 2.5vh, 1.2rem) 1rem; border-radius: 9999px;
+            box-shadow: 0 0 20px var(--neon-green-dim);
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 100%;
-            font-size: clamp(0.85rem, 2.2vw, 1rem);
-            flex-shrink: 0;
-            border: none; cursor: pointer;
+            width: 100%; font-size: clamp(0.9rem, 2vh, 1.1rem); flex-shrink: 0;
+            border: none; cursor: pointer; line-height: 1; margin-top: auto;
         }
-        .btn-primary:hover { box-shadow: 0 0 25px rgba(0, 255, 68, 0.45); transform: scale(1.02); }
-        .btn-primary:active { transform: scale(0.96); box-shadow: 0 0 10px rgba(0, 255, 68, 0.4); }
-        .btn-primary:disabled { background: #555; color: #888; box-shadow: none; cursor: not-allowed; transform: none; }
+        .btn-primary:hover { box-shadow: 0 0 30px rgba(0, 255, 68, 0.5); transform: scale(1.02); }
+        .btn-primary:active { transform: scale(0.96); box-shadow: 0 0 10px var(--neon-green-dim); }
+        .btn-primary:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; transform: none; }
 
+        /* Flags */
         .lang-btn {
-            padding: 0;
-            border-radius: 0.25rem;
-            border: 2px solid rgba(255, 255, 255, 0.15);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            overflow: hidden;
-            width: 44px;
-            height: 28px;
-            display: block;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-            background: #111;
-            position: relative;
-            flex-shrink: 0;
+            border-radius: 0.35rem; border: 2px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.25s; cursor: pointer; overflow: hidden;
+            width: clamp(45px, 12vw, 55px); aspect-ratio: 3/2; background: #111; position: relative;
+            padding: 0; display: flex; align-items: center; justify-content: center;
         }
-        .lang-btn img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .lang-btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.4); }
-        .lang-btn.active { border-color: var(--neon-green); transform: scale(1.1) translateY(-2px); box-shadow: 0 0 15px rgba(0,255,68,0.5); z-index: 2; }
+        .lang-btn img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.5; transition: opacity 0.3s;}
+        .lang-btn.active { border-color: var(--neon-green); transform: scale(1.15); box-shadow: 0 0 15px var(--neon-green-dim); z-index: 2; }
+        .lang-btn.active img { opacity: 1; }
 
-        input[type=range] {
-            -webkit-appearance: none; width: 100%; background: transparent; padding: 6px 0;
-        }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; padding: 10px 0; }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%;
-            background: #ffffff; cursor: pointer; margin-top: -8px;
-            box-shadow: 0 0 8px rgba(0,0,0,0.5); border: 2.5px solid var(--neon-green);
+            background: #fff; cursor: pointer; margin-top: -8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5); border: 3px solid var(--neon-green);
         }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%; height: 4px; cursor: pointer; background: rgba(255,255,255,0.2); border-radius: 2px;
-        }
-        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; }
 
-        .bet-btn { border: 2px solid transparent; transition: all 0.2s; }
-        .bet-btn.back-active { border-color: var(--bf-back); background-color: var(--bf-back-light); box-shadow: 0 0 12px rgba(43, 130, 201, 0.35); }
-        .bet-btn.lay-active { border-color: var(--bf-lay); background-color: var(--bf-lay-light); box-shadow: 0 0 12px rgba(216, 27, 96, 0.35); }
-
-        .hud-bar-wrapper {
-            position: absolute; background: rgba(0,0,0,0.6); border: 2px solid rgba(255,255,255,0.5);
-            border-radius: 999px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none;
-        }
-        .hud-bar-wrapper.active { border-color: var(--neon-green); box-shadow: 0 0 15px rgba(0,255,68,0.4); }
-        .hud-h { bottom: 25vh; left: 50%; transform: translateX(-50%); width: 75%; max-width: 440px; height: clamp(1.1rem, 3vh, 1.5rem); }
-        .hud-v { right: 5vw; top: 40%; transform: translateY(-50%); height: 40vh; max-height: 350px; width: clamp(1.1rem, 3vw, 1.5rem); }
-        .hud-fill-h { height: 100%; width: 0%; background: linear-gradient(90deg, #16a34a, var(--neon-green), #ef4444); transition: width 0.05s linear; }
-        .hud-fill-v { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: linear-gradient(0deg, #16a34a, var(--neon-green), #ef4444); transition: height 0.05s linear; }
+        .bet-btn { border: 2px solid transparent; transition: all 0.2s; position: relative; overflow: hidden; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: clamp(0.4rem, 1.5vh, 0.75rem); border-radius: 0.75rem;}
+        .bet-btn.back-active { border-color: var(--bf-back); background-color: var(--bf-back-light); box-shadow: 0 0 15px rgba(43, 130, 201, 0.4); transform: scale(1.02); z-index: 2;}
+        .bet-btn.lay-active { border-color: var(--bf-lay); background-color: var(--bf-lay-light); box-shadow: 0 0 15px rgba(216, 27, 96, 0.4); transform: scale(1.02); z-index: 2;}
         
-        .hud-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: clamp(0.6rem, 2.2vw, 0.8rem); text-shadow: 1px 1px 2px black; pointer-events: none; z-index: 2; letter-spacing: 0.1em; }
+        .tutor-box {
+            background: linear-gradient(145deg, rgba(20,40,25,0.9), rgba(10,20,15,0.9));
+            border-left: 3px solid var(--neon-green);
+            animation: fadeIn 0.4s ease-out;
+            padding: clamp(0.5rem, 1.5vh, 0.75rem);
+            border-radius: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        /* HUD Bars */
+        .hud-bar-wrapper {
+            position: absolute; background: rgba(0,0,0,0.7); border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 999px; overflow: hidden; backdrop-filter: blur(5px); display: none;
+            z-index: 30;
+        }
+        .hud-bar-wrapper.active { border-color: var(--neon-green); box-shadow: 0 0 20px var(--neon-green-dim); }
+        .hud-h { top: 65vh; left: 50%; transform: translateX(-50%); width: 80%; max-width: 400px; height: clamp(20px, 4vh, 28px); }
+        .hud-v { right: 5vw; top: 40%; transform: translateY(-50%); height: 40vh; max-height: 300px; width: clamp(20px, 4vw, 28px); }
+        .hud-fill-h { height: 100%; width: 0%; background: linear-gradient(90deg, #16a34a, var(--neon-green), #ef4444); }
+        .hud-fill-v { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: linear-gradient(0deg, #16a34a, var(--neon-green), #ef4444); }
+        
+        .hud-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: clamp(0.7rem, 2vh, 0.85rem); text-shadow: 1px 1px 3px black; z-index: 2; letter-spacing: 0.1em; pointer-events: none;}
         .text-vertical { writing-mode: vertical-rl; transform: rotate(180deg); }
 
         #touch-zone { position: absolute; inset: 0; z-index: 45; cursor: crosshair; display: none; }
 
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes pulseSlow { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.85; transform: scale(0.97); } }
-        .animate-pulse-slow { animation: pulseSlow 2s ease-in-out infinite; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulseAlert { 0%, 100% { transform: scale(1); opacity: 1;} 50% { transform: scale(1.05); opacity: 0.8; box-shadow: 0 0 20px rgba(0,255,68,0.8);} }
+        .pulse-alert { animation: pulseAlert 1.5s infinite; }
     </style>
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
     <div id="touch-zone"></div>
 
-    <!-- GLOBAL PERSISTENT HEADER -->
-    <div id="global-header" class="absolute top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2.5 bg-black/60 border border-white/10 px-4 py-2 rounded-full backdrop-blur-md shadow-lg transition-all duration-300">
-        <div class="w-6 h-6 rounded-full overflow-hidden border border-[var(--neon-green)] flex items-center justify-center shrink-0 bg-black/40">
-            <img src="logo-tondo.jpeg" alt="Z2H Logo" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/50x50/061a0d/00ff44?text=Z2H'">
+    <!-- Global Header -->
+    <div id="global-header" class="absolute top-2 left-2 md:top-4 md:left-6 z-50 flex items-center gap-2 bg-black/80 border border-white/10 px-3 py-1.5 rounded-full backdrop-blur-md shadow-2xl">
+        <div class="w-6 h-6 rounded-full border border-[var(--neon-green)] flex items-center justify-center shrink-0 fallback-icon bg-black">
+            <svg class="w-3 h-3 text-[var(--neon-green)]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
         </div>
-        <span class="text-white text-[10px] md:text-[11px] font-black tracking-widest uppercase shrink-0">BETTING EXCHANGE ROOM</span>
+        <span id="header-brand" class="text-white text-[0.65rem] md:text-xs font-black tracking-widest uppercase shrink-0">Z2H ACADEMY</span>
     </div>
 
-    <!-- SCHERMATA 1: SELEZIONE LINGUA -->
-    <div id="screen-lang" class="ui-layer ui-active p-4 flex items-center justify-center">
-        <div class="glass-panel p-5 flex flex-col items-center justify-center animate-slide-up shadow-2xl mx-auto" style="min-height: auto; max-width: 320px;">
-            <div class="mb-3 w-16 h-16 rounded-full flex items-center justify-center shadow-[0_0_12px_rgba(0,255,68,0.25)] border-2 border-[var(--neon-green)] overflow-hidden bg-black/50 shrink-0">
-                <img src="logo-tondo.jpeg" alt="Logo" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/100x100/061a0d/00ff44?text=Z2H'">
-            </div>
-            <h1 id="main-title" class="text-white font-black text-lg uppercase tracking-tight mb-5 text-center drop-shadow-md shrink-0 leading-tight">ZERO TO HERO ACADEMY</h1>
-            
-            <!-- Flags ordered: EN, ES, PT, IT as requested -->
-            <div class="flex gap-3 mb-6 w-full justify-center shrink-0">
-                <button class="lang-btn" data-lang="en"><img src="https://flagcdn.com/gb.svg" alt="English" loading="lazy"></button>
-                <button class="lang-btn" data-lang="es"><img src="https://flagcdn.com/es.svg" alt="Español" loading="lazy"></button>
-                <button class="lang-btn" data-lang="pt"><img src="https://flagcdn.com/br.svg" alt="Português" loading="lazy"></button>
-                <button class="lang-btn" data-lang="it"><img src="https://flagcdn.com/it.svg" alt="Italiano" loading="lazy"></button>
-            </div>
-            <div class="w-full shrink-0">
-                <button id="btn-goto-bet" class="btn-primary w-full text-center py-2.5">START</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- SCHERMATA 2: BETTING SLIP -->
-    <div id="screen-bet" class="ui-layer p-4">
-        <div class="glass-panel p-3.5 md:p-5 flex flex-col animate-slide-up gap-2.5">
-            
-            <div class="flex justify-between items-center border-b border-white/20 pb-1.5 shrink-0">
-                <h2 id="bet-title" class="text-white font-black text-lg md:text-xl uppercase tracking-tighter">Scommessa</h2>
-                <div class="text-right">
-                    <span id="bet-bankroll-lbl" class="text-gray-400 text-[9px] uppercase block">Bankroll</span>
-                    <span id="bet-bankroll-val" class="text-[var(--neon-green)] font-mono font-black text-base">100.00€</span>
-                </div>
-            </div>
-
-            <div class="flex gap-2.5 shrink-0">
-                <button id="btn-back" class="bet-btn back-active flex-1 bg-white rounded-lg p-1.5 text-center cursor-pointer flex flex-col items-center">
-                    <span id="lbl-btn-back" class="text-[var(--bf-back)] font-black text-[10px] md:text-xs uppercase block text-center leading-tight h-5 flex items-center justify-center">PUNTA (SI)</span>
-                    <span class="font-mono text-gray-800 font-bold text-base mt-0.5">@1.29</span>
-                </button>
-                <button id="btn-lay" class="bet-btn flex-1 bg-white rounded-lg p-1.5 text-center cursor-pointer flex flex-col items-center opacity-80 hover:opacity-100">
-                    <span id="lbl-btn-lay" class="text-[var(--bf-lay)] font-black text-[10px] md:text-xs uppercase block text-center leading-tight h-5 flex items-center justify-center">BANCA (NO)</span>
-                    <span class="font-mono text-gray-800 font-bold text-base mt-0.5">@1.31</span>
-                </button>
-            </div>
-
-            <div class="bg-black/40 rounded-lg p-3 border border-white/10 shrink-0">
-                <div class="flex justify-between text-gray-300 text-[10px] font-bold mb-1 uppercase">
-                    <span id="lbl-stake">Stake (Puntata)</span>
-                    <span id="val-stake-perc" class="text-white">1%</span>
+    <!-- Screen: Language Selection -->
+    <div id="screen-lang" class="ui-layer ui-active">
+        <div class="glass-panel animate-slide-up mx-auto">
+            <div class="glass-content items-center justify-center py-6">
+                <div class="mb-4 flex flex-col items-center justify-center shrink-0 w-full">
+                    <div class="mb-4 w-28 h-28 rounded-full flex items-center justify-center border-4 border-[var(--neon-green)] bg-black shadow-[0_0_40px_rgba(0,255,68,0.5)] shrink-0 overflow-hidden">
+                        <svg class="w-12 h-12 text-[var(--neon-green)] fallback-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path d="M12.5 7H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+                    </div>
+                    <h1 id="main-title" class="text-white font-black responsive-text-xl uppercase tracking-tight text-center leading-tight">ZERO TO HERO ACADEMY<br><span id="main-subtitle" class="text-[var(--neon-green)] responsive-text-sm tracking-widest">Betting Simulator</span></h1>
                 </div>
                 
-                <input type="range" id="stake-slider" min="1" max="100" value="1" class="mb-2 w-full">
-                
-                <div class="flex justify-between gap-1 mt-0.5">
-                    <button class="quick-stake flex-1 bg-white/10 hover:bg-white/20 text-white rounded text-[10px] py-1 transition-colors" data-val="1">1%</button>
-                    <button class="quick-stake flex-1 bg-white/10 hover:bg-white/20 text-white rounded text-[10px] py-1 transition-colors" data-val="2">2%</button>
-                    <button class="quick-stake flex-1 bg-white/10 hover:bg-white/20 text-white rounded text-[10px] py-1 transition-colors" data-val="3">3%</button>
-                    <button class="quick-stake flex-1 bg-white/10 hover:bg-white/20 text-white rounded text-[10px] py-1 transition-colors" data-val="5">5%</button>
-                    <button id="btn-max-stake" class="quick-stake flex-1 bg-[var(--bf-lay)]/50 hover:bg-[var(--bf-lay)]/80 text-white font-bold rounded text-[10px] py-1 transition-colors" data-val="100">MAX</button>
+                <div class="flex gap-3 mb-8 w-full justify-center shrink-0">
+                    <button class="lang-btn active" data-lang="en"><img src="https://flagcdn.com/w80/gb.png" alt="English"></button>
+                    <button class="lang-btn" data-lang="es"><img src="https://flagcdn.com/w80/es.png" alt="Español"></button>
+                    <button class="lang-btn" data-lang="pt"><img src="https://flagcdn.com/w80/br.png" alt="Português"></button>
+                    <button class="lang-btn" data-lang="it"><img src="https://flagcdn.com/w80/it.png" alt="Italiano"></button>
                 </div>
+                <button id="btn-goto-bet" class="btn-primary">START ACADEMY</button>
             </div>
-
-            <div class="bg-white rounded-lg p-2.5 shadow-inner shrink-0">
-                <div class="flex justify-between items-center mb-0.5">
-                    <span class="text-gray-500 text-[9px] font-bold uppercase" id="lbl-calc-stake">Stake in Euro</span>
-                    <span id="calc-stake" class="font-mono font-bold text-gray-800 text-xs md:text-sm">1.00€</span>
-                </div>
-                <div class="flex justify-between items-center mb-1 pb-1 border-b border-gray-100">
-                    <span class="text-red-500 text-[9px] font-black uppercase" id="lbl-calc-liability">Rischio Reale (Liability)</span>
-                    <span id="calc-liability" class="font-mono font-black text-red-600 text-xs md:text-sm">-1.00€</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-green-600 text-[9px] font-black uppercase" id="lbl-calc-profit">Vincita Netta (-5% Comm)</span>
-                    <span id="calc-profit" class="font-mono font-black text-green-600 text-base">+0.28€</span>
-                </div>
-            </div>
-
-            <button id="btn-confirm-bet" class="btn-primary w-full text-center shrink-0 mt-1 py-2.5">Gioca Rigore</button>
         </div>
     </div>
 
-    <!-- SCHERMATA 3: HUD DI GIOCO -->
+    <!-- Screen: Betting Interface -->
+    <div id="screen-bet" class="ui-layer">
+        <div class="glass-panel animate-slide-up mx-auto">
+            <div class="glass-content">
+                <div class="flex justify-between items-center border-b border-white/10 pb-2 shrink-0">
+                    <h2 id="bet-title" class="text-white font-black responsive-text-xl uppercase">Your Bet</h2>
+                    <div class="text-right bg-black/40 px-3 py-1 rounded-lg border border-white/5">
+                        <span id="bet-bankroll-lbl" class="text-gray-400 responsive-text-xs uppercase block">Bankroll</span>
+                        <span id="bet-bankroll-val" class="text-[var(--neon-green)] font-mono font-black responsive-text-sm">100.00€</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 shrink-0">
+                    <button id="btn-back" class="bet-btn back-active bg-white opacity-100 cursor-pointer">
+                        <span id="lbl-btn-back" class="text-[var(--bf-back)] font-black responsive-text-xs uppercase block text-center mb-0.5">BACK (YES)</span>
+                        <span class="font-mono text-gray-900 font-black responsive-text-sm">@1.29</span>
+                    </button>
+                    <button id="btn-lay" class="bet-btn bg-white/90 opacity-60 hover:opacity-100 cursor-pointer">
+                        <span id="lbl-btn-lay" class="text-[var(--bf-lay)] font-black responsive-text-xs uppercase block text-center mb-0.5">LAY (NO)</span>
+                        <span class="font-mono text-gray-900 font-black responsive-text-sm">@1.31</span>
+                    </button>
+                </div>
+
+                <div id="tutor-box" class="tutor-box text-gray-200">
+                    <div class="flex items-center gap-1 mb-1">
+                        <svg class="w-3 h-3 text-[var(--neon-green)] shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                        <span class="font-black uppercase text-[0.65rem] text-[var(--neon-green)] tracking-wider" id="tutor-header">Tutor</span>
+                    </div>
+                    <p id="tutor-text" class="text-[0.75rem] md:text-sm leading-snug">Instructions here...</p>
+                </div>
+
+                <div class="bg-black/50 rounded-xl p-3 border border-white/10 shrink-0">
+                    <div class="flex justify-between text-gray-300 responsive-text-xs font-bold mb-2 uppercase">
+                        <span id="lbl-stake">Risk % of Bankroll</span>
+                        <span id="val-stake-perc" class="text-white bg-white/10 px-2 py-0.5 rounded">10%</span>
+                    </div>
+                    <input type="range" id="stake-slider" min="1" max="100" value="10" class="w-full">
+                    <div class="flex justify-between gap-2 mt-2">
+                        <button class="quick-stake flex-1 bg-white/10 hover:bg-white/20 text-white rounded text-xs py-1.5 font-bold transition-colors" data-val="1">1%</button>
+                        <button class="quick-stake flex-1 bg-white/10 hover:bg-white/20 text-white rounded text-xs py-1.5 font-bold transition-colors" data-val="5">5%</button>
+                        <button class="quick-stake flex-1 bg-white/10 hover:bg-white/20 text-white rounded text-xs py-1.5 font-bold transition-colors" data-val="10">10%</button>
+                        <button id="btn-max-stake" class="quick-stake flex-1 bg-red-500/80 hover:bg-red-500 text-white font-black rounded text-xs py-1.5 transition-colors shadow-lg" data-val="100">MAX</button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-3 shadow-inner shrink-0">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-gray-600 text-[0.65rem] font-bold uppercase" id="lbl-calc-stake">Your Stake</span>
+                        <span id="calc-stake" class="font-mono font-bold text-gray-800 responsive-text-sm">1.00€</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-1.5 pb-1.5 border-b border-gray-200">
+                        <span class="text-red-600 text-[0.65rem] font-black uppercase flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            <span id="lbl-calc-liability">Real Risk (Liability)</span>
+                        </span>
+                        <span id="calc-liability" class="font-mono font-black text-red-600 responsive-text-sm">-1.00€</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-0.5">
+                        <span class="text-green-600 text-[0.65rem] font-black uppercase" id="lbl-calc-profit">To Win Net (-5% Comm)</span>
+                        <span id="calc-profit" class="font-mono font-black text-green-600 responsive-text-sm">+0.28€</span>
+                    </div>
+                </div>
+
+                <button id="btn-confirm-bet" class="btn-primary">PLAY PENALTY</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen: Game Interaction -->
     <div id="screen-game" class="ui-layer">
-        <div class="absolute top-[12vh] text-center w-full">
-            <p id="hud-instruction" class="text-white font-bold text-[clamp(0.65rem,1.8vw,0.9rem)] tracking-widest uppercase bg-black/60 border border-white/10 inline-block px-4 py-2 rounded-full backdrop-blur-md shadow-lg transition-all duration-300 animate-pulse-slow">
-                Tocca, Clicca o Spazio per tirare
+        <div class="absolute top-[8vh] text-center w-full pointer-events-none z-30">
+            <p id="hud-instruction" class="text-white font-black responsive-text-sm tracking-widest uppercase bg-black/80 border border-[var(--neon-green)] inline-block px-5 py-2 rounded-full backdrop-blur-md pulse-alert shadow-[0_0_15px_rgba(0,255,68,0.5)]">
+                Tap for Power
             </p>
         </div>
         
         <div id="hud-h-wrapper" class="hud-bar-wrapper hud-h">
             <div id="hud-h-fill" class="hud-fill-h"></div>
-            <span id="hud-h-text" class="hud-text">1. POTENZA</span>
+            <span id="hud-h-text" class="hud-text">1. POWER</span>
         </div>
 
         <div id="hud-v-wrapper" class="hud-bar-wrapper hud-v">
             <div id="hud-v-fill" class="hud-fill-v"></div>
-            <span id="hud-v-text" class="hud-text text-vertical">3. ALTEZZA</span>
+            <span id="hud-v-text" class="hud-text text-vertical">3. HEIGHT</span>
         </div>
     </div>
 
-    <!-- SCHERMATA 4: RISULTATO -->
-    <div id="screen-result" class="ui-layer p-4">
-        <div class="glass-panel w-full max-w-sm animate-slide-up p-3.5 md:p-5 gap-3">
-            
-            <div class="text-center shrink-0">
-                <h2 id="res-title" class="text-white font-black text-3xl md:text-4xl mb-0 uppercase tracking-tighter drop-shadow-lg leading-tight">GOL!</h2>
-                <p id="res-subtitle" class="text-gray-300 text-[10px] uppercase tracking-[0.2em] mt-0.5">Esito</p>
-            </div>
-
-            <div class="w-full bg-white rounded-xl overflow-hidden flex flex-col shadow-lg shrink-0">
-                <div id="res-card-header" class="px-3 py-1.5 flex justify-between items-center border-b">
-                    <span id="res-bet-title" class="font-black uppercase text-xs">Hai scommesso: PUNTA</span>
-                    <span id="res-bet-odds" class="font-bold text-[10px] font-mono bg-white/50 px-1.5 py-0.5 rounded">@1.29</span>
+    <!-- Screen: Results -->
+    <div id="screen-result" class="ui-layer">
+        <div class="glass-panel animate-slide-up mx-auto">
+            <div class="glass-content">
+                <div class="text-center shrink-0 mb-2">
+                    <h2 id="res-title" class="text-white font-black text-4xl md:text-5xl mb-0 uppercase tracking-tighter drop-shadow-lg leading-none">GOAL!</h2>
+                    <p id="res-subtitle" class="text-gray-300 text-[0.65rem] md:text-[0.75rem] font-bold uppercase tracking-[0.2em] mt-2">Outcome</p>
                 </div>
-                <div class="p-3 flex flex-col">
-                    <div class="bg-gray-50 rounded p-2 mb-2 border border-gray-150">
-                        <span class="text-gray-500 text-[9px] font-bold uppercase block mb-0.5" id="lbl-res-math">Dettaglio Operazione</span>
-                        <div id="res-math-detail" class="text-[11px] font-mono leading-relaxed text-gray-800"></div>
+
+                <div class="w-full bg-white rounded-xl overflow-hidden flex flex-col shadow-2xl shrink-0">
+                    <div id="res-card-header" class="px-4 py-2 flex justify-between items-center border-b">
+                        <span id="res-bet-title" class="font-black uppercase responsive-text-xs">You bet: BACK</span>
+                        <span id="res-bet-odds" class="font-bold text-[0.7rem] font-mono bg-white/50 px-2 py-0.5 rounded-md">@1.29</span>
                     </div>
-                    <div class="flex justify-between items-end border-t border-gray-100 pt-1.5">
-                        <span class="text-gray-800 text-[10px] font-black uppercase" id="lbl-res-net">Variazione Cassa</span>
-                        <span id="res-net-val" class="font-black text-xl font-mono leading-none"></span>
+                    <div class="p-3 md:p-4 flex flex-col">
+                        
+                        <!-- NEW: Educational Market Analysis Box -->
+                        <div id="res-edu-box" class="bg-[var(--bf-back-light)] rounded-lg p-2.5 mb-3 border border-[var(--bf-back)]">
+                            <span id="lbl-edu-title" class="text-[var(--bf-back)] text-[0.65rem] font-black uppercase block mb-1">🔍 Market Analysis</span>
+                            <p id="res-edu-text" class="text-[0.75rem] text-gray-800 font-medium leading-tight">Analysis text here...</p>
+                        </div>
+
+                        <div class="bg-gray-50 rounded-lg p-3 mb-3 border border-gray-200">
+                            <span class="text-gray-500 text-[0.65rem] font-bold uppercase block mb-1.5" id="lbl-res-math">Math Breakdown</span>
+                            <div id="res-math-detail" class="text-[0.7rem] md:text-[0.8rem] font-mono leading-snug text-gray-800 space-y-1"></div>
+                        </div>
+                        <div class="flex justify-between items-end border-t border-gray-200 pt-2">
+                            <span class="text-gray-800 text-[0.7rem] font-black uppercase" id="lbl-res-net">Net Return</span>
+                            <span id="res-net-val" class="font-black responsive-text-xl font-mono leading-none"></span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="flex justify-between items-center shrink-0 py-0.5">
-                <span class="text-gray-400 text-[11px] uppercase font-bold" id="lbl-new-bankroll">Nuovo Bankroll</span>
-                <span class="text-[var(--neon-green)] font-mono font-bold text-lg" id="val-new-bankroll">100.00€</span>
-            </div>
+                <div class="flex justify-between items-center py-2 px-1 border-t border-white/10 shrink-0 mt-2">
+                    <span class="text-gray-300 responsive-text-xs uppercase font-bold" id="lbl-new-bankroll">New Bankroll</span>
+                    <span class="text-[var(--neon-green)] font-mono font-black text-2xl" id="val-new-bankroll" style="text-shadow: 0 0 10px rgba(0,255,68,0.5);">100.00€</span>
+                </div>
 
-            <button id="btn-next" class="btn-primary w-full text-center shrink-0 mt-1 py-2.5">Prossima Scommessa</button>
+                <button id="btn-next" class="btn-primary">NEXT BET</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // --- 0. VARIABILI FINANZIARIE E STATO ---
-        let bankroll = 100.00;
-        let bet = { type: 'back', stakePerc: 1, stakeAmt: 1.00, oddsBack: 1.29, oddsLay: 1.31, comm: 0.05, liability: 0, profit: 0 };
-        let gameState = 'IDLE'; 
-        let power = 0, aimH = 50, aimV = 50;
-        let pDir = 1, hDir = 1, vDir = 1;
-        let animFrame;
-        let hasShot = false; 
-
-        // 3D & Graphics State
-        let goalRect = { x: 0, y: 0, w: 0, h: 0, horizon: 0 };
-        let ballAnim = { x: 0, y: 0, scale: 1, tx: 0, ty: 0, targetScale: 0.35 };
-        let handsAnim = { x: 0, y: 0, tx: 0, ty: 0 };
-        let currentOutcome = '';
-
-        window.requestAnimFrame = (function(){
-            return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function( cb ){ window.setTimeout(cb, 1000 / 60); };
-        })();
-        window.cancelAnimFrame = (function(){
-            return window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.mozCancelAnimationFrame || window.clearTimeout;
-        })();
-
-        // --- 1. MULTILINGUA COMPLETO ---
+        /* --- Localization & i18n Dictionary --- */
         const i18n = {
             en: {
-                main_title: "ZERO TO HERO ACADEMY",
-                btn_start: "START", btn_bet: "PLAY PENALTY", btn_next: "NEXT BET",
-                tap: "Tap for Power", tap_aim: "Tap for Direction", tap_height: "Tap for Height",
+                brand: "Z2H ACADEMY", title: "ZERO TO HERO ACADEMY", sub: "Betting Simulator", start: "START ACADEMY",
+                bet_title: "Your Bet", bankroll: "Bankroll", 
+                back: "BACK (YES)", lay: "LAY (NO)",
+                tutor_b_head: "Tutor: Back Bet",
+                tutor_b_txt: "You are the Punter. You bet the goal WILL happen. The slider sets your Stake.",
+                tutor_l_head: "Tutor: Lay Bet",
+                tutor_l_txt: "You act as the Bookmaker. Liability = Stake × (Odds - 1). Since odds are < 2.00, your Risk is LOWER than the Stake!",
+                stake: "Stake %", max: "MAX",
+                lbl_stake_back: "Your Stake", lbl_stake_lay: "Backer's Stake (To Win)", 
+                lbl_liab: "Real Risk (Liability)", lbl_prof: "To Win Net (-5% comm)",
+                btn_bet: "PLAY PENALTY",
+                tap_pwr: "Tap for Power", tap_dir: "Tap for Direction", tap_hgt: "Tap for Height",
                 step1: "1. POWER", step2: "2. DIRECTION", step3: "3. HEIGHT",
-                bet_title: "Your Bet", lbl_bankroll: "Bankroll", 
-                b_title: "BACK (YES)", l_title: "LAY (NO)",
-                lbl_stake: "Stake Amount", lbl_calc_stake: "Stake in Euros", lbl_calc_liab: "Real Risk (Liability)", lbl_calc_prof: "Net Win (-5% comm)",
                 res_goal: "GOAL!", res_saved: "SAVED!", res_miss: "MISSED!", res_post: "POST!",
-                sub_goal: "Penalty Scored", sub_saved: "Keeper blocks it", sub_miss: "Over the bar", sub_post: "Unlucky!",
-                res_bet_title: "You bet: ", lbl_res_math: "Operation Details", lbl_res_net: "Net Return", lbl_new_bankroll: "New Bankroll",
-                txt_stake: "Stake", txt_gross: "Gross", txt_comm: "5% Commission", txt_liab: "Liability Paid", txt_lost: "Stake Lost", txt_bankrupt: "BANKRUPT! Reloaded €100 to keep learning.",
-                btn_max: "MAX"
-            },
-            es: {
-                main_title: "ACADEMIA ZERO TO HERO",
-                btn_start: "EMPEZAR", btn_bet: "JUGAR PENALTI", btn_next: "SIGUIENTE APUESTA",
-                tap: "Toca para Potencia", tap_aim: "Toca para Dirección", tap_height: "Toca para Altura",
-                step1: "1. POTENCIA", step2: "2. DIRECCIÓN", step3: "3. ALTURA",
-                bet_title: "Tu Apuesta", lbl_bankroll: "Saldo", 
-                b_title: "A FAVOR (SÍ)", l_title: "EN CONTRA (NO)",
-                lbl_stake: "Stake (Importe)", lbl_calc_stake: "Stake en Euros", lbl_calc_liab: "Riesgo Real (Liab)", lbl_calc_prof: "Ganancia Neta (-5%)",
-                res_goal: "¡GOL!", res_saved: "¡PARADA!", res_miss: "¡FUERA!", res_post: "¡POSTE!",
-                sub_goal: "Penalti Anotado", sub_saved: "El portero detiene", sub_miss: "Balón a la grada", sub_post: "¡Mala suerte!",
-                res_bet_title: "Apostaste: ", lbl_res_math: "Detalle Operación", lbl_res_net: "Retorno Neto", lbl_new_bankroll: "Nuevo Saldo",
-                txt_stake: "Stake", txt_gross: "Bruto", txt_comm: "Comisión 5%", txt_liab: "Riesgo Pagado", txt_lost: "Stake Perdido", txt_bankrupt: "¡BANCARROTA! Recargados 100€ para seguir aprendiendo.",
-                btn_max: "MÁX"
-            },
-            pt: {
-                main_title: "ACADEMIA ZERO TO HERO",
-                btn_start: "INICIAR", btn_bet: "JOGAR PÊNALTI", btn_next: "PRÓXIMA APOSTA",
-                tap: "Toque para Força", tap_aim: "Toque para Direção", tap_height: "Toque para Altura",
-                step1: "1. FORÇA", step2: "2. DIREÇÃO", step3: "3. ALTURA",
-                bet_title: "Sua Aposta", lbl_bankroll: "Banca", 
-                b_title: "A FAVOR (SIM)", l_title: "CONTRA (NÃO)",
-                lbl_stake: "Valor (Stake)", lbl_calc_stake: "Stake em Euros", lbl_calc_liab: "Risco Real (Liab)", lbl_calc_prof: "Lucro Líquido (-5%)",
-                res_goal: "GOL!", res_saved: "DEFESA!", res_miss: "FORA!", res_post: "TRAVE!",
-                sub_goal: "Pênalti Marcado", sub_saved: "Goleiro defende", sub_miss: "Bola na arquibancada", sub_post: "Azar!",
-                res_bet_title: "Você apostou: ", lbl_res_math: "Detalhes da Operação", lbl_res_net: "Retorno Líquido", lbl_new_bankroll: "Nova Banca",
-                txt_stake: "Stake", txt_gross: "Bruto", txt_comm: "Comissão 5%", txt_liab: "Risco Pago", txt_lost: "Stake Perdida", txt_bankrupt: "BANCA QUEBRADA! Recarregado 100€ para continuar aprendendo.",
-                btn_max: "MÁX"
+                sub_goal: "Perfect penalty", sub_saved: "Great keeper save", sub_miss: "Over the bar", sub_post: "Hit the woodwork",
+                res_bet: "You bet: ",
+                lbl_math: "Math Breakdown", lbl_net: "Net Return", lbl_new_br: "New Bankroll",
+                btn_next: "NEXT BET",
+                txt_stake: "Stake", txt_gross: "Gross Win", txt_comm: "5% Comm.", txt_liab: "Liability Paid", txt_lost: "Stake Lost",
+                bankrupt: "BANKRUPT! Reloaded 100€ to keep learning.",
+                edu_title: "Market Analysis",
+                edu_goal: "No keeper touch. Goal! Market suspends immediately. Backers win, Layers pay liability.",
+                edu_save: "Keeper TOUCHED the ball (Shot on Target). Pressure is still on! Lay odds drop significantly.",
+                edu_post: "NO keeper touch (Shot off Target). Hit the wood. Action dies, attacking team odds will drift upwards.",
+                edu_miss: "NO keeper touch (Shot off Target). Action over. Attacking team odds will drift upwards."
             },
             it: {
-                main_title: "ZERO TO HERO ACADEMY",
-                btn_start: "INIZIA", btn_bet: "GIOCA RIGORE", btn_next: "PROSSIMA SCOMMESSA",
-                tap: "Tocca per la Potenza", tap_aim: "Tocca per la Direzione", tap_height: "Tocca per l'Altezza",
+                brand: "Z2H ACADEMY", title: "ZERO TO HERO ACADEMY", sub: "Betting Simulator", start: "INIZIA ACADEMY",
+                bet_title: "La Tua Scommessa", bankroll: "Cassa", 
+                back: "PUNTA (SI)", lay: "BANCA (NO)",
+                tutor_b_head: "Tutor: Puntata (Back)",
+                tutor_b_txt: "Scommetti che il gol VERRÀ segnato. Lo slider imposta la tua Puntata (Stake).",
+                tutor_l_head: "Tutor: Bancata (Lay)",
+                tutor_l_txt: "Fai il banco! Liability = Stake × (Quota - 1). Essendo la quota < 2.00 (@1.31), il tuo rischio reale è INFERIORE alla puntata!",
+                stake: "Stake %", max: "MAX",
+                lbl_stake_back: "La tua Puntata", lbl_stake_lay: "Puntata Sfidante (Da Vincere)", 
+                lbl_liab: "Rischio Reale (Liability)", lbl_prof: "Vincita Netta (-5%)",
+                btn_bet: "GIOCA RIGORE",
+                tap_pwr: "Tocca per Potenza", tap_dir: "Tocca per Direzione", tap_hgt: "Tocca per Altezza",
                 step1: "1. POTENZA", step2: "2. DIREZIONE", step3: "3. ALTEZZA",
-                bet_title: "Scommessa", lbl_bankroll: "Bankroll", 
-                b_title: "PUNTA (SI)", l_title: "BANCA (NO)",
-                lbl_stake: "Stake (Puntata)", lbl_calc_stake: "Stake in Euro", lbl_calc_liab: "Rischio (Liability)", lbl_calc_prof: "Vincita Netta (-5% comm)",
                 res_goal: "GOL!", res_saved: "PARATA!", res_miss: "FUORI!", res_post: "PALO!",
-                sub_goal: "Rigore Segnato", sub_saved: "Respinge il portiere", sub_miss: "Palla in tribuna", sub_post: "Sfortunato!",
-                res_bet_title: "Hai scommesso: ", lbl_res_math: "Dettaglio Operazione", lbl_res_net: "Variazione Cassa", lbl_new_bankroll: "Nuovo Bankroll",
-                txt_stake: "Stake", txt_gross: "Lordo", txt_comm: "Commissione 5%", txt_liab: "Rischio Pagato", txt_lost: "Stake Perso", txt_bankrupt: "BANCAROTTA! Ricaricati 100€ per continuare a imparare.",
-                btn_max: "MAX"
+                sub_goal: "Rigore perfetto", sub_saved: "Miracolo del portiere", sub_miss: "Palla in curva", sub_post: "Legno colpito",
+                res_bet: "Hai scommesso: ",
+                lbl_math: "Dettaglio Matematico", lbl_net: "Variazione Cassa", lbl_new_br: "Nuovo Bankroll",
+                btn_next: "PROSSIMA SCOMMESSA",
+                txt_stake: "Puntata", txt_gross: "Vincita Lorda", txt_comm: "5% Comm.", txt_liab: "Liability Pagata", txt_lost: "Puntata Persa",
+                bankrupt: "BANCAROTTA! Ricaricati 100€ per continuare.",
+                edu_title: "Analisi di Mercato",
+                edu_goal: "Nessun tocco. Gol! Il mercato sospende. Chi ha Puntato vince, chi ha Bancato paga la liability.",
+                edu_save: "Il portiere ha TOCCATO la palla (Tiro in Porta). Alta pressione! La quota si abbassa, ottimo per chi Banca.",
+                edu_post: "NESSUN tocco del portiere (Tiro Fuori). Palo! L'azione sfuma. La quota dell'attacco si alzerà (drift).",
+                edu_miss: "NESSUN tocco del portiere (Tiro Fuori). Palla persa. La quota dell'attacco si alzerà (drift)."
+            },
+            es: {
+                brand: "Z2H ACADEMIA", title: "ZERO TO HERO ACADEMY", sub: "Simulador Apuestas", start: "INICIAR ACADEMIA",
+                bet_title: "Tu Apuesta", bankroll: "Saldo", 
+                back: "A FAVOR (SÍ)", lay: "EN CONTRA (NO)",
+                tutor_b_head: "Tutor: A Favor",
+                tutor_b_txt: "Apuestas a que SÍ habrá gol. El deslizador ajusta tu Stake.",
+                tutor_l_head: "Tutor: En Contra",
+                tutor_l_txt: "Actúas como la casa. Liability = Stake × (Cuota - 1). Como la cuota es < 2.00, ¡tu riesgo real es MENOR que el stake!",
+                stake: "Stake %", max: "MÁX",
+                lbl_stake_back: "Tu Stake", lbl_stake_lay: "Stake del Rival (A ganar)", 
+                lbl_liab: "Riesgo Real (Liab)", lbl_prof: "Beneficio Neto (-5%)",
+                btn_bet: "JUGAR PENALTI",
+                tap_pwr: "Toca para Potencia", tap_dir: "Toca para Dirección", tap_hgt: "Toca para Altura",
+                step1: "1. POTENCIA", step2: "2. DIRECCIÓN", step3: "3. ALTURA",
+                res_goal: "¡GOL!", res_saved: "¡PARADÓN!", res_miss: "¡FUERA!", res_post: "¡POSTE!",
+                sub_goal: "Penalti perfecto", sub_saved: "El portero la saca", sub_miss: "A la grada", sub_post: "A la madera",
+                res_bet: "Apostaste: ",
+                lbl_math: "Detalle Matemático", lbl_net: "Retorno Neto", lbl_new_br: "Nuevo Saldo",
+                btn_next: "SIGUIENTE APUESTA",
+                txt_stake: "Stake", txt_gross: "Ganancia Bruta", txt_comm: "5% Com.", txt_liab: "Riesgo Pagado", txt_lost: "Stake Perdido",
+                bankrupt: "¡BANCARROTA! Recargados 100€ para seguir.",
+                edu_title: "Análisis de Mercado",
+                edu_goal: "Sin toque. ¡Gol! Mercado suspendido. Gana el Back, el Lay paga la liability.",
+                edu_save: "El portero TOCÓ el balón (Tiro a puerta). La presión sigue. La cuota del ataque bajará.",
+                edu_post: "SIN toque del portero (Tiro fuera). ¡Al palo! La acción muere. La cuota del ataque subirá.",
+                edu_miss: "SIN toque del portero (Tiro fuera). Acción terminada. La cuota del ataque subirá."
+            },
+            pt: {
+                brand: "Z2H ACADEMIA", title: "ZERO TO HERO ACADEMY", sub: "Simulador Apostas", start: "INICIAR ACADEMIA",
+                bet_title: "Sua Aposta", bankroll: "Banca", 
+                back: "A FAVOR (SIM)", lay: "CONTRA (NÃO)",
+                tutor_b_head: "Tutor: A Favor (Back)",
+                tutor_b_txt: "Você aposta que o gol VAI acontecer. O controle define sua Stake.",
+                tutor_l_head: "Tutor: Contra (Lay)",
+                tutor_l_txt: "Você é a casa. Liability = Stake × (Odd - 1). Como a odd é < 2.00, seu risco real é MENOR que a stake!",
+                stake: "Stake %", max: "MÁX",
+                lbl_stake_back: "Sua Stake", lbl_stake_lay: "Stake Adversário (A ganhar)", 
+                lbl_liab: "Risco Real (Liab)", lbl_prof: "Lucro Líquido (-5%)",
+                btn_bet: "BATER PÊNALTI",
+                tap_pwr: "Toque para Força", tap_dir: "Toque para Direção", tap_hgt: "Toque para Altura",
+                step1: "1. FORÇA", step2: "2. DIREÇÃO", step3: "3. ALTURA",
+                res_goal: "GOL!", res_saved: "DEFESA!", res_miss: "FORA!", res_post: "NA TRAVE!",
+                sub_goal: "Pênalti perfeito", sub_saved: "Grande defesa", sub_miss: "Isolou a bola", sub_post: "Bateu na trave",
+                res_bet: "Você apostou: ",
+                lbl_math: "Detalhes", lbl_net: "Retorno Líquido", lbl_new_br: "Nova Banca",
+                btn_next: "PRÓXIMA APOSTA",
+                txt_stake: "Stake", txt_gross: "Lucro Bruto", txt_comm: "5% Com.", txt_liab: "Risco Pago", txt_lost: "Stake Perdida",
+                bankrupt: "BANCA QUEBRADA! 100€ recarregados.",
+                edu_title: "Análise de Mercado",
+                edu_goal: "Sem toque. Gol! Mercado suspenso. Back ganha, Lay paga a liability.",
+                edu_save: "Goleiro TOCOU na bola (Chute no Gol). Pressão alta! As odds de Lay caem.",
+                edu_post: "SEM toque do goleiro (Chute para fora). Na trave! A jogada morre, as odds vão subir.",
+                edu_miss: "SEM toque do goleiro (Chute para fora). Jogada perdida. As odds vão subir."
             }
         };
 
-        // --- STREAMING_CHUNK: Detecting default system language... ---
-        // Auto-detect browser/device language
-        const browserLang = (navigator.language || navigator.userLanguage).substring(0, 2).toLowerCase();
-        let currentLang = ['en', 'es', 'pt', 'it'].includes(browserLang) ? browserLang : 'en';
-        
-        function setActiveLanguageButton() {
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                if(btn.getAttribute('data-lang') === currentLang) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-        }
-        
+        // Browser Language Detection
+        const browserLangRaw = (navigator.language || navigator.userLanguage).substring(0, 2).toLowerCase();
+        let currentLang = ['en', 'es', 'pt', 'it'].includes(browserLangRaw) ? browserLangRaw : 'en';
+
         function updateTexts() {
             const t = i18n[currentLang];
             
-            // Core Titles & Main buttons
-            document.getElementById('main-title').innerText = t.main_title;
-            document.getElementById('btn-goto-bet').innerText = t.btn_start;
-            document.getElementById('btn-confirm-bet').innerText = t.btn_bet;
-            document.getElementById('btn-next').innerText = t.btn_next;
+            // Global
+            document.getElementById('header-brand').innerText = t.brand;
+
+            // Screen 1: Lang
+            document.getElementById('main-title').firstChild.textContent = t.title;
+            document.getElementById('main-subtitle').innerText = t.sub;
+            document.getElementById('btn-goto-bet').innerText = t.start;
             
-            // Betting context
+            // Screen 2: Bet
             document.getElementById('bet-title').innerText = t.bet_title;
-            document.getElementById('bet-bankroll-lbl').innerText = t.lbl_bankroll;
-            document.getElementById('lbl-btn-back').innerText = t.b_title;
-            document.getElementById('lbl-btn-lay').innerText = t.l_title;
-            document.getElementById('lbl-stake').innerText = t.lbl_stake;
-            document.getElementById('btn-max-stake').innerText = t.btn_max;
+            document.getElementById('bet-bankroll-lbl').innerText = t.bankroll;
+            document.getElementById('lbl-btn-back').innerText = t.back;
+            document.getElementById('lbl-btn-lay').innerText = t.lay;
+            document.getElementById('lbl-stake').innerText = t.stake;
+            document.getElementById('btn-max-stake').innerText = t.max;
             
-            // Slip mathematical values
-            document.getElementById('lbl-calc-stake').innerText = t.lbl_calc_stake;
-            document.getElementById('lbl-calc-liability').innerText = t.lbl_calc_liab;
-            document.getElementById('lbl-calc-profit').innerText = t.lbl_calc_prof;
-            
-            // HUD
-            if(gameState === 'IDLE' || gameState === 'POWER') {
-                document.getElementById('hud-instruction').innerText = t.tap;
+            if(bet.type === 'back'){
+                document.getElementById('lbl-calc-stake').innerText = t.lbl_stake_back;
+            } else {
+                document.getElementById('lbl-calc-stake').innerText = t.lbl_stake_lay;
             }
-            document.getElementById('hud-h-text').innerText = t.step1;
+
+            document.getElementById('lbl-calc-liability').innerText = t.lbl_liab;
+            document.getElementById('lbl-calc-profit').innerText = t.lbl_prof;
+            document.getElementById('btn-confirm-bet').innerText = t.btn_bet;
+            updateTutorText();
+
+            // Screen 3: Game
+            if(gameState === 'IDLE' || gameState === 'POWER') document.getElementById('hud-instruction').innerText = t.tap_pwr;
+            else if(gameState === 'AIM_H') document.getElementById('hud-instruction').innerText = t.tap_dir;
+            else if(gameState === 'AIM_V') document.getElementById('hud-instruction').innerText = t.tap_hgt;
+            
+            document.getElementById('hud-h-text').innerText = (gameState === 'AIM_H') ? t.step2 : t.step1;
             document.getElementById('hud-v-text').innerText = t.step3;
 
-            // Results UI translations
-            document.getElementById('lbl-res-math').innerText = t.lbl_res_math;
-            document.getElementById('lbl-res-net').innerText = t.lbl_res_net;
-            document.getElementById('lbl-new-bankroll').innerText = t.lbl_new_bankroll;
+            // Screen 4: Result
+            document.getElementById('lbl-res-math').innerText = t.lbl_math;
+            document.getElementById('lbl-res-net').innerText = t.lbl_net;
+            document.getElementById('lbl-new-bankroll').innerText = t.lbl_new_br;
+            document.getElementById('btn-next').innerText = t.btn_next;
+            document.getElementById('lbl-edu-title').innerText = "🔍 " + t.edu_title;
 
-            if(gameState === 'RESULT') {
-                 showResult(currentOutcome);
-            }
-
-            updateBetMath();
+            if(gameState === 'RESULT') showResult(currentOutcome); // Refresh result text
         }
 
         document.querySelectorAll('.lang-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                e.currentTarget.classList.add('active');
                 currentLang = e.currentTarget.getAttribute('data-lang');
-                setActiveLanguageButton();
                 updateTexts();
             });
         });
 
-        // --- 2. GESTIONE UI ---
-        const screens = {
-            lang: document.getElementById('screen-lang'),
-            bet: document.getElementById('screen-bet'),
-            game: document.getElementById('screen-game'),
-            res: document.getElementById('screen-result')
-        };
+        /* --- System State & Initialization --- */
+        let bankroll = 100.00;
+        let bet = { type: 'back', stakePerc: 10, stakeAmt: 10.00, oddsBack: 1.29, oddsLay: 1.31, comm: 0.05, liability: 0, profit: 0 };
+        let gameState = 'IDLE'; 
+        let power = 0, aimH = 50, aimV = 50;
+        let pDir = 1, hDir = 1, vDir = 1;
+        let animFrame, idleTime = 0;
+        let hasShot = false; 
+
+        // Canvas & Physics State
+        let w, h, dpr = 1, isDesktop = false;
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let cameraOffset = {x: 0, y: 0};
+        let particles = [];
+        let goalRect = { x: 0, y: 0, w: 0, h: 0, horizon: 0, cx: 0 };
+        let grassPattern = null;
+        
+        let shotTween = { active: false, t: 0, duration: 60 };
+        let ballAnim = { x: 0, y: 0, scale: 1, startX: 0, startY: 0, endX: 0, endY: 0, endScale: 0.25, curveScale: 0 };
+        let keeperAnim = { x: 0, y: 0, startX: 0, startY: 0, endX: 0, endY: 0, stretch: 1, lastX: 0 };
+        let currentOutcome = '';
+
+        window.requestAnimFrame = window.requestAnimationFrame || function(cb){ window.setTimeout(cb, 1000/60); };
+        window.cancelAnimFrame = window.cancelAnimationFrame || window.clearTimeout;
+
+        /* --- Texture Builders --- */
+        function createGrassTexture() {
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = 256; tempCanvas.height = 256;
+            const tCtx = tempCanvas.getContext('2d');
+            tCtx.fillStyle = '#0a3016'; tCtx.fillRect(0,0,256,256);
+            for(let i=0; i<8000; i++) {
+                tCtx.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.025)' : 'rgba(0,0,0,0.04)';
+                tCtx.fillRect(Math.random()*256, Math.random()*256, 1.5, Math.random()*5+2);
+            }
+            return ctx.createPattern(tempCanvas, 'repeat');
+        }
+
+        function drawRoundRectCompat(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y); ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
+        /* --- Betting Logic & Math --- */
+        const screens = { lang: document.getElementById('screen-lang'), bet: document.getElementById('screen-bet'), game: document.getElementById('screen-game'), res: document.getElementById('screen-result') };
         const touchZone = document.getElementById('touch-zone');
 
         function switchScreen(screenName) {
@@ -445,371 +550,793 @@
             touchZone.style.display = screenName === 'game' ? 'block' : 'none';
         }
 
-        // --- 3. LOGICA SCOMMESSE (BETTING) ---
-        const slider = document.getElementById('stake-slider');
-        const btnBack = document.getElementById('btn-back');
-        const btnLay = document.getElementById('btn-lay');
-        const btnConfirm = document.getElementById('btn-confirm-bet');
+        const slider = document.getElementById('stake-slider'), btnBack = document.getElementById('btn-back'), btnLay = document.getElementById('btn-lay'), btnConfirm = document.getElementById('btn-confirm-bet');
 
         function openBetting() {
             gameState = 'BETTING';
             document.getElementById('bet-bankroll-val').innerText = bankroll.toFixed(2) + "€";
+            if(bet.stakePerc === 100) bet.stakePerc = 10;
             slider.value = bet.stakePerc;
-            updateBetMath();
-            switchScreen('bet');
+            updateBetMath(); switchScreen('bet');
         }
 
         function setBetType(type) {
             bet.type = type;
             if(type === 'back') {
-                btnBack.classList.add('back-active'); btnBack.classList.remove('opacity-80', 'hover:opacity-100');
-                btnLay.classList.remove('lay-active'); btnLay.classList.add('opacity-80', 'hover:opacity-100');
+                btnBack.classList.add('back-active'); btnBack.classList.remove('opacity-60', 'hover:opacity-100');
+                btnLay.classList.remove('lay-active'); btnLay.classList.add('opacity-60', 'hover:opacity-100');
                 document.getElementById('lbl-calc-liability').style.color = '#dc2626';
             } else {
-                btnLay.classList.add('lay-active'); btnLay.classList.remove('opacity-80', 'hover:opacity-100');
-                btnBack.classList.remove('back-active'); btnBack.classList.add('opacity-80', 'hover:opacity-100');
+                btnLay.classList.add('lay-active'); btnLay.classList.remove('opacity-60', 'hover:opacity-100');
+                btnBack.classList.remove('back-active'); btnBack.classList.add('opacity-60', 'hover:opacity-100');
                 document.getElementById('lbl-calc-liability').style.color = 'var(--bf-lay)';
             }
-            updateBetMath();
+            updateTexts(); updateTutorText(); updateBetMath();
+        }
+
+        function updateTutorText() {
+            const t = i18n[currentLang];
+            const tutorBox = document.getElementById('tutor-box');
+            if(bet.type === 'back') {
+                document.getElementById('tutor-header').innerText = t.tutor_b_head;
+                document.getElementById('tutor-text').innerText = t.tutor_b_txt;
+                tutorBox.style.borderLeftColor = 'var(--bf-back)';
+            } else {
+                document.getElementById('tutor-header').innerText = t.tutor_l_head;
+                document.getElementById('tutor-text').innerText = t.tutor_l_txt;
+                tutorBox.style.borderLeftColor = 'var(--bf-lay)';
+            }
+            tutorBox.style.animation = 'none'; tutorBox.offsetHeight; tutorBox.style.animation = 'fadeIn 0.4s ease-out';
         }
 
         btnBack.addEventListener('click', () => setBetType('back'));
         btnLay.addEventListener('click', () => setBetType('lay'));
+        slider.addEventListener('input', (e) => { bet.stakePerc = parseInt(e.target.value); updateBetMath(); });
+        document.querySelectorAll('.quick-stake').forEach(btn => btn.addEventListener('click', (e) => { bet.stakePerc = parseInt(e.target.getAttribute('data-val')); slider.value = bet.stakePerc; updateBetMath(); }));
 
-        slider.addEventListener('input', (e) => {
-            bet.stakePerc = parseInt(e.target.value);
-            updateBetMath();
-        });
-
-        document.querySelectorAll('.quick-stake').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                bet.stakePerc = parseInt(e.target.getAttribute('data-val'));
-                slider.value = bet.stakePerc;
-                updateBetMath();
-            });
-        });
-
-        // --- STREAMING_CHUNK: Calculations and liability limits logic... ---
         function updateBetMath() {
             document.getElementById('val-stake-perc').innerText = bet.stakePerc + "%";
+            
+            // Lo Stake è SEMPRE la % della cassa calcolata come Puntata
             let amt = bankroll * (bet.stakePerc / 100);
-            bet.stakeAmt = amt;
 
-            let maxStakeAllowed = bankroll / (bet.oddsLay - 1);
-            if (bet.type === 'lay' && amt > maxStakeAllowed) {
-                amt = maxStakeAllowed; 
-                bet.stakeAmt = amt;
+            // Se è Lay, blocchiamo lo stake se la liability supererebbe la cassa
+            if (bet.type === 'lay') {
+                let maxStakeAllowed = bankroll / (bet.oddsLay - 1);
+                if (amt > maxStakeAllowed) {
+                    amt = maxStakeAllowed;
+                }
             }
 
-            document.getElementById('calc-stake').innerText = amt.toFixed(2) + "€";
+            bet.stakeAmt = amt;
 
             let gross = 0;
             if (bet.type === 'back') {
-                bet.liability = amt;
+                bet.liability = amt; // Nel Back, il rischio = puntata
                 gross = amt * (bet.oddsBack - 1);
-            } else {
-                bet.liability = amt * (bet.oddsLay - 1);
-                gross = amt; 
+            } else { // LAY
+                bet.liability = amt * (bet.oddsLay - 1); // Nel Lay, il rischio = puntata * (quota - 1)
+                gross = amt; // La vincita lorda è la puntata dello sfidante
             }
 
-            bet.profit = gross * (1 - bet.comm); 
+            bet.profit = gross * (1 - bet.comm);
 
+            document.getElementById('calc-stake').innerText = bet.stakeAmt.toFixed(2) + "€";
             document.getElementById('calc-liability').innerText = "-" + bet.liability.toFixed(2) + "€";
             document.getElementById('calc-profit').innerText = "+" + bet.profit.toFixed(2) + "€";
             
-            if (bet.stakeAmt <= 0.01) {
-                btnConfirm.disabled = true;
-            } else {
-                btnConfirm.disabled = false;
-            }
+            btnConfirm.disabled = (bet.stakeAmt <= 0.01);
         }
 
         btnConfirm.addEventListener('click', startGameLoop);
 
-        // --- 4. MOTORE GRAFICO CANVAS ---
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        let w, h;
-
+        /* --- Canvas Graphics Engine --- */
         function resize() {
             w = window.innerWidth; h = window.innerHeight;
-            const dpr = window.devicePixelRatio || 1;
+            isDesktop = w >= 768;
+            dpr = window.devicePixelRatio || 1;
             canvas.width = w * dpr; canvas.height = h * dpr;
             ctx.scale(dpr, dpr);
 
-            const horizon = h * 0.4;
-            const maxGoalH = h * 0.45; 
-            let goalW = Math.min(w * 0.7, 650); 
-            let goalH = goalW * 0.4;
-            if (goalH > maxGoalH) { goalH = maxGoalH; goalW = goalH / 0.4; }
+            if(!grassPattern) grassPattern = createGrassTexture();
+
+            const horizon = h * 0.40; 
+            const maxGoalH = h * 0.35; 
             
-            goalRect = { x: (w - goalW) / 2, y: horizon - goalH + 20, w: goalW, h: goalH, horizon: horizon };
-            drawPitch();
+            let targetCenterX = isDesktop ? w * 0.35 : w / 2;
+            let goalW = Math.min(w * (isDesktop ? 0.45 : 0.75), 500); 
+            let goalH = goalW * 0.45;
+            
+            if (goalH > maxGoalH) { goalH = maxGoalH; goalW = goalH / 0.45; }
+            
+            goalRect = { x: targetCenterX - (goalW / 2), y: horizon - goalH, w: goalW, h: goalH, horizon: horizon, cx: targetCenterX };
+            
+            if(gameState === 'IDLE' || gameState === 'BETTING') {
+                ballAnim.x = goalRect.cx; ballAnim.y = h * 0.85;
+                keeperAnim.x = goalRect.cx; keeperAnim.y = goalRect.y + goalRect.h * 0.6;
+            }
+            drawFrame();
         }
 
-        // --- STREAMING_CHUNK: Rendering the soccer field on Canvas... ---
-        function drawPitch() {
-            // Dark elegant grass background
-            ctx.fillStyle = '#061a0d'; ctx.fillRect(0, 0, w, h);
+        function drawFrame() {
+            ctx.fillStyle = '#041209'; ctx.fillRect(0, 0, w, h);
+            
+            let skyGrd = ctx.createLinearGradient(0, 0, 0, goalRect.horizon);
+            skyGrd.addColorStop(0, '#020a05'); skyGrd.addColorStop(1, '#0a1a10');
+            ctx.fillStyle = skyGrd; ctx.fillRect(0, 0, w, goalRect.horizon);
 
-            // Realistic alternating pitch stripes
-            for (let i = 0; i < 10; i++) {
-                ctx.fillStyle = i % 2 === 0 ? '#114a22' : '#165c2b';
-                const yStart = goalRect.horizon + (i * (h - goalRect.horizon) / 10);
-                const yEnd = goalRect.horizon + ((i + 1) * (h - goalRect.horizon) / 10);
+            const grd = ctx.createRadialGradient(goalRect.cx, h*0.2, 0, goalRect.cx, h*0.2, h);
+            grd.addColorStop(0, 'rgba(0, 255, 68, 0.05)'); grd.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = grd; ctx.fillRect(0,0,w,goalRect.horizon);
+
+            ctx.save(); ctx.translate(cameraOffset.x, cameraOffset.y);
+
+            if(grassPattern) {
+                ctx.fillStyle = grassPattern;
+                ctx.fillRect(0, goalRect.horizon, w, h - goalRect.horizon);
+            }
+
+            ctx.globalCompositeOperation = 'overlay';
+            ctx.globalAlpha = 0.35;
+            for (let i = 0; i < 14; i++) {
+                ctx.fillStyle = i % 2 === 0 ? '#ffffff' : '#000000';
+                const yStart = goalRect.horizon + (Math.pow(i/14, 1.8) * (h - goalRect.horizon));
+                const yEnd = goalRect.horizon + (Math.pow((i + 1)/14, 1.8) * (h - goalRect.horizon));
                 ctx.fillRect(0, yStart, w, yEnd - yStart);
             }
-
-            // Realistic high-fidelity net layout
-            ctx.strokeStyle = 'rgba(255,255,255,0.15)'; 
-            ctx.lineWidth = 1; 
-            ctx.beginPath();
-            for(let i=0; i<=20; i++) { 
-                let px = goalRect.x + (goalRect.w/20)*i; 
-                ctx.moveTo(px, goalRect.y); 
-                ctx.lineTo(px, goalRect.y + goalRect.h); 
-            }
-            for(let i=0; i<=10; i++) { 
-                let py = goalRect.y + (goalRect.h/10)*i; 
-                ctx.moveTo(goalRect.x, py); 
-                ctx.lineTo(goalRect.x + goalRect.w, py); 
-            }
-            ctx.stroke();
-
-            // Premium Goal Frame
-            ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 4;
-            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 6; ctx.lineJoin = 'round'; ctx.beginPath();
-            ctx.moveTo(goalRect.x, goalRect.y + goalRect.h); 
-            ctx.lineTo(goalRect.x, goalRect.y); 
-            ctx.lineTo(goalRect.x + goalRect.w, goalRect.y); 
-            ctx.lineTo(goalRect.x + goalRect.w, goalRect.y + goalRect.h);
-            ctx.stroke();
+            ctx.globalAlpha = 1.0;
+            ctx.globalCompositeOperation = 'source-over';
             
-            ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+            const pitchGrd = ctx.createRadialGradient(goalRect.cx, h*0.5, 0, goalRect.cx, h*0.5, h*0.8);
+            pitchGrd.addColorStop(0, 'rgba(0, 255, 68, 0.08)');
+            pitchGrd.addColorStop(1, 'rgba(0, 0, 0, 0.65)');
+            ctx.fillStyle = pitchGrd;
+            ctx.fillRect(0, goalRect.horizon, w, h - goalRect.horizon);
+            
+            ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(goalRect.cx - goalRect.w*1.5, h*0.6); ctx.lineTo(goalRect.cx + goalRect.w*1.5, h*0.6); ctx.stroke();
+            ctx.beginPath(); ctx.ellipse(goalRect.cx, h*0.6, goalRect.w*0.8, goalRect.w*0.15, 0, 0, Math.PI, false); ctx.stroke();
+            ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.beginPath(); ctx.arc(goalRect.cx, h*0.85, 4, 0, Math.PI*2); ctx.fill();
 
-            // --- STREAMING_CHUNK: Solving visual layer ordering... ---
-            // RESOLUTION: If saved, draw hands FIRST, then draw the ball in front (on top) of the hands
+            drawAdBoards();
+            drawGoal();
+
+            let instDx = keeperAnim.x - keeperAnim.lastX;
+            keeperAnim.lastX = keeperAnim.x;
+
+            drawShadows();
+
             if (gameState === 'SHOOTING' || gameState === 'RESULT') {
                 if (currentOutcome === 'saved') {
-                    drawHands(handsAnim.x, handsAnim.y);
+                    drawArticulatedKeeper(keeperAnim.x, keeperAnim.y, keeperAnim.stretch, instDx, currentOutcome);
                     drawBall(ballAnim.x, ballAnim.y, ballAnim.scale);
                 } else {
+                    drawArticulatedKeeper(keeperAnim.x, keeperAnim.y, keeperAnim.stretch, instDx, currentOutcome);
                     drawBall(ballAnim.x, ballAnim.y, ballAnim.scale);
-                    drawHands(handsAnim.x, handsAnim.y);
                 }
             } else {
-                const time = Date.now() / 500;
-                handsAnim.x = w / 2 + Math.sin(time) * (goalRect.w * 0.18);
-                handsAnim.y = goalRect.y + goalRect.h * 0.45 + Math.cos(time * 1.3) * (goalRect.h * 0.1);
-                drawHands(handsAnim.x, handsAnim.y);
-                if (gameState !== 'BETTING') drawBall(w / 2, h * 0.85, 1);
+                idleTime += 0.04;
+                keeperAnim.x = goalRect.cx + Math.sin(idleTime) * (goalRect.w * 0.08);
+                keeperAnim.y = goalRect.y + goalRect.h * 0.6 + Math.cos(idleTime * 2) * 4;
+                drawArticulatedKeeper(keeperAnim.x, keeperAnim.y, 1, instDx, 'idle');
+                if (gameState !== 'BETTING') drawBall(goalRect.cx, h * 0.85, 1);
+            }
+
+            drawParticles();
+            ctx.restore();
+        }
+
+        /* --- Draw Smooth Full HD Advertising Boards --- */
+        function drawAdBoards() {
+            const boardH = Math.max(35, h * 0.07);
+            const boardY = goalRect.horizon - boardH;
+
+            ctx.fillStyle = '#050505'; ctx.fillRect(0, boardY, w, boardH);
+
+            let activeAd = Math.floor(Date.now() / 4000) % 4;
+            const segW = Math.min(w * 0.35, 250); 
+            const numLogos = Math.ceil(w / segW) + 1;
+            const scrollOffset = (Date.now() / 40) % segW; 
+
+            let adColors = ['#2AABEE', '#26A17B', '#000000', '#f7931a'];
+            ctx.fillStyle = adColors[activeAd];
+            ctx.fillRect(0, boardY + 2, w, boardH - 4);
+
+            ctx.save();
+            ctx.beginPath(); ctx.rect(0, boardY + 2, w, boardH - 4); ctx.clip();
+
+            for (let i = 0; i <= numLogos; i++) {
+                let startX = (i * segW) - scrollOffset;
+                let cx = startX + (segW / 2);
+                let cy = boardY + (boardH / 2);
+
+                if (activeAd === 0) drawTelegramLogo(ctx, cx, cy, boardH * 0.4);
+                else if (activeAd === 1) drawUSDTLogo(ctx, cx, cy, boardH * 0.45);
+                else if (activeAd === 2) drawZ2HLogo(ctx, cx, cy, boardH * 0.85);
+                else if (activeAd === 3) drawBTCLogo(ctx, cx, cy, boardH * 0.45);
+
+                ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.moveTo(startX, boardY); ctx.lineTo(startX, boardY + boardH); ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        function drawTelegramLogo(ctx, cx, cy, r) {
+            ctx.fillStyle = '#2AABEE';
+            ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath(); ctx.moveTo(cx + r*0.6, cy - r*0.55); ctx.lineTo(cx - r*0.7, cy - r*0.1); ctx.lineTo(cx - r*0.2, cy + r*0.15); ctx.lineTo(cx + r*0.15, cy + r*0.65); ctx.lineTo(cx + r*0.6, cy - r*0.55); ctx.fill();
+            ctx.fillStyle = '#d2e3f0';
+            ctx.beginPath(); ctx.moveTo(cx + r*0.6, cy - r*0.55); ctx.lineTo(cx - r*0.2, cy + r*0.15); ctx.lineTo(cx + r*0.1, cy + r*0.25); ctx.fill();
+            ctx.fillStyle = '#b5cbdc';
+            ctx.beginPath(); ctx.moveTo(cx - r*0.2, cy + r*0.15); ctx.lineTo(cx + r*0.15, cy + r*0.65); ctx.lineTo(cx + r*0.1, cy + r*0.25); ctx.fill();
+        }
+        function drawUSDTLogo(ctx, cx, cy, r) {
+            ctx.fillStyle = '#fff'; ctx.font = `900 ${r*1.8}px sans-serif`;
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('₮', cx, cy + 2);
+        }
+        function drawBTCLogo(ctx, cx, cy, r) {
+            ctx.fillStyle = '#fff'; ctx.font = `900 ${r*1.8}px sans-serif`;
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('₿', cx, cy + 2);
+        }
+        function drawZ2HLogo(ctx, cx, cy, size) {
+            const img = document.getElementById('custom-logo');
+            if(img && img.complete && img.naturalWidth > 0) {
+                ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 8;
+                ctx.drawImage(img, cx - size/2, cy - size/2, size, size);
+                ctx.shadowBlur = 0;
+            } else {
+                ctx.fillStyle = '#000'; ctx.font = `900 ${size*0.4}px sans-serif`;
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('Z2H', cx, cy);
             }
         }
 
-        function drawHands(x, y) {
-            const size = Math.max(45, Math.min(w * 0.18, h * 0.18, 90));
-            ctx.font = `${size}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", sans-serif`;
-            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 4;
-            
-            ctx.fillStyle = '#ffffff'; 
-            ctx.globalAlpha = 1.0;
-            
-            ctx.fillText('👐', x, y);
-            ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
-        }
-
-        function drawBall(x, y, scale = 1) {
-            const ballSize = Math.max(20, Math.min(w * 0.1, h * 0.1, 65)) * scale;
-            ctx.font = `${ballSize}px Arial`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            
-            ctx.fillStyle = `rgba(0,0,0,0.45)`; 
-            ctx.beginPath(); 
-            ctx.ellipse(x, y + ballSize * 0.35, ballSize * 0.4, ballSize * 0.15, 0, 0, Math.PI * 2); 
+        function drawShadows() {
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.beginPath();
+            ctx.ellipse(keeperAnim.x, goalRect.y + goalRect.h * 0.95, goalRect.w * 0.15, goalRect.w * 0.03, 0, 0, Math.PI*2);
             ctx.fill();
-            
-            ctx.fillStyle = '#ffffff';
-            ctx.globalAlpha = 1.0;
-            ctx.fillText('⚽', x, y);
         }
 
-        // --- 5. LOGICA DEL TIRO E DEL RISULTATO ---
+        /* --- 3D Goal & Net --- */
+        function drawGoal() {
+            const postThickness = Math.max(4, goalRect.w * 0.012);
+            const netDepth = goalRect.w * 0.15;
+            
+            const backX = goalRect.x + netDepth;
+            const backY = goalRect.y + netDepth * 0.5;
+            const backW = goalRect.w - (netDepth * 2);
+            const backH = goalRect.h - (netDepth * 0.5);
+
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)'; 
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            let netCols = 24; let netRows = 12;
+            for(let i=0; i<=netCols; i++) { 
+                let px = backX + (backW/netCols)*i; 
+                ctx.moveTo(px, backY); ctx.lineTo(px, backY + backH); 
+            }
+            for(let i=0; i<=netRows; i++) { 
+                let py = backY + (backH/netRows)*i; 
+                ctx.moveTo(backX, py); ctx.lineTo(backX + backW, py); 
+            }
+            ctx.stroke();
+
+            ctx.beginPath();
+            for(let i=0; i<=netCols; i++) {
+                let frontX = goalRect.x + (goalRect.w/netCols)*i;
+                let bX = backX + (backW/netCols)*i;
+                ctx.moveTo(frontX, goalRect.y); ctx.lineTo(bX, backY);
+            }
+            for(let i=0; i<=netRows; i++) {
+                let frontY = goalRect.y + (goalRect.h/netRows)*i;
+                let bY = backY + (backH/netRows)*i;
+                ctx.moveTo(goalRect.x, frontY); ctx.lineTo(backX, bY);
+                ctx.moveTo(goalRect.x + goalRect.w, frontY); ctx.lineTo(backX + backW, bY);
+            }
+            ctx.stroke();
+
+            ctx.strokeStyle = '#cccccc'; ctx.lineWidth = postThickness * 0.5;
+            ctx.beginPath();
+            ctx.moveTo(goalRect.x, goalRect.y); ctx.lineTo(backX, backY);
+            ctx.moveTo(goalRect.x + goalRect.w, goalRect.y); ctx.lineTo(backX + backW, backY);
+            ctx.moveTo(backX, backY); ctx.lineTo(backX, backY + backH);
+            ctx.moveTo(backX + backW, backY); ctx.lineTo(backX + backW, backY + backH);
+            ctx.stroke();
+
+            let postGrdVertical = ctx.createLinearGradient(goalRect.x - postThickness, 0, goalRect.x + postThickness, 0);
+            postGrdVertical.addColorStop(0, '#aaa'); postGrdVertical.addColorStop(0.5, '#fff'); postGrdVertical.addColorStop(1, '#888');
+
+            ctx.fillStyle = postGrdVertical;
+            ctx.fillRect(goalRect.x - postThickness/2, goalRect.y - postThickness/2, postThickness, goalRect.h + postThickness/2);
+            ctx.fillRect(goalRect.x + goalRect.w - postThickness/2, goalRect.y - postThickness/2, postThickness, goalRect.h + postThickness/2);
+
+            let postGrdHoriz = ctx.createLinearGradient(0, goalRect.y - postThickness, 0, goalRect.y + postThickness);
+            postGrdHoriz.addColorStop(0, '#aaa'); postGrdHoriz.addColorStop(0.5, '#fff'); postGrdHoriz.addColorStop(1, '#888');
+            ctx.fillStyle = postGrdHoriz;
+            ctx.fillRect(goalRect.x - postThickness/2, goalRect.y - postThickness/2, goalRect.w + postThickness, postThickness);
+
+            ctx.fillStyle = 'rgba(0,0,0,0.4)';
+            ctx.fillRect(goalRect.x + postThickness/2, goalRect.y + postThickness/2, 2, goalRect.h);
+            ctx.fillRect(goalRect.x - postThickness/2, goalRect.y + postThickness/2, goalRect.w + postThickness, 2);
+        }
+
+        /* --- Ultra-Realistic Articulated Keeper --- */
+        function drawArticulatedKeeper(x, y, stretch, dx, outcome) {
+            ctx.save(); 
+            ctx.translate(x, y);
+
+            const size = Math.max(6, goalRect.w * 0.028); 
+            let diveAngle = 0;
+            let actualStretch = Math.min(stretch, 1.15); 
+            let isDiving = stretch > 1.05;
+
+            if (isDiving) {
+                let moveDist = keeperAnim.endX - keeperAnim.startX;
+                let dir = moveDist > 0 ? 1 : -1;
+                diveAngle = (Math.PI / 2.2) * dir * Math.min(1, (actualStretch - 1) * 6.5);
+            } else {
+                diveAngle = dx * 0.02;
+                diveAngle = Math.max(-Math.PI/6, Math.min(Math.PI/6, diveAngle));
+            }
+
+            ctx.rotate(diveAngle);
+
+            const torsoW = size * 3.4; 
+            const torsoH = size * 4.0;
+            const cy = isDiving ? 0 : size * 2;
+
+            const jerseyGrd = ctx.createLinearGradient(0, cy, 0, cy + torsoH);
+            jerseyGrd.addColorStop(0, '#ffbb00'); jerseyGrd.addColorStop(1, '#d04a00');
+            const skinColor = '#ffccaa';
+            const shortColor = '#111';
+
+            // --- LEGS ---
+            const legLen = size * 3.4;
+            
+            function drawLeg(startX, startY, kneeX, kneeY, ankleX, ankleY, dir) {
+                ctx.lineWidth = size * 0.9;
+                ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+                
+                ctx.strokeStyle = skinColor;
+                ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(kneeX, kneeY); ctx.stroke();
+                
+                ctx.strokeStyle = '#ffffff';
+                ctx.beginPath(); ctx.moveTo(kneeX, kneeY); ctx.lineTo(ankleX, ankleY); ctx.stroke();
+                
+                ctx.strokeStyle = '#d04a00'; ctx.lineWidth = size * 0.25;
+                let calfs1X = kneeX + (ankleX - kneeX)*0.2; let calfs1Y = kneeY + (ankleY - kneeY)*0.2;
+                let calfs2X = kneeX + (ankleX - kneeX)*0.4; let calfs2Y = kneeY + (ankleY - kneeY)*0.4;
+                ctx.beginPath(); ctx.moveTo(calfs1X - size*0.4, calfs1Y); ctx.lineTo(calfs1X + size*0.4, calfs1Y); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(calfs2X - size*0.4, calfs2Y); ctx.lineTo(calfs2X + size*0.4, calfs2Y); ctx.stroke();
+
+                ctx.fillStyle = '#ccff00';
+                ctx.beginPath();
+                ctx.ellipse(ankleX + dir * size*0.3, ankleY + size*0.2, size*0.8, size*0.4, 0, 0, Math.PI*2);
+                ctx.fill();
+                
+                ctx.fillStyle = '#333';
+                ctx.beginPath(); ctx.arc(ankleX + dir * size*0.1, ankleY + size*0.5, size*0.15, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(ankleX + dir * size*0.6, ankleY + size*0.5, size*0.15, 0, Math.PI*2); ctx.fill();
+            }
+
+            let lKneeX, lKneeY, lLx, lLy;
+            let rKneeX, rKneeY, rLx, rLy;
+
+            if (isDiving) {
+                lKneeX = -torsoW * 0.6; lKneeY = cy + torsoH + legLen * 0.4;
+                lLx = -torsoW * 0.8; lLy = cy + torsoH + legLen * 0.8;
+                
+                rKneeX = torsoW * 0.6; rKneeY = cy + torsoH + legLen * 0.5;
+                rLx = torsoW * 0.8; rLy = cy + torsoH + legLen;
+            } else {
+                let bendL = Math.abs(Math.sin(idleTime * 2)) * size * 0.5;
+                let bendR = Math.abs(Math.cos(idleTime * 2)) * size * 0.5;
+                
+                lKneeX = -torsoW * 0.4; lKneeY = cy + torsoH + legLen * 0.5 - bendL;
+                lLx = -torsoW * 0.5; lLy = cy + torsoH + legLen;
+                
+                rKneeX = torsoW * 0.4; rKneeY = cy + torsoH + legLen * 0.5 - bendR;
+                rLx = torsoW * 0.5; rLy = cy + torsoH + legLen;
+            }
+
+            drawLeg(-torsoW * 0.3, cy + torsoH, lKneeX, lKneeY, lLx, lLy, -1);
+            drawLeg(torsoW * 0.3, cy + torsoH, rKneeX, rKneeY, rLx, rLy, 1);
+
+            ctx.fillStyle = shortColor;
+            drawRoundRectCompat(ctx, -torsoW/2 - 2, cy + torsoH - 2, torsoW + 4, size * 1.6, 4);
+            ctx.fill();
+            ctx.fillStyle = 'rgba(255,255,255,0.1)';
+            ctx.beginPath(); ctx.moveTo(-torsoW/2, cy + torsoH); ctx.lineTo(-torsoW*0.2, cy + torsoH + size); ctx.lineTo(torsoW*0.2, cy + torsoH + size); ctx.lineTo(torsoW/2, cy + torsoH); ctx.fill();
+
+            // --- TORSO ---
+            ctx.fillStyle = jerseyGrd; 
+            ctx.beginPath();
+            ctx.moveTo(-torsoW/2, cy); 
+            ctx.lineTo(torsoW/2, cy); 
+            ctx.quadraticCurveTo(torsoW/2 - size*0.2, cy + torsoH*0.5, torsoW/2, cy + torsoH); 
+            ctx.lineTo(-torsoW/2, cy + torsoH); 
+            ctx.quadraticCurveTo(-torsoW/2 + size*0.2, cy + torsoH*0.5, -torsoW/2, cy); 
+            ctx.fill();
+
+            ctx.fillStyle = '#111';
+            ctx.beginPath(); ctx.arc(0, cy, size*0.8, 0, Math.PI); ctx.fill();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `900 ${size * 2.2}px Inter, sans-serif`;
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText('1', 0, cy + torsoH * 0.45);
+
+            ctx.fillStyle = 'rgba(0,0,0,0.15)';
+            ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(-torsoW/2, cy + torsoH); ctx.lineTo(torsoW/2, cy + torsoH); ctx.fill();
+
+            // --- ARMS ---
+            ctx.lineWidth = size * 0.85;
+            ctx.strokeStyle = skinColor;
+            let armSpread = size * 2.2 * actualStretch; 
+
+            // Left
+            ctx.beginPath();
+            ctx.moveTo(-torsoW/2, cy + size);
+            let lGx, lGy;
+            if(isDiving) {
+                lGx = -torsoW/2 - armSpread; lGy = cy - size;
+            } else {
+                ctx.lineTo(-torsoW/2 - armSpread*0.3, cy + size*2);
+                lGx = -torsoW/2 - armSpread*0.6; lGy = cy + size*3;
+            }
+            ctx.lineTo(lGx, lGy); ctx.stroke();
+
+            // Right
+            ctx.beginPath();
+            ctx.moveTo(torsoW/2, cy + size);
+            let rGx, rGy;
+            if(isDiving) {
+                rGx = torsoW/2 + armSpread; rGy = cy - size;
+            } else {
+                ctx.lineTo(torsoW/2 + armSpread*0.3, cy + size*2);
+                rGx = torsoW/2 + armSpread*0.6; rGy = cy + size*3;
+            }
+            ctx.lineTo(rGx, rGy); ctx.stroke();
+
+            // --- HEAD ---
+            ctx.fillStyle = skinColor;
+            ctx.beginPath(); ctx.arc(0, cy - size*0.8, size*1.2, 0, Math.PI*2); ctx.fill();
+            
+            ctx.fillStyle = '#221100';
+            ctx.beginPath(); ctx.arc(0, cy - size*1.1, size*1.25, Math.PI*0.9, Math.PI*2.1); ctx.fill();
+
+            // --- GLOVES ---
+            const gloveSize = size * 1.35;
+            
+            function drawGlove(gx, gy, gSize, gRot, sideMultiplier) {
+                ctx.save();
+                ctx.translate(gx, gy);
+                ctx.rotate(gRot);
+                
+                ctx.fillStyle = '#111';
+                drawRoundRectCompat(ctx, -gSize*0.5, gSize*0.2, gSize, gSize*0.4, 2);
+                ctx.fill();
+
+                ctx.fillStyle = '#f8f8f8'; ctx.strokeStyle = '#999'; ctx.lineWidth = 1;
+                drawRoundRectCompat(ctx, -gSize*0.6, -gSize*0.4, gSize*1.2, gSize*0.8, 4);
+                ctx.fill(); ctx.stroke();
+                
+                ctx.fillStyle = '#ff2a2a'; ctx.strokeStyle = '#cc0000'; ctx.lineWidth = 1;
+                let fW = gSize * 0.25;
+                for(let i=0; i<4; i++) {
+                    let fx = -gSize*0.5 + i*(fW*1.1);
+                    let fH = gSize * (1.0 + (i===1||i===2 ? 0.2 : 0) - (i===3 ? 0.2 : 0));
+                    drawRoundRectCompat(ctx, fx, -gSize*0.2 - fH, fW, fH, fW/2);
+                    ctx.fill(); ctx.stroke();
+                }
+
+                ctx.save();
+                let thumbX = sideMultiplier * gSize * 0.55;
+                ctx.translate(thumbX, -gSize*0.1);
+                ctx.rotate(sideMultiplier * Math.PI/3.5);
+                drawRoundRectCompat(ctx, -fW/2, -gSize*0.75, fW, gSize*0.75, fW/2);
+                ctx.fill(); ctx.stroke();
+                ctx.restore();
+
+                drawRoundRectCompat(ctx, -gSize*0.55, -gSize*0.3, gSize*1.1, gSize*0.6, 4);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            drawGlove(lGx, lGy, gloveSize, isDiving ? -Math.PI/3 : 0, 1);
+            drawGlove(rGx, rGy, gloveSize, isDiving ? Math.PI/3 : 0, -1);
+
+            ctx.restore();
+        }
+
+        /* --- Classic Ball --- */
+        function drawBall(x, y, scale = 1) {
+            const r = Math.max(12, Math.min(w * 0.05, 30)) * scale;
+            ctx.save(); ctx.translate(x, y);
+            
+            ctx.fillStyle = `rgba(0,0,0,${0.6 * scale})`; 
+            ctx.beginPath(); ctx.ellipse(0, r + (8*scale), r*0.9, r*0.25, 0, 0, Math.PI*2); ctx.fill();
+
+            ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2);
+            ctx.fillStyle = '#fdfdfd'; ctx.fill();
+            ctx.clip(); 
+            
+            let rot = shotTween.active ? shotTween.t * Math.PI * 12 : 0;
+            ctx.rotate(rot);
+
+            ctx.fillStyle = '#151515'; ctx.strokeStyle = '#151515';
+            ctx.lineWidth = r*0.06; ctx.lineJoin = 'round';
+
+            ctx.beginPath();
+            for(let i=0; i<5; i++) {
+                let a = i * Math.PI * 2 / 5 - Math.PI / 2;
+                ctx.lineTo(Math.cos(a) * r * 0.35, Math.sin(a) * r * 0.35);
+            }
+            ctx.closePath(); ctx.fill(); ctx.stroke();
+
+            for(let i=0; i<5; i++) {
+                let a = i * Math.PI * 2 / 5 - Math.PI / 2;
+                let x1 = Math.cos(a) * r * 0.35; let y1 = Math.sin(a) * r * 0.35;
+                let x2 = Math.cos(a) * r * 0.75; let y2 = Math.sin(a) * r * 0.75;
+                ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+
+                let aOut = a + Math.PI/5; 
+                let cx = Math.cos(aOut) * r * 1.05; let cy = Math.sin(aOut) * r * 1.05;
+                
+                ctx.beginPath();
+                for(let j=0; j<5; j++) {
+                    let aPent = aOut + Math.PI + j * Math.PI * 2 / 5;
+                    ctx.lineTo(cx + Math.cos(aPent) * r * 0.42, cy + Math.sin(aPent) * r * 0.42);
+                }
+                ctx.closePath(); ctx.fill(); ctx.stroke();
+            }
+
+            ctx.restore(); 
+
+            ctx.save(); ctx.translate(x,y);
+            const bGrd = ctx.createRadialGradient(-r*0.3, -r*0.3, r*0.1, 0, 0, r);
+            bGrd.addColorStop(0, 'rgba(255,255,255,0.9)'); 
+            bGrd.addColorStop(0.35, 'rgba(255,255,255,0.1)'); 
+            bGrd.addColorStop(0.7, 'rgba(0,0,0,0.5)');
+            bGrd.addColorStop(1, 'rgba(0,0,0,0.85)');
+            ctx.fillStyle = bGrd;
+            ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill();
+            
+            ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = r*0.08;
+            ctx.beginPath(); ctx.arc(0, 0, r*0.85, -Math.PI*0.8, -Math.PI*0.2); ctx.stroke();
+            
+            ctx.restore();
+        }
+
+        function createParticles(x, y, color) {
+            for(let i=0; i<60; i++) {
+                particles.push({
+                    x: x, y: y,
+                    vx: (Math.random() - 0.5) * 20, vy: (Math.random() - 1) * 20,
+                    life: 1, color: Math.random() > 0.4 ? color : '#ffffff',
+                    size: Math.random() * 6 + 2
+                });
+            }
+        }
+        
+        function drawParticles() {
+            for(let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.x += p.vx; p.y += p.vy; p.vy += 0.6; 
+                p.life -= 0.015;
+                if(p.life <= 0) { particles.splice(i, 1); continue; }
+                ctx.globalAlpha = p.life; ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, p.size, p.size);
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        /* --- Input & Pre-shot Logic --- */
         function startGameLoop() {
-            hasShot = false;
-            gameState = 'POWER';
-            power = 0; aimH = 50; aimV = 50;
-            pDir = 1; hDir = 1; vDir = 1;
+            hasShot = false; gameState = 'POWER';
+            power = 0; aimH = 50; aimV = 50; pDir = 1; hDir = 1; vDir = 1;
+            keeperAnim.stretch = 1; 
             
             document.getElementById('hud-h-wrapper').style.display = 'block';
-            document.getElementById('hud-h-wrapper').classList.add('active');
-            document.getElementById('hud-h-fill').style.opacity = '1';
-            document.getElementById('hud-h-fill').style.width = '0%';
-            document.getElementById('hud-h-text').innerText = i18n[currentLang].step1;
+            setTimeout(() => document.getElementById('hud-h-wrapper').classList.add('active'), 10);
+            document.getElementById('hud-h-fill').style.opacity = '1'; document.getElementById('hud-h-fill').style.width = '0%';
+            document.getElementById('hud-v-wrapper').style.display = 'none'; document.getElementById('hud-v-wrapper').classList.remove('active');
             
-            document.getElementById('hud-v-wrapper').style.display = 'none';
-            document.getElementById('hud-v-wrapper').classList.remove('active');
-            document.getElementById('hud-v-fill').style.height = '0%';
-            
-            const t = i18n[currentLang];
-            document.getElementById('hud-instruction').innerText = t.tap;
-
-            switchScreen('game');
-            updateGameBars();
+            updateTexts();
+            switchScreen('game'); updateGameBars();
         }
 
-        // --- STREAMING_CHUNK: Logic for aiming sliders... ---
         function updateGameBars() {
             if (gameState === 'POWER') {
-                power += 1.6 * pDir;
-                if (power >= 100) { power = 100; pDir = -1; }
-                if (power <= 0) { power = 0; pDir = 1; }
+                power += 2.0 * pDir; if (power >= 100) { power = 100; pDir = -1; } if (power <= 0) { power = 0; pDir = 1; }
                 document.getElementById('hud-h-fill').style.width = `${power}%`;
             } 
             else if (gameState === 'AIM_H') {
-                aimH += 2.2 * hDir;
-                if (aimH >= 100) { aimH = 100; hDir = -1; }
-                if (aimH <= 0) { aimH = 0; hDir = 1; }
+                aimH += 2.5 * hDir; if (aimH >= 100) { aimH = 100; hDir = -1; } if (aimH <= 0) { aimH = 0; hDir = 1; }
                 document.getElementById('hud-h-fill').style.width = `${aimH}%`;
             }
             else if (gameState === 'AIM_V') {
-                aimV += 2.2 * vDir;
-                if (aimV >= 100) { aimV = 100; vDir = -1; }
-                if (aimV <= 0) { aimV = 0; vDir = 1; }
+                aimV += 2.5 * vDir; if (aimV >= 100) { aimV = 100; vDir = -1; } if (aimV <= 0) { aimV = 0; vDir = 1; }
                 document.getElementById('hud-v-fill').style.height = `${aimV}%`;
             }
 
-            drawPitch(); 
-            if (gameState === 'POWER' || gameState === 'AIM_H' || gameState === 'AIM_V') {
-                animFrame = window.requestAnimFrame(updateGameBars);
-            }
+            drawFrame(); 
+            if (['POWER', 'AIM_H', 'AIM_V'].includes(gameState)) animFrame = window.requestAnimFrame(updateGameBars);
         }
 
-        function handleShoot(e) {
-            if (hasShot || gameState === 'IDLE' || gameState === 'BETTING' || gameState === 'RESULT' || gameState === 'SHOOTING') return;
+        function handleInput(e) {
+            if (hasShot || !['POWER', 'AIM_H', 'AIM_V'].includes(gameState)) return;
             if (e && e.cancelable && e.type !== 'keydown') e.preventDefault();
             
-            const t = i18n[currentLang];
-
             if (gameState === 'POWER') {
                 gameState = 'AIM_H';
-                document.getElementById('hud-h-wrapper').classList.remove('active');
-                document.getElementById('hud-h-fill').style.opacity = '0.3';
-                document.getElementById('hud-h-text').innerText = t.step2;
-                document.getElementById('hud-instruction').innerText = t.tap_aim;
+                document.getElementById('hud-h-wrapper').classList.remove('active'); document.getElementById('hud-h-fill').style.opacity = '0.4';
+                
+                const inst = document.getElementById('hud-instruction'); inst.classList.remove('pulse-alert'); void inst.offsetWidth; inst.classList.add('pulse-alert');
+                updateTexts();
             } 
             else if (gameState === 'AIM_H') {
                 gameState = 'AIM_V';
-                document.getElementById('hud-v-wrapper').style.display = 'block';
-                setTimeout(() => document.getElementById('hud-v-wrapper').classList.add('active'), 10);
-                document.getElementById('hud-v-text').innerText = t.step3;
-                document.getElementById('hud-instruction').innerText = t.tap_height;
+                document.getElementById('hud-v-wrapper').style.display = 'block'; setTimeout(() => document.getElementById('hud-v-wrapper').classList.add('active'), 10);
+                updateTexts();
             } 
             else if (gameState === 'AIM_V') {
-                hasShot = true;
-                shoot();
+                hasShot = true; calculateShoot();
             }
         }
 
-        // --- ALGORITMO DI TIRO CON FORZATURA VISIVA CHIARE ---
-        function shoot() {
-            gameState = 'SHOOTING';
-            window.cancelAnimFrame(animFrame);
-            switchScreen('none');
+        touchZone.addEventListener('mousedown', handleInput);
+        touchZone.addEventListener('touchstart', handleInput, { passive: false });
+        window.addEventListener('keydown', (e) => { if (e.code === 'Space') handleInput(e); });
+
+        /* --- Deterministic Physics System --- */
+        function calculateShoot() {
+            gameState = 'SHOOTING'; window.cancelAnimFrame(animFrame); switchScreen('none');
             
             let baseTx = goalRect.x + (aimH / 100) * goalRect.w;
             let baseTy = (goalRect.y + goalRect.h) - ((aimV / 100) * goalRect.h);
 
-            let deviationScaleX = (power / 100) * (goalRect.w * 0.15);
-            let deviationScaleY = (power / 100) * (goalRect.h * 0.15);
-            let rawTx = baseTx + (Math.random() - 0.5) * deviationScaleX;
-            let rawTy = baseTy + (Math.random() - 0.5) * deviationScaleY;
+            let varianceX = (power / 100) * (goalRect.w * 0.12);
+            let varianceY = (power / 100) * (goalRect.h * 0.12);
+            let rawTx = baseTx + (Math.random() - 0.5) * varianceX * 2;
+            let rawTy = baseTy + (Math.random() - 0.5) * varianceY * 2;
 
-            if (power > 90) rawTy -= goalRect.h * 0.25; 
-            else if (power < 35) rawTy += goalRect.h * 0.25; 
+            if (power > 85) rawTy -= goalRect.h * 0.2; 
+            else if (power < 20) rawTy += goalRect.h * 0.2; 
 
-            const isInsideX = rawTx > goalRect.x + 10 && rawTx < goalRect.x + goalRect.w - 10;
-            const isInsideY = rawTy > goalRect.y + 10 && rawTy < goalRect.y + goalRect.h;
+            const isInsideX = rawTx > goalRect.x + 8 && rawTx < goalRect.x + goalRect.w - 8;
+            const isInsideY = rawTy > goalRect.y + 8 && rawTy < goalRect.y + goalRect.h;
             
-            const isPostX = !isInsideX && rawTx >= goalRect.x - 15 && rawTx <= goalRect.x + goalRect.w + 15;
-            const isPostY = !isInsideY && rawTy >= goalRect.y - 15 && rawTy <= goalRect.y + goalRect.h + 15;
+            const isPostX = !isInsideX && rawTx >= goalRect.x - 12 && rawTx <= goalRect.x + goalRect.w + 12;
+            const isPostY = !isInsideY && rawTy >= goalRect.y - 12 && rawTy <= goalRect.y + goalRect.h + 12;
 
+            // Logica Fisica Reale: Se la palla non è dentro la porta, IL PORTIERE NON LA TOCCA.
             if (!isInsideX || !isInsideY) {
                 currentOutcome = (isPostX || isPostY) ? 'post' : 'miss';
             } else {
-                let distCenter = Math.abs(rawTx - (goalRect.x + goalRect.w/2)) / (goalRect.w/2); 
-                let keeperDifficulty = (distCenter * 60) + (power * 0.4); 
-                let keeperReach = 35 + Math.random() * 65; 
+                let distCenter = Math.abs(rawTx - goalRect.cx) / (goalRect.w/2); 
+                let keeperDifficulty = (distCenter * 50) + (power * 0.5); 
+                let keeperReach = 30 + Math.random() * 70; 
+                currentOutcome = (keeperDifficulty > keeperReach && power > 30) ? 'goal' : 'saved';
+            }
 
-                if (keeperDifficulty > keeperReach && power > 45) {
-                    currentOutcome = 'goal';
-                } else {
-                    currentOutcome = 'saved';
+            ballAnim.startX = ballAnim.x; ballAnim.startY = ballAnim.y;
+            ballAnim.endX = rawTx; ballAnim.endY = rawTy;
+            ballAnim.endScale = currentOutcome === 'miss' ? 0.15 : (currentOutcome === 'goal' ? 0.25 : 0.35);
+            ballAnim.curveScale = (aimH - 50) * 1.5; 
+            
+            let bRad = Math.max(12, Math.min(w * 0.05, 30)) * ballAnim.endScale;
+            
+            // Forza il pallone a sbattere esattamente sul palo (Legno)
+            if (currentOutcome === 'post') {
+                let pThick = Math.max(4, goalRect.w * 0.012);
+                if (rawTy < goalRect.y + 10) { // Traversa
+                    ballAnim.endY = goalRect.y - bRad + pThick/2;
+                    ballAnim.endX = Math.max(goalRect.x, Math.min(goalRect.x + goalRect.w, rawTx));
+                } else if (rawTx < goalRect.cx) { // Palo Sinistro
+                    ballAnim.endX = goalRect.x - bRad + pThick/2;
+                    ballAnim.endY = Math.min(rawTy, goalRect.y + goalRect.h - bRad);
+                } else { // Palo Destro
+                    ballAnim.endX = goalRect.x + goalRect.w + bRad - pThick/2;
+                    ballAnim.endY = Math.min(rawTy, goalRect.y + goalRect.h - bRad);
                 }
             }
 
-            // --- STREAMING_CHUNK: Aligning goalkeeper vectors on outcome... ---
-            if (currentOutcome === 'miss') {
-                ballAnim.targetScale = 0.2; 
-                ballAnim.tx = rawTx;
-                ballAnim.ty = rawTy;
-                if(ballAnim.tx > goalRect.x && ballAnim.tx < goalRect.x + goalRect.w && ballAnim.ty > goalRect.y) {
-                    ballAnim.ty = goalRect.y - goalRect.h * 0.4;
-                }
-                handsAnim.tx = goalRect.x + goalRect.w/2 + ((Math.random()-0.5) * goalRect.w * 0.6);
-                handsAnim.ty = goalRect.y + goalRect.h/2;
-            } 
-            else if (currentOutcome === 'post') {
-                ballAnim.targetScale = 0.35;
-                ballAnim.tx = rawTx < goalRect.x + goalRect.w/2 ? goalRect.x : goalRect.x + goalRect.w;
-                ballAnim.ty = Math.max(goalRect.y, Math.min(rawTy, goalRect.y + goalRect.h));
-                handsAnim.tx = goalRect.x + goalRect.w/2 + ((Math.random()-0.5) * goalRect.w * 0.6);
-                handsAnim.ty = goalRect.y + goalRect.h/2;
-            } 
-            else if (currentOutcome === 'saved') {
-                ballAnim.targetScale = 0.45; 
-                ballAnim.tx = rawTx;
-                ballAnim.ty = rawTy;
-                handsAnim.tx = ballAnim.tx;
-                handsAnim.ty = ballAnim.ty - 10; 
+            keeperAnim.startX = keeperAnim.x; keeperAnim.startY = keeperAnim.y;
+            
+            // EXACT INVERSE KINEMATICS FOR PERFECT GLOVE INTERCEPT (Solo su Saved)
+            if (currentOutcome === 'saved') {
+                let diveDir = ballAnim.endX > goalRect.cx ? 1 : -1;
+                
+                let size = Math.max(6, goalRect.w * 0.028); 
+                let torsoW = size * 3.4;
+                let saveStretchTarget = 1.15; 
+                let armSpread = size * 2.2 * saveStretchTarget;
+                let gSize = size * 1.35;
+                
+                let localGloveX = diveDir * (torsoW/2 + armSpread + gSize * 0.4); 
+                let localGloveY = -size;
+                
+                let diveAngle = (Math.PI / 2.2) * diveDir * Math.min(1, (saveStretchTarget - 1) * 6.5);
+                let cosA = Math.cos(diveAngle); let sinA = Math.sin(diveAngle);
+                
+                let rotGloveX = localGloveX * cosA - localGloveY * sinA;
+                let rotGloveY = localGloveX * sinA + localGloveY * cosA;
+                
+                let hitOffsetX = diveDir * bRad * 0.8; 
+
+                keeperAnim.endX = ballAnim.endX - hitOffsetX - rotGloveX;
+                keeperAnim.endY = ballAnim.endY - rotGloveY;
             } 
             else if (currentOutcome === 'goal') {
-                ballAnim.targetScale = 0.3; 
-                ballAnim.tx = Math.max(goalRect.x + 30, Math.min(goalRect.x + goalRect.w - 30, rawTx));
-                ballAnim.ty = Math.max(goalRect.y + 20, Math.min(goalRect.y + goalRect.h - 20, rawTy));
-                
-                let diveDir = ballAnim.tx > goalRect.x + goalRect.w/2 ? -1 : 1;
-                handsAnim.tx = goalRect.x + goalRect.w/2 + (diveDir * goalRect.w * 0.4);
-                handsAnim.ty = goalRect.y + goalRect.h * 0.6;
+                let diveDir = ballAnim.endX > goalRect.cx ? -1 : 1;
+                keeperAnim.endX = goalRect.cx + (diveDir * goalRect.w * 0.5);
+                keeperAnim.endY = goalRect.y + goalRect.h * 0.6;
+            }
+            else {
+                // Miss o Post: Tuffo a vuoto
+                keeperAnim.endX = goalRect.cx + (ballAnim.endX - goalRect.cx) * 0.5;
+                keeperAnim.endY = goalRect.y + goalRect.h * 0.4;
             }
 
-            ballAnim.x = w / 2; ballAnim.y = h * 0.85; ballAnim.scale = 1;
-            handsAnim.x = w / 2; handsAnim.y = goalRect.y + goalRect.h * 0.6; 
+            if (currentOutcome !== 'saved') {
+                keeperAnim.endX = Math.max(goalRect.x - 20, Math.min(goalRect.x + goalRect.w + 20, keeperAnim.endX));
+            }
+
+            shotTween.active = true;
+            shotTween.t = 0;
+            shotTween.duration = Math.max(25, 60 - (power * 0.4)); 
             
             updateShooting();
         }
 
+        function lerp(start, end, t) { return start * (1 - t) + end * t; }
+        function easeOutQuad(t) { return t * (2 - t); }
+
+        function shakeCamera() {
+            let shake = 15;
+            let shakeInterval = setInterval(() => {
+                cameraOffset.x = (Math.random() - 0.5) * shake;
+                cameraOffset.y = (Math.random() - 0.5) * shake;
+                shake *= 0.8;
+                if(shake < 0.5) { clearInterval(shakeInterval); cameraOffset = {x:0,y:0}; }
+            }, 16);
+        }
+
         function updateShooting() {
-            if (gameState !== 'SHOOTING') return;
+            if (!shotTween.active) return;
+            
+            shotTween.t += 1 / shotTween.duration;
+            if (shotTween.t >= 1) shotTween.t = 1;
 
-            ballAnim.x += (ballAnim.tx - ballAnim.x) * 0.08;
-            ballAnim.y += (ballAnim.ty - ballAnim.y) * 0.08;
-            ballAnim.scale += (ballAnim.targetScale - ballAnim.scale) * 0.08;
+            let linearT = shotTween.t;
+            let easeOutT = easeOutQuad(linearT);
+            
+            let curveOffset = Math.sin(linearT * Math.PI) * ballAnim.curveScale;
+            ballAnim.x = lerp(ballAnim.startX, ballAnim.endX, linearT) + curveOffset;
+            ballAnim.y = lerp(ballAnim.startY, ballAnim.endY, easeOutT); 
+            ballAnim.scale = lerp(1, ballAnim.endScale, linearT);
 
-            handsAnim.x += (handsAnim.tx - handsAnim.x) * 0.09;
-            handsAnim.y += (handsAnim.ty - handsAnim.y) * 0.09;
+            keeperAnim.x = lerp(keeperAnim.startX, keeperAnim.endX, easeOutT);
+            keeperAnim.y = lerp(keeperAnim.startY, keeperAnim.endY, easeOutT);
+            
+            let stretchTarget = currentOutcome === 'saved' ? 1.15 : 1.05;
+            keeperAnim.stretch = lerp(1, stretchTarget, easeOutT);
 
-            drawPitch();
+            drawFrame();
 
-            if (Math.abs(ballAnim.scale - ballAnim.targetScale) < 0.015) {
+            if (shotTween.t === 1) {
+                shotTween.active = false;
                 gameState = 'RESULT';
-                setTimeout(() => showResult(currentOutcome), 400);
+                if(currentOutcome === 'post') shakeCamera();
+                if(currentOutcome === 'goal') createParticles(ballAnim.endX, ballAnim.endY, '#00ff44');
+                setTimeout(() => showResult(currentOutcome), 500);
                 return;
             }
-
             animFrame = window.requestAnimFrame(updateShooting);
         }
 
-        // --- STREAMING_CHUNK: Displaying financial and play results... ---
+        /* --- Result View & Math Summary --- */
         function showResult(outcome) {
             const t = i18n[currentLang];
             const isGoal = outcome === 'goal';
@@ -823,48 +1350,60 @@
             
             if (isGoal) {
                 titleEl.innerText = t.res_goal; 
-                titleEl.className = "text-[#00ff44] font-black text-[clamp(2rem,6vw,3.5rem)] mb-0 uppercase tracking-tighter drop-shadow-[0_0_20px_rgba(0,255,68,0.6)] leading-tight";
+                titleEl.className = "text-[#00ff44] font-black text-[clamp(2.5rem,8vw,3.5rem)] mb-0 uppercase tracking-tighter drop-shadow-[0_0_20px_rgba(0,255,68,0.6)] leading-none";
                 subEl.innerText = t.sub_goal;
             } else {
-                titleEl.className = "text-white font-black text-[clamp(2rem,6vw,3.5rem)] mb-0 uppercase tracking-tighter drop-shadow-lg leading-tight";
+                titleEl.className = "text-white font-black text-[clamp(2.5rem,8vw,3.5rem)] mb-0 uppercase tracking-tighter drop-shadow-lg leading-none";
                 if(outcome === 'saved') { titleEl.innerText = t.res_saved; subEl.innerText = t.sub_saved; }
                 else if(outcome === 'post') { titleEl.innerText = t.res_post; subEl.innerText = t.sub_post; }
                 else { titleEl.innerText = t.res_miss; subEl.innerText = t.sub_miss; }
             }
 
+            // Inietta l'Analisi di Mercato (Il lato Super Educativo)
+            let eduKey = '';
+            if (outcome === 'goal') eduKey = t.edu_goal;
+            else if (outcome === 'saved') eduKey = t.edu_save;
+            else if (outcome === 'post') eduKey = t.edu_post;
+            else eduKey = t.edu_miss;
+            document.getElementById('res-edu-text').innerText = eduKey;
+
             const cardHeader = document.getElementById('res-card-header');
-            document.getElementById('res-bet-title').innerText = t.res_bet_title + (bet.type === 'back' ? t.b_title : t.l_title);
+            document.getElementById('res-bet-title').innerText = t.res_bet + (bet.type === 'back' ? t.back : t.lay);
             document.getElementById('res-bet-odds').innerText = bet.type === 'back' ? "@1.29" : "@1.31";
             
             if (bet.type === 'back') {
-                cardHeader.className = "px-3 py-1.5 flex justify-between items-center border-b bg-[var(--bf-back-light)] text-[var(--bf-back)]";
+                cardHeader.className = "px-4 py-2 flex justify-between items-center border-b bg-[var(--bf-back-light)] text-[var(--bf-back)]";
+                document.getElementById('res-edu-box').className = "bg-[var(--bf-back-light)] rounded-lg p-2.5 mb-3 border border-[var(--bf-back)]";
+                document.getElementById('lbl-edu-title').className = "text-[var(--bf-back)] text-[0.65rem] font-black uppercase block mb-1";
             } else {
-                cardHeader.className = "px-3 py-1.5 flex justify-between items-center border-b bg-[var(--bf-lay-light)] text-[var(--bf-lay)]";
+                cardHeader.className = "px-4 py-2 flex justify-between items-center border-b bg-[var(--bf-lay-light)] text-[var(--bf-lay)]";
+                document.getElementById('res-edu-box').className = "bg-[var(--bf-lay-light)] rounded-lg p-2.5 mb-3 border border-[var(--bf-lay)]";
+                document.getElementById('lbl-edu-title').className = "text-[var(--bf-lay)] text-[0.65rem] font-black uppercase block mb-1";
             }
 
-            let mathHTML = "";
-            let netValStr = "";
-            let valClass = "";
-            
+            let mathHTML = ""; let netValStr = ""; let valClass = "";
             const grossValue = (bet.profit / (1 - bet.comm)).toFixed(2);
             const commValue = (grossValue * bet.comm).toFixed(2);
 
             if (betWon) {
-                mathHTML += `<div>${t.txt_stake}: <span class="font-bold">${bet.stakeAmt.toFixed(2)}€</span></div>`;
-                mathHTML += `<div>${t.txt_gross}: <span class="text-green-600 font-bold">+${grossValue}€</span></div>`;
-                mathHTML += `<div>${t.txt_comm}: <span class="text-red-500 font-bold">-${commValue}€</span></div>`;
+                let stakeDisp = bet.stakeAmt; 
+                let labelStake = bet.type === 'back' ? t.txt_stake : t.txt_backer_stake;
+                
+                mathHTML += `<div class="flex justify-between border-b border-gray-100 pb-1"><span>${labelStake}:</span> <span class="font-bold">${stakeDisp.toFixed(2)}€</span></div>`;
+                mathHTML += `<div class="flex justify-between border-b border-gray-100 py-1"><span>${t.txt_gross}:</span> <span class="text-green-600 font-bold">+${grossValue}€</span></div>`;
+                mathHTML += `<div class="flex justify-between pt-1"><span>${t.txt_comm}:</span> <span class="text-red-500 font-bold">-${commValue}€</span></div>`;
                 netValStr = `+${bet.profit.toFixed(2)}€`;
-                valClass = "font-black text-[clamp(1.2rem,4vw,1.8rem)] font-mono leading-none text-green-600";
+                valClass = "font-black responsive-text-xl font-mono leading-none text-green-600";
                 
                 if(!titleEl.dataset.calculated) bankroll += bet.profit;
             } else {
                 if (bet.type === 'back') {
-                    mathHTML += `<div>${t.txt_lost}: <span class="text-red-600 font-bold">-${bet.liability.toFixed(2)}€</span></div>`;
+                    mathHTML += `<div class="flex justify-between"><span>${t.txt_lost}:</span> <span class="text-red-600 font-bold">-${bet.liability.toFixed(2)}€</span></div>`;
                 } else {
-                    mathHTML += `<div>${t.txt_liab}: <span class="text-red-600 font-bold">-${bet.liability.toFixed(2)}€</span></div>`;
+                    mathHTML += `<div class="flex justify-between"><span>${t.txt_liab}:</span> <span class="text-red-600 font-bold">-${bet.liability.toFixed(2)}€</span></div>`;
                 }
                 netValStr = `-${bet.liability.toFixed(2)}€`;
-                valClass = "font-black text-[clamp(1.2rem,4vw,1.8rem)] font-mono leading-none text-red-600";
+                valClass = "font-black responsive-text-xl font-mono leading-none text-red-600";
                 
                 if(!titleEl.dataset.calculated) bankroll -= bet.liability;
             }
@@ -873,46 +1412,35 @@
             document.getElementById('res-math-detail').innerHTML = mathHTML;
             
             const netVal = document.getElementById('res-net-val');
-            netVal.innerText = netValStr;
-            netVal.className = valClass;
+            netVal.innerText = netValStr; netVal.className = valClass;
 
             if (bankroll < 0.01) {
                 bankroll = 100.00; 
-                document.getElementById('val-new-bankroll').innerHTML = `100.00€ <br><span class="text-red-500 text-[9px] uppercase tracking-widest mt-1 block">${t.txt_bankrupt}</span>`;
+                document.getElementById('val-new-bankroll').innerHTML = `100.00€ <br><span class="text-red-500 text-[0.6rem] uppercase tracking-widest mt-1 block drop-shadow-none text-right">${t.bankrupt}</span>`;
             } else {
                 document.getElementById('val-new-bankroll').innerText = bankroll.toFixed(2) + "€";
             }
 
-            switchScreen('res');
-            drawPitch(); 
+            switchScreen('res'); renderIdle(); 
         }
 
-        // --- 6. EVENT LISTENERS E INIZIALIZZAZIONE ---
         document.getElementById('btn-goto-bet').addEventListener('click', openBetting);
-        document.getElementById('btn-next').addEventListener('click', () => {
-            document.getElementById('res-title').removeAttribute('data-calculated'); 
-            openBetting();
-        });
-
-        touchZone.addEventListener('mousedown', handleShoot);
-        touchZone.addEventListener('touchstart', function(e) { if (e.cancelable) e.preventDefault(); handleShoot(e); }, { passive: false });
-        
-        window.addEventListener('keydown', (e) => { if (e.code === 'Space') { handleShoot(e); } });
+        document.getElementById('btn-next').addEventListener('click', () => { document.getElementById('res-title').removeAttribute('data-calculated'); openBetting(); });
 
         function renderIdle() {
-            if (gameState === 'IDLE' || gameState === 'BETTING') {
-                drawPitch();
-                window.requestAnimFrame(renderIdle);
+            if (gameState === 'IDLE' || gameState === 'BETTING' || gameState === 'RESULT') {
+                drawFrame(); window.requestAnimFrame(renderIdle);
             }
         }
 
-        window.addEventListener('resize', () => { clearTimeout(window.resizeTimer); window.resizeTimer = setTimeout(resize, 100); });
+        window.addEventListener('resize', () => { 
+            clearTimeout(window.resizeTimer); 
+            window.resizeTimer = setTimeout(() => { resize(); if(gameState === 'BETTING') updateBetMath(); }, 150); 
+        });
         
-        // Setup initial configuration
-        setActiveLanguageButton();
-        updateTexts();
-        resize();
-        renderIdle();
+        // Initial setup
+        document.querySelector(`.lang-btn[data-lang="${currentLang}"]`).classList.add('active');
+        updateTexts(); resize(); renderIdle();
 
     </script>
 </body>
