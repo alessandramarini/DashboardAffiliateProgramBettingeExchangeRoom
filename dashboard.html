@@ -85,7 +85,6 @@
     .flag-icon { width: 16px; height: 11px; object-fit: cover; border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.5); flex-shrink: 0; }
   </style>
 
-  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -99,7 +98,6 @@
     }
   </script>
   
-  <!-- React & Dependencies -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
@@ -118,20 +116,26 @@
     // Lucide Icon Component wrapper
     const Icon = ({ name, size = 24, className = '', ...props }) => {
       const spanRef = useRef(null);
+      // Trasforma props in stringa per evitare dipendenze instabili in useEffect
+      const propsString = JSON.stringify(props);
+      
       useEffect(() => {
         if (spanRef.current && window.lucide) {
           spanRef.current.innerHTML = `<i data-lucide="${name}"></i>`;
-          window.lucide.createIcons({ root: spanRef.current, attrs: { width: size, height: size, class: className, ...props } });
+          window.lucide.createIcons({ 
+            root: spanRef.current, 
+            attrs: { width: size, height: size, class: className, ...JSON.parse(propsString) } 
+          });
         }
-      }, [name, size, className, props]);
+      }, [name, size, className, propsString]);
+      
       return <span ref={spanRef} className={`inline-flex items-center justify-center shrink-0 ${className}`}></span>;
     };
 
-    // Strict Language Order Requirement: EN, ES, PT, IT
+    // Strict Language Order Requirement: EN, ES, IT
     const LANGUAGES = [
       { code: 'en', name: 'ENG', flag: 'gb' },
       { code: 'es', name: 'ESP', flag: 'es' },
-      { code: 'pt', name: 'POR', flag: 'pt' },
       { code: 'it', name: 'ITA', flag: 'it' }
     ];
 
@@ -165,7 +169,6 @@
         access_denied: "ACCESS DENIED", sub_expired: "Your subscription has expired or no active plan was found on this account.", renew_btn: "RENEW SUBSCRIPTION", demo_bypass: "ADMIN LOGIN",
         you_tag: "(YOU)", docs_short: "Docs", deposit_short: "Deposit", audit_short: "Audit", top_10_short: "Top 10",
         whitepaper: "Blueprint", smart_contract: "Smart Contract", contract_address: "Contract Address", read_docs: "Read Documentation",
-        // Blueprint Translations
         nav_arch: "Architecture", nav_revenue: "Revenue Split", nav_security: "Zero-Trust Auth", nav_prompt: "Dev_Spec.md",
         wp_title: "Web3 System Architecture V3", wp_v: "Viral Loop Model • Security Addon",
         wp_sec1_title: "1. Architecture Mandate", wp_sec1_desc: "Strict separation: Off-Chain (Python Backend + DB) is the absolute Source of Truth. On-Chain (TON Smart Contract) acts strictly as a Dumb Vault.",
@@ -222,7 +225,6 @@
         access_denied: "ACCESO DENEGADO", sub_expired: "Tu suscripción ha expirado o no se ha encontrado ningún plan activo.", renew_btn: "RENOVAR SUSCRIPCIÓN", demo_bypass: "ÁREA ADMIN",
         you_tag: "(TÚ)", docs_short: "Docs", deposit_short: "Depósito", audit_short: "Auditoría", top_10_short: "Top 10",
         whitepaper: "Libro Blanco", smart_contract: "Contrato Inteligente", contract_address: "Dirección Contrato", read_docs: "Leer Documentación",
-        // Blueprint Translations
         nav_arch: "Arquitectura", nav_revenue: "Distribución", nav_security: "Zero-Trust Auth", nav_prompt: "Dev_Spec.md",
         wp_title: "Arquitectura Web3 V3", wp_v: "Modelo Viral Loop • Addon de Seguridad",
         wp_sec1_title: "1. Mandato de Arquitectura", wp_sec1_desc: "Separación estricta: Off-Chain (Python Backend + DB) es la Fuente de Verdad. On-Chain es un Smart Contract pasivo (Dumb Vault).",
@@ -250,63 +252,6 @@
         opt_honest_w: "Honesto desde Web (Paga 394 USDT - Recibe 180 días)",
         prompt_title: "AI Developer Prompt", prompt_subtitle: "Use este prompt para instruir a una IA a escribir el contrato en TON con lógica Zero-Trust.",
         label_chart_1: "Esperados", label_chart_2: "Asignados"
-      },
-      pt: {
-        app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programa Afiliados", user_dash: "Área Usuário", partner_dash: "Área Sócios", company_dash: "Tesouraria",
-        academy_btn: "Zero to Hero Academy", signals_btn: "Sala Sinais Telegram", brand_shop: "Brand Shop", setup_wallet: "Configurar Carteira TON", setup_wallet_desc: "Configure sua carteira TON USDT.",
-        change_wallet: "Mudar Carteira", edit_wallet_desc: "Atualize o destino TON. Não afeta a sua rede.",
-        save_wallet: "Salvar", cancel: "Cancelar", login: "Conectar Carteira", logout: "Desconectar", treasury_center: "Operações de Tesouraria", simulate_deposit: "Simular Depósito",
-        processed_volume: "Volume Bruto", real_usdt: "USDT On-Chain", company_reserve: "Reserva Empresa", withdrawable_funds: "Fundos Líquidos", active_nodes: "Promotores Ativos",
-        registered_pools: "Usuários no Sistema", cash_flow: "Receita (7D)", copy_link: "Copiar Link", copied: "Copiado!", copy_error: "Erro na Área de Transferência", vault_available: "Disponível para Saque",
-        no_funds: "Sem Fundos", signing: "Processando...", unlock_withdraw: "Sacar Fundos", lifetime_deposit: "Ganhos Totais", audit_trail: "Histórico Saques", no_tx: "Nenhum saque.",
-        security_auth: "Confirmar Saque", requested_amount: "Valor", dest_wallet: "Destino", signing_btn: "Confirmando...", sign_withdraw_btn: "Confirmar Transferência",
-        earnings_chart: "Resumo de Ganhos", daily_subs: "Leads Virais", conv_rate: "Taxa Conv.", bot_interactions: "Cliques no Link", geo_dist: "Distribuição Global", tier_status: "Nível",
-        recent_activity: "Indicados Recentes", joined: "entrou", deposited: "depositou",
-        network_dir: "Diretório de Rede", my_network: "A Sua Rede", wallet: "Endereço Carteira", status: "Status", volume: "Volume", global_pool: "Top 10 Weekly Pool", pool_qualified: "Atualmente no Top 10!",
-        pool_unqualified: "Fora do Top 10", target: "Vol. 10º Lugar", ends_sat: "Liquidação Domingo 23:59 UTC", leads: "Leads", promoter: "Promotor", rank: "Pos",
-        pricing_docs: "Preços e Docs", specifications: "Especificações", show_balances: "Mostrar Saldos", hide_balances: "Ocultar Saldos",
-        registered_subtext: "Gerados por Loop", conv_subtext: "Lead para Ativo", clicks_subtext: "Cliques Totais", user_col: "Usuário", action_col: "Ação", vol_col: "Vol",
-        toast_success_title: "Sucesso", toast_dep_title: "Depósito Detectado", toast_dep_msg: "Liquidez atualizada on-chain.", toast_auth_title: "Autorização", toast_auth_msg: "Fundos enviados para sua wallet.",
-        status_active: "Ativo", status_inactive: "Inativo", action_deposit: "Depósito", action_join: "Ingressou",
-        time_10m: "há 10 min", time_1h: "há 1 hora", time_3h: "há 3 horas", time_5h: "há 5 horas", time_1d: "há 1 dia", time_2d: "há 2 dias", time_3d: "há 3 dias", time_1w: "há 1 sem", time_2w: "há 2 sem",
-        mon: "Seg", tue: "Ter", wed: "Qua", thu: "Qui", fri: "Sex", sat: "Sáb", sun: "Dom", today: "Hoje",
-        marketing_funnels: "Funis de Marketing (3)", funnel_1: "FUNIL 1: DESCONTO 50%", funnel_1_desc: "Oferece 50% de desconto + sinais grátis + Lição 1 Academy.",
-        funnel_2: "FUNIL 2: MASTERCLASS", funnel_2_desc: "Convite Masterclass ao vivo + sinais grátis + Lição 1 Academy.",
-        funnel_3: "FUNIL 3: VIRAL LOOP", funnel_3_desc: "Oferece 1 Semana Premium Grátis desbloqueando a tarefa de convite.",
-        elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "Ao Vivo", viral_task_tag: "TAREFA VIRAL",
-        welcome_title: "CENTRAL DE OPERAÇÕES", system_status_ok: "STATUS SISTEMA: IDEAL", sign_tx: "Assine a transação na sua carteira.", users_label: "Usuários", elite_platform: "Plataforma Elite", init_env: "Inicializando Ambiente...",
-        realtime_leaderboard: "Classificação ao Vivo", bot_managed: "Atualizado por Bot Python", training_setup: "Treinamento e Setup", signals_access: "Sinais Premium", merch_store: "Loja Oficial",
-        access_denied: "ACESSO NEGADO", sub_expired: "Sua assinatura expirou ou não encontramos nenhum plano ativo associado.", renew_btn: "RENOVAR ASSINATURA", demo_bypass: "ÁREA ADMIN",
-        you_tag: "(VOCÊ)", docs_short: "Docs", deposit_short: "Depósito", audit_short: "Auditoria", top_10_short: "Top 10",
-        whitepaper: "Blueprint", smart_contract: "Contrato Inteligente", contract_address: "Endereço Contrato", read_docs: "Ler Documentação",
-        // Blueprint Translations
-        nav_arch: "Arquitetura", nav_revenue: "Distribuição", nav_security: "Zero-Trust Auth", nav_prompt: "Dev_Spec.md",
-        wp_title: "Arquitetura Web3 V3", wp_v: "Modelo Viral Loop • Addon de Segurança",
-        wp_sec1_title: "1. Mandato de Arquitetura", wp_sec1_desc: "Separação estrita: Off-Chain (Python + DB) é a Fonte de Verdade. On-Chain é um Cofre Passivo.",
-        wp_academy_title: "Motor de Identidade", wp_academy_desc: "Telegram_ID é a chave primária. Redes são vinculadas de forma vitalícia.",
-        wp_signals_desc: "1 Crédito = 24 Horas. Expiração atualiza instantaneamente.",
-        wp_sec4_title: "4. The Infinity Viral Loop", wp_sec4_desc: "O motor de crescimento. Para desbloquear a plataforma, o usuário deve: 1. Conectar Carteira 2. Entrar no Telegram 3. Convidar 2 Amigos. Todos ganham 7 Dias Grátis. Custo zero para a empresa, leads infinitos. O FOMO impulsiona atualizações para o Preço Promotor.",
-        wp_promo_title: "Preço Web Público", wp_affiliate_title: "Preço Link Promotor (-50%)",
-        wp_sec2_title: "2. Motor de Receita", wp_sec2_desc: "Divisão automática baseada na origem da transação.",
-        scenario_a: "CENÁRIO A: Vendas por Referência (3 Níveis)", scenario_b: "CENÁRIO B: Vendas Web Diretas",
-        level_1: "Nível 1 (Direto)", level_2: "Nível 2 (Mentor)", level_3: "Nível 3 (Mestre)", 
-        treasury_comp: "Tesouraria (Empresa)", events_pool_top10: "Pool Eventos Top 10", marketing_pool: "Fundo Marketing & Dev",
-        wp_sec3_title: "3. Top 10 Weekly Pool", 
-        wp_sec3_a_title: "A. Alocação", wp_sec3_a_desc: "10% das vendas dos promotores flui para esta pool dedicada aos 10 melhores vendedores.",
-        wp_sec3_b_title: "B. Liquidação Semanal", wp_sec3_b_desc: "Liquidado todo Domingo (23:59 UTC), dividido entre os Top 10 proporcional ao volume. Empates são decididos pela ordem cronológica.",
-        wp_sec3_c_title: "C. A Psicologia", wp_sec3_c_desc: "Incentiva a competição de elite, recompensando a excelência absoluta e a velocidade.",
-        wp_tech_1_title: "1. Assinaturas On-Chain", wp_tech_1_desc: "claim() DEBE verificar a assinatura ED25519: Hash(Amount, Wallet, Nonce).",
-        wp_tech_2_title: "2. Deduplicação Estrita", wp_tech_2_desc: "DB impõe restrição UNIQUE no tx_hash.", 
-        wp_tech_3_title: "3. Bloqueio por Mudança de Carteira", wp_tech_3_desc: "Alterar a carteira bloqueia os saques por 72 horas.",
-        wp_tech_4_title: "4. Limites Administrativos", wp_tech_4_desc: "Saques > 1.000 USDT exigem revisão manual.", 
-        wp_tech_5_title: "5. Armazenamento Frio", wp_tech_5_desc: "Função de varredura para hardware wallet.",
-        motor_title: "Motor Matemático Anti-Fraude", motor_desc: "O principal vetor de ataque é o Payload Spoofing: enviar um payload 'Elite' (180 dias) mas enviar fundos de 'Starter' (47 USDT). O backend recalcula os dias com base no colateral real.",
-        sim_label: "Simulador Spoofing", back_res: "Resolução Backend", btn_copy: "Copiar Prompt", btn_copied: "Copiado!",
-        opt_spoof: "Hacker Spoofing (Payload Elite [197 USDT] mas paga 47 USDT)",
-        opt_honest_p: "Honesto via Link (Paga 197 USDT - Recebe 180 dias)",
-        opt_honest_w: "Honesto do Web (Paga 394 USDT - Recebe 180 dias)",
-        prompt_title: "AI Developer Prompt", prompt_subtitle: "Use este prompt para instruir uma IA a escrever o contrato na TON com lógica Zero-Trust.",
-        label_chart_1: "Esperados", label_chart_2: "Atribuídos"
       },
       it: {
         app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programma Affiliati", user_dash: "Area Utente", partner_dash: "Area Partner", company_dash: "Tesoreria",
@@ -336,7 +281,6 @@
         access_denied: "ACCESSO NEGATO", sub_expired: "Il tuo abbonamento è scaduto o non è stato trovato alcun piano attivo.", renew_btn: "RINNOVA ABBONAMENTO", demo_bypass: "AREA ADMIN",
         you_tag: "(TU)", docs_short: "Docs", deposit_short: "Deposita", audit_short: "Audit", top_10_short: "Top 10",
         whitepaper: "Blueprint", smart_contract: "Smart Contract", contract_address: "Indirizzo Contratto", read_docs: "Leggi Documentazione",
-        // Blueprint Translations
         nav_arch: "Architettura", nav_revenue: "Revenue Split", nav_security: "Zero-Trust Auth", nav_prompt: "Dev_Spec.md",
         wp_title: "Architettura Web3 V3", wp_v: "Modello Viral Loop • Security Addon",
         wp_sec1_title: "1. Architettura (Separazione Netta)", wp_sec1_desc: "Off-Chain (Python Backend + DB) è l'assoluta fonte di verità. On-Chain (TON Smart Contract) agisce strettamente come 'Dumb Vault'.",
@@ -352,7 +296,7 @@
         wp_sec3_a_title: "A. Assegnazione", wp_sec3_a_desc: "Il 10% delle vendite promoter confluisce in questa pool per i 10 migliori venditori.",
         wp_sec3_b_title: "B. Liquidazione Settimanale", wp_sec3_b_desc: "Liquidato ogni Domenica (23:59 UTC), diviso tra i Top 10 in proporzione al volume. A parità di volume, vince chi ha venduto prima.",
         wp_sec3_c_title: "C. La Psicologia", wp_sec3_c_desc: "Incentiva una competizione elitaria, premiando l'eccellenza assoluta e la velocità di esecuzione.",
-        wp_tech_1_title: "1. Firme Server On-Chain", wp_tech_1_desc: "claim() DEVE verificare la firma ED25519 dal backend: Hash(Amount, Wallet, Nonce).",
+        wp_tech_1_title: "1. Firme Server On-Chain", wp_tech_1_desc: "claim() DEBE verificare la firma ED25519 dal backend: Hash(Amount, Wallet, Nonce).",
         wp_tech_2_title: "2. Deduplicazione Severa", wp_tech_2_desc: "Il DB applica un vincolo UNIQUE su tx_hash di TON per evitare Replay Attacks.", 
         wp_tech_3_title: "3. Time-Lock Cambio Wallet", wp_tech_3_desc: "Cambiare il wallet attivo fa scattare un blocco di 72 ore sui prelievi (Anti-Hijacking).",
         wp_tech_4_title: "4. Soglie Amministrative", wp_tech_4_desc: "I prelievi > 1.000 USDT vengono contrassegnati per la revisione manuale.", 
@@ -389,7 +333,7 @@
       { id: 6, username: '@trader_bob', typeKey: 'action_join', timeKey: 'time_2d', statusKey: 'status_inactive', total_vol: 0, flag: 'gb' },
       { id: 7, username: '@alice_in_crypto', typeKey: 'action_deposit', amount: 50, timeKey: 'time_3d', statusKey: 'status_active', total_vol: 150, flag: 'es' },
       { id: 8, username: '@steve_jobs_fan', typeKey: 'action_join', timeKey: 'time_1w', statusKey: 'status_active', total_vol: 50, flag: 'gb' },
-      { id: 9, username: '@crypto_whale99', typeKey: 'action_deposit', amount: 500, timeKey: 'time_1w', statusKey: 'status_active', total_vol: 2500, flag: 'pt' },
+      { id: 9, username: '@crypto_whale99', typeKey: 'action_deposit', amount: 500, timeKey: 'time_1w', statusKey: 'status_active', total_vol: 2500, flag: 'gb' },
       { id: 10, username: '@newbie_trader', typeKey: 'action_join', timeKey: 'time_2w', statusKey: 'status_inactive', total_vol: 0, flag: 'es' }
     ];
 
@@ -557,7 +501,6 @@
       const tgLinks = {
         en: 'https://t.me/c/3966363262',
         es: 'https://t.me/c/3929284405',
-        pt: 'https://t.me/c/3510579028',
         it: 'https://t.me/c/3958807227'
       };
       const currentTgLink = tgLinks[lang] || tgLinks['en'];
@@ -1060,7 +1003,6 @@
         assigned = (47 / 197) * 180;
         if(lang === 'it') formulaText = `(47 / 197) * 180 = ${assigned.toFixed(1)} gg.\nSpoofing neutralizzato.`;
         else if(lang === 'es') formulaText = `(47 / 197) * 180 = ${assigned.toFixed(1)} días.\nSpoofing neutralizado.`;
-        else if(lang === 'pt') formulaText = `(47 / 197) * 180 = ${assigned.toFixed(1)} dias.\nSpoofing neutralizado.`;
         else formulaText = `(47 / 197) * 180 = ${assigned.toFixed(1)} days.\nSpoofing neutralized.`;
         formulaClass = "text-red-400";
       } else {
@@ -1068,7 +1010,6 @@
         const u = scenario === 'honest_web' ? '394' : '197';
         if(lang === 'it') formulaText = `Pagamento congruo (${u} USDT).\nAssegnazione = 180 giorni.`;
         else if(lang === 'es') formulaText = `Pago congruente (${u} USDT).\nAsignación = 180 días.`;
-        else if(lang === 'pt') formulaText = `Pagamento congruente (${u} USDT).\nAtribuição = 180 dias.`;
         else formulaText = `Consistent payment (${u} USDT).\nAllocation = 180 days.`;
         formulaClass = "text-success-400";
       }
@@ -1503,7 +1444,8 @@
     const App = () => {
       const [lang, setLang] = useState(() => {
         const browserLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
-        return ['en', 'es', 'pt', 'it'].includes(browserLang) ? browserLang : 'en';
+        // Limitato a Inglese, Spagnolo e Italiano
+        return ['en', 'es', 'it'].includes(browserLang) ? browserLang : 'en';
       });
       const [view, setView] = useState('user');
       const [isInitLoad, setIsInitLoad] = useState(true);
