@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>BETTING EXCHANGE ROOM - Dashboard</title>
+  <title>BETTING EXCHANGE ROOM - Treasury Dashboard</title>
   
   <meta name="theme-color" content="#09090b">
-  <meta name="description" content="Betting Exchange Room Premium Dashboard. Extract Expected Value with Algorithmic Models.">
+  <meta name="description" content="Betting Exchange Room Treasury Dashboard.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -26,7 +26,7 @@
       width: 100%;
       min-height: 100vh;
       overflow-x: hidden;
-      overflow-y: auto; /* Abilita lo scroll naturale verticale */
+      overflow-y: auto; 
     }
     
     #root { 
@@ -66,17 +66,12 @@
     @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     
-    /* Scrollbars visibili ed eleganti per tutta la pagina */
+    /* Scrollbars visibili ed eleganti */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: #09090b; }
     ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
     ::-webkit-scrollbar-thumb:hover { background: #d4af37; }
     
-    .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d4af37; }
-
     .toast-enter { animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     
@@ -111,209 +106,74 @@
 
   <script type="text/babel">
     const { useState, useEffect, useCallback, useRef, useMemo } = React;
-    const { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } = window.Recharts; 
+    const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } = window.Recharts; 
 
     // Lucide Icon Component wrapper
     const Icon = ({ name, size = 24, className = '', ...props }) => {
       const spanRef = useRef(null);
-      // Trasforma props in stringa per evitare dipendenze instabili in useEffect
-      const propsString = JSON.stringify(props);
-      
       useEffect(() => {
         if (spanRef.current && window.lucide) {
           spanRef.current.innerHTML = `<i data-lucide="${name}"></i>`;
-          window.lucide.createIcons({ 
-            root: spanRef.current, 
-            attrs: { width: size, height: size, class: className, ...JSON.parse(propsString) } 
-          });
+          window.lucide.createIcons({ root: spanRef.current, attrs: { width: size, height: size, class: className, ...props } });
         }
-      }, [name, size, className, propsString]);
-      
+      }, [name, size, className, props]);
       return <span ref={spanRef} className={`inline-flex items-center justify-center shrink-0 ${className}`}></span>;
     };
 
-    // Strict Language Order Requirement: EN, ES, IT
+    // Strict Language Order Requirement: EN, ES, PT, IT
     const LANGUAGES = [
       { code: 'en', name: 'ENG', flag: 'gb' },
       { code: 'es', name: 'ESP', flag: 'es' },
+      { code: 'pt', name: 'POR', flag: 'pt' },
       { code: 'it', name: 'ITA', flag: 'it' }
     ];
 
-    // Localizations
+    // Localizations (Filtered for Treasury Only)
     const translations = {
       en: {
-        app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Affiliate Program", user_dash: "User Area", partner_dash: "Partner Area", company_dash: "Treasury",
-        academy_btn: "Zero to Hero Academy", signals_btn: "Telegram Signals Room", brand_shop: "Brand Shop", setup_wallet: "Setup TON Wallet", setup_wallet_desc: "Configure your TON USDT wallet.",
-        change_wallet: "Change Wallet", edit_wallet_desc: "Update your destination TON address. This does not affect your referral structure.",
-        save_wallet: "Save Wallet", cancel: "Cancel", login: "Connect Wallet", logout: "Disconnect", treasury_center: "Treasury Operations", simulate_deposit: "Simulate Deposit",
+        app_title: "BETTING EXCHANGE ROOM", 
+        login: "Connect Wallet", logout: "Disconnect", treasury_center: "Treasury Operations", simulate_deposit: "Simulate Deposit",
         processed_volume: "Gross Volume", real_usdt: "On-Chain USDT", company_reserve: "Company Reserve", withdrawable_funds: "Liquid Funds", active_nodes: "Active Promoters",
-        registered_pools: "System Users", cash_flow: "Revenue (7D)", copy_link: "Copy Link", copied: "Copied!", copy_error: "Clipboard Error", vault_available: "Available for Withdrawal",
-        no_funds: "No Funds", signing: "Processing...", unlock_withdraw: "Withdraw Funds", lifetime_deposit: "Total Earned", audit_trail: "Withdrawal History", no_tx: "No transactions.",
-        security_auth: "Confirm Withdrawal", requested_amount: "Amount", dest_wallet: "Destination", signing_btn: "Confirming...", sign_withdraw_btn: "Confirm Transfer",
-        earnings_chart: "Earnings Overview", daily_subs: "Viral Leads", conv_rate: "Conv. Rate", bot_interactions: "Link Clicks", geo_dist: "Global Distribution", tier_status: "Current Tier",
-        recent_activity: "Recent Referrals", joined: "joined", deposited: "deposited",
-        network_dir: "Network Directory", my_network: "My Downline", wallet: "Wallet Address", status: "Status", volume: "Volume", global_pool: "Top 10 Weekly Pool", pool_qualified: "Currently in Top 10!",
-        pool_unqualified: "Not in Top 10", target: "10th Place Vol", ends_sat: "Liquidates Sunday 23:59 UTC", leads: "Leads", promoter: "Promoter", rank: "Rank",
-        pricing_docs: "Pricing & Specs", specifications: "Specifications", show_balances: "Show Balances", hide_balances: "Hide Balances",
-        registered_subtext: "Generated via Loop", conv_subtext: "Lead to Active", clicks_subtext: "Total Clicks", user_col: "User", action_col: "Action", vol_col: "Vol",
-        toast_success_title: "Success", toast_dep_title: "Deposit Detected", toast_dep_msg: "Liquidity updated on-chain.", toast_auth_title: "Transfer Auth Success", toast_auth_msg: "Funds sent to your wallet.",
-        status_active: "Active", status_inactive: "Inactive", action_deposit: "Deposit", action_join: "Join",
-        time_10m: "10 min ago", time_1h: "1 hour ago", time_3h: "3 hours ago", time_5h: "5 hours ago", time_1d: "1 day ago", time_2d: "2 days ago", time_3d: "3 days ago", time_1w: "1 week ago", time_2w: "2 weeks ago",
-        mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun", today: "Today",
-        marketing_funnels: "Marketing Funnels (3)", funnel_1: "FUNNEL 1: 50% DISCOUNT", funnel_1_desc: "Offers 50% off list price + free signals + Academy Lesson 1.",
-        funnel_2: "FUNNEL 2: MASTERCLASS", funnel_2_desc: "Free Live Masterclass invite + free signals + Academy Lesson 1.",
-        funnel_3: "FUNNEL 3: VIRAL LOOP", funnel_3_desc: "Offers 1 Free Premium Week by unlocking the friend invite task.",
-        elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "Live Event", viral_task_tag: "VIRAL TASK",
-        welcome_title: "OPERATIONS HUB", system_status_ok: "SYSTEM STATUS: OPTIMAL", sign_tx: "Sign transaction in your wallet.", users_label: "Users", elite_platform: "Elite Platform", init_env: "Initializing Elite Environment...",
-        realtime_leaderboard: "Live Leaderboard", bot_managed: "Auto-updated by Python Bot", training_setup: "Training & Setup", signals_access: "Premium Signals", merch_store: "Merch Store",
-        access_denied: "ACCESS DENIED", sub_expired: "Your subscription has expired or no active plan was found on this account.", renew_btn: "RENEW SUBSCRIPTION", demo_bypass: "ADMIN LOGIN",
-        you_tag: "(YOU)", docs_short: "Docs", deposit_short: "Deposit", audit_short: "Audit", top_10_short: "Top 10",
-        whitepaper: "Blueprint", smart_contract: "Smart Contract", contract_address: "Contract Address", read_docs: "Read Documentation",
-        nav_arch: "Architecture", nav_revenue: "Revenue Split", nav_security: "Zero-Trust Auth", nav_prompt: "Dev_Spec.md",
-        wp_title: "Web3 System Architecture V3", wp_v: "Viral Loop Model • Security Addon",
-        wp_sec1_title: "1. Architecture Mandate", wp_sec1_desc: "Strict separation: Off-Chain (Python Backend + DB) is the absolute Source of Truth. On-Chain (TON Smart Contract) acts strictly as a Dumb Vault.",
-        wp_academy_title: "Identity Engine", wp_academy_desc: "Telegram_ID is the immutable Primary Key. Downlines are permanently attached.",
-        wp_signals_desc: "1 Credit = 24 Hours. Expiration updates automatically upon payment.",
-        wp_sec4_title: "4. The Infinity Viral Loop", wp_sec4_desc: "The core growth engine. A user clicks a Promoter's link. To unlock the platform, they must: 1. Connect Wallet 2. Join Telegram 3. Invite 2 Friends. Upon completion, all 3 receive 7 Days Free Access. Zero cost to the company, infinite lead generation. Post-trial, FOMO drives high-conversion upgrades at the discounted Promoter Price.",
-        wp_promo_title: "Public Web Price", wp_affiliate_title: "Promoter Link Price (-50%)",
-        wp_sec2_title: "2. Revenue Split Engine", wp_sec2_desc: "Revenue is split automatically off-chain based on the source of the transaction (Referred vs Direct).",
-        scenario_a: "SCENARIO A: Referred Sales (3-Tier)", scenario_b: "SCENARIO B: Direct Web Sales",
-        level_1: "Level 1 (Direct)", level_2: "Level 2 (Mentor)", level_3: "Level 3 (Master)", 
-        treasury_comp: "Treasury (Company)", events_pool_top10: "Top 10 Events Pool", marketing_pool: "Marketing & Dev Fund",
-        wp_sec3_title: "3. Top 10 Weekly Pool", 
-        wp_sec3_a_title: "A. Allocation", wp_sec3_a_desc: "10% of promoter sales flows into this pool dedicated to the week's 10 best sellers.",
-        wp_sec3_b_title: "B. Weekly Liquidation", wp_sec3_b_desc: "Liquidated every Sunday (23:59 UTC), divided among the Top 10 proportional to their volume. Ties are broken by chronological order of sales.",
-        wp_sec3_c_title: "C. The Psychology", wp_sec3_c_desc: "Incentivizes elite competition, rewarding absolute excellence and speed of execution.",
-        wp_tech_1_title: "1. On-Chain Signatures", wp_tech_1_desc: "claim() MUST verify ED25519 signature from backend: Hash(Amount, Wallet, Nonce).",
-        wp_tech_2_title: "2. Strict Deduplication", wp_tech_2_desc: "DB enforces UNIQUE constraint on TON tx_hash.", 
-        wp_tech_3_title: "3. Wallet Change Time-Lock", wp_tech_3_desc: "Updating Active_Wallet triggers a 72-hour freeze on withdrawals.",
-        wp_tech_4_title: "4. Admin Thresholds", wp_tech_4_desc: "Payouts > 1,000 USDT get flagged as Pending_Manual_Review.", 
-        wp_tech_5_title: "5. Offline Cold Storage", wp_tech_5_desc: "Smart contract has an emergency sweep function to move funds to a hardware wallet.",
-        motor_title: "Anti-Fraud Math Engine", motor_desc: "The primary attack vector is Payload Spoofing: a malicious user alters the frontend to send an 'Elite' payload (180 days) but only attaches 'Starter' funds (47 USDT). The backend ignores the text payload and adjusts days based solely on the real on-chain collateral.",
-        sim_label: "Spoofing Simulator", back_res: "Backend Resolution", btn_copy: "Copy Prompt", btn_copied: "Copied!",
-        opt_spoof: "Hacker Spoofing (Payload Elite [197 USDT] but pays 47 USDT)",
-        opt_honest_p: "Honest via Link (Pays 197 USDT - Receives 180 days)",
-        opt_honest_w: "Honest from Web (Pays 394 USDT - Receives 180 days)",
-        prompt_title: "AI Developer Prompt", prompt_subtitle: "Use this system prompt to instruct an AI or developer to write the TON smart contract with Zero-Trust logic.",
-        label_chart_1: "Expected", label_chart_2: "Assigned"
+        registered_pools: "System Users", cash_flow: "Revenue (7D)", 
+        toast_dep_title: "Deposit Detected", toast_dep_msg: "Liquidity updated on-chain.", 
+        geo_dist: "Global Distribution", status: "Status", volume: "Volume", promoter: "Promoter", network_dir: "Network Directory", 
+        status_active: "Active", status_inactive: "Inactive", init_env: "Initializing Elite Environment...", 
+        mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun", today: "Today"
       },
       es: {
-        app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programa de Afiliados", user_dash: "Área Usuario", partner_dash: "Área Socios", company_dash: "Tesorería",
-        academy_btn: "Zero to Hero Academy", signals_btn: "Sala Señales Telegram", brand_shop: "Brand Shop", setup_wallet: "Configurar Billetera TON", setup_wallet_desc: "Configura tu billetera TON USDT.",
-        change_wallet: "Cambiar Billetera", edit_wallet_desc: "Actualiza tu dirección TON. Esto no afecta tu red de referidos.",
-        save_wallet: "Guardar", cancel: "Cancelar", login: "Conectar Billetera", logout: "Desconectar", treasury_center: "Operaciones de Tesorería", simulate_deposit: "Simular Depósito",
+        app_title: "BETTING EXCHANGE ROOM", 
+        login: "Conectar Billetera", logout: "Desconectar", treasury_center: "Operaciones de Tesorería", simulate_deposit: "Simular Depósito",
         processed_volume: "Volumen Bruto", real_usdt: "USDT On-Chain", company_reserve: "Reserva Empresa", withdrawable_funds: "Fondos Líquidos", active_nodes: "Promotores Activos",
-        registered_pools: "Usuarios a Sistema", cash_flow: "Ingresos (7D)", copy_link: "Copiar Enlace", copied: "¡Copiado!", copy_error: "Error de Portapapeles", vault_available: "Disponible para Retiro",
-        no_funds: "Sin Fondos", signing: "Procesando...", unlock_withdraw: "Retirar Fondos", lifetime_deposit: "Ganancias Totales", audit_trail: "Historial Retiros", no_tx: "Sin transacciones.",
-        security_auth: "Confirmar Retiro", requested_amount: "Monto", dest_wallet: "Destino", signing_btn: "Confirmando...", sign_withdraw_btn: "Confirmar Transferencia",
-        earnings_chart: "Resumen de Ganancias", daily_subs: "Leads Virales", conv_rate: "Tasa Conv.", bot_interactions: "Clics en Enlace", geo_dist: "Distribución Global", tier_status: "Nivel",
-        recent_activity: "Referidos Recientes", joined: "se unió", deposited: "depositó",
-        network_dir: "Directorio de Red", my_network: "Mi Red", wallet: "Dirección Wallet", status: "Estado", volume: "Volumen", global_pool: "Top 10 Weekly Pool", pool_qualified: "¡Actualmente en Top 10!",
-        pool_unqualified: "Fuera del Top 10", target: "Vol. 10º Puesto", ends_sat: "Liquidación Domingo 23:59 UTC", leads: "Leads", promoter: "Promotor", rank: "Pos",
-        pricing_docs: "Precios y Docs", specifications: "Especificaciones", show_balances: "Mostrar Saldos", hide_balances: "Ocultar Saldos",
-        registered_subtext: "Generados por Loop", conv_subtext: "Lead a Activo", clicks_subtext: "Clics Totales", user_col: "Usuario", action_col: "Acción", vol_col: "Vol",
-        toast_success_title: "Éxito", toast_dep_title: "Depósito Detectado", toast_dep_msg: "Liquidez actualizada on-chain.", toast_auth_title: "Autorización", toast_auth_msg: "Fondos enviados a tu wallet.",
-        status_active: "Activo", status_inactive: "Inactivo", action_deposit: "Depósito", action_join: "Ingreso",
-        time_10m: "hace 10 min", time_1h: "hace 1 hora", time_3h: "hace 3 horas", time_5h: "hace 5 horas", time_1d: "hace 1 día", time_2d: "hace 2 días", time_3d: "hace 3 días", time_1w: "hace 1 sem", time_2w: "hace 2 sem",
-        mon: "Lun", tue: "Mar", wed: "Mié", thu: "Jue", fri: "Vie", sat: "Sáb", sun: "Dom", today: "Hoy",
-        marketing_funnels: "Embudos de Marketing (3)", funnel_1: "FUNNEL 1: DESCUENTO 50%", funnel_1_desc: "Ofrece 50% de descuento + señales gratis + Lección 1 Academy.",
-        funnel_2: "FUNNEL 2: MASTERCLASS", funnel_2_desc: "Invitación a Masterclass en vivo + señales gratis + Lección 1 Academy.",
-        funnel_3: "FUNNEL 3: VIRAL LOOP", funnel_3_desc: "Ofrece 1 Semana Premium Gratis completando la tarea de invitación.",
-        elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "En Vivo", viral_task_tag: "TAREA VIRAL",
-        welcome_title: "CENTRO DE OPERACIONES", system_status_ok: "ESTADO SISTEMA: ÓPTIMO", sign_tx: "Firma la transacción en tu billetera.", users_label: "Usuarios", elite_platform: "Plataforma Élite", init_env: "Inicializando Entorno...",
-        realtime_leaderboard: "Clasificación en Vivo", bot_managed: "Actualizado por Bot Python", training_setup: "Formación y Setup", signals_access: "Señales Premium", merch_store: "Tienda Oficial",
-        access_denied: "ACCESO DENEGADO", sub_expired: "Tu suscripción ha expirado o no se ha encontrado ningún plan activo.", renew_btn: "RENOVAR SUSCRIPCIÓN", demo_bypass: "ÁREA ADMIN",
-        you_tag: "(TÚ)", docs_short: "Docs", deposit_short: "Depósito", audit_short: "Auditoría", top_10_short: "Top 10",
-        whitepaper: "Libro Blanco", smart_contract: "Contrato Inteligente", contract_address: "Dirección Contrato", read_docs: "Leer Documentación",
-        nav_arch: "Arquitectura", nav_revenue: "Distribución", nav_security: "Zero-Trust Auth", nav_prompt: "Dev_Spec.md",
-        wp_title: "Arquitectura Web3 V3", wp_v: "Modelo Viral Loop • Addon de Seguridad",
-        wp_sec1_title: "1. Mandato de Arquitectura", wp_sec1_desc: "Separación estricta: Off-Chain (Python Backend + DB) es la Fuente de Verdad. On-Chain es un Smart Contract pasivo (Dumb Vault).",
-        wp_academy_title: "Motor de Identidad", wp_academy_desc: "Telegram_ID es la llave primaria. Las líneas descendentes se unen de por vida.",
-        wp_signals_desc: "1 Crédito = 24 Horas. La expiración se actualiza al instante.",
-        wp_sec4_title: "4. The Infinity Viral Loop", wp_sec4_desc: "El motor de crecimiento. Un usuario hace clic en el enlace. Para desbloquear debe: 1. Conectar Wallet 2. Unirse a Telegram 3. Invitar 2 Amigos. Todos reciben 7 Días Gratis. Cero costo para la empresa, generación infinita de leads. Luego, el FOMO impulsa la actualización al Precio Promotor.",
-        wp_promo_title: "Precio Web Público", wp_affiliate_title: "Precio Link Promotor (-50%)",
-        wp_sec2_title: "2. Motor de Ingresos", wp_sec2_desc: "Reparto de ingresos automatizado según el origen de la venta.",
-        scenario_a: "ESCENARIO A: Ventas por Referidos (3 Niveles)", scenario_b: "ESCENARIO B: Ventas Web Directas",
-        level_1: "Nivel 1 (Directo)", level_2: "Nivel 2 (Mentor)", level_3: "Nivel 3 (Maestro)", 
-        treasury_comp: "Tesorería (Empresa)", events_pool_top10: "Pool Eventos Top 10", marketing_pool: "Fondo de Marketing & Dev",
-        wp_sec3_title: "3. Top 10 Weekly Pool", 
-        wp_sec3_a_title: "A. Asignación", wp_sec3_a_desc: "El 10% de las ventas promotores fluye a este pool dedicado a los 10 mejores vendedores.",
-        wp_sec3_b_title: "B. Liquidación Semanal", wp_sec3_b_desc: "Liquidado cada Domingo (23:59 UTC), dividido entre los Top 10 en proporción a su volumen. Los empates se rompen por orden cronológico.",
-        wp_sec3_c_title: "C. La Psicología", wp_sec3_c_desc: "Incentiva la competencia de élite, premiando la excelencia absoluta y la velocidad.",
-        wp_tech_1_title: "1. Firmas On-Chain", wp_tech_1_desc: "claim() DEBE verificar firma ED25519: Hash(Amount, Wallet, Nonce).",
-        wp_tech_2_title: "2. Deduplicación Estricta", wp_tech_2_desc: "La DB aplica restricción UNIQUE en tx_hash de TON.", 
-        wp_tech_3_title: "3. Bloqueo por Cambio de Wallet", wp_tech_3_desc: "Cambiar wallet bloquea los retiros por 72 horas.",
-        wp_tech_4_title: "4. Umbrales de Administrador", wp_tech_4_desc: "Pagos > 1,000 USDT requieren revisión manual.", 
-        wp_tech_5_title: "5. Almacenamiento en Frío", wp_tech_5_desc: "Función de barrido de emergencia hacia hardware wallet.",
-        motor_title: "Motor Matemático Anti-Fraude", motor_desc: "El ataque principal es el Payload Spoofing: enviar un payload 'Elite' (180 días) pero pagar solo 'Starter' (47 USDT). El backend recalcula los días según el colateral real on-chain.",
-        sim_label: "Simulador Spoofing", back_res: "Resolución Backend", btn_copy: "Copiar Prompt", btn_copied: "¡Copiado!",
-        opt_spoof: "Hacker Spoofing (Payload Elite [197 USDT] pero paga 47 USDT)",
-        opt_honest_p: "Honesto por Enlace (Paga 197 USDT - Recibe 180 días)",
-        opt_honest_w: "Honesto desde Web (Paga 394 USDT - Recibe 180 días)",
-        prompt_title: "AI Developer Prompt", prompt_subtitle: "Use este prompt para instruir a una IA a escribir el contrato en TON con lógica Zero-Trust.",
-        label_chart_1: "Esperados", label_chart_2: "Asignados"
+        registered_pools: "Usuarios a Sistema", cash_flow: "Ingresos (7D)", 
+        toast_dep_title: "Depósito Detectado", toast_dep_msg: "Liquidez actualizada on-chain.", 
+        geo_dist: "Distribución Global", status: "Estado", volume: "Volumen", promoter: "Promotor", network_dir: "Directorio de Red", 
+        status_active: "Activo", status_inactive: "Inactivo", init_env: "Inicializando Entorno...", 
+        mon: "Lun", tue: "Mar", wed: "Mié", thu: "Jue", fri: "Vie", sat: "Sáb", sun: "Dom", today: "Hoy"
+      },
+      pt: {
+        app_title: "BETTING EXCHANGE ROOM", 
+        login: "Conectar Carteira", logout: "Desconectar", treasury_center: "Operações de Tesouraria", simulate_deposit: "Simular Depósito",
+        processed_volume: "Volume Bruto", real_usdt: "USDT On-Chain", company_reserve: "Reserva Empresa", withdrawable_funds: "Fundos Líquidos", active_nodes: "Promotores Ativos",
+        registered_pools: "Usuários no Sistema", cash_flow: "Receita (7D)", 
+        toast_dep_title: "Depósito Detectado", toast_dep_msg: "Liquidez atualizada on-chain.", 
+        geo_dist: "Distribuição Global", status: "Status", volume: "Volume", promoter: "Promotor", network_dir: "Diretório de Rede", 
+        status_active: "Ativo", status_inactive: "Inativo", init_env: "Inicializando Ambiente...", 
+        mon: "Seg", tue: "Ter", wed: "Qua", thu: "Qui", fri: "Sex", sat: "Sáb", sun: "Dom", today: "Hoje"
       },
       it: {
-        app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programma Affiliati", user_dash: "Area Utente", partner_dash: "Area Partner", company_dash: "Tesoreria",
-        academy_btn: "Zero to Hero Academy", signals_btn: "Sala Segnali Telegram", brand_shop: "Brand Shop", setup_wallet: "Configura Wallet TON", setup_wallet_desc: "Imposta il tuo wallet TON USDT.",
-        change_wallet: "Cambia Wallet", edit_wallet_desc: "Aggiorna l'indirizzo TON. Non altera la tua rete.",
-        save_wallet: "Salva Wallet", cancel: "Annulla", login: "Connetti Wallet", logout: "Disconnetti", treasury_center: "Operazioni Tesoreria", simulate_deposit: "Simula Deposito",
+        app_title: "BETTING EXCHANGE ROOM", 
+        login: "Connetti Wallet", logout: "Disconnetti", treasury_center: "Operazioni Tesoreria", simulate_deposit: "Simula Deposito",
         processed_volume: "Volume Lordo", real_usdt: "USDT On-Chain", company_reserve: "Riserva Aziendale", withdrawable_funds: "Fondi Liquidi", active_nodes: "Promoter Attivi",
-        registered_pools: "Utenti a Sistema", cash_flow: "Ricavi (7G)", copy_link: "Copia Link", copied: "Copiato!", copy_error: "Errore Copia", vault_available: "Prelevabile",
-        no_funds: "Nessun Fondo", signing: "Elaborazione...", unlock_withdraw: "Preleva Fondi", lifetime_deposit: "Guadagni Totali", audit_trail: "Storico Prelievi", no_tx: "Nessun prelievo.",
-        security_auth: "Conferma Prelievo", requested_amount: "Importo", dest_wallet: "Destinazione", signing_btn: "Conferma...", sign_withdraw_btn: "Conferma Trasferimento",
-        earnings_chart: "Panoramica Guadagni", daily_subs: "Lead Virali", conv_rate: "Tasso Conv.", bot_interactions: "Clic Link", geo_dist: "Distribuzione Globale", tier_status: "Livello",
-        recent_activity: "Referral Recenti", joined: "si è unito", deposited: "ha depositato",
-        network_dir: "Directory di Rete", my_network: "La Tua Downline", wallet: "Indirizzo Wallet", status: "Stato", volume: "Volume", global_pool: "Top 10 Weekly Pool", pool_qualified: "Attualmente nei Top 10!",
-        pool_unqualified: "Fuori dai Top 10", target: "Vol. 10° Posto", ends_sat: "Liquidazione Domenica 23:59 UTC", leads: "Lead", promoter: "Promoter", rank: "Pos",
-        pricing_docs: "Pricing e Docs", specifications: "Specifiche", show_balances: "Mostra Saldi", hide_balances: "Nascondi Saldi",
-        registered_subtext: "Generati dal Loop", conv_subtext: "Lead in Attivi", clicks_subtext: "Clic Totali", user_col: "Utente", action_col: "Azione", vol_col: "Vol",
-        toast_success_title: "Successo", toast_dep_title: "Deposito Rilevato", toast_dep_msg: "Liquidità aggiornata on-chain.", toast_auth_title: "Autorizzazione Trasferimento", toast_auth_msg: "Fondi inviati al tuo wallet.",
-        status_active: "Attivo", status_inactive: "Inattivo", action_deposit: "Deposito", action_join: "Iscritto",
-        time_10m: "10 min fa", time_1h: "1 ora fa", time_3h: "3 ore fa", time_5h: "5 ore fa", time_1d: "1 giorno fa", time_2d: "2 giorni fa", time_3d: "3 giorni fa", time_1w: "1 sett fa", time_2w: "2 sett fa",
-        mon: "Lun", tue: "Mar", wed: "Mer", thu: "Gio", fri: "Ven", sat: "Sab", sun: "Dom", today: "Oggi",
-        marketing_funnels: "Funnels Marketing (3)", funnel_1: "FUNNEL 1: SCONTO 50%", funnel_1_desc: "Offre il 50% sul listino + segnali gratis + 1° lezione Academy.",
-        funnel_2: "FUNNEL 2: MASTERCLASS", funnel_2_desc: "Invito Masterclass Live + segnali gratis + 1° lezione Academy.",
-        funnel_3: "FUNNEL 3: VIRAL LOOP", funnel_3_desc: "Offre 1 Settimana Premium gratis completando il task di invito.",
-        elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "Evento Live", viral_task_tag: "TASK VIRALE",
-        welcome_title: "HUB OPERATIVO", system_status_ok: "STATO SISTEMA: OTTIMALE", sign_tx: "Firma la transazione nel tuo wallet.", users_label: "Utenti", elite_platform: "Piattaforma Elite", init_env: "Inizializzazione Ambiente...",
-        realtime_leaderboard: "Classifica in Tempo Reale", bot_managed: "Gestita da Bot Python", training_setup: "Formazione e Setup", signals_access: "Segnali Premium", merch_store: "Store Ufficiale",
-        access_denied: "ACCESSO NEGATO", sub_expired: "Il tuo abbonamento è scaduto o non è stato trovato alcun piano attivo.", renew_btn: "RINNOVA ABBONAMENTO", demo_bypass: "AREA ADMIN",
-        you_tag: "(TU)", docs_short: "Docs", deposit_short: "Deposita", audit_short: "Audit", top_10_short: "Top 10",
-        whitepaper: "Blueprint", smart_contract: "Smart Contract", contract_address: "Indirizzo Contratto", read_docs: "Leggi Documentazione",
-        nav_arch: "Architettura", nav_revenue: "Revenue Split", nav_security: "Zero-Trust Auth", nav_prompt: "Dev_Spec.md",
-        wp_title: "Architettura Web3 V3", wp_v: "Modello Viral Loop • Security Addon",
-        wp_sec1_title: "1. Architettura (Separazione Netta)", wp_sec1_desc: "Off-Chain (Python Backend + DB) è l'assoluta fonte di verità. On-Chain (TON Smart Contract) agisce strettamente come 'Dumb Vault'.",
-        wp_academy_title: "Motore d'Identità", wp_academy_desc: "Telegram_ID è la chiave primaria. Le downline sono collegate a vita.",
-        wp_signals_desc: "1 Credito = 24 Ore. La scadenza viene aggiornata istantaneamente al pagamento.",
-        wp_sec4_title: "4. The Infinity Viral Loop", wp_sec4_desc: "Il vero motore di crescita. Un utente clicca il link del Promoter. Per sbloccare la piattaforma non paga nulla, ma deve: 1. Connettere il Wallet 2. Entrare su Telegram 3. Invitare 2 Amici. Completato il task, tutti ricevono 7 Giorni Gratis (costo zero per l'azienda, lead infiniti generati). Alla scadenza, la FOMO spinge l'utente ad acquistare l'abbonamento al Prezzo Scontato Promoter, garantendo tassi di conversione altissimi.",
-        wp_promo_title: "Prezzo Pubblico (Ancoraggio)", wp_affiliate_title: "Prezzo Link Promoter (-50%)",
-        wp_sec2_title: "2. Motore di Ricavo (Collaborativo)", wp_sec2_desc: "L'airdrop passivo è sostituito dall'Infinity Viral Loop. La ripartizione calcolata off-chain massimizza le commissioni.",
-        scenario_a: "SCENARIO A: Vendite da Promoter (3 Livelli)", scenario_b: "SCENARIO B: Vendite Dirette dal Web",
-        level_1: "Livello 1 (Diretto)", level_2: "Livello 2 (Mentore)", level_3: "Livello 3 (Master)", 
-        treasury_comp: "Tesoreria Aziendale", events_pool_top10: "Pool Eventi Top 10", marketing_pool: "Fondo Marketing & Sviluppo",
-        wp_sec3_title: "3. Top 10 Weekly Pool", 
-        wp_sec3_a_title: "A. Assegnazione", wp_sec3_a_desc: "Il 10% delle vendite promoter confluisce in questa pool per i 10 migliori venditori.",
-        wp_sec3_b_title: "B. Liquidazione Settimanale", wp_sec3_b_desc: "Liquidato ogni Domenica (23:59 UTC), diviso tra i Top 10 in proporzione al volume. A parità di volume, vince chi ha venduto prima.",
-        wp_sec3_c_title: "C. La Psicologia", wp_sec3_c_desc: "Incentiva una competizione elitaria, premiando l'eccellenza assoluta e la velocità di esecuzione.",
-        wp_tech_1_title: "1. Firme Server On-Chain", wp_tech_1_desc: "claim() DEBE verificare la firma ED25519 dal backend: Hash(Amount, Wallet, Nonce).",
-        wp_tech_2_title: "2. Deduplicazione Severa", wp_tech_2_desc: "Il DB applica un vincolo UNIQUE su tx_hash di TON per evitare Replay Attacks.", 
-        wp_tech_3_title: "3. Time-Lock Cambio Wallet", wp_tech_3_desc: "Cambiare il wallet attivo fa scattare un blocco di 72 ore sui prelievi (Anti-Hijacking).",
-        wp_tech_4_title: "4. Soglie Amministrative", wp_tech_4_desc: "I prelievi > 1.000 USDT vengono contrassegnati per la revisione manuale.", 
-        wp_tech_5_title: "5. Cold Storage Offline", wp_tech_5_desc: "Lo Smart Contract ha una funzione di sweep di emergenza per spostare la tesoreria su un hardware wallet.",
-        motor_title: "Motore Matematico Anti-Frode", motor_desc: "Il vettore di attacco è il Payload Spoofing: inviare un payload 'Elite' (180 gg) ma allegando fondi 'Starter' (47 USDT). Il backend ri-proporziona i giorni basandosi unicamente sul collaterale reale.",
-        sim_label: "Simulatore Spoofing", back_res: "Risoluzione Backend", btn_copy: "Copia Prompt", btn_copied: "Copiato!",
-        opt_spoof: "Hacker Spoofing (Payload Elite [197 USDT] ma paga 47 USDT)",
-        opt_honest_p: "Onesto via Link (Paga 197 USDT - Riceve 180 gg)",
-        opt_honest_w: "Onesto dal Web (Paga 394 USDT - Riceve 180 gg)",
-        prompt_title: "AI Developer Prompt", prompt_subtitle: "Usa questo prompt di sistema per generare lo Smart Contract TON con logiche Zero-Trust.",
-        label_chart_1: "Attesi", label_chart_2: "Assegnati"
+        registered_pools: "Utenti a Sistema", cash_flow: "Ricavi (7G)", 
+        toast_dep_title: "Deposito Rilevato", toast_dep_msg: "Liquidità aggiornata on-chain.", 
+        geo_dist: "Distribuzione Globale", status: "Stato", volume: "Volume", promoter: "Promoter", network_dir: "Directory di Rete", 
+        status_active: "Attivo", status_inactive: "Inattivo", init_env: "Inizializzazione Ambiente...", 
+        mon: "Lun", tue: "Mar", wed: "Mer", thu: "Gio", fri: "Ven", sat: "Sab", sun: "Dom", today: "Oggi"
       }
     };
 
     // Chart & Table Data Mockups
     const RAW_REVENUE_DATA = [ { rawKey: 'mon', amount: 1200 }, { rawKey: 'tue', amount: 2500 }, { rawKey: 'wed', amount: 1800 }, { rawKey: 'thu', amount: 3000 }, { rawKey: 'fri', amount: 4500 }, { rawKey: 'sat', amount: 6000 }, { rawKey: 'today', amount: 5500 } ];
-    const PROMOTER_CHART_DATA = [ { rawKey: 'mon', amount: 45 }, { rawKey: 'tue', amount: 120 }, { rawKey: 'wed', amount: 80 }, { rawKey: 'thu', amount: 210 }, { rawKey: 'fri', amount: 150 }, { rawKey: 'sat', amount: 320 }, { rawKey: 'today', amount: 280 } ];
     const GEO_DATA = [ { name: 'IT', value: 45, color: '#a855f7' }, { name: 'ES', value: 25, color: '#f59e0b' }, { name: 'BR', value: 20, color: '#10b981' }, { name: 'UK', value: 10, color: '#3b82f6' } ];
     
     const NETWORK_MEMBERS = [
@@ -322,33 +182,6 @@
       { id: 3, name: 'Elena Gomez', username: '@elegomez', wallet: 'EQ1...7Bn', volume: 5200, leads: 210, statusKey: 'status_active', flag: 'es' },
       { id: 4, name: 'John Doe', username: '@johndoe_99', wallet: 'UQy...2Ws', volume: 450, leads: 150, statusKey: 'status_inactive', flag: 'gb' },
       { id: 5, name: 'Luca Bianchi', username: '@lucabianchi88', wallet: 'EQb...8Ml', volume: 120, leads: 112, statusKey: 'status_inactive', flag: 'it' }
-    ];
-    
-    const PROMOTER_NETWORK_DATA = [
-      { id: 1, username: '@lucam_88', typeKey: 'action_deposit', amount: 50, timeKey: 'time_10m', statusKey: 'status_active', total_vol: 250, flag: 'it' },
-      { id: 2, username: '@sarah_j', typeKey: 'action_join', timeKey: 'time_1h', statusKey: 'status_active', total_vol: 0, flag: 'gb' },
-      { id: 3, username: '@mario_rossi', typeKey: 'action_join', timeKey: 'time_3h', statusKey: 'status_inactive', total_vol: 0, flag: 'it' },
-      { id: 4, username: '@crypto_dan', typeKey: 'action_deposit', amount: 200, timeKey: 'time_5h', statusKey: 'status_active', total_vol: 1200, flag: 'gb' },
-      { id: 5, username: '@giulia_fx', typeKey: 'action_deposit', amount: 150, timeKey: 'time_1d', statusKey: 'status_active', total_vol: 450, flag: 'it' },
-      { id: 6, username: '@trader_bob', typeKey: 'action_join', timeKey: 'time_2d', statusKey: 'status_inactive', total_vol: 0, flag: 'gb' },
-      { id: 7, username: '@alice_in_crypto', typeKey: 'action_deposit', amount: 50, timeKey: 'time_3d', statusKey: 'status_active', total_vol: 150, flag: 'es' },
-      { id: 8, username: '@steve_jobs_fan', typeKey: 'action_join', timeKey: 'time_1w', statusKey: 'status_active', total_vol: 50, flag: 'gb' },
-      { id: 9, username: '@crypto_whale99', typeKey: 'action_deposit', amount: 500, timeKey: 'time_1w', statusKey: 'status_active', total_vol: 2500, flag: 'gb' },
-      { id: 10, username: '@newbie_trader', typeKey: 'action_join', timeKey: 'time_2w', statusKey: 'status_inactive', total_vol: 0, flag: 'es' }
-    ];
-
-    const TOP_10_LEADERS = [
-      { rank: 1, name: 'Crypto King', vol: 45000, isMe: false },
-      { rank: 2, name: 'Sarah_FX', vol: 38200, isMe: false },
-      { rank: 3, name: 'Marcus Bull', vol: 31000, isMe: false },
-      { rank: 4, name: 'Elena_Trading', vol: 28500, isMe: false },
-      { rank: 5, name: 'John_Doe99', vol: 24000, isMe: false },
-      { rank: 6, name: 'TradeMaster', vol: 21000, isMe: false },
-      { rank: 7, name: 'Luna_Crypto', vol: 19500, isMe: false },
-      { rank: 8, name: 'David_G', vol: 18000, isMe: false },
-      { rank: 9, name: 'Paul_Smith', vol: 16500, isMe: false },
-      { rank: 10, name: 'Mike_T', vol: 15000, isMe: false },
-      { rank: 11, name: 'Alex De Souza', vol: 14500, isMe: true },
     ];
 
     // Shared Components
@@ -435,134 +268,8 @@
 
     const formatCurrency = (amount, isHidden) => isHidden ? '••,•••.••' : amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-    // Modals
-    const TonWalletModal = ({ isOpen, onClose, onSave, currentWallet, t }) => {
-      const [val, setVal] = useState('');
-      useEffect(() => { if (isOpen) setVal(currentWallet || ''); }, [isOpen, currentWallet]);
-      if (!isOpen) return null;
-      
-      const isEditing = !!currentWallet;
-      return (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-surface-950/90 backdrop-blur-md p-4 fade-in">
-          <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-sm shadow-[0_0_50px_rgba(212,175,55,0.1)] p-6 max-h-[90vh] overflow-y-auto">
-            <div className="w-10 h-10 bg-brand-500/10 rounded-full flex items-center justify-center text-brand-400 mb-4 border border-brand-500/20 mx-auto"><Icon name="wallet" size={20} /></div>
-            <h3 className="text-lg font-black text-zinc-100 mb-1 text-center uppercase tracking-wide">{isEditing ? t('change_wallet') : t('setup_wallet')}</h3>
-            <p className="text-zinc-400 text-[10px] mb-4 text-center leading-relaxed">{isEditing ? t('edit_wallet_desc') : t('setup_wallet_desc')}</p>
-            <input type="text" value={val} onChange={e=>setVal(e.target.value)} placeholder="UQ... or EQ..." className="w-full bg-surface-950 border border-surface-700 rounded-lg px-3 py-2.5 text-zinc-100 mb-4 font-mono focus:outline-none focus:border-brand-500 transition-colors shadow-inner text-xs" />
-            <div className="flex gap-2">
-              <button onClick={onClose} className="flex-1 py-2.5 rounded-lg font-bold text-zinc-400 bg-surface-800 hover:bg-surface-700 transition-colors text-xs">{t('cancel')}</button>
-              <button onClick={()=>{onSave(val); onClose();}} disabled={val.length < 10} className="flex-[2] py-2.5 rounded-lg font-black text-surface-950 bg-gold-gradient hover:opacity-90 transition-opacity disabled:opacity-50 shadow-lg uppercase tracking-wider text-xs">{t('save_wallet')}</button>
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    const SecurityModal = ({ isOpen, onClose, onConfirm, amount, walletAddress, t }) => {
-      const [isSigning, setIsSigning] = useState(false);
-      if (!isOpen) return null;
-      const handleConfirm = () => { setIsSigning(true); setTimeout(() => { setIsSigning(false); onConfirm(); }, 1500); };
-      
-      return (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-surface-950/90 backdrop-blur-md p-4 fade-in">
-          <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-sm shadow-[0_0_50px_rgba(212,175,55,0.1)] overflow-hidden min-w-0 max-h-[90vh] overflow-y-auto">
-            <div className="p-5 text-center border-b border-surface-800">
-              <div className="w-10 h-10 bg-surface-950 rounded-full flex items-center justify-center text-brand-400 mx-auto mb-3 border border-surface-800"><Icon name="shield-check" size={20} /></div>
-              <h3 className="text-base font-black text-zinc-100 uppercase tracking-wider">{t('security_auth')}</h3>
-              <p className="text-[10px] text-zinc-400 mt-1">{t('sign_tx')}</p>
-            </div>
-            <div className="p-5 space-y-4">
-              <div className="bg-surface-950 p-3 rounded-xl border border-surface-800 text-xs shadow-inner">
-                <div className="flex justify-between items-center mb-2 pb-2 border-b border-surface-800">
-                  <span className="text-zinc-500 font-bold uppercase tracking-wider text-[10px]">{t('requested_amount')}</span>
-                  <span className="text-brand-400 font-black text-sm">{amount.toLocaleString('en-US', {minimumFractionDigits:2})} USDT</span>
-                </div>
-                <div className="flex justify-between items-center overflow-hidden">
-                  <span className="text-zinc-500 font-bold uppercase tracking-wider text-[10px] flex-shrink-0">{t('dest_wallet')}</span>
-                  <span className="text-zinc-300 font-mono text-[10px] truncate ml-2 bg-surface-800 px-1.5 py-0.5 rounded border border-surface-700">{walletAddress}</span>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <button onClick={onClose} disabled={isSigning} className="flex-1 py-2.5 rounded-lg font-bold text-zinc-400 bg-surface-800 hover:bg-surface-700 transition-colors disabled:opacity-50 text-xs">{t('cancel')}</button>
-                <button onClick={handleConfirm} disabled={isSigning} className="flex-[2] py-2.5 rounded-lg font-black text-surface-950 bg-gold-gradient hover:opacity-90 transition-opacity flex items-center justify-center gap-1.5 disabled:opacity-50 shadow-lg">
-                  {isSigning ? <Icon name="loader-2" size={14} className="animate-spin" /> : <Icon name="check" size={14} />}
-                  <span className="uppercase tracking-wider text-[10px]">{isSigning ? t('signing_btn') : t('sign_withdraw_btn')}</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    // --- DASHBOARDS ---
-
-    const UserDashboard = ({ t, lang, sc, setView }) => {
-      const tgLinks = {
-        en: 'https://t.me/c/3966363262',
-        es: 'https://t.me/c/3929284405',
-        it: 'https://t.me/c/3958807227'
-      };
-      const currentTgLink = tgLinks[lang] || tgLinks['en'];
-
-      return (
-        <div className="flex-1 flex flex-col py-4 fade-in">
-          <div className="w-full flex flex-col gap-4 max-w-5xl mx-auto">
-            
-            <div className="shrink-0 p-4 sm:p-5 glass-panel rounded-xl border-l-4 border-l-brand-500 flex flex-col md:flex-row md:items-center justify-between shadow-lg gap-4">
-              <div className="min-w-0">
-                <h2 className="text-lg sm:text-2xl font-black text-zinc-100 uppercase tracking-widest leading-none truncate">{t('welcome_title')}</h2>
-                <p className="text-success-400 font-mono text-[10px] sm:text-xs mt-1.5 font-bold flex items-center gap-1.5 truncate">
-                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-success-500 animate-pulse shrink-0"></span>
-                  {t('system_status_ok')}
-                </p>
-              </div>
-              
-              <div className="flex items-center gap-3 bg-surface-950 p-2 sm:p-3 rounded-lg border border-surface-800 shadow-inner">
-                <div className="flex flex-col min-w-0">
-                  <span className="text-[9px] sm:text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-0.5">{t('smart_contract')}</span>
-                  <a href={`https://tonviewer.com/${sc.state.companyContractAddress}`} target="_blank" rel="noopener noreferrer" className="text-brand-400 font-mono text-[10px] sm:text-xs hover:underline flex items-center gap-1">
-                    {sc.state.companyContractAddress.substring(0,6)}...{sc.state.companyContractAddress.slice(-4)} <Icon name="external-link" size={10} />
-                  </a>
-                </div>
-                <div className="w-px h-8 bg-surface-800 mx-1"></div>
-                <button onClick={() => setView('blueprint')} className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-colors">
-                  <Icon name="file-text" size={14} className="text-brand-500" /> {t('whitepaper')}
-                </button>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <a href="SummaryZeroToHeroAcademy.html" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-6 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-brand-500/20 hover:border-brand-500 h-[180px]">
-                <div className="w-14 h-14 rounded-full bg-surface-900 border border-brand-500/40 flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(212,175,55,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
-                  <Icon name="graduation-cap" size={24} className="text-brand-400" />
-                </div>
-                <h3 className="text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('academy_btn')}</h3>
-                <p className="text-[10px] text-zinc-500 mt-2 uppercase tracking-widest font-bold text-center relative z-10">{t('training_setup')}</p>
-              </a>
-              
-              <a href={currentTgLink} target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-6 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#2AABEE]/20 hover:border-[#2AABEE] h-[180px]">
-                <div className="w-14 h-14 rounded-full bg-surface-900 border border-[#2AABEE]/40 flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(42,171,238,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
-                  <Icon name="send" size={24} className="text-[#2AABEE]" />
-                </div>
-                <h3 className="text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('signals_btn')}</h3>
-                <p className="text-[10px] text-zinc-500 mt-2 uppercase tracking-widest font-bold text-center relative z-10">{t('signals_access')}</p>
-              </a>
-
-              <a href="brandshop.html" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-6 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#ec4899]/20 hover:border-[#ec4899] h-[180px]">
-                <div className="w-14 h-14 rounded-full bg-surface-900 border border-[#ec4899]/40 flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(236,72,153,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
-                  <Icon name="shopping-bag" size={24} className="text-[#ec4899]" />
-                </div>
-                <h3 className="text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('brand_shop')}</h3>
-                <p className="text-[10px] text-zinc-500 mt-2 uppercase tracking-widest font-bold text-center relative z-10">{t('merch_store')}</p>
-              </a>
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    const CompanyDashboard = ({ sc, t, setView }) => {
+    // --- TREASURY DASHBOARD ---
+    const CompanyDashboard = ({ sc, t }) => {
       const [isSimulating, setIsSimulating] = useState(false);
       const [statusSort, setStatusSort] = useState('activeFirst'); 
 
@@ -598,9 +305,6 @@
               </div>
             </div>
             <div className="w-full sm:w-auto shrink-0 flex gap-2">
-              <button onClick={() => setView('blueprint')} className="flex-1 sm:flex-none px-4 py-2.5 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded-lg text-xs font-black flex items-center justify-center gap-1.5 transition-colors uppercase tracking-wide shadow-sm border border-surface-700">
-                <Icon name="file-text" size={14} /> {t('whitepaper')}
-              </button>
               <button onClick={async () => { setIsSimulating(true); await sc.simulateDeposit(t); setIsSimulating(false); }} disabled={isSimulating} className="flex-1 sm:flex-none px-4 py-2.5 bg-gold-gradient hover:opacity-90 text-surface-950 rounded-lg text-xs font-black flex items-center justify-center gap-1.5 disabled:opacity-50 transition-opacity uppercase tracking-wide shadow-sm">
                 {isSimulating ? <Icon name="loader-2" size={14} className="animate-spin" /> : <Icon name="plus" size={14} />} {t('simulate_deposit')}
               </button>
@@ -708,621 +412,9 @@
       );
     };
 
-    const PromoterDashboard = ({ sc, t, lang }) => {
-      const [isClaiming, setIsClaiming] = useState(false);
-      const [copied, setCopied] = useState(false);
-      const [showSecureModal, setShowSecureModal] = useState(false);
-      const [showWalletModal, setShowWalletModal] = useState(false);
-      const [activeTab, setActiveTab] = useState('top10'); 
-      
-      const localizedChartData = useMemo(() => PROMOTER_CHART_DATA.map(d => ({...d, name: t(d.rawKey)||d.rawKey})), [t]);
-      const tgUser = { first_name: "Alex", last_name: "De Souza", username: "@alex_crypto_pro" };
-
-      const sortedNetworkData = useMemo(() => {
-        return [...PROMOTER_NETWORK_DATA].sort((a, b) => {
-          if (a.statusKey === b.statusKey) return 0;
-          return a.statusKey === 'status_active' ? -1 : 1;
-        });
-      }, []);
-
-      const pVol = sc.state.promoterVolume; 
-      const pTarget = sc.state.tenthPlaceVolume;
-      const isQualified = pVol >= pTarget;
-      const poolTotal = sc.state.weeklyPoolTotal; 
-      const displayAddress = sc.state.walletAddress ? sc.state.walletAddress.substring(0,8) : "ABCDEF";
-
-      const copyReferral = () => {
-        navigator.clipboard.writeText(`https://tonpull.app/ref/${displayAddress}`).then(() => {
-          setCopied(true); sc.addToast(t('copied'), '', "success");
-          setTimeout(() => setCopied(false), 2000);
-        }).catch(() => sc.addToast(t('copy_error'), "", "error"));
-      };
-
-      const copyFunnelLink = (path, nameKey) => {
-        const fullUrl = `https://tonpull.app/${path}?ref=${displayAddress}`;
-        navigator.clipboard.writeText(fullUrl).then(() => {
-          sc.addToast(t('copied'), t(nameKey), "success");
-        }).catch(() => sc.addToast(t('copy_error'), "", "error"));
-      };
-
-      const FUNNELS = [
-        { id: 1, title: t('funnel_1'), tag: t('promo_50_tag'), link: 'promo-50.html', colorClass: 'text-emerald-400', borderClass: 'border-emerald-500/20', bgClass: 'bg-emerald-500/10', icon: 'sparkles' },
-        { id: 2, title: t('funnel_2'), tag: t('live_event_tag'), link: 'promo-masterclass.html', colorClass: 'text-purple-400', borderClass: 'border-purple-500/20', bgClass: 'bg-purple-500/10', icon: 'graduation-cap' },
-        { id: 3, title: t('funnel_3'), tag: t('viral_task_tag'), link: 'taskfreeweek.html', colorClass: 'text-brand-400', borderClass: 'border-brand-500/30', bgClass: 'bg-brand-500/10', icon: 'infinity' }
-      ];
-
-      return (
-        <div className="flex flex-col flex-1 fade-in pt-4 pb-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-            
-            {/* Left Col (3) */}
-            <div className="lg:col-span-3 flex flex-col gap-4">
-              <Card className="flex flex-col border-l-2 border-l-brand-500" padding="p-4">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="relative w-12 h-12 rounded-full bg-surface-950 flex items-center justify-center shrink-0 border-2 border-brand-500/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] overflow-hidden">
-                     <img src={`https://ui-avatars.com/api/?name=${tgUser.first_name}+${tgUser.last_name}&background=18181b&color=d4af37&size=128`} alt="Profile" className="absolute inset-0 w-full h-full object-cover z-10" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h2 className="text-base font-black text-zinc-100 truncate tracking-wide">{tgUser.first_name} {tgUser.last_name}</h2>
-                    <TgLink username={tgUser.username} className="text-[10px]" />
-                  </div>
-                </div>
-                
-                <div className="flex items-center bg-surface-950 rounded-xl border border-surface-700 p-1 shadow-inner mb-4">
-                  <div className="px-2 text-xs text-zinc-300 truncate flex-1 font-mono">tonpull.app/ref/{displayAddress}</div>
-                  <button onClick={copyReferral} className={`shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-[10px] font-black transition-all uppercase tracking-wide shadow-md ${copied ? 'bg-success-500 text-white shadow-success-500/20' : 'bg-surface-800 hover:bg-surface-700 text-zinc-100'}`}>
-                    <Icon name={copied ? 'check' : 'copy'} size={12} /> <span className="hidden sm:inline">{copied ? t('copied') : t('copy_link')}</span>
-                  </button>
-                </div>
-
-                <div className="flex flex-col gap-2 w-full mt-1 border-t border-surface-800/60 pt-3">
-                  <h4 className="text-[9px] font-bold uppercase tracking-widest text-zinc-400 mb-1 flex items-center gap-1.5">
-                    <Icon name="megaphone" size={12} className="text-brand-500" /> {t('marketing_funnels')}
-                  </h4>
-                  {FUNNELS.map(f => (
-                    <div key={f.id} className={`flex items-center justify-between p-2 rounded-lg border bg-surface-900/30 shadow-sm ${f.borderClass}`}>
-                      <div className="flex flex-col min-w-0 pr-2">
-                        <div className={`flex items-center gap-1 ${f.colorClass}`}>
-                          <Icon name={f.icon} size={10} className="shrink-0" />
-                          <span className="font-black text-[9px] uppercase tracking-wider truncate">{f.title}</span>
-                        </div>
-                        <span className="text-[8px] text-zinc-500 mt-0.5 font-bold uppercase tracking-wider">{f.tag}</span>
-                      </div>
-                      <div className="flex items-center gap-1 shrink-0">
-                        <button onClick={() => copyFunnelLink(f.link, `funnel_${f.id}`)} className="p-1.5 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded text-[9px] transition-colors"><Icon name="copy" size={10} /></button>
-                        <a href={`${f.link}?ref=${displayAddress}`} target="_blank" rel="noopener noreferrer" className={`p-1.5 ${f.bgClass} ${f.colorClass} rounded transition-colors`}><Icon name="external-link" size={10} /></a>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            </div>
-
-            {/* Middle Col (5) */}
-            <div className="lg:col-span-5 flex flex-col gap-4">
-              <Card className="flex flex-col items-center justify-center text-center relative overflow-hidden bg-gradient-to-b from-surface-900 to-surface-950 border-t-2 border-t-success-500" padding="p-6">
-                <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-2 leading-tight">{t('vault_available')}</p>
-                <div className="text-3xl lg:text-4xl font-black text-zinc-100 mb-2 tracking-tight truncate w-full font-mono drop-shadow-md">
-                  {formatCurrency(sc.state.promoterAvailable, sc.state.isHidden)} {!sc.state.isHidden && <span className="text-sm lg:text-base text-success-400 ml-1 font-sans tracking-normal">USDT</span>}
-                </div>
-                <div className="mb-5">
-                  <button onClick={sc.toggleHidden} className="text-zinc-500 hover:text-zinc-300 transition-colors p-1.5 px-3 bg-surface-950 rounded-md border border-surface-800 flex items-center gap-1.5 text-[9px] font-bold uppercase mx-auto"><Icon name={sc.state.isHidden ? 'eye' : 'eye-off'} size={12} /> {sc.state.isHidden ? t('show_balances') : t('hide_balances')}</button>
-                </div>
-
-                <div className="w-full max-w-[280px] mx-auto mt-4">
-                  {!sc.state.tonWallet ? (
-                    <button onClick={() => setShowWalletModal(true)} className="w-full py-3 rounded-xl font-black text-[11px] uppercase tracking-widest flex items-center justify-center gap-2 transition-transform hover:-translate-y-0.5 bg-gold-gradient text-surface-950 hover:opacity-90 shadow-[0_10px_20px_rgba(212,175,55,0.2)]"><Icon name="wallet" size={14} /> {t('setup_wallet')}</button>
-                  ) : (
-                    <div className="flex flex-col gap-2">
-                      <button onClick={() => setShowWalletModal(true)} className="flex items-center justify-center gap-2 text-[10px] font-mono text-zinc-400 bg-surface-900 border border-surface-800 py-2 rounded-lg transition-colors group hover:border-brand-500/50">
-                        <span className="truncate max-w-[200px]">{sc.state.tonWallet}</span>
-                        <Icon name="pencil" size={10} className="group-hover:text-brand-400" />
-                      </button>
-                      <button onClick={() => { if(sc.state.promoterAvailable > 0) setShowSecureModal(true); }} disabled={isClaiming || sc.state.promoterAvailable <= 0} className={`w-full py-3 rounded-xl font-black text-[11px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${sc.state.promoterAvailable <= 0 ? 'bg-surface-950 border border-surface-800 text-zinc-600' : isClaiming ? 'bg-success-600 text-white cursor-wait' : 'bg-success-600 hover:bg-success-500 text-white shadow-[0_10px_20px_rgba(16,185,129,0.3)] hover:-translate-y-0.5'}`}>
-                        {sc.state.promoterAvailable <= 0 ? (<><Icon name="lock" size={14} /> {t('no_funds')}</>) : isClaiming ? (<><Icon name="loader-2" size={14} className="animate-spin" /> {t('signing')}</>) : (<><Icon name="fingerprint" size={16} /> {t('unlock_withdraw')}</>)}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </Card>
-
-              <div className="grid grid-cols-2 gap-4 shrink-0">
-                <StatCard title={t('lifetime_deposit')} value={formatCurrency(sc.state.promoterLifetime, sc.state.isHidden)} subtext="USDT" icon="coins" colorClass="text-brand-400" />
-                <StatCard title={t('daily_subs')} value="3,105" subtext={t('registered_subtext')} icon="infinity" colorClass="text-purple-400" highlight={true} />
-              </div>
-
-              <Card className="flex flex-col" padding="p-4">
-                <h3 className="text-xs font-bold text-zinc-100 mb-4 uppercase tracking-widest flex items-center gap-2 shrink-0"><Icon name="bar-chart-3" size={16} className="text-success-500" /> {t('earnings_chart')}</h3>
-                <div className="flex-1 w-full relative min-h-[250px]">
-                  <ResponsiveContainer width="100%" height="100%" className="absolute inset-0">
-                    <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -20, bottom: 0}}>
-                      <defs><linearGradient id="colorPromoterAmount" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/><stop offset="95%" stopColor="#10b981" stopOpacity={0}/></linearGradient></defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
-                      <XAxis dataKey="name" stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700, textTransform:'uppercase'}} axisLine={false} tickLine={false} dy={10} />
-                      <YAxis stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700}} axisLine={false} tickLine={false} dx={-10} width={50} />
-                      <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '12px', color: '#fff' }} itemStyle={{ color: '#34d399', fontWeight: 'bold' }} />
-                      <Area type="monotone" dataKey="amount" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorPromoterAmount)" activeDot={{r: 5, fill: '#10b981', stroke: '#fff', strokeWidth: 2}} />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
-              </Card>
-            </div>
-
-            {/* Right Col (4) */}
-            <div className="lg:col-span-4 flex flex-col gap-4">
-              <Card padding="p-0" className="flex flex-col">
-                <div className="flex border-b border-surface-800 bg-surface-900/50 shrink-0">
-                  <button onClick={() => setActiveTab('top10')} className={`flex-1 p-3 text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'top10' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="trophy" size={14} /> {t('top_10_short')}</button>
-                  <button onClick={() => setActiveTab('network')} className={`flex-1 p-3 text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'network' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="users" size={14} /> {t('my_network')}</button>
-                  <button onClick={() => setActiveTab('history')} className={`flex-1 p-3 text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'history' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="history" size={14} /> {t('audit_short')}</button>
-                </div>
-                
-                <div className="w-full bg-surface-950/30 flex flex-col">
-                  {activeTab === 'top10' && (
-                    <div className="flex flex-col fade-in">
-                      <div className={`p-4 border-b border-surface-800 shrink-0 ${isQualified ? 'bg-brand-500/5' : 'bg-surface-900/30'}`}>
-                        <div className="flex justify-between items-end mb-3">
-                          <div>
-                            <p className="text-[9px] text-zinc-500 uppercase font-bold tracking-widest mb-0.5">{t('global_pool')}</p>
-                            <p className="text-xl font-mono font-black text-brand-400 leading-none">{formatCurrency(poolTotal, sc.state.isHidden)} <span className="text-[10px] text-zinc-500 font-sans tracking-widest">USDT</span></p>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-[8px] text-zinc-500 uppercase font-bold tracking-widest mb-1">{t('ends_sat')}</p>
-                            <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider border ${isQualified ? 'bg-brand-500/10 text-brand-400 border-brand-500/30 shadow-[0_0_10px_rgba(212,175,55,0.2)]' : 'bg-surface-800 text-zinc-500 border-surface-700'}`}>
-                              {isQualified ? t('pool_qualified') : t('pool_unqualified')}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="w-full">
-                          <div className="flex justify-between text-[8px] font-black uppercase tracking-wider mb-1.5">
-                            <span className="text-zinc-400">{t('target')}: {formatCurrency(pTarget, sc.state.isHidden)}</span>
-                            <span className={isQualified ? 'text-brand-400' : 'text-zinc-100'}>{formatCurrency(pVol, sc.state.isHidden)}</span>
-                          </div>
-                          <div className="h-2 w-full bg-surface-950 rounded-full overflow-hidden shadow-inner border border-surface-800/50">
-                            <div className={`h-full rounded-full transition-all duration-1000 ${isQualified ? 'bg-brand-500 shadow-[0_0_10px_rgba(212,175,55,0.5)]' : 'bg-zinc-600'}`} style={{width: `${Math.min((pVol/pTarget)*100, 100)}%`}}></div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="p-2">
-                        <div className="flex items-center justify-between px-2 mb-2 mt-1">
-                          <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest truncate">{t('realtime_leaderboard')}</span>
-                          <span className="text-[7px] font-mono text-success-500 font-bold flex items-center gap-1 bg-success-500/10 px-1.5 py-0.5 rounded border border-success-500/20 shrink-0"><Icon name="bot" size={10}/> <span className="hidden sm:inline">{t('bot_managed')}</span></span>
-                        </div>
-                        <table className="w-full text-left border-separate border-spacing-y-1">
-                          <tbody>
-                            {TOP_10_LEADERS.map((leader) => (
-                              <tr key={leader.rank} className={`flex items-center p-2 rounded-lg ${leader.isMe ? 'bg-brand-500/10 border border-brand-500/30 shadow-[0_0_15px_rgba(212,175,55,0.1)]' : 'bg-surface-950 border border-surface-800'}`}>
-                                <td className={`w-8 text-center font-black text-xs ${leader.rank <= 3 ? 'text-brand-400' : 'text-zinc-500'}`}>{leader.rank}</td>
-                                <td className="flex-1 px-2 min-w-0">
-                                  <span className={`font-bold text-[10px] truncate block uppercase tracking-wider ${leader.isMe ? 'text-brand-400' : 'text-zinc-200'}`}>
-                                    {leader.name} {leader.isMe && <span className="text-[7px] ml-1 bg-brand-500 text-surface-950 px-1 py-0.5 rounded-sm">{t('you_tag')}</span>}
-                                  </span>
-                                </td>
-                                <td className="text-right font-mono text-[10px] font-bold text-success-400 shrink-0">
-                                  {formatCurrency(leader.vol, false)}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  )}
-
-                  {activeTab === 'network' && (
-                    <div className="p-1">
-                      <table className="w-full text-left border-collapse">
-                        <thead className="bg-surface-900 shadow-md">
-                          <tr className="text-[9px] uppercase tracking-wider text-zinc-500 border-b border-surface-800">
-                            <th className="px-3 py-2 font-bold truncate">{t('user_col')}</th>
-                            <th className="px-3 py-2 font-bold truncate">{t('action_col')}</th>
-                            <th className="px-3 py-2 font-bold text-right truncate">{t('vol_col')}</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-surface-800/50">
-                          {sortedNetworkData.map((lead, idx) => (
-                            <tr key={idx} className="hover:bg-surface-900/50 transition-colors">
-                              <td className="px-3 py-3">
-                                <div className="flex items-center gap-2">
-                                   <div className={`p-1.5 rounded-lg shrink-0 border hidden sm:block ${lead.typeKey === 'action_deposit' ? 'bg-success-500/10 text-success-400 border-success-500/30' : 'bg-brand-500/10 text-brand-400 border-brand-500/30'}`}><Icon name={lead.typeKey === 'action_deposit' ? 'coins' : 'user-plus'} size={12} /></div>
-                                   {lead.flag && <img src={`https://flagcdn.com/${lead.flag}.svg`} alt="flag" className="flag-icon" />}
-                                   <div className="min-w-0">
-                                     <TgLink username={lead.username} className="text-[10px] truncate block" />
-                                     <p className="text-[8px] text-zinc-500 uppercase tracking-wider font-bold mt-0.5 truncate">{t(lead.timeKey)}</p>
-                                   </div>
-                                </div>
-                              </td>
-                              <td className="px-3 py-3 text-xs text-zinc-400">
-                                <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider border ${lead.statusKey === 'status_active' ? 'bg-success-500/10 text-success-400 border-success-500/20' : 'bg-surface-800 text-zinc-500 border-surface-700'}`}>
-                                  {t(lead.statusKey)}
-                                </span>
-                              </td>
-                              <td className="px-3 py-3 text-right">
-                                <span className={`font-mono text-[9px] font-bold ${lead.total_vol > 0 ? 'text-brand-400' : 'text-zinc-500'} whitespace-nowrap`}>
-                                  {lead.total_vol > 0 ? `${lead.total_vol} USDT` : '-'}
-                                </span>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-
-                  {activeTab === 'history' && (
-                    <div className="p-3">
-                      {sc.state.claimHistory.length === 0 ? (
-                        <div className="h-full min-h-[200px] flex flex-col items-center justify-center text-zinc-600"><Icon name="history" size={20} className="mb-2 opacity-50" /><p className="text-[9px] font-bold uppercase tracking-widest">{t('no_tx')}</p></div>
-                      ) : (
-                        <div className="space-y-2">
-                          {sc.state.claimHistory.map((item, idx) => (
-                            <div key={idx} className="flex justify-between items-center bg-surface-950 p-2.5 rounded-lg border border-surface-800">
-                              <div className="min-w-0 pr-2">
-                                <p className="text-zinc-200 text-[10px] font-bold truncate">{item.date}</p>
-                                <p className="text-[8px] text-zinc-500 mt-0.5 font-mono uppercase tracking-widest flex items-center gap-1 truncate"><Icon name="check-circle-2" size={8} className="text-success-500 shrink-0"/> {item.tx}</p>
-                              </div>
-                              <span className="text-success-400 font-black text-[10px] font-mono bg-success-500/10 px-1.5 py-0.5 rounded border border-success-500/20 shrink-0">+{formatCurrency(item.amount, sc.state.isHidden)}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </Card>
-            </div>
-          </div>
-          
-          <SecurityModal isOpen={showSecureModal} onClose={() => setShowSecureModal(false)} onConfirm={async () => { setShowSecureModal(false); setIsClaiming(true); await sc.processClaim(t); setIsClaiming(false); }} amount={sc.state.promoterAvailable} walletAddress={sc.state.tonWallet || sc.state.walletAddress} t={t} />
-          <TonWalletModal isOpen={showWalletModal} onClose={() => setShowWalletModal(false)} onSave={(val) => { sc.setTonWallet(val); sc.addToast(t('toast_success_title'), t('save_wallet'), 'success'); }} currentWallet={sc.state.tonWallet} t={t} />
-        </div>
-      );
-    };
-
-    // --- BLUEPRINT / WHITEPAPER DASHBOARD ---
-    const BlueprintDashboard = ({ t, lang }) => {
-      const [activeTab, setActiveTab] = useState('arch');
-      const [scenario, setScenario] = useState('spoof_promoter');
-      const [copied, setCopied] = useState(false);
-
-      const copyPrompt = () => {
-        const text = `# CONTEXT\nYou are an elite enterprise Smart Contract developer specializing in the TON blockchain, using Tact. You are tasked with creating the "Vault" contract for the Betting Exchange Room architecture.\n\n# ARCHITECTURE MANDATE (ZERO-TRUST)\n1. The Smart Contract is a "Dumb Vault". It does NOT hold business logic regarding users, credits, or referral trees.\n2. The Off-chain Python Backend & Firestore DB are the absolute source of truth.\n3. Pricing: 94 USDT (30 days) / 234 USDT (90 days) / 394 USDT (180 days). Promoter pricing: 47 USDT (30 days) / 117 USDT (90 days) / 197 USDT (180 days).\n\n# SMART CONTRACT REQUIREMENTS\nDevelop a smart contract that handles Jetton (USDT) transactions with the following security primitives:\n\n## 1. Deposit & Verification\n- Accept incoming USDT transfers.\n- STRICT Fake Token Shield: Match the official TON USDT address (EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs).\n- Payload parsing: Memo must contain the user's Telegram_ID as an immutable string/integer.\n- Underpayment Recalibration: Backend recalculates days dynamically against the actual USDT received.\n\n## 2. Withdrawal Mechanism\n- Cryptographic ED25519 signature verification on claim().\n- Signed payload: Amount + Destination Wallet Address + Nonce.\n- Tracker on-chain to prevent Replay Attacks.\n\n## 3. Administrator Controls\n- Emergency sweep() function to pull assets to cold storage.\n- Admin Threshold mechanism for transfers over 1,000 USDT (requires manual multi-sig approval).`;
-        navigator.clipboard.writeText(text).then(() => {
-          setCopied(true);
-          setTimeout(() => setCopied(false), 2000);
-        });
-      };
-
-      let expected = 180;
-      let assigned = 180;
-      let formulaText = "";
-      let formulaClass = "";
-
-      if (scenario === 'spoof_promoter') {
-        assigned = (47 / 197) * 180;
-        if(lang === 'it') formulaText = `(47 / 197) * 180 = ${assigned.toFixed(1)} gg.\nSpoofing neutralizzato.`;
-        else if(lang === 'es') formulaText = `(47 / 197) * 180 = ${assigned.toFixed(1)} días.\nSpoofing neutralizado.`;
-        else formulaText = `(47 / 197) * 180 = ${assigned.toFixed(1)} days.\nSpoofing neutralized.`;
-        formulaClass = "text-red-400";
-      } else {
-        assigned = 180;
-        const u = scenario === 'honest_web' ? '394' : '197';
-        if(lang === 'it') formulaText = `Pagamento congruo (${u} USDT).\nAssegnazione = 180 giorni.`;
-        else if(lang === 'es') formulaText = `Pago congruente (${u} USDT).\nAsignación = 180 días.`;
-        else formulaText = `Consistent payment (${u} USDT).\nAllocation = 180 days.`;
-        formulaClass = "text-success-400";
-      }
-
-      const spoofData = [
-        { name: t('label_chart_1'), value: expected, fill: '#d4af37' },
-        { name: t('label_chart_2'), value: parseFloat(assigned.toFixed(1)), fill: scenario === 'spoof_promoter' ? '#ef4444' : '#10b981' }
-      ];
-
-      return (
-        <div className="flex flex-col lg:flex-row flex-1 fade-in pt-4 pb-12 gap-6 items-start relative z-10">
-          {/* Sidebar */}
-          <nav className="w-full lg:w-64 shrink-0 glass-panel rounded-2xl flex flex-col shadow-xl lg:sticky lg:top-24 border border-surface-800">
-            <div className="p-5 border-b border-surface-800 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center border border-brand-500/20 text-brand-500 shrink-0">
-                <Icon name="shield-check" size={20} />
-              </div>
-              <div>
-                <h1 className="text-sm font-black tracking-widest text-zinc-100 uppercase leading-tight">Tech Blueprint</h1>
-                <p className="text-[9px] text-brand-500 font-mono font-bold tracking-widest uppercase mt-0.5">TON Smart Contract V3</p>
-              </div>
-            </div>
-            
-            <div className="flex flex-row lg:flex-col overflow-x-auto lg:overflow-x-hidden p-3 gap-2 custom-scrollbar">
-              <button onClick={() => setActiveTab('arch')} className={`text-left px-4 py-3 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wide transition-all border flex items-center gap-2 whitespace-nowrap ${activeTab === 'arch' ? 'bg-surface-800 text-brand-400 border-surface-700 shadow-sm' : 'text-zinc-500 border-transparent hover:text-zinc-300'}`}>
-                <Icon name="network" size={16} /> {t('nav_arch')}
-              </button>
-              <button onClick={() => setActiveTab('revenue')} className={`text-left px-4 py-3 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wide transition-all border flex items-center gap-2 whitespace-nowrap ${activeTab === 'revenue' ? 'bg-surface-800 text-brand-400 border-surface-700 shadow-sm' : 'text-zinc-500 border-transparent hover:text-zinc-300'}`}>
-                <Icon name="database" size={16} /> {t('nav_revenue')}
-              </button>
-              <button onClick={() => setActiveTab('security')} className={`text-left px-4 py-3 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wide transition-all border flex items-center gap-2 whitespace-nowrap ${activeTab === 'security' ? 'bg-surface-800 text-brand-400 border-surface-700 shadow-sm' : 'text-zinc-500 border-transparent hover:text-zinc-300'}`}>
-                <Icon name="shield-alert" size={16} /> {t('nav_security')}
-              </button>
-              <div className="hidden lg:block lg:flex-1 min-h-[50px]"></div>
-              <button onClick={() => setActiveTab('prompt')} className={`text-left px-4 py-3 rounded-xl text-[10px] font-mono font-bold tracking-widest transition-all border flex items-center gap-2 whitespace-nowrap ${activeTab === 'prompt' ? 'bg-surface-800 text-brand-400 border-surface-700 shadow-sm' : 'text-brand-500/70 hover:text-brand-400 border-brand-500/20 bg-brand-500/5'}`}>
-                <Icon name="terminal" size={14} /> {t('nav_prompt')}
-              </button>
-            </div>
-          </nav>
-
-          {/* Main Content Area */}
-          <div className="flex-1 w-full max-w-5xl mx-auto flex flex-col gap-6">
-            
-            {activeTab === 'arch' && (
-              <div className="flex flex-col gap-6 fade-in">
-                <header>
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-zinc-100 mb-2 tracking-widest uppercase flex items-center gap-3">
-                    <Icon name="network" size={28} className="text-brand-500 hidden sm:block" /> <span className="text-gold-gradient">{t('wp_title')}</span>
-                  </h2>
-                  <p className="text-[10px] sm:text-xs text-brand-400 bg-brand-500/10 inline-block px-3 py-1.5 rounded-lg border border-brand-500/20 font-bold uppercase tracking-widest">{t('wp_v')}</p>
-                </header>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="glass-panel p-5 rounded-2xl border-t-2 border-t-brand-500 flex flex-col justify-between gap-4">
-                    <div>
-                      <h3 className="text-sm font-black text-zinc-100 mb-2 flex items-center gap-2 uppercase tracking-wide">
-                        <Icon name="lock" size={16} className="text-brand-500" /> {t('wp_sec1_title')}
-                      </h3>
-                      <p className="text-xs text-zinc-400 leading-relaxed">{t('wp_sec1_desc')}</p>
-                    </div>
-                    <div className="bg-surface-950 p-3 rounded-xl font-mono text-[10px] sm:text-[11px] text-zinc-500 border-l-2 border-blue-500 shadow-inner leading-loose">
-                      <span className="text-zinc-300 font-bold">Backend (Python/DB)</span> {'->'} Source of Truth<br/>
-                      <span className="text-zinc-300 font-bold">Smart Contract (TON)</span> {'->'} Escrow & Liquidity
-                    </div>
-                  </div>
-                  
-                  <div className="glass-panel p-5 rounded-2xl border-t-2 border-t-purple-500 flex flex-col justify-between gap-4">
-                    <div>
-                      <h3 className="text-sm font-black text-zinc-100 mb-2 flex items-center gap-2 uppercase tracking-wide">
-                        <Icon name="fingerprint" size={16} className="text-purple-500" /> {t('wp_academy_title')}
-                      </h3>
-                      <p className="text-xs text-zinc-400 leading-relaxed">{t('wp_academy_desc')}</p>
-                    </div>
-                    <div className="bg-brand-500/10 p-3 rounded-xl text-xs text-brand-300 border border-brand-500/20 font-bold tracking-wide">
-                      {t('wp_signals_desc')}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-br from-surface-900 to-surface-950 p-5 md:p-6 rounded-2xl border border-brand-500/30 relative overflow-hidden shadow-lg">
-                  <div className="absolute top-0 right-0 p-8 opacity-5"><Icon name="infinity" size={120} className="text-brand-500" /></div>
-                  <h3 className="text-base md:text-lg font-black mb-4 text-brand-400 uppercase tracking-widest flex items-center gap-2 relative z-10">
-                    <Icon name="infinity" size={20} /> {t('wp_sec4_title')}
-                  </h3>
-                  <p className="text-xs text-zinc-300 leading-relaxed relative z-10 font-bold bg-surface-950/50 p-4 rounded-xl border border-surface-800">
-                    {t('wp_sec4_desc')}
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-sm font-black text-zinc-100 mb-3 uppercase tracking-widest flex items-center gap-2">
-                    <Icon name="shopping-cart" size={16} className="text-brand-500" /> <span>Universal Pricing Matrix</span>
-                  </h3>
-                  <div className="overflow-x-auto rounded-2xl border border-surface-800 glass-panel">
-                    <table className="w-full text-left text-xs min-w-[500px] md:min-w-0">
-                      <thead className="bg-surface-900 border-b border-surface-800 text-zinc-400 font-bold uppercase tracking-wider text-[10px]">
-                        <tr>
-                          <th className="p-4">Access Tier</th>
-                          <th className="p-4">{t('wp_promo_title')}</th>
-                          <th className="p-4 text-brand-400">{t('wp_affiliate_title')}</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-surface-800/50 font-mono text-zinc-300 bg-surface-950/30">
-                        <tr className="hover:bg-surface-900/50 transition-colors">
-                          <td className="p-4 font-sans font-bold">Starter (30 days)</td>
-                          <td className="p-4">94 USDT</td>
-                          <td className="p-4 font-black text-success-400 bg-success-500/5">47 USDT</td>
-                        </tr>
-                        <tr className="hover:bg-surface-900/50 transition-colors">
-                          <td className="p-4 font-sans font-bold">Pro (90 days)</td>
-                          <td className="p-4">234 USDT</td>
-                          <td className="p-4 font-black text-success-400 bg-success-500/5">117 USDT</td>
-                        </tr>
-                        <tr className="hover:bg-surface-900/50 transition-colors">
-                          <td className="p-4 font-sans font-bold">Elite (180 days)</td>
-                          <td className="p-4">394 USDT</td>
-                          <td className="p-4 font-black text-success-400 bg-success-500/5">197 USDT</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'revenue' && (
-              <div className="flex flex-col gap-6 fade-in">
-                <header>
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-zinc-100 mb-2 tracking-widest uppercase flex items-center gap-3">
-                    <Icon name="database" size={28} className="text-brand-500 hidden sm:block" /> <span className="text-gold-gradient">{t('wp_sec2_title')}</span>
-                  </h2>
-                  <p className="text-xs text-zinc-400 bg-surface-900/50 inline-block px-3 py-1.5 rounded-lg border border-surface-800">{t('wp_sec2_desc')}</p>
-                </header>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="glass-panel p-5 rounded-2xl">
-                    <h3 className="font-black text-brand-400 mb-4 uppercase tracking-widest text-[10px] border-b border-surface-800 pb-2">{t('scenario_a')}</h3>
-                    <div className="space-y-1 font-mono text-xs text-zinc-400">
-                      <div className="flex justify-between items-center p-2 hover:bg-surface-800 rounded transition-colors">
-                        <span>{t('level_1')}</span><span className="font-bold text-success-400">50%</span>
-                      </div>
-                      <div className="flex justify-between items-center p-2 hover:bg-surface-800 rounded transition-colors">
-                        <span>{t('level_2')}</span><span className="font-bold text-success-400">10%</span>
-                      </div>
-                      <div className="flex justify-between items-center p-2 hover:bg-surface-800 rounded transition-colors">
-                        <span>{t('level_3')}</span><span className="font-bold text-success-400">5%</span>
-                      </div>
-                      <div className="flex justify-between items-center p-2 border-t border-surface-800/50 mt-2">
-                        <span>{t('treasury_comp')}</span><span className="font-bold text-zinc-100">25%</span>
-                      </div>
-                      <div className="flex justify-between items-center p-2 bg-brand-500/10 border border-brand-500/20 rounded-lg text-brand-400 font-bold mt-2">
-                        <span>{t('wp_sec3_title')}</span><span>10%</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="glass-panel p-5 rounded-2xl">
-                    <h3 className="font-black text-blue-400 mb-4 uppercase tracking-widest text-[10px] border-b border-surface-800 pb-2">{t('scenario_b')}</h3>
-                    <div className="space-y-1 font-mono text-xs text-zinc-400">
-                      <div className="flex justify-between items-center p-2 hover:bg-surface-800 rounded transition-colors">
-                        <span>{t('treasury_comp')}</span><span className="font-bold text-zinc-100">80%</span>
-                      </div>
-                      <div className="flex justify-between items-center p-2 hover:bg-surface-800 rounded transition-colors mt-2">
-                        <span>{t('events_pool_top10')}</span><span className="font-bold text-purple-400">10%</span>
-                      </div>
-                      <div className="flex justify-between items-center p-2 hover:bg-surface-800 rounded transition-colors mt-2">
-                        <span>{t('marketing_pool')}</span><span className="font-bold text-cyan-400">10%</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-br from-surface-900 to-surface-950 p-5 md:p-6 rounded-2xl border border-brand-500/30 relative overflow-hidden shadow-lg">
-                  <div className="absolute top-0 right-0 p-8 opacity-5"><Icon name="globe" size={120} className="text-brand-500" /></div>
-                  <h3 className="text-base font-black mb-4 text-brand-400 uppercase tracking-widest flex items-center gap-2 relative z-10">
-                    <Icon name="globe" size={20} /> {t('wp_sec3_title')}
-                  </h3>
-                  <div className="space-y-3 text-xs text-zinc-400 relative z-10">
-                    <p className="flex items-start gap-2 bg-brand-500/5 p-3 rounded-r-xl border-l-4 border-brand-500">
-                      <span><strong className="text-brand-300 block mb-1 uppercase tracking-wider text-[10px]">{t('wp_sec3_a_title')}</strong> <span className="text-zinc-300">{t('wp_sec3_a_desc')}</span></span>
-                    </p>
-                    <p className="flex items-start gap-2 bg-success-500/5 p-3 rounded-r-xl border-l-4 border-success-500">
-                      <span><strong className="text-success-300 block mb-1 uppercase tracking-wider text-[10px]">{t('wp_sec3_b_title')}</strong> <span className="text-zinc-100 font-bold">{t('wp_sec3_b_desc')}</span></span>
-                    </p>
-                    <p className="flex items-start gap-2 bg-blue-500/5 p-3 rounded-r-xl border-l-4 border-blue-500">
-                      <span><strong className="text-blue-300 block mb-1 uppercase tracking-wider text-[10px]">{t('wp_sec3_c_title')}</strong> <span className="text-zinc-300">{t('wp_sec3_c_desc')}</span></span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'security' && (
-              <div className="flex flex-col gap-6 fade-in">
-                <header>
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-zinc-100 mb-2 tracking-widest uppercase flex items-center gap-3">
-                    <Icon name="shield-alert" size={28} className="text-brand-500 hidden sm:block" /> <span className="text-gold-gradient">Enterprise Cybersecurity</span>
-                  </h2>
-                  <p className="text-xs text-zinc-400 bg-surface-900/50 inline-block px-3 py-1.5 rounded-lg border border-surface-800">Threat modeling and automated defense mechanisms.</p>
-                </header>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-                  <div className="glass-panel p-4 rounded-xl border-t-2 border-t-brand-500 flex flex-col">
-                    <Icon name="key" size={20} className="text-brand-500 mb-2" />
-                    <h4 className="font-black text-zinc-200 text-xs mb-1">{t('wp_tech_1_title')}</h4>
-                    <p className="text-[10px] text-zinc-400 font-mono leading-relaxed">{t('wp_tech_1_desc')}</p>
-                  </div>
-                  <div className="glass-panel p-4 rounded-xl border-t-2 border-t-success-500 flex flex-col">
-                    <Icon name="copy-x" size={20} className="text-success-500 mb-2" />
-                    <h4 className="font-black text-zinc-200 text-xs mb-1">{t('wp_tech_2_title')}</h4>
-                    <p className="text-[10px] text-zinc-400 font-mono leading-relaxed">{t('wp_tech_2_desc')}</p>
-                  </div>
-                  <div className="glass-panel p-4 rounded-xl border-t-2 border-t-purple-500 flex flex-col">
-                    <Icon name="lock" size={20} className="text-purple-500 mb-2" />
-                    <h4 className="font-black text-zinc-200 text-xs mb-1">{t('wp_tech_3_title')}</h4>
-                    <p className="text-[10px] text-zinc-400 font-mono leading-relaxed">{t('wp_tech_3_desc')}</p>
-                  </div>
-                  <div className="glass-panel p-4 rounded-xl border-t-2 border-t-warning-500 flex flex-col">
-                    <Icon name="alert-triangle" size={20} className="text-warning-500 mb-2" />
-                    <h4 className="font-black text-zinc-200 text-xs mb-1">{t('wp_tech_4_title')}</h4>
-                    <p className="text-[10px] text-zinc-400 font-mono leading-relaxed">{t('wp_tech_4_desc')}</p>
-                  </div>
-                  <div className="glass-panel p-4 rounded-xl border-t-2 border-t-red-500 flex flex-col bg-red-500/5">
-                    <Icon name="hard-drive" size={20} className="text-red-500 mb-2" />
-                    <h4 className="font-black text-red-400 text-xs mb-1">{t('wp_tech_5_title')}</h4>
-                    <p className="text-[10px] text-red-300/80 font-mono leading-relaxed">{t('wp_tech_5_desc')}</p>
-                  </div>
-                </div>
-
-                <div className="glass-panel p-5 rounded-2xl flex flex-col gap-5 border border-surface-800">
-                  <div>
-                    <h3 className="text-sm font-black text-brand-400 mb-2 uppercase tracking-widest flex items-center gap-2">
-                      <Icon name="cpu" size={20} /> {t('motor_title')}
-                    </h3>
-                    <p className="text-xs text-zinc-400 bg-surface-950/50 p-3 rounded-lg border border-surface-800">
-                      {t('motor_desc')}
-                    </p>
-                  </div>
-                  
-                  <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center bg-surface-900/80 p-4 rounded-xl border border-surface-700">
-                    <div className="flex-1">
-                      <label className="block text-[10px] font-bold text-zinc-500 mb-2 uppercase tracking-widest flex items-center gap-1.5">
-                        <Icon name="crosshair" size={12} className="text-red-400" /> {t('sim_label')}
-                      </label>
-                      <select value={scenario} onChange={(e) => setScenario(e.target.value)} className="w-full border border-surface-700 rounded-lg px-3 py-2.5 bg-surface-950 text-zinc-200 focus:outline-none focus:border-brand-500 font-bold transition-all shadow-inner text-xs">
-                        <option value="spoof_promoter">{t('opt_spoof')}</option>
-                        <option value="honest_promoter">{t('opt_honest_p')}</option>
-                        <option value="honest_web">{t('opt_honest_w')}</option>
-                      </select>
-                    </div>
-                    <div className="flex-1 bg-surface-950 p-3 rounded-xl border border-surface-800 shadow-inner flex flex-col justify-center min-h-[70px]">
-                      <div className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mb-1 flex items-center gap-1.5">
-                        <Icon name="server-cog" size={12} className="text-brand-500" /> {t('back_res')}
-                      </div>
-                      <div className={`font-mono text-[11px] font-bold whitespace-pre-line ${formulaClass}`}>{formulaText}</div>
-                    </div>
-                  </div>
-                  
-                  <div className="w-full h-[250px] sm:h-[300px] mt-2">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={spoofData} margin={{top: 20, right: 0, left: -20, bottom: 0}}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
-                        <XAxis dataKey="name" stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700}} axisLine={false} tickLine={false} />
-                        <YAxis stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700}} axisLine={false} tickLine={false} domain={[0, 200]} />
-                        <Tooltip cursor={{fill: 'transparent'}} contentStyle={{ backgroundColor: '#18181b', borderColor: '#3f3f46', borderRadius: '8px', color: '#fff', fontSize: '11px', fontWeight: 'bold' }} />
-                        <Bar dataKey="value" radius={[6, 6, 6, 6]} barSize={80}>
-                          {spoofData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.fill} />
-                          ))}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'prompt' && (
-              <div className="flex flex-col gap-6 fade-in h-[500px] md:h-[600px]">
-                <header className="shrink-0">
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-zinc-100 mb-2 tracking-widest uppercase flex items-center gap-3">
-                    <Icon name="bot" size={28} className="text-brand-500 hidden sm:block" /> <span className="text-gold-gradient">{t('prompt_title')}</span>
-                  </h2>
-                  <p className="text-xs text-zinc-400 bg-surface-900/50 inline-block px-3 py-1.5 rounded-lg border border-surface-800">{t('prompt_subtitle')}</p>
-                </header>
-
-                <div className="flex-1 bg-surface-950 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.5)] border border-surface-800 flex flex-col overflow-hidden relative">
-                  <div className="absolute inset-0 bg-brand-500/5 pointer-events-none"></div>
-                  
-                  <div className="bg-surface-900 px-4 py-3 flex justify-between items-center border-b border-surface-800 shrink-0 relative z-10">
-                    <span className="text-[11px] font-mono text-brand-400 flex items-center gap-2 font-bold">
-                      <div className="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></div> System_Prompt.md
-                    </span>
-                    <button onClick={copyPrompt} className={`text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 border ${copied ? 'bg-success-500/10 border-success-500/50 text-success-400' : 'bg-surface-800 hover:bg-surface-700 text-zinc-300 border-surface-700 hover:border-brand-500/50'}`}>
-                      <Icon name={copied ? 'check' : 'copy'} size={12} /> {copied ? t('btn_copied') : t('btn_copy')}
-                    </button>
-                  </div>
-                  <textarea className="w-full flex-1 bg-transparent text-success-400 font-mono text-xs p-4 md:p-6 focus:outline-none resize-none overflow-y-auto custom-scrollbar relative z-10 leading-relaxed" readOnly value={`# CONTEXT\nYou are an elite enterprise Smart Contract developer specializing in the TON blockchain, using Tact. You are tasked with creating the "Vault" contract for the Betting Exchange Room architecture.\n\n# ARCHITECTURE MANDATE (ZERO-TRUST)\n1. The Smart Contract is a "Dumb Vault". It does NOT hold business logic regarding users, credits, or referral trees.\n2. The Off-chain Python Backend & Firestore DB are the absolute source of truth.\n3. Pricing: 94 USDT (30 days) / 234 USDT (90 days) / 394 USDT (180 days). Promoter pricing: 47 USDT (30 days) / 117 USDT (90 days) / 197 USDT (180 days).\n\n# SMART CONTRACT REQUIREMENTS\nDevelop a smart contract that handles Jetton (USDT) transactions with the following security primitives:\n\n## 1. Deposit & Verification\n- Accept incoming USDT transfers.\n- STRICT Fake Token Shield: Match the official TON USDT address (EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs).\n- Payload parsing: Memo must contain the user's Telegram_ID as an immutable string/integer.\n- Underpayment Recalibration: Backend recalculates days dynamically against the actual USDT received.\n\n## 2. Withdrawal Mechanism\n- Cryptographic ED25519 signature verification on claim().\n- Signed payload: Amount + Destination Wallet Address + Nonce.\n- Tracker on-chain to prevent Replay Attacks.\n\n## 3. Administrator Controls\n- Emergency sweep() function to pull assets to cold storage.\n- Admin Threshold mechanism for transfers over 1,000 USDT (requires manual multi-sig approval).`} />
-                </div>
-              </div>
-            )}
-
-          </div>
-        </div>
-      );
-    };
-
     // --- LOGIC HOOKS ---
-
     const useSmartContract = () => {
       const [walletConnected, setWalletConnected] = useState(false);
-      const [walletAddress, setWalletAddress] = useState(null);
-      const [tonWallet, setTonWalletState] = useState('');
       const [isHidden, setIsHidden] = useState(false);
       const [toasts, setToasts] = useState([]);
       
@@ -1331,162 +423,54 @@
       const [totalProcessed, setTotalProcessed] = useState(12450.00);
       const [activePromoters, setActivePromoters] = useState(142);
       
-      const [promoterAvailable, setPromoterAvailable] = useState(450.00);
-      const [promoterLifetime, setPromoterLifetime] = useState(3250.00);
-      
-      const [promoterVolume, setPromoterVolume] = useState(14500); 
-      const [tenthPlaceVolume, setTenthPlaceVolume] = useState(15000); 
-      const [weeklyPoolTotal, setWeeklyPoolTotal] = useState(8542.00); 
-
-      const [claimHistory, setClaimHistory] = useState([ { date: '12 May 2026', amount: 120.00, tx: '0xTX...4f2' } ]);
-
       const addToast = useCallback((title, message, type = 'info') => {
         const id = Date.now() + Math.random(); setToasts(prev => [...prev, { id, title, message, type }]);
         setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000); 
       }, []);
 
-      const connect = (role) => {
-        setWalletConnected(true);
-        setWalletAddress(role === 'company' ? "0xCORP_ADMIN...77Xz" : "0xPARTNER...99Xz");
-        setIsHidden(false);
-      };
-
-      const disconnect = () => {
-        setWalletConnected(false);
-        setWalletAddress(null);
-        setIsHidden(false);
-      };
+      const connect = () => { setWalletConnected(true); setIsHidden(false); };
+      const disconnect = () => { setWalletConnected(false); setIsHidden(false); };
 
       const simulateDeposit = (t) => {
         return new Promise(resolve => {
           setTimeout(() => {
             setTotalProcessed(p => p + 150);
             setContractBalance(p => p + 45);
-            setPromoterVolume(p => p + 150);
-            setWeeklyPoolTotal(p => p + 15);
             addToast(t ? t('toast_dep_title') : "Deposit Detected", t ? t('toast_dep_msg') : "Liquidity updated on-chain.", "info");
             resolve();
           }, 1000);
         });
       };
 
-      const processClaim = (t) => {
-        return new Promise(resolve => {
-          setTimeout(() => {
-            const amount = promoterAvailable;
-            setPromoterAvailable(0);
-            setPromoterLifetime(p => p + amount);
-            setClaimHistory([{ date: new Date().toLocaleDateString('en-GB'), amount, tx: '0xTX...NEW' }, ...claimHistory]);
-            addToast(t ? t('toast_auth_title') : "Transfer Auth Success", t ? t('toast_auth_msg') : "Funds sent to your wallet.", "success");
-            resolve();
-          }, 1500);
-        });
-      };
-
       return {
-        state: { walletConnected, walletAddress, tonWallet, isHidden, toasts, contractBalance, totalProcessed, activePromoters, promoterAvailable, promoterLifetime, promoterVolume, tenthPlaceVolume, weeklyPoolTotal, claimHistory, companyContractAddress },
-        connect, disconnect, addToast, simulateDeposit, processClaim, toggleHidden: () => setIsHidden(!isHidden), setTonWallet: setTonWalletState
+        state: { walletConnected, isHidden, toasts, contractBalance, totalProcessed, activePromoters, companyContractAddress },
+        connect, disconnect, addToast, simulateDeposit, toggleHidden: () => setIsHidden(!isHidden)
       };
-    };
-
-    // --- ACCESS GUARD COMPONENT ---
-    const AccessDeniedScreen = ({ t, onBypass }) => {
-      const [showModal, setShowModal] = useState(false);
-      const [pwd, setPwd] = useState('');
-      const [error, setError] = useState(false);
-
-      const handleUnlock = () => {
-        if (pwd === 'Hpupdsup!1974') {
-          setError(false);
-          setShowModal(false);
-          onBypass();
-        } else {
-          setError(true);
-        }
-      };
-
-      return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-surface-950 px-4 text-center fade-in z-50 relative">
-          <div onClick={() => setShowModal(true)} className="absolute top-8 left-8 w-1.5 h-1.5 bg-zinc-800 rounded-full opacity-50 hover:opacity-100 transition-opacity cursor-pointer"></div>
-          
-          <div className="w-20 h-20 bg-brand-500/10 text-brand-400 rounded-full flex items-center justify-center border border-brand-500/30 mb-6 shadow-[0_0_30px_rgba(212,175,55,0.2)]">
-            <Icon name="lock" size={32} />
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-zinc-100 uppercase tracking-widest mb-3">{t('access_denied')}</h1>
-          <p className="text-sm text-zinc-400 max-w-md mb-8 leading-relaxed">{t('sub_expired')}</p>
-          
-          <a href="#" className="px-8 py-3.5 bg-gold-gradient text-surface-950 font-black rounded-xl uppercase tracking-widest shadow-[0_10px_30px_rgba(212,175,55,0.3)] transition-transform hover:-translate-y-1 inline-flex items-center gap-2 mb-6">
-            <Icon name="zap" size={16} /> {t('renew_btn')}
-          </a>
-          
-          <button onClick={() => setShowModal(true)} className="text-[10px] text-zinc-600 hover:text-brand-400 font-bold uppercase tracking-widest transition-colors cursor-pointer">
-            {t('demo_bypass')}
-          </button>
-
-          {showModal && (
-            <div className="fixed inset-0 z-[200] flex items-center justify-center bg-surface-950/90 backdrop-blur-md p-4 fade-in">
-              <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-xs shadow-[0_0_50px_rgba(212,175,55,0.1)] p-6">
-                <h3 className="text-sm font-black text-zinc-100 mb-4 text-center uppercase tracking-wide">System Admin</h3>
-                <input type="password" value={pwd} onChange={e => setPwd(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleUnlock()} placeholder="Password..." className="w-full bg-surface-950 border border-surface-700 rounded-lg px-3 py-2.5 text-zinc-100 mb-3 font-mono focus:outline-none focus:border-brand-500 transition-colors shadow-inner text-xs text-center" />
-                {error && <p className="text-red-500 text-[10px] mb-3 text-center uppercase tracking-widest font-bold">Access Denied</p>}
-                <div className="flex gap-2 mt-1">
-                  <button onClick={() => {setShowModal(false); setPwd(''); setError(false);}} className="flex-1 py-2.5 rounded-lg font-bold text-zinc-400 bg-surface-800 hover:bg-surface-700 transition-colors text-xs uppercase tracking-wider">Cancel</button>
-                  <button onClick={handleUnlock} className="flex-1 py-2.5 rounded-lg font-black text-surface-950 bg-gold-gradient hover:opacity-90 transition-opacity shadow-lg uppercase tracking-wider text-xs">Unlock</button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      );
     };
 
     // --- MAIN APP COMPONENT ---
     const App = () => {
       const [lang, setLang] = useState(() => {
         const browserLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
-        // Limitato a Inglese, Spagnolo e Italiano
-        return ['en', 'es', 'it'].includes(browserLang) ? browserLang : 'en';
+        return ['en', 'es', 'pt', 'it'].includes(browserLang) ? browserLang : 'en';
       });
-      const [view, setView] = useState('user');
       const [isInitLoad, setIsInitLoad] = useState(true);
-      const [accessStatus, setAccessStatus] = useState('checking'); 
       
       const sc = useSmartContract(); 
       const t = useCallback((key) => translations[lang]?.[key] || translations['en'][key] || key, [lang]);
 
       useEffect(() => {
-        const verifyAccess = () => {
-          const isAdmin = localStorage.getItem('bx_admin') === 'true';
-          if (isAdmin) return 'granted';
-          
-          const expiryStr = localStorage.getItem('bx_access_expiry');
-          if (!expiryStr) return 'denied'; 
-          
-          const expiryTime = parseInt(expiryStr, 10);
-          const now = new Date().getTime();
-          if (now > expiryTime) return 'denied';
-          
-          return 'granted';
-        };
-
         setTimeout(() => {
-          setAccessStatus(verifyAccess());
           setIsInitLoad(false);
         }, 800);
       }, []);
-
-      const demoBypass = () => {
-        const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
-        localStorage.setItem('bx_access_expiry', Date.now() + thirtyDaysInMs);
-        setAccessStatus('granted');
-      };
 
       const handleWalletToggle = () => {
         if (sc.state.walletConnected) {
           sc.disconnect();
           sc.addToast(t('logout'), "", "info");
         } else {
-          sc.connect(view === 'blueprint' ? 'user' : view);
+          sc.connect();
         }
       };
 
@@ -1499,10 +483,6 @@
         );
       }
 
-      if (accessStatus === 'denied') {
-        return <AccessDeniedScreen t={t} onBypass={demoBypass} />;
-      }
-
       return (
         <div className="bg-grid-pattern min-h-screen flex flex-col relative w-full">
           <ToastContainer toasts={sc.state.toasts} />
@@ -1510,28 +490,16 @@
           <nav className="glass-panel border-b border-surface-800 z-50 shadow-sm sticky top-0 w-full shrink-0">
             <div className="max-w-[1400px] mx-auto px-4 h-14 sm:h-16 flex items-center justify-between gap-4">
               <div className="flex items-center gap-3 flex-1 min-w-0">
-                <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden shrink-0 border border-brand-500/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] p-0.5 bg-surface-950 cursor-pointer" onClick={() => setView('user')}>
+                <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden shrink-0 border border-brand-500/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] p-0.5 bg-surface-950">
                    <img src="logo-tondo.jpeg" onError={(e) => e.target.src='https://ui-avatars.com/api/?name=ER&background=18181b&color=d4af37'} alt="Logo" className="w-full h-full object-cover rounded-full" />
                 </div>
-                <div className="flex flex-col justify-center min-w-0 hidden sm:flex cursor-pointer" onClick={() => setView('user')}>
+                <div className="flex flex-col justify-center min-w-0 hidden sm:flex">
                   <h1 className="text-xs font-black tracking-widest text-zinc-100 leading-tight uppercase truncate">{t('app_title')}</h1>
                 </div>
               </div>
 
               <div className="flex items-center gap-3 sm:gap-4 shrink-0">
                 <LanguageSelector lang={lang} setLang={setLang} />
-
-                {sc.state.walletConnected && (
-                  <div className="hidden md:flex items-center bg-surface-950/80 border border-surface-800 rounded-lg p-1 shadow-inner gap-1">
-                    <button onClick={() => setView('user')} className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${view === 'user' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}>{t('user_dash')}</button>
-                    <button onClick={() => setView('promoter')} className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${view === 'promoter' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}>{t('partner_dash')}</button>
-                    <button onClick={() => setView('company')} className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${view === 'company' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}>{t('company_dash')}</button>
-                    <div className="w-px h-4 bg-surface-700 mx-1"></div>
-                    <button onClick={() => setView('blueprint')} className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all flex items-center gap-1.5 ${view === 'blueprint' ? 'bg-brand-500/10 text-brand-400 border border-brand-500/20 shadow-sm' : 'text-brand-500/70 hover:text-brand-400'}`}>
-                      <Icon name="file-code-2" size={12} /> Blueprint
-                    </button>
-                  </div>
-                )}
 
                 <button onClick={handleWalletToggle} className={`flex items-center gap-1.5 px-4 py-2 rounded-lg font-black text-[10px] uppercase tracking-wider transition-all shadow-lg ${sc.state.walletConnected ? 'bg-surface-900 border border-surface-700 text-zinc-300 hover:bg-surface-800 hover:text-white' : 'bg-gold-gradient text-surface-950 hover:opacity-90 hover:-translate-y-0.5 shadow-[0_5px_20px_rgba(212,175,55,0.2)]'}`}>
                   {sc.state.walletConnected ? (<><Icon name="log-out" size={12} className="text-zinc-500 shrink-0"/><span className="hidden sm:inline">{t('logout')}</span></>) : (<><Icon name="log-in" size={12} className="shrink-0"/> <span className="hidden sm:inline">{t('login')}</span></>)}
@@ -1540,37 +508,24 @@
             </div>
           </nav>
 
-          <main className="max-w-[1400px] mx-auto px-2 sm:px-4 lg:px-6 flex-1 flex flex-col w-full relative z-10 md:pb-4 pb-24">
+          <main className="max-w-[1400px] mx-auto px-2 sm:px-4 lg:px-6 flex-1 flex flex-col w-full relative z-10 md:pb-4 pb-12">
             {!sc.state.walletConnected ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6 fade-in mt-20">
                 <div className="w-24 h-24 bg-surface-900 text-brand-400 rounded-3xl flex items-center justify-center border border-brand-500/50 shadow-[0_0_40px_rgba(212,175,55,0.2)] relative">
                   <div className="absolute inset-0 bg-brand-500/10 rounded-3xl animate-pulse"></div>
-                  <Icon name="infinity" size={32} className="relative z-10" />
+                  <Icon name="building" size={32} className="relative z-10" />
                 </div>
                 <div className="max-w-md px-4">
-                  <h2 className="text-2xl font-black text-zinc-100 uppercase tracking-wide">{t('elite_platform')}</h2>
+                  <h2 className="text-2xl font-black text-zinc-100 uppercase tracking-wide">Treasury Hub</h2>
                 </div>
                 <button onClick={handleWalletToggle} className="px-8 py-3 bg-gold-gradient text-surface-950 rounded-xl font-black text-xs uppercase tracking-widest shadow-[0_10px_30px_rgba(212,175,55,0.3)] transition-transform hover:-translate-y-1 flex items-center gap-2">
                    {t('login')} <Icon name="arrow-right" size={14} />
                 </button>
               </div>
             ) : (
-              view === 'blueprint' ? <BlueprintDashboard t={t} lang={lang} /> :
-              view === 'user' ? <UserDashboard t={t} lang={lang} sc={sc} setView={setView} /> :
-              view === 'company' ? <CompanyDashboard sc={sc} t={t} setView={setView} /> : 
-              <PromoterDashboard sc={sc} t={t} lang={lang} />
+              <CompanyDashboard sc={sc} t={t} />
             )}
           </main>
-          
-          {/* Mobile Bottom Navigation - Fisso e sempre in primo piano */}
-          {sc.state.walletConnected && (
-            <div className="md:hidden fixed bottom-3 left-3 right-3 bg-surface-950/95 backdrop-blur-xl border border-surface-800 rounded-xl p-1.5 flex shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 gap-1">
-              <button onClick={() => setView('user')} className={`flex-1 py-3 rounded-lg text-[8px] font-bold uppercase tracking-wider transition-all flex flex-col items-center gap-1 ${view === 'user' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}><Icon name="user" size={14} /> {t('user_dash')}</button>
-              <button onClick={() => setView('promoter')} className={`flex-1 py-3 rounded-lg text-[8px] font-bold uppercase tracking-wider transition-all flex flex-col items-center gap-1 ${view === 'promoter' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}><Icon name="users" size={14} /> {t('partner_dash')}</button>
-              <button onClick={() => setView('company')} className={`flex-1 py-3 rounded-lg text-[8px] font-bold uppercase tracking-wider transition-all flex flex-col items-center gap-1 ${view === 'company' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}><Icon name="building" size={14} /> {t('company_dash')}</button>
-              <button onClick={() => setView('blueprint')} className={`flex-1 py-3 rounded-lg text-[8px] font-bold uppercase tracking-wider transition-all flex flex-col items-center gap-1 ${view === 'blueprint' ? 'bg-brand-500/10 text-brand-400 border border-brand-500/20 shadow-sm' : 'text-brand-500/70'}`}><Icon name="file-code-2" size={14} /> Blueprint</button>
-            </div>
-          )}
         </div>
       );
     };
