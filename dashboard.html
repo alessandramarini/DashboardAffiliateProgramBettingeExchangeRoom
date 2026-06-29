@@ -6,37 +6,34 @@
   <title>BETTING EXCHANGE ROOM - Dashboard</title>
   
   <meta name="theme-color" content="#09090b">
-  <meta name="description" content="Betting Exchange Room Premium Dashboard. Extract Expected Value with Algorithmic Models.">
+  <meta name="description" content="Betting Exchange Room Premium Dashboard.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
   <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
   <link rel="preconnect" href="https://flagcdn.com" crossorigin>
 
   <style>
-    /* Reset & App-like behavior */
-    :root {
-      --bg-surface: #09090b;
-      --text-main: #f4f4f5;
-    }
     body, html {
       margin: 0; padding: 0;
-      background-color: var(--bg-surface) !important; color: var(--text-main) !important;
+      background-color: #09090b !important; 
+      color: #f4f4f5 !important;
       font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      height: 100%; width: 100%;
-      overflow: hidden; /* Main body non scrolla, scrollano i moduli interni */
-      overscroll-behavior-y: none;
+      width: 100%;
+      min-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
     
-    #app-container { 
-      height: 100vh; height: 100dvh; 
-      display: flex; flex-direction: column; 
-      position: relative; overflow: hidden; 
+    #root { 
+      min-height: 100vh; 
+      display: flex; 
+      flex-direction: column; 
     }
     
-    /* Background grid */
     .bg-grid-pattern {
       background-color: #09090b;
       background-image: 
@@ -47,7 +44,7 @@
       position: relative;
     }
     .bg-grid-pattern::before {
-      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      content: ''; position: fixed; top: 0; left: 50%; transform: translateX(-50%);
       width: 100%; max-width: 1000px; height: 600px;
       background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, rgba(9, 9, 11, 0) 70%);
       pointer-events: none; z-index: 0;
@@ -59,34 +56,25 @@
     }
     .bg-gold-gradient { background: linear-gradient(135deg, #fcd34d 0%, #d4af37 50%, #b45309 100%); }
 
-    /* Performance Loaders & Animations */
-    .initial-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #09090b; color: #d4af37; font-weight: 500; z-index: 9999; position: absolute; top:0; left:0; width: 100%; }
+    .initial-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #09090b; color: #d4af37; font-weight: 500; z-index: 9999; position: fixed; inset: 0; }
     .spinner-ring { width: 48px; height: 48px; border: 3px solid rgba(212, 175, 55, 0.1); border-radius: 50%; border-top-color: #d4af37; animation: spin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite; margin-bottom: 24px; }
     
     @keyframes spin { to { transform: rotate(360deg); } }
     @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     
-    .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d4af37; }
-    @media (max-width: 768px) {
-      .custom-scrollbar::-webkit-scrollbar { display: none; }
-      .custom-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    }
-
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #09090b; }
+    ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #d4af37; }
+    
     .toast-enter { animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     
     .glass-panel { background: rgba(24, 24, 27, 0.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); }
     .flag-icon { width: 16px; height: 11px; object-fit: cover; border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.5); flex-shrink: 0; }
-
-    /* Hide utilities */
-    .hidden { display: none !important; }
   </style>
 
-  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -100,607 +88,1084 @@
     }
   </script>
   
-  <!-- Vanilla JS Dependencies (No Babel, No React) -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Sostituisco Recharts con Chart.js per compatibilità Vanilla JS -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/recharts@2.1.12/umd/Recharts.js"></script>
 </head>
 <body class="bg-surface-950 text-zinc-300 selection:bg-brand-500/30">
   
-  <div id="app-container" class="bg-grid-pattern hidden">
-    
-    <!-- Navbar -->
-    <nav class="glass-panel border-b border-surface-800 z-50 shadow-sm shrink-0">
-      <div class="max-w-[1400px] mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4 relative">
-        <div class="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-          <div class="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden shrink-0 border border-brand-500/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] p-0.5 bg-surface-950">
-             <img src="https://ui-avatars.com/api/?name=ER&background=18181b&color=d4af37" alt="Logo" class="w-full h-full object-cover rounded-full" />
-          </div>
-          <div class="flex flex-col justify-center min-w-0">
-            <h1 class="text-[10px] sm:text-[13px] font-black tracking-widest text-zinc-100 leading-tight uppercase truncate" data-i18n="app_title">BETTING EXCHANGE ROOM</h1>
-          </div>
-        </div>
+  <div id="root"></div>
 
-        <div class="flex items-center gap-2 sm:gap-4 shrink-0">
-          
-          <!-- Language Selector -->
-          <div class="relative" id="lang-selector">
-            <button id="lang-btn" class="flex items-center gap-1.5 sm:gap-2 bg-surface-950/80 border border-surface-700 hover:border-brand-500/50 transition-all rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 shadow-inner group">
-              <img id="current-flag" src="https://flagcdn.com/gb.svg" class="flag-icon opacity-90 group-hover:opacity-100" />
-              <span id="current-lang-text" class="text-[10px] sm:text-[11px] font-bold text-zinc-300 tracking-wider hidden sm:block">ENG</span>
-              <i data-lucide="chevron-down" class="w-3 h-3 text-zinc-500 group-hover:text-zinc-300 transition-colors"></i>
-            </button>
-            <!-- Dropdown -->
-            <div id="lang-dropdown" class="absolute right-0 mt-2 w-32 sm:w-36 bg-surface-900 border border-surface-700 rounded-xl shadow-2xl overflow-hidden z-[100] hidden">
-              <button onclick="changeLanguage('en')" class="w-full flex items-center gap-3 px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-surface-800 transition-colors text-zinc-300">
-                <img src="https://flagcdn.com/gb.svg" class="flag-icon" /> <span class="text-[10px] sm:text-xs font-bold tracking-wider">ENG</span>
-              </button>
-              <button onclick="changeLanguage('es')" class="w-full flex items-center gap-3 px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-surface-800 transition-colors text-zinc-300">
-                <img src="https://flagcdn.com/es.svg" class="flag-icon" /> <span class="text-[10px] sm:text-xs font-bold tracking-wider">ESP</span>
-              </button>
-              <button onclick="changeLanguage('pt')" class="w-full flex items-center gap-3 px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-surface-800 transition-colors text-zinc-300">
-                <img src="https://flagcdn.com/pt.svg" class="flag-icon" /> <span class="text-[10px] sm:text-xs font-bold tracking-wider">POR</span>
-              </button>
-              <button onclick="changeLanguage('it')" class="w-full flex items-center gap-3 px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-surface-800 transition-colors text-zinc-300">
-                <img src="https://flagcdn.com/it.svg" class="flag-icon" /> <span class="text-[10px] sm:text-xs font-bold tracking-wider">ITA</span>
-              </button>
-            </div>
-          </div>
+  <script type="text/babel">
+    const { useState, useEffect, useCallback, useRef, useMemo } = React;
+    const { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } = window.Recharts || {}; 
 
-          <!-- Desktop Navigation -->
-          <div id="desktop-nav" class="hidden md:flex items-center bg-surface-950/80 border border-surface-800 rounded-lg p-1 shadow-inner">
-            <button onclick="switchView('user')" id="nav-user" class="nav-btn px-3 py-1.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-md transition-all text-zinc-500 hover:text-zinc-300" data-i18n="user_dash">Area Usuario</button>
-            <button onclick="switchView('promoter')" id="nav-promoter" class="nav-btn px-3 py-1.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-md transition-all text-zinc-500 hover:text-zinc-300" data-i18n="partner_dash">Area Partner</button>
-            <button onclick="switchView('company')" id="nav-company" class="nav-btn px-3 py-1.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-md transition-all text-zinc-500 hover:text-zinc-300" data-i18n="company_dash">Tesoreria</button>
-          </div>
-
-          <!-- Login / Logout -->
-          <button id="auth-btn" onclick="toggleAuth()" class="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-black text-[9px] sm:text-[10px] uppercase tracking-wider transition-all shadow-lg bg-gold-gradient text-surface-950 hover:opacity-90 hover:-translate-y-0.5 shadow-[0_5px_20px_rgba(212,175,55,0.2)]">
-            <i data-lucide="log-in" class="w-3 h-3 shrink-0"></i> <span class="hidden sm:inline" id="auth-text" data-i18n="login">Connect Wallet</span>
-          </button>
-        </div>
-      </div>
-    </nav>
-
-    <!-- Main Content Area (Scrollable) -->
-    <main class="flex-1 overflow-hidden relative z-10 w-full max-w-[1400px] mx-auto p-2 sm:p-4 md:p-6 flex flex-col">
-      
-      <!-- Login Screen -->
-      <div id="view-login" class="flex-1 flex flex-col items-center justify-center text-center space-y-6 fade-in h-full">
-        <div class="w-20 h-20 sm:w-24 sm:h-24 bg-surface-900 text-brand-400 rounded-3xl flex items-center justify-center border border-brand-500/50 mb-2 shadow-[0_0_40px_rgba(212,175,55,0.2)] relative shrink-0">
-          <div class="absolute inset-0 bg-brand-500/10 rounded-3xl animate-pulse"></div>
-          <i data-lucide="infinity" class="w-10 h-10 relative z-10"></i>
-        </div>
-        <div class="max-w-md px-4 shrink-0">
-          <h2 class="text-xl sm:text-2xl font-black text-zinc-100 uppercase tracking-wide" data-i18n="elite_platform">Elite Platform</h2>
-        </div>
-        <button onclick="toggleAuth()" class="px-6 py-3 bg-gold-gradient text-surface-950 rounded-xl font-black text-[10px] sm:text-xs uppercase tracking-widest shadow-[0_10px_30px_rgba(212,175,55,0.3)] transition-transform hover:-translate-y-1 flex items-center gap-2 shrink-0">
-          <span data-i18n="login">Connect Wallet</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
-        </button>
-      </div>
-
-      <!-- User Dashboard -->
-      <div id="view-user" class="hidden flex-1 flex flex-col h-full min-h-0 fade-in">
-        <div class="shrink-0 p-4 sm:p-5 glass-panel rounded-xl border-l-4 border-l-brand-500 flex items-center justify-between shadow-lg mb-4">
-          <div class="min-w-0 pr-4">
-            <h2 class="text-lg sm:text-2xl font-black text-zinc-100 uppercase tracking-widest leading-none truncate" data-i18n="welcome_title">OPERATIONS HUB</h2>
-            <p class="text-success-400 font-mono text-[10px] sm:text-xs mt-1.5 font-bold flex items-center gap-1.5 truncate">
-              <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-success-500 animate-pulse shrink-0"></span>
-              <span data-i18n="system_status_ok">SYSTEM STATUS: OPTIMAL</span>
-            </p>
-          </div>
-          <i data-lucide="activity" class="w-7 h-7 text-brand-500 opacity-80 shrink-0"></i>
-        </div>
-        <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 overflow-y-auto custom-scrollbar md:overflow-visible pb-16 md:pb-0">
-          <!-- Modules -->
-          <a href="#" class="relative flex flex-col items-center justify-center p-5 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-brand-500/20 hover:border-brand-500 md:hover:-translate-y-1 min-h-[160px]">
-            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-surface-900 border border-brand-500/40 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform"><i data-lucide="graduation-cap" class="text-brand-400 w-6 h-6"></i></div>
-            <h3 class="text-xs sm:text-sm font-black text-zinc-100 tracking-widest uppercase text-center px-2" data-i18n="academy_btn">Zero to Hero Academy</h3>
-            <p class="text-[9px] sm:text-[10px] text-zinc-500 mt-1 uppercase tracking-widest font-bold text-center" data-i18n="training_setup">Training & Setup</p>
-          </a>
-          <a href="#" class="relative flex flex-col items-center justify-center p-5 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#2AABEE]/20 hover:border-[#2AABEE] md:hover:-translate-y-1 min-h-[160px]">
-            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-surface-900 border border-[#2AABEE]/40 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform"><i data-lucide="send" class="text-[#2AABEE] w-6 h-6"></i></div>
-            <h3 class="text-xs sm:text-sm font-black text-zinc-100 tracking-widest uppercase text-center px-2" data-i18n="signals_btn">Telegram Signals</h3>
-            <p class="text-[9px] sm:text-[10px] text-zinc-500 mt-1 uppercase tracking-widest font-bold text-center" data-i18n="signals_access">Premium Signals</p>
-          </a>
-          <a href="#" class="relative flex flex-col items-center justify-center p-5 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#ec4899]/20 hover:border-[#ec4899] md:hover:-translate-y-1 min-h-[160px]">
-            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-surface-900 border border-[#ec4899]/40 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform"><i data-lucide="shopping-bag" class="text-[#ec4899] w-6 h-6"></i></div>
-            <h3 class="text-xs sm:text-sm font-black text-zinc-100 tracking-widest uppercase text-center px-2" data-i18n="brand_shop">Brand Shop</h3>
-            <p class="text-[9px] sm:text-[10px] text-zinc-500 mt-1 uppercase tracking-widest font-bold text-center" data-i18n="merch_store">Merch Store</p>
-          </a>
-        </div>
-      </div>
-
-      <!-- Promoter / Partner Area -->
-      <div id="view-promoter" class="hidden flex-1 flex flex-col h-full min-h-0 fade-in pb-16 md:pb-0">
-        <div class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 h-full min-h-0 overflow-y-auto lg:overflow-hidden custom-scrollbar">
-          
-          <!-- Left Column (Profile & Links) -->
-          <div class="lg:col-span-3 flex flex-col gap-3 min-h-0">
-            <div class="glass-panel rounded-xl p-3 sm:p-4 border-l-2 border-l-brand-500 shrink-0">
-              <div class="flex items-center gap-2 sm:gap-3 mb-4">
-                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-surface-950 flex items-center justify-center border-2 border-brand-500/50 overflow-hidden shrink-0">
-                  <img src="https://ui-avatars.com/api/?name=Alex+S&background=18181b&color=d4af37" class="w-full h-full object-cover"/>
-                </div>
-                <div class="min-w-0 flex-1">
-                  <h2 class="text-sm font-black text-zinc-100 truncate">Alex De Souza</h2>
-                  <p class="text-[10px] text-brand-400 font-mono">@alex_crypto</p>
-                </div>
-                <span class="text-[8px] bg-brand-500/10 text-brand-400 px-1.5 py-0.5 rounded border border-brand-500/30 uppercase font-black" data-i18n="elite_status">ELITE</span>
-              </div>
-              <!-- Ref Link -->
-              <div class="flex items-center bg-surface-950 rounded-xl border border-surface-700 p-1 shadow-inner mb-3">
-                <div class="px-2 text-[10px] text-zinc-300 truncate flex-1 font-mono">tonpull.app/ref/ABCDEF</div>
-                <button onclick="showToast('Copied!', 'Link copied to clipboard', 'success')" class="shrink-0 flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-[10px] font-black bg-surface-800 hover:bg-surface-700 text-zinc-100 uppercase">
-                  <i data-lucide="copy" class="w-3 h-3"></i> <span data-i18n="copy_link">Copy</span>
-                </button>
-              </div>
-              <!-- Funnels -->
-              <h4 class="text-[9px] font-bold uppercase tracking-widest text-zinc-400 mb-2 mt-4" data-i18n="marketing_funnels">Marketing Funnels</h4>
-              <div class="space-y-2">
-                <div class="flex items-center justify-between p-2 rounded-lg border border-emerald-500/20 bg-surface-900/30">
-                  <div class="flex flex-col"><span class="font-black text-[9px] text-emerald-400 uppercase" data-i18n="funnel_1">FUNNEL 1: 50%</span></div>
-                  <i data-lucide="external-link" class="w-3 h-3 text-emerald-400 cursor-pointer"></i>
-                </div>
-                <div class="flex items-center justify-between p-2 rounded-lg border border-purple-500/20 bg-surface-900/30">
-                  <div class="flex flex-col"><span class="font-black text-[9px] text-purple-400 uppercase" data-i18n="funnel_2">FUNNEL 2: MASTERCLASS</span></div>
-                  <i data-lucide="external-link" class="w-3 h-3 text-purple-400 cursor-pointer"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Middle Column (Stats & Chart) -->
-          <div class="lg:col-span-5 flex flex-col gap-3 min-h-0">
-            <div class="glass-panel rounded-xl p-4 flex flex-col items-center justify-center text-center bg-gradient-to-b from-surface-900 to-surface-950 border-t-2 border-t-success-500 shrink-0">
-              <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-1" data-i18n="vault_available">Available for Withdrawal</p>
-              <div class="text-3xl font-black text-zinc-100 mb-4 font-mono">450.00 <span class="text-sm text-success-400 font-sans">USDT</span></div>
-              <button class="w-full max-w-[240px] py-2.5 rounded-xl font-black text-[11px] uppercase tracking-widest bg-success-600 hover:bg-success-500 text-white flex justify-center items-center gap-2 shadow-[0_10px_20px_rgba(16,185,129,0.3)]">
-                <i data-lucide="fingerprint" class="w-4 h-4"></i> <span data-i18n="unlock_withdraw">Withdraw Funds</span>
-              </button>
-            </div>
-            <div class="grid grid-cols-2 gap-3 shrink-0">
-               <div class="glass-panel p-3 rounded-xl"><p class="text-[9px] text-zinc-500 font-bold uppercase" data-i18n="lifetime_deposit">Total Earned</p><h3 class="text-lg font-black text-brand-400">3,250 USDT</h3></div>
-               <div class="glass-panel p-3 rounded-xl"><p class="text-[9px] text-zinc-500 font-bold uppercase" data-i18n="daily_subs">Viral Leads</p><h3 class="text-lg font-black text-purple-400">3,105</h3></div>
-            </div>
-            <!-- Chart Container -->
-            <div class="glass-panel p-3 rounded-xl flex-1 flex flex-col min-h-[200px]">
-              <h3 class="text-[10px] font-bold text-zinc-100 uppercase flex items-center gap-1 mb-2"><i data-lucide="bar-chart-3" class="w-3 h-3 text-success-500"></i> <span data-i18n="earnings_chart">Earnings</span></h3>
-              <div class="relative flex-1 w-full h-full min-h-[150px]">
-                 <canvas id="promoterChart"></canvas>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right Column (Tabs: Top10, Network, History) -->
-          <div class="lg:col-span-4 flex flex-col min-h-[350px] lg:min-h-0 glass-panel rounded-xl overflow-hidden">
-            <!-- Vanilla JS Tabs -->
-            <div class="flex border-b border-surface-800 bg-surface-900/50 shrink-0">
-              <button onclick="openTab('tab-top10', this)" class="tab-btn active-tab flex-1 p-2.5 text-[10px] font-bold uppercase border-b-2 border-brand-500 text-brand-400 flex justify-center items-center gap-1"><i data-lucide="trophy" class="w-3 h-3"></i> <span data-i18n="top_10_short">Top 10</span></button>
-              <button onclick="openTab('tab-network', this)" class="tab-btn flex-1 p-2.5 text-[10px] font-bold uppercase border-b-2 border-transparent text-zinc-500 flex justify-center items-center gap-1"><i data-lucide="users" class="w-3 h-3"></i> <span data-i18n="my_network">Network</span></button>
-              <button onclick="openTab('tab-history', this)" class="tab-btn flex-1 p-2.5 text-[10px] font-bold uppercase border-b-2 border-transparent text-zinc-500 flex justify-center items-center gap-1"><i data-lucide="history" class="w-3 h-3"></i> <span data-i18n="audit_short">Audit</span></button>
-            </div>
-            
-            <div class="flex-1 w-full overflow-y-auto custom-scrollbar relative bg-surface-950/30">
-              <!-- Tab 1: Top 10 -->
-              <div id="tab-top10" class="tab-content p-2 fade-in block">
-                <table class="w-full text-left border-separate border-spacing-y-1">
-                  <tbody id="top10-body">
-                    <!-- Populated by JS -->
-                  </tbody>
-                </table>
-              </div>
-              <!-- Tab 2: Network -->
-              <div id="tab-network" class="tab-content p-2 fade-in hidden">
-                 <table class="w-full text-left">
-                  <thead class="text-[9px] uppercase text-zinc-500 border-b border-surface-800"><tr><th class="px-2 py-2" data-i18n="user_col">User</th><th class="px-2 py-2 text-right" data-i18n="vol_col">Vol</th></tr></thead>
-                  <tbody id="network-body" class="divide-y divide-surface-800/50">
-                    <!-- Populated by JS -->
-                  </tbody>
-                 </table>
-              </div>
-              <!-- Tab 3: History -->
-              <div id="tab-history" class="tab-content p-3 fade-in hidden text-center text-zinc-500 text-[10px] font-bold mt-10">
-                 <span data-i18n="no_tx">No transactions.</span>
-              </div>
-            </div>
-          </div>
-          
-        </div>
-      </div>
-
-      <!-- Company Dashboard -->
-      <div id="view-company" class="hidden flex-1 flex flex-col h-full min-h-0 fade-in pb-16 md:pb-0">
-        <!-- Contenuto semplificato per demo -->
-        <div class="glass-panel p-4 rounded-xl flex items-center justify-between mb-4 shrink-0">
-          <h2 class="text-lg font-black uppercase tracking-widest text-zinc-100 flex items-center gap-2"><i data-lucide="building" class="text-brand-400"></i> <span data-i18n="treasury_center">Treasury Operations</span></h2>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-           <div class="glass-panel p-4 rounded-xl text-center"><p class="text-[10px] text-zinc-500 font-bold uppercase" data-i18n="processed_volume">Gross Volume</p><h3 class="text-2xl font-black text-brand-400">12,450 USDT</h3></div>
-           <div class="glass-panel p-4 rounded-xl text-center border border-success-500/30"><p class="text-[10px] text-zinc-500 font-bold uppercase" data-i18n="company_reserve">Company Reserve</p><h3 class="text-2xl font-black text-success-400">3,200 USDT</h3></div>
-           <div class="glass-panel p-4 rounded-xl text-center"><p class="text-[10px] text-zinc-500 font-bold uppercase" data-i18n="active_nodes">Active Promoters</p><h3 class="text-2xl font-black text-blue-400">142</h3></div>
-        </div>
-      </div>
-
-    </main>
-
-    <!-- Mobile Nav -->
-    <div id="mobile-nav" class="hidden md:hidden fixed bottom-3 left-3 right-3 bg-surface-950/95 backdrop-blur-xl border border-surface-800 rounded-xl p-1.5 flex shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50">
-      <button onclick="switchView('user')" class="mob-nav-btn flex-1 py-2.5 rounded-lg text-[9px] font-bold uppercase tracking-wider text-brand-400 bg-surface-800" data-i18n="user_dash">User Area</button>
-      <button onclick="switchView('promoter')" class="mob-nav-btn flex-1 py-2.5 rounded-lg text-[9px] font-bold uppercase tracking-wider text-zinc-500" data-i18n="partner_dash">Partner Area</button>
-      <button onclick="switchView('company')" class="mob-nav-btn flex-1 py-2.5 rounded-lg text-[9px] font-bold uppercase tracking-wider text-zinc-500" data-i18n="company_dash">Treasury</button>
-    </div>
-
-    <!-- Toast Container -->
-    <div id="toast-container" class="fixed top-4 right-4 z-[200] flex flex-col gap-2 pointer-events-none"></div>
-
-  </div>
-
-  <!-- Splash Screen / Loader -->
-  <div id="splash" class="initial-loader">
-    <div class="spinner-ring"></div>
-    <div class="text-[10px] text-zinc-500 mt-2 font-black tracking-widest uppercase" data-i18n="init_env">Initializing Environment...</div>
-  </div>
-
-  <script>
-    // --- 1. CONFIGURAZIONE LINGUE E TRADUZIONI ---
-    const LANGUAGES = {
-      en: { flag: 'gb', name: 'ENG' },
-      es: { flag: 'es', name: 'ESP' },
-      pt: { flag: 'pt', name: 'POR' },
-      it: { flag: 'it', name: 'ITA' }
+    // Lucide Icon Component wrapper
+    const Icon = ({ name, size = 24, className = '', ...props }) => {
+      const spanRef = useRef(null);
+      useEffect(() => {
+        if (spanRef.current && window.lucide) {
+          spanRef.current.innerHTML = `<i data-lucide="${name}"></i>`;
+          window.lucide.createIcons({ root: spanRef.current, attrs: { width: size, height: size, class: className, ...props } });
+        }
+      }, [name, size, className, props]);
+      return <span ref={spanRef} className={`inline-flex items-center justify-center shrink-0 ${className}`}></span>;
     };
 
-    const TRANSLATIONS = {
+    const LANGUAGES = [
+      { code: 'en', name: 'ENG', flag: 'gb' },
+      { code: 'es', name: 'ESP', flag: 'es' },
+      { code: 'pt', name: 'POR', flag: 'pt' },
+      { code: 'it', name: 'ITA', flag: 'it' }
+    ];
+
+    const translations = {
       en: {
-        app_title: "BETTING EXCHANGE ROOM", user_dash: "User Area", partner_dash: "Partner Area", company_dash: "Treasury",
-        login: "Connect Wallet", logout: "Disconnect", init_env: "Initializing Environment...",
-        elite_platform: "Elite Platform", welcome_title: "OPERATIONS HUB", system_status_ok: "SYSTEM STATUS: OPTIMAL",
-        academy_btn: "Zero to Hero Academy", training_setup: "Training & Setup", signals_btn: "Telegram Signals",
-        signals_access: "Premium Signals", brand_shop: "Brand Shop", merch_store: "Merch Store",
-        elite_status: "ELITE", copy_link: "Copy", marketing_funnels: "Marketing Funnels",
-        funnel_1: "FUNNEL 1: 50%", funnel_2: "FUNNEL 2: MASTERCLASS", vault_available: "Available for Withdrawal",
-        unlock_withdraw: "Withdraw Funds", lifetime_deposit: "Total Earned", daily_subs: "Viral Leads",
-        earnings_chart: "Earnings", top_10_short: "Top 10", my_network: "Network", audit_short: "Audit",
-        user_col: "User", vol_col: "Vol", no_tx: "No transactions.", treasury_center: "Treasury Operations",
-        processed_volume: "Gross Volume", company_reserve: "Company Reserve", active_nodes: "Active Promoters"
-      },
-      es: {
-        app_title: "BETTING EXCHANGE ROOM", user_dash: "Área Usuario", partner_dash: "Área Socios", company_dash: "Tesorería",
-        login: "Conectar Billetera", logout: "Desconectar", init_env: "Inicializando Entorno...",
-        elite_platform: "Plataforma Élite", welcome_title: "CENTRO DE OPERACIONES", system_status_ok: "ESTADO: ÓPTIMO",
-        academy_btn: "Zero to Hero Academy", training_setup: "Formación", signals_btn: "Señales Telegram",
-        signals_access: "Señales Premium", brand_shop: "Tienda Oficial", merch_store: "Merch Store",
-        elite_status: "ÉLITE", copy_link: "Copiar", marketing_funnels: "Embudos de Marketing",
-        funnel_1: "EMBUDO 1: 50%", funnel_2: "EMBUDO 2: MASTERCLASS", vault_available: "Disponible para Retiro",
-        unlock_withdraw: "Retirar Fondos", lifetime_deposit: "Ganancias Totales", daily_subs: "Leads Virales",
-        earnings_chart: "Ganancias", top_10_short: "Top 10", my_network: "Mi Red", audit_short: "Auditoría",
-        user_col: "Usuario", vol_col: "Vol", no_tx: "Sin transacciones.", treasury_center: "Tesorería",
-        processed_volume: "Volumen Bruto", company_reserve: "Reserva Empresa", active_nodes: "Promotores Activos"
-      },
-      pt: {
-        app_title: "BETTING EXCHANGE ROOM", user_dash: "Área Usuário", partner_dash: "Área Sócios", company_dash: "Tesouraria",
-        login: "Conectar Carteira", logout: "Desconectar", init_env: "Inicializando Ambiente...",
-        elite_platform: "Plataforma Elite", welcome_title: "CENTRAL DE OPERAÇÕES", system_status_ok: "STATUS: IDEAL",
-        academy_btn: "Zero to Hero Academy", training_setup: "Treinamento", signals_btn: "Sinais Telegram",
-        signals_access: "Sinais Premium", brand_shop: "Loja Oficial", merch_store: "Merch Store",
-        elite_status: "ELITE", copy_link: "Copiar", marketing_funnels: "Funis de Marketing",
-        funnel_1: "FUNIL 1: 50%", funnel_2: "FUNIL 2: MASTERCLASS", vault_available: "Disponível para Saque",
-        unlock_withdraw: "Sacar Fundos", lifetime_deposit: "Ganhos Totais", daily_subs: "Leads Virais",
-        earnings_chart: "Ganhos", top_10_short: "Top 10", my_network: "Sua Rede", audit_short: "Auditoria",
-        user_col: "Usuário", vol_col: "Vol", no_tx: "Nenhuma transação.", treasury_center: "Tesouraria",
-        processed_volume: "Volume Bruto", company_reserve: "Reserva Empresa", active_nodes: "Promotores Ativos"
+        app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Affiliate Program", user_dash: "User Area", partner_dash: "Partner Area", company_dash: "Treasury",
+        academy_btn: "Zero to Hero Academy", signals_btn: "Telegram Signals Room", brand_shop: "Brand Shop", setup_wallet: "Setup TON Wallet", setup_wallet_desc: "Configure your TON USDT wallet.",
+        change_wallet: "Change Wallet", edit_wallet_desc: "Update your destination TON address. This does not affect your referral structure.",
+        save_wallet: "Save Wallet", cancel: "Cancel", login: "Connect Wallet", logout: "Disconnect", treasury_center: "Treasury Operations", simulate_deposit: "Simulate Deposit",
+        processed_volume: "Gross Volume", real_usdt: "On-Chain USDT", company_reserve: "Company Reserve", withdrawable_funds: "Liquid Funds", active_nodes: "Active Promoters",
+        registered_pools: "System Users", cash_flow: "Revenue (7D)", copy_link: "Copy Link", copied: "Copied!", copy_error: "Clipboard Error", vault_available: "Available for Withdrawal",
+        no_funds: "No Funds", signing: "Processing...", unlock_withdraw: "Withdraw Funds", lifetime_deposit: "Total Earned", audit_trail: "Withdrawal History", no_tx: "No transactions.",
+        security_auth: "Confirm Withdrawal", requested_amount: "Amount", dest_wallet: "Destination", signing_btn: "Confirming...", sign_withdraw_btn: "Confirm Transfer",
+        earnings_chart: "Earnings Overview", daily_subs: "Viral Leads", conv_rate: "Conv. Rate", bot_interactions: "Link Clicks", geo_dist: "Global Distribution", tier_status: "Current Tier",
+        recent_activity: "Recent Referrals", joined: "joined", deposited: "deposited",
+        network_dir: "Network Directory", my_network: "My Downline", wallet: "Wallet Address", status: "Status", volume: "Volume", global_pool: "Top 10 Weekly Pool", pool_qualified: "Currently in Top 10!",
+        pool_unqualified: "Not in Top 10", target: "10th Place Vol", ends_sat: "Liquidates Sunday 23:59 UTC", leads: "Leads", promoter: "Promoter", rank: "Rank",
+        pricing_docs: "Pricing & Specs", specifications: "Specifications", show_balances: "Show Balances", hide_balances: "Hide Balances",
+        registered_subtext: "Generated via Loop", conv_subtext: "Lead to Active", clicks_subtext: "Total Clicks", user_col: "User", action_col: "Action", vol_col: "Vol",
+        toast_success_title: "Success", toast_dep_title: "Deposit Detected", toast_dep_msg: "Liquidity updated on-chain.", toast_auth_title: "Transfer Auth Success", toast_auth_msg: "Funds sent to your wallet.",
+        status_active: "Active", status_inactive: "Inactive", action_deposit: "Deposit", action_join: "Join",
+        time_10m: "10 min ago", time_1h: "1 hour ago", time_3h: "3 hours ago", time_5h: "5 hours ago", time_1d: "1 day ago", time_2d: "2 days ago", time_3d: "3 days ago", time_1w: "1 week ago", time_2w: "2 weeks ago",
+        mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun", today: "Today",
+        marketing_funnels: "Marketing Funnels (3)", funnel_1: "FUNNEL 1: 50% DISCOUNT", funnel_1_desc: "Offers 50% off list price + free signals + Academy Lesson 1.",
+        funnel_2: "FUNNEL 2: MASTERCLASS", funnel_2_desc: "Free Live Masterclass invite + free signals + Academy Lesson 1.",
+        funnel_3: "FUNNEL 3: VIRAL LOOP", funnel_3_desc: "Offers 1 Free Premium Week by unlocking the friend invite task.",
+        elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "Live Event", viral_task_tag: "VIRAL TASK",
+        welcome_title: "OPERATIONS HUB", system_status_ok: "SYSTEM STATUS: OPTIMAL", sign_tx: "Sign transaction in your wallet.", users_label: "Users", elite_platform: "Elite Platform", init_env: "Initializing Elite Environment...",
+        realtime_leaderboard: "Live Leaderboard", bot_managed: "Auto-updated by Python Bot", training_setup: "Training & Setup", signals_access: "Premium Signals", merch_store: "Merch Store",
+        access_denied: "ACCESS DENIED", sub_expired: "Your subscription has expired or no active plan was found on this account.", renew_btn: "RENEW SUBSCRIPTION", demo_bypass: "ADMIN LOGIN",
+        you_tag: "(YOU)", docs_short: "Docs", deposit_short: "Deposit", audit_short: "Audit", top_10_short: "Top 10",
+        whitepaper: "WHITE PAPER", smart_contract: "Smart Contract", contract_address: "Contract Address", read_docs: "Read Documentation"
       },
       it: {
-        app_title: "BETTING EXCHANGE ROOM", user_dash: "Area Utente", partner_dash: "Area Partner", company_dash: "Tesoreria",
-        login: "Connetti Wallet", logout: "Disconnetti", init_env: "Inizializzazione Ambiente...",
-        elite_platform: "Piattaforma Elite", welcome_title: "HUB OPERATIVO", system_status_ok: "STATO SISTEMA: OTTIMALE",
-        academy_btn: "Zero to Hero Academy", training_setup: "Formazione e Setup", signals_btn: "Segnali Telegram",
-        signals_access: "Segnali Premium", brand_shop: "Store Ufficiale", merch_store: "Merch Store",
-        elite_status: "ELITE", copy_link: "Copia", marketing_funnels: "Funnels Marketing",
-        funnel_1: "FUNNEL 1: SCONTO 50%", funnel_2: "FUNNEL 2: MASTERCLASS", vault_available: "Prelevabile",
-        unlock_withdraw: "Preleva Fondi", lifetime_deposit: "Guadagni Totali", daily_subs: "Lead Virali",
-        earnings_chart: "Guadagni", top_10_short: "Top 10", my_network: "La Tua Rete", audit_short: "Audit",
-        user_col: "Utente", vol_col: "Vol", no_tx: "Nessuna transazione.", treasury_center: "Operazioni Tesoreria",
-        processed_volume: "Volume Lordo", company_reserve: "Riserva Aziendale", active_nodes: "Promoter Attivi"
+        app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programma Affiliati", user_dash: "Area Utente", partner_dash: "Area Partner", company_dash: "Tesoreria",
+        academy_btn: "Zero to Hero Academy", signals_btn: "Sala Segnali Telegram", brand_shop: "Brand Shop", setup_wallet: "Configura Wallet TON", setup_wallet_desc: "Imposta il tuo wallet TON USDT.",
+        change_wallet: "Cambia Wallet", edit_wallet_desc: "Aggiorna l'indirizzo TON. Non altera la tua rete.",
+        save_wallet: "Salva Wallet", cancel: "Annulla", login: "Connetti Wallet", logout: "Disconnetti", treasury_center: "Operazioni Tesoreria", simulate_deposit: "Simula Deposito",
+        processed_volume: "Volume Lordo", real_usdt: "USDT On-Chain", company_reserve: "Riserva Aziendale", withdrawable_funds: "Fondi Liquidi", active_nodes: "Promoter Attivi",
+        registered_pools: "Utenti a Sistema", cash_flow: "Ricavi (7G)", copy_link: "Copia Link", copied: "Copiato!", copy_error: "Errore Copia", vault_available: "Prelevabile",
+        no_funds: "Nessun Fondo", signing: "Elaborazione...", unlock_withdraw: "Preleva Fondi", lifetime_deposit: "Guadagni Totali", audit_trail: "Storico Prelievi", no_tx: "Nessun prelievo.",
+        security_auth: "Conferma Prelievo", requested_amount: "Importo", dest_wallet: "Destinazione", signing_btn: "Conferma...", sign_withdraw_btn: "Conferma Trasferimento",
+        earnings_chart: "Panoramica Guadagni", daily_subs: "Lead Virali", conv_rate: "Tasso Conv.", bot_interactions: "Clic Link", geo_dist: "Distribuzione Globale", tier_status: "Livello",
+        recent_activity: "Referral Recenti", joined: "si è unito", deposited: "ha depositato",
+        network_dir: "Directory di Rete", my_network: "La Tua Downline", wallet: "Indirizzo Wallet", status: "Stato", volume: "Volume", global_pool: "Top 10 Weekly Pool", pool_qualified: "Attualmente nei Top 10!",
+        pool_unqualified: "Fuori dai Top 10", target: "Vol. 10° Posto", ends_sat: "Liquidazione Domenica 23:59 UTC", leads: "Lead", promoter: "Promoter", rank: "Pos",
+        pricing_docs: "Pricing e Docs", specifications: "Specifiche", show_balances: "Mostra Saldi", hide_balances: "Nascondi Saldi",
+        registered_subtext: "Generati dal Loop", conv_subtext: "Lead in Attivi", clicks_subtext: "Clic Totali", user_col: "Utente", action_col: "Azione", vol_col: "Vol",
+        toast_success_title: "Successo", toast_dep_title: "Deposito Rilevato", toast_dep_msg: "Liquidità aggiornata on-chain.", toast_auth_title: "Autorizzazione Trasferimento", toast_auth_msg: "Fondi inviati al tuo wallet.",
+        status_active: "Attivo", status_inactive: "Inattivo", action_deposit: "Deposito", action_join: "Iscritto",
+        time_10m: "10 min fa", time_1h: "1 ora fa", time_3h: "3 ore fa", time_5h: "5 ore fa", time_1d: "1 giorno fa", time_2d: "2 giorni fa", time_3d: "3 giorni fa", time_1w: "1 sett fa", time_2w: "2 sett fa",
+        mon: "Lun", tue: "Mar", wed: "Mer", thu: "Gio", fri: "Ven", sat: "Sab", sun: "Dom", today: "Oggi",
+        marketing_funnels: "Funnels Marketing (3)", funnel_1: "FUNNEL 1: SCONTO 50%", funnel_1_desc: "Offre il 50% sul listino + segnali gratis + 1° lezione Academy.",
+        funnel_2: "FUNNEL 2: MASTERCLASS", funnel_2_desc: "Invito Masterclass Live + segnali gratis + 1° lezione Academy.",
+        funnel_3: "FUNNEL 3: VIRAL LOOP", funnel_3_desc: "Offre 1 Settimana Premium gratis completando il task di invito.",
+        elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "Evento Live", viral_task_tag: "TASK VIRALE",
+        welcome_title: "HUB OPERATIVO", system_status_ok: "STATO SISTEMA: OTTIMALE", sign_tx: "Firma la transazione nel tuo wallet.", users_label: "Utenti", elite_platform: "Piattaforma Elite", init_env: "Inizializzazione Ambiente...",
+        realtime_leaderboard: "Classifica in Tempo Reale", bot_managed: "Gestita da Bot Python", training_setup: "Formazione e Setup", signals_access: "Segnali Premium", merch_store: "Store Ufficiale",
+        access_denied: "ACCESSO NEGATO", sub_expired: "Il tuo abbonamento è scaduto o non è stato trovato alcun piano attivo.", renew_btn: "RINNOVA ABBONAMENTO", demo_bypass: "AREA ADMIN",
+        you_tag: "(TU)", docs_short: "Docs", deposit_short: "Deposita", audit_short: "Audit", top_10_short: "Top 10",
+        whitepaper: "WHITE PAPER", smart_contract: "Smart Contract", contract_address: "Indirizzo Contratto", read_docs: "Leggi Documentazione"
+      },
+      es: {
+        app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programa de Afiliados", user_dash: "Área Usuario", partner_dash: "Área Socios", company_dash: "Tesorería",
+        academy_btn: "Zero to Hero Academy", signals_btn: "Sala Señales Telegram", brand_shop: "Brand Shop", setup_wallet: "Configurar Billetera TON", setup_wallet_desc: "Configura tu billetera TON USDT.",
+        change_wallet: "Cambiar Billetera", edit_wallet_desc: "Actualiza tu dirección TON. Esto no afecta tu red de referidos.",
+        save_wallet: "Guardar", cancel: "Cancelar", login: "Conectar Billetera", logout: "Desconectar", treasury_center: "Operaciones de Tesorería", simulate_deposit: "Simular Depósito",
+        processed_volume: "Volumen Bruto", real_usdt: "USDT On-Chain", company_reserve: "Reserva Empresa", withdrawable_funds: "Fondos Líquidos", active_nodes: "Promotores Activos",
+        registered_pools: "Usuarios a Sistema", cash_flow: "Ingresos (7D)", copy_link: "Copiar Enlace", copied: "¡Copiado!", copy_error: "Error de Portapapeles", vault_available: "Disponible para Retiro",
+        no_funds: "Sin Fondos", signing: "Procesando...", unlock_withdraw: "Retirar Fondos", lifetime_deposit: "Ganancias Totales", audit_trail: "Historial Retiros", no_tx: "Sin transacciones.",
+        security_auth: "Confirmar Retiro", requested_amount: "Monto", dest_wallet: "Destino", signing_btn: "Confirmando...", sign_withdraw_btn: "Confirmar Transferencia",
+        earnings_chart: "Resumen de Ganancias", daily_subs: "Leads Virales", conv_rate: "Tasa Conv.", bot_interactions: "Clics en Enlace", geo_dist: "Distribución Global", tier_status: "Nivel",
+        recent_activity: "Referidos Recientes", joined: "se unió", deposited: "depositó",
+        network_dir: "Directorio de Red", my_network: "Mi Red", wallet: "Dirección Wallet", status: "Estado", volume: "Volumen", global_pool: "Top 10 Weekly Pool", pool_qualified: "¡Actualmente en Top 10!",
+        pool_unqualified: "Fuera del Top 10", target: "Vol. 10º Puesto", ends_sat: "Liquidación Domingo 23:59 UTC", leads: "Leads", promoter: "Promotor", rank: "Pos",
+        pricing_docs: "Precios y Docs", specifications: "Especificaciones", show_balances: "Mostrar Saldos", hide_balances: "Ocultar Saldos",
+        registered_subtext: "Generados por Loop", conv_subtext: "Lead a Activo", clicks_subtext: "Clics Totales", user_col: "Usuario", action_col: "Acción", vol_col: "Vol",
+        toast_success_title: "Éxito", toast_dep_title: "Depósito Detectado", toast_dep_msg: "Liquidez actualizada on-chain.", toast_auth_title: "Autorización", toast_auth_msg: "Fondos enviados a tu wallet.",
+        status_active: "Activo", status_inactive: "Inactivo", action_deposit: "Depósito", action_join: "Ingreso",
+        time_10m: "hace 10 min", time_1h: "hace 1 hora", time_3h: "hace 3 horas", time_5h: "hace 5 horas", time_1d: "hace 1 día", time_2d: "hace 2 días", time_3d: "hace 3 días", time_1w: "hace 1 sem", time_2w: "hace 2 sem",
+        mon: "Lun", tue: "Mar", wed: "Mié", thu: "Jue", fri: "Vie", sat: "Sáb", sun: "Dom", today: "Hoy",
+        marketing_funnels: "Embudos de Marketing (3)", funnel_1: "FUNNEL 1: DESCUENTO 50%", funnel_1_desc: "Ofrece 50% de descuento + señales gratis + Lección 1 Academy.",
+        funnel_2: "FUNNEL 2: MASTERCLASS", funnel_2_desc: "Invitación a Masterclass en vivo + señales gratis + Lección 1 Academy.",
+        funnel_3: "FUNNEL 3: VIRAL LOOP", funnel_3_desc: "Ofrece 1 Semana Premium Gratis completando la tarea de invitación.",
+        elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "En Vivo", viral_task_tag: "TAREA VIRAL",
+        welcome_title: "CENTRO DE OPERACIONES", system_status_ok: "ESTADO SISTEMA: ÓPTIMO", sign_tx: "Firma la transacción en tu billetera.", users_label: "Usuarios", elite_platform: "Plataforma Élite", init_env: "Inicializando Entorno...",
+        realtime_leaderboard: "Clasificación en Vivo", bot_managed: "Actualizado por Bot Python", training_setup: "Formación y Setup", signals_access: "Señales Premium", merch_store: "Tienda Oficial",
+        access_denied: "ACCESO DENEGADO", sub_expired: "Tu suscripción ha expirado o no se ha encontrado ningún plan activo.", renew_btn: "RENOVAR SUSCRIPCIÓN", demo_bypass: "ÁREA ADMIN",
+        you_tag: "(TÚ)", docs_short: "Docs", deposit_short: "Depósito", audit_short: "Auditoría", top_10_short: "Top 10",
+        whitepaper: "WHITE PAPER", smart_contract: "Contrato Inteligente", contract_address: "Dirección Contrato", read_docs: "Leer Documentación"
+      },
+      pt: {
+        app_title: "BETTING EXCHANGE ROOM", affiliate_program: "Programa Afiliados", user_dash: "Área Usuário", partner_dash: "Área Sócios", company_dash: "Tesouraria",
+        academy_btn: "Zero to Hero Academy", signals_btn: "Sala Sinais Telegram", brand_shop: "Brand Shop", setup_wallet: "Configurar Carteira TON", setup_wallet_desc: "Configure sua carteira TON USDT.",
+        change_wallet: "Mudar Carteira", edit_wallet_desc: "Atualize o destino TON. Não afeta a sua rede.",
+        save_wallet: "Salvar", cancel: "Cancelar", login: "Conectar Carteira", logout: "Desconectar", treasury_center: "Operações de Tesouraria", simulate_deposit: "Simular Depósito",
+        processed_volume: "Volume Bruto", real_usdt: "USDT On-Chain", company_reserve: "Reserva Empresa", withdrawable_funds: "Fundos Líquidos", active_nodes: "Promotores Ativos",
+        registered_pools: "Usuários no Sistema", cash_flow: "Receita (7D)", copy_link: "Copiar Link", copied: "Copiado!", copy_error: "Erro na Área de Transferência", vault_available: "Disponível para Saque",
+        no_funds: "Sem Fundos", signing: "Processando...", unlock_withdraw: "Sacar Fundos", lifetime_deposit: "Ganhos Totais", audit_trail: "Histórico Saques", no_tx: "Nenhum saque.",
+        security_auth: "Confirmar Saque", requested_amount: "Valor", dest_wallet: "Destino", signing_btn: "Confirmando...", sign_withdraw_btn: "Confirmar Transferência",
+        earnings_chart: "Resumo de Ganhos", daily_subs: "Leads Virais", conv_rate: "Taxa Conv.", bot_interactions: "Cliques no Link", geo_dist: "Distribuição Global", tier_status: "Nível",
+        recent_activity: "Indicados Recentes", joined: "entrou", deposited: "depositou",
+        network_dir: "Diretório de Rede", my_network: "A Sua Rede", wallet: "Endereço Carteira", status: "Status", volume: "Volume", global_pool: "Top 10 Weekly Pool", pool_qualified: "Atualmente no Top 10!",
+        pool_unqualified: "Fora do Top 10", target: "Vol. 10º Lugar", ends_sat: "Liquidação Domingo 23:59 UTC", leads: "Leads", promoter: "Promotor", rank: "Pos",
+        pricing_docs: "Preços e Docs", specifications: "Especificações", show_balances: "Mostrar Saldos", hide_balances: "Ocultar Saldos",
+        registered_subtext: "Gerados por Loop", conv_subtext: "Lead para Ativo", clicks_subtext: "Cliques Totais", user_col: "Usuário", action_col: "Ação", vol_col: "Vol",
+        toast_success_title: "Sucesso", toast_dep_title: "Depósito Detectado", toast_dep_msg: "Liquidez atualizada on-chain.", toast_auth_title: "Autorização", toast_auth_msg: "Fundos enviados para sua wallet.",
+        status_active: "Ativo", status_inactive: "Inativo", action_deposit: "Depósito", action_join: "Ingressou",
+        time_10m: "há 10 min", time_1h: "há 1 hora", time_3h: "há 3 horas", time_5h: "há 5 horas", time_1d: "há 1 dia", time_2d: "há 2 dias", time_3d: "há 3 dias", time_1w: "há 1 sem", time_2w: "há 2 sem",
+        mon: "Seg", tue: "Ter", wed: "Qua", thu: "Qui", fri: "Sex", sat: "Sáb", sun: "Dom", today: "Hoje",
+        marketing_funnels: "Funis de Marketing (3)", funnel_1: "FUNIL 1: DESCONTO 50%", funnel_1_desc: "Oferece 50% de desconto + sinais grátis + Lição 1 Academy.",
+        funnel_2: "FUNIL 2: MASTERCLASS", funnel_2_desc: "Convite Masterclass ao vivo + sinais grátis + Lição 1 Academy.",
+        funnel_3: "FUNIL 3: VIRAL LOOP", funnel_3_desc: "Oferece 1 Semana Premium Grátis desbloqueando a tarefa de convite.",
+        elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "Ao Vivo", viral_task_tag: "TAREFA VIRAL",
+        welcome_title: "CENTRAL DE OPERAÇÕES", system_status_ok: "STATUS SISTEMA: IDEAL", sign_tx: "Assine a transação na sua carteira.", users_label: "Usuários", elite_platform: "Plataforma Elite", init_env: "Inicializando Ambiente...",
+        realtime_leaderboard: "Classificação ao Vivo", bot_managed: "Atualizado por Bot Python", training_setup: "Treinamento e Setup", signals_access: "Sinais Premium", merch_store: "Loja Oficial",
+        access_denied: "ACESSO NEGADO", sub_expired: "Sua assinatura expirou ou não encontramos nenhum plano ativo associado.", renew_btn: "RENOVAR ASSINATURA", demo_bypass: "ÁREA ADMIN",
+        you_tag: "(VOCÊ)", docs_short: "Docs", deposit_short: "Depósito", audit_short: "Auditoria", top_10_short: "Top 10",
+        whitepaper: "WHITE PAPER", smart_contract: "Contrato Inteligente", contract_address: "Endereço Contrato", read_docs: "Ler Documentação"
       }
     };
 
-    let currentLang = 'en';
-    let isLoggedIn = false;
-    let currentView = 'user';
-    let promoterChartInstance = null;
-
-    // --- 2. LOGICA INIZIALE E LINGUA ---
-    function initApp() {
-      // Rilevamento lingua automatica
-      const browserLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
-      if (['en', 'es', 'pt', 'it'].includes(browserLang)) {
-        currentLang = browserLang;
-      }
-      applyLanguage(currentLang);
-      
-      // Inizializza icone Lucide
-      lucide.createIcons();
-
-      // Nascondi splash screen dopo un po'
-      setTimeout(() => {
-        document.getElementById('splash').classList.add('hidden');
-        document.getElementById('app-container').classList.remove('hidden');
-        renderTop10();
-        renderNetwork();
-      }, 1000);
-    }
-
-    // Gestione Dropdown Lingua (Chiude se clicchi fuori)
-    const langBtn = document.getElementById('lang-btn');
-    const langDropdown = document.getElementById('lang-dropdown');
+    // Chart & Table Data Mockups
+    const RAW_REVENUE_DATA = [ { rawKey: 'mon', amount: 1200 }, { rawKey: 'tue', amount: 2500 }, { rawKey: 'wed', amount: 1800 }, { rawKey: 'thu', amount: 3000 }, { rawKey: 'fri', amount: 4500 }, { rawKey: 'sat', amount: 6000 }, { rawKey: 'today', amount: 5500 } ];
+    const PROMOTER_CHART_DATA = [ { rawKey: 'mon', amount: 45 }, { rawKey: 'tue', amount: 120 }, { rawKey: 'wed', amount: 80 }, { rawKey: 'thu', amount: 210 }, { rawKey: 'fri', amount: 150 }, { rawKey: 'sat', amount: 320 }, { rawKey: 'today', amount: 280 } ];
+    const GEO_DATA = [ { name: 'IT', value: 45, color: '#a855f7' }, { name: 'ES', value: 25, color: '#f59e0b' }, { name: 'BR', value: 20, color: '#10b981' }, { name: 'UK', value: 10, color: '#3b82f6' } ];
     
-    langBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      langDropdown.classList.toggle('hidden');
-    });
+    const NETWORK_MEMBERS = [
+      { id: 1, name: 'Alex De Souza', username: '@alex_crypto_pro', wallet: 'UQx...3Fq', volume: 12500, leads: 345, statusKey: 'status_active', flag: 'br' },
+      { id: 2, name: 'Marco Rossi', username: '@marcorossi', wallet: 'UQz...9Pa', volume: 8400, leads: 280, statusKey: 'status_active', flag: 'it' },
+      { id: 3, name: 'Elena Gomez', username: '@elegomez', wallet: 'EQ1...7Bn', volume: 5200, leads: 210, statusKey: 'status_active', flag: 'es' },
+      { id: 4, name: 'John Doe', username: '@johndoe_99', wallet: 'UQy...2Ws', volume: 450, leads: 150, statusKey: 'status_inactive', flag: 'gb' },
+      { id: 5, name: 'Luca Bianchi', username: '@lucabianchi88', wallet: 'EQb...8Ml', volume: 120, leads: 112, statusKey: 'status_inactive', flag: 'it' }
+    ];
+    
+    const PROMOTER_NETWORK_DATA = [
+      { id: 1, username: '@lucam_88', typeKey: 'action_deposit', amount: 50, timeKey: 'time_10m', statusKey: 'status_active', total_vol: 250, flag: 'it' },
+      { id: 2, username: '@sarah_j', typeKey: 'action_join', timeKey: 'time_1h', statusKey: 'status_active', total_vol: 0, flag: 'gb' },
+      { id: 3, username: '@mario_rossi', typeKey: 'action_join', timeKey: 'time_3h', statusKey: 'status_inactive', total_vol: 0, flag: 'it' },
+      { id: 4, username: '@crypto_dan', typeKey: 'action_deposit', amount: 200, timeKey: 'time_5h', statusKey: 'status_active', total_vol: 1200, flag: 'gb' },
+      { id: 5, username: '@giulia_fx', typeKey: 'action_deposit', amount: 150, timeKey: 'time_1d', statusKey: 'status_active', total_vol: 450, flag: 'it' },
+      { id: 6, username: '@trader_bob', typeKey: 'action_join', timeKey: 'time_2d', statusKey: 'status_inactive', total_vol: 0, flag: 'gb' },
+      { id: 7, username: '@alice_in_crypto', typeKey: 'action_deposit', amount: 50, timeKey: 'time_3d', statusKey: 'status_active', total_vol: 150, flag: 'es' },
+      { id: 8, username: '@steve_jobs_fan', typeKey: 'action_join', timeKey: 'time_1w', statusKey: 'status_active', total_vol: 50, flag: 'gb' },
+      { id: 9, username: '@crypto_whale99', typeKey: 'action_deposit', amount: 500, timeKey: 'time_1w', statusKey: 'status_active', total_vol: 2500, flag: 'pt' },
+      { id: 10, username: '@newbie_trader', typeKey: 'action_join', timeKey: 'time_2w', statusKey: 'status_inactive', total_vol: 0, flag: 'es' }
+    ];
 
-    document.addEventListener('click', (e) => {
-      if (!langBtn.contains(e.target) && !langDropdown.contains(e.target)) {
-        langDropdown.classList.add('hidden');
-      }
-    });
+    const TOP_10_LEADERS = [
+      { rank: 1, name: 'Crypto King', vol: 45000, isMe: false },
+      { rank: 2, name: 'Sarah_FX', vol: 38200, isMe: false },
+      { rank: 3, name: 'Marcus Bull', vol: 31000, isMe: false },
+      { rank: 4, name: 'Elena_Trading', vol: 28500, isMe: false },
+      { rank: 5, name: 'John_Doe99', vol: 24000, isMe: false },
+      { rank: 6, name: 'TradeMaster', vol: 21000, isMe: false },
+      { rank: 7, name: 'Luna_Crypto', vol: 19500, isMe: false },
+      { rank: 8, name: 'David_G', vol: 18000, isMe: false },
+      { rank: 9, name: 'Paul_Smith', vol: 16500, isMe: false },
+      { rank: 10, name: 'Mike_T', vol: 15000, isMe: false },
+      { rank: 11, name: 'Alex De Souza', vol: 14500, isMe: true },
+    ];
 
-    function changeLanguage(langCode) {
-      currentLang = langCode;
-      applyLanguage(langCode);
-      langDropdown.classList.add('hidden');
-    }
+    // Shared Components
+    const TgLink = ({ username, className = "" }) => {
+      const cleanUsername = username.replace('@', '');
+      return (
+        <a href={`https://t.me/${cleanUsername}`} target="_blank" rel="noopener noreferrer" 
+           className={`text-brand-400 hover:text-brand-300 font-mono font-bold hover:underline transition-colors flex items-center gap-1 ${className}`}>
+          {username} <Icon name="external-link" size={10} className="opacity-70" />
+        </a>
+      );
+    };
 
-    function applyLanguage(langCode) {
-      const config = LANGUAGES[langCode];
-      document.getElementById('current-flag').src = `https://flagcdn.com/${config.flag}.svg`;
-      document.getElementById('current-lang-text').innerText = config.name;
+    const Card = ({ children, className = '', padding = 'p-3 sm:p-4' }) => (
+      <div className={`glass-panel rounded-xl sm:rounded-2xl ${padding} shadow-lg flex flex-col ${className}`}>
+        {children}
+      </div>
+    );
 
-      const dict = TRANSLATIONS[langCode];
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (dict[key]) {
-          // Salva eventuali icone lucide interne prima di sovrascrivere
-          const iconHTML = el.querySelector('i') ? el.querySelector('i').outerHTML : '';
-          if (iconHTML) {
-            el.innerHTML = iconHTML + ' ' + dict[key];
-            lucide.createIcons(); // reinizializza l'icona interna
-          } else {
-            el.innerText = dict[key];
-          }
-        }
-      });
-    }
+    const StatCard = ({ title, value, subtext, icon, colorClass, highlight = false }) => (
+      <Card padding="p-3 sm:p-4" className={`justify-center w-full ${highlight ? 'ring-1 ring-inset ring-brand-500/40 bg-gradient-to-br from-surface-900 to-surface-800/80 shadow-[0_0_20px_rgba(212,175,55,0.05)]' : ''}`}>
+        <div className="flex justify-between items-start gap-2">
+          <div className="flex-1 min-w-0 flex flex-col justify-center">
+            <p className="text-zinc-500 font-bold mb-1 text-[9px] sm:text-[10px] lg:text-xs uppercase tracking-widest leading-tight truncate">{title}</p>
+            <h3 className="text-lg sm:text-xl font-black text-zinc-100 mb-1 tracking-tight drop-shadow-sm truncate">{value}</h3>
+            <div className={`text-[9px] sm:text-[10px] font-bold ${colorClass} uppercase tracking-wider leading-tight truncate`}>
+              {subtext}
+            </div>
+          </div>
+          <div className={`p-2 rounded-lg bg-surface-950 border border-surface-800 flex-shrink-0 ${colorClass} shadow-inner hidden sm:flex items-center justify-center`}>
+            <Icon name={icon} size={16} className="w-4 h-4 sm:w-5 sm:h-5" />
+          </div>
+        </div>
+      </Card>
+    );
 
-    // --- 3. AUTENTICAZIONE E NAVIGAZIONE ---
-    function toggleAuth() {
-      isLoggedIn = !isLoggedIn;
-      const authBtn = document.getElementById('auth-btn');
+    const ToastContainer = ({ toasts }) => (
+      <div className="fixed top-4 right-4 sm:top-6 sm:right-6 z-[200] flex flex-col gap-2 pointer-events-none max-w-[calc(100vw-32px)] w-72">
+        {toasts.map(toast => (
+          <div key={toast.id} className="toast-enter pointer-events-auto flex items-start gap-3 bg-surface-900/95 backdrop-blur-md border border-surface-700 text-zinc-100 px-4 py-3 rounded-xl shadow-2xl">
+            <div className={`mt-0.5 flex-shrink-0 ${toast.type === 'success' ? 'text-success-400' : toast.type === 'error' ? 'text-red-400' : 'text-brand-400'}`}>
+              <Icon name={toast.type === 'success' ? 'check-circle' : toast.type === 'error' ? 'alert-circle' : 'info'} size={18} />
+            </div>
+            <div className="overflow-hidden min-w-0 flex-1">
+              <p className="text-xs font-bold truncate">{toast.title}</p>
+              {toast.message && <p className="text-[10px] text-zinc-400 mt-0.5 leading-snug">{toast.message}</p>}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+
+    const LanguageSelector = ({ lang, setLang }) => {
+      const [isOpen, setIsOpen] = useState(false);
+      const dropdownRef = useRef(null);
       
-      if (isLoggedIn) {
-        authBtn.innerHTML = `<i data-lucide="log-out" class="w-3 h-3 text-zinc-500 shrink-0"></i> <span class="hidden sm:inline" data-i18n="logout">${TRANSLATIONS[currentLang].logout}</span>`;
-        authBtn.className = "flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-black text-[9px] sm:text-[10px] uppercase tracking-wider transition-all shadow-lg bg-surface-900 border border-surface-700 text-zinc-300 hover:bg-surface-800 hover:text-white";
-        
-        document.getElementById('desktop-nav').classList.remove('hidden');
-        document.getElementById('mobile-nav').classList.remove('hidden');
-        document.getElementById('view-login').classList.add('hidden');
-        switchView('user');
-        showToast('Success', 'Wallet Connected Successfully', 'success');
-      } else {
-        authBtn.innerHTML = `<i data-lucide="log-in" class="w-3 h-3 shrink-0"></i> <span class="hidden sm:inline" data-i18n="login">${TRANSLATIONS[currentLang].login}</span>`;
-        authBtn.className = "flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-black text-[9px] sm:text-[10px] uppercase tracking-wider transition-all shadow-lg bg-gold-gradient text-surface-950 hover:opacity-90 hover:-translate-y-0.5 shadow-[0_5px_20px_rgba(212,175,55,0.2)]";
-        
-        document.getElementById('desktop-nav').classList.add('hidden');
-        document.getElementById('mobile-nav').classList.add('hidden');
-        document.getElementById('view-user').classList.add('hidden');
-        document.getElementById('view-promoter').classList.add('hidden');
-        document.getElementById('view-company').classList.add('hidden');
-        document.getElementById('view-login').classList.remove('hidden');
-        showToast('Info', 'Disconnected', 'info');
-      }
-      lucide.createIcons();
-    }
+      useEffect(() => {
+        const handleClickOutside = (event) => { if (dropdownRef.current && !dropdownRef.current.contains(event.target)) setIsOpen(false); };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+      }, []);
 
-    function switchView(viewName) {
-      if (!isLoggedIn) return;
-      currentView = viewName;
+      const currentLang = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
+      return (
+        <div className="relative z-50" ref={dropdownRef}>
+          <button onClick={(e) => { e.preventDefault(); setIsOpen(!isOpen); }} className="flex items-center gap-1.5 sm:gap-2 bg-surface-950/80 border border-surface-700 hover:border-brand-500/50 transition-all rounded-lg px-2 sm:px-2.5 py-1.5 sm:py-2 shadow-inner group">
+            <img src={`https://flagcdn.com/${currentLang.flag}.svg`} alt={currentLang.name} className="flag-icon opacity-90 group-hover:opacity-100" />
+            <span className="text-[10px] sm:text-[11px] font-bold text-zinc-300 tracking-wider hidden sm:block">{currentLang.name}</span>
+            <Icon name="chevron-down" size={12} className="text-zinc-500 group-hover:text-zinc-300 transition-colors" />
+          </button>
+          {isOpen && (
+            <div className="absolute right-0 mt-2 w-32 sm:w-36 bg-surface-900 border border-surface-700 rounded-xl shadow-2xl overflow-hidden z-[100] fade-in">
+              {LANGUAGES.map((l) => (
+                <button key={l.code} onClick={() => { setLang(l.code); setIsOpen(false); }} className={`w-full flex items-center gap-3 px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-surface-800 transition-colors ${lang === l.code ? 'bg-surface-800/80 text-brand-400' : 'text-zinc-300'}`}>
+                  <img src={`https://flagcdn.com/${l.flag}.svg`} alt={l.name} className="flag-icon" />
+                  <span className="text-[10px] sm:text-xs font-bold tracking-wider">{l.name}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    const formatCurrency = (amount, isHidden) => isHidden ? '••,•••.••' : amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    const TonWalletModal = ({ isOpen, onClose, onSave, currentWallet, t }) => {
+      const [val, setVal] = useState('');
+      useEffect(() => { if (isOpen) setVal(currentWallet || ''); }, [isOpen, currentWallet]);
+      if (!isOpen) return null;
       
-      // Hide all
-      document.getElementById('view-user').classList.add('hidden');
-      document.getElementById('view-promoter').classList.add('hidden');
-      document.getElementById('view-company').classList.add('hidden');
+      const isEditing = !!currentWallet;
+      return (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-surface-950/90 backdrop-blur-md p-4 fade-in">
+          <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-sm shadow-[0_0_50px_rgba(212,175,55,0.1)] p-6 max-h-[90vh] overflow-y-auto">
+            <div className="w-10 h-10 bg-brand-500/10 rounded-full flex items-center justify-center text-brand-400 mb-4 border border-brand-500/20 mx-auto"><Icon name="wallet" size={20} /></div>
+            <h3 className="text-lg font-black text-zinc-100 mb-1 text-center uppercase tracking-wide">{isEditing ? t('change_wallet') : t('setup_wallet')}</h3>
+            <p className="text-zinc-400 text-[10px] mb-4 text-center leading-relaxed">{isEditing ? t('edit_wallet_desc') : t('setup_wallet_desc')}</p>
+            <input type="text" value={val} onChange={e=>setVal(e.target.value)} placeholder="UQ... or EQ..." className="w-full bg-surface-950 border border-surface-700 rounded-lg px-3 py-2.5 text-zinc-100 mb-4 font-mono focus:outline-none focus:border-brand-500 transition-colors shadow-inner text-xs" />
+            <div className="flex gap-2">
+              <button onClick={onClose} className="flex-1 py-2.5 rounded-lg font-bold text-zinc-400 bg-surface-800 hover:bg-surface-700 transition-colors text-xs">{t('cancel')}</button>
+              <button onClick={()=>{onSave(val); onClose();}} disabled={val.length < 10} className="flex-[2] py-2.5 rounded-lg font-black text-surface-950 bg-gold-gradient hover:opacity-90 transition-opacity disabled:opacity-50 shadow-lg uppercase tracking-wider text-xs">{t('save_wallet')}</button>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const SecurityModal = ({ isOpen, onClose, onConfirm, amount, walletAddress, t }) => {
+      const [isSigning, setIsSigning] = useState(false);
+      if (!isOpen) return null;
+      const handleConfirm = () => { setIsSigning(true); setTimeout(() => { setIsSigning(false); onConfirm(); }, 1500); };
       
-      // Show target
-      document.getElementById(`view-${viewName}`).classList.remove('hidden');
-
-      // Update Desktop Nav UI
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('bg-surface-800', 'text-brand-400', 'shadow-sm');
-        btn.classList.add('text-zinc-500');
-      });
-      const activeDesk = document.getElementById(`nav-${viewName}`);
-      activeDesk.classList.remove('text-zinc-500');
-      activeDesk.classList.add('bg-surface-800', 'text-brand-400', 'shadow-sm');
-
-      // Update Mobile Nav UI
-      document.querySelectorAll('.mob-nav-btn').forEach(btn => {
-        btn.classList.remove('bg-surface-800', 'text-brand-400');
-        btn.classList.add('text-zinc-500');
-      });
-      const mobBtns = document.querySelectorAll('.mob-nav-btn');
-      const activeMobIndex = viewName === 'user' ? 0 : viewName === 'promoter' ? 1 : 2;
-      mobBtns[activeMobIndex].classList.remove('text-zinc-500');
-      mobBtns[activeMobIndex].classList.add('bg-surface-800', 'text-brand-400');
-
-      // Init chart if promoter view is opened
-      if (viewName === 'promoter' && !promoterChartInstance) {
-        setTimeout(initChart, 100); // Wait for DOM layout
-      }
-    }
-
-    // --- 4. LOGICA TABS (AREA PARTNER) ---
-    function openTab(tabId, btnElement) {
-      // Hide all tabs
-      document.querySelectorAll('.tab-content').forEach(el => {
-        el.classList.add('hidden');
-        el.classList.remove('block');
-      });
-      
-      // Reset all buttons
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('border-brand-500', 'text-brand-400');
-        btn.classList.add('border-transparent', 'text-zinc-500');
-      });
-
-      // Show specific tab
-      document.getElementById(tabId).classList.remove('hidden');
-      document.getElementById(tabId).classList.add('block');
-      
-      // Highlight button
-      btnElement.classList.remove('border-transparent', 'text-zinc-500');
-      btnElement.classList.add('border-brand-500', 'text-brand-400');
-    }
-
-    // --- 5. MOCK DATA RENDERERS ---
-    function renderTop10() {
-      const data = [
-        { rank: 1, name: 'Crypto King', vol: 45000, isMe: false },
-        { rank: 2, name: 'Sarah_FX', vol: 38200, isMe: false },
-        { rank: 3, name: 'Marcus Bull', vol: 31000, isMe: false },
-        { rank: 4, name: 'Elena_T', vol: 28500, isMe: false },
-        { rank: 11, name: 'Alex De Souza', vol: 14500, isMe: true }
-      ];
-      
-      let html = '';
-      data.forEach(l => {
-        const bg = l.isMe ? 'bg-brand-500/10 border border-brand-500/30' : 'bg-surface-950 border border-surface-800';
-        const rankColor = l.rank <= 3 ? 'text-brand-400' : 'text-zinc-500';
-        const nameColor = l.isMe ? 'text-brand-400' : 'text-zinc-200';
-        const meTag = l.isMe ? '<span class="text-[7px] ml-1 bg-brand-500 text-surface-950 px-1 py-0.5 rounded-sm">(YOU)</span>' : '';
-        
-        html += `
-          <tr class="flex items-center p-2 rounded-lg mb-1 ${bg}">
-            <td class="w-6 sm:w-8 text-center font-black text-[10px] sm:text-xs ${rankColor}">${l.rank}</td>
-            <td class="flex-1 px-1 sm:px-2 min-w-0">
-              <span class="font-bold text-[9px] sm:text-[10px] truncate block uppercase tracking-wider ${nameColor}">
-                ${l.name} ${meTag}
-              </span>
-            </td>
-            <td class="text-right font-mono text-[9px] sm:text-[10px] font-bold text-success-400 shrink-0">
-              ${l.vol.toLocaleString()}
-            </td>
-          </tr>
-        `;
-      });
-      document.getElementById('top10-body').innerHTML = html;
-    }
-
-    function renderNetwork() {
-      const data = [
-        { name: '@lucam_88', vol: 250, flag: 'it' },
-        { name: '@sarah_j', vol: 1200, flag: 'gb' },
-        { name: '@crypto_dan', vol: 450, flag: 'es' }
-      ];
-      let html = '';
-      data.forEach(l => {
-        html += `
-          <tr class="hover:bg-surface-900/50 transition-colors">
-            <td class="px-2 py-2">
-              <div class="flex items-center gap-2">
-                <img src="https://flagcdn.com/${l.flag}.svg" class="flag-icon" />
-                <span class="text-[9px] sm:text-[10px] font-bold text-zinc-300 truncate">${l.name}</span>
+      return (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-surface-950/90 backdrop-blur-md p-4 fade-in">
+          <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-sm shadow-[0_0_50px_rgba(212,175,55,0.1)] overflow-hidden min-w-0 max-h-[90vh] overflow-y-auto">
+            <div className="p-5 text-center border-b border-surface-800">
+              <div className="w-10 h-10 bg-surface-950 rounded-full flex items-center justify-center text-brand-400 mx-auto mb-3 border border-surface-800"><Icon name="shield-check" size={20} /></div>
+              <h3 className="text-base font-black text-zinc-100 uppercase tracking-wider">{t('security_auth')}</h3>
+              <p className="text-[10px] text-zinc-400 mt-1">{t('sign_tx')}</p>
+            </div>
+            <div className="p-5 space-y-4">
+              <div className="bg-surface-950 p-3 rounded-xl border border-surface-800 text-xs shadow-inner">
+                <div className="flex justify-between items-center mb-2 pb-2 border-b border-surface-800">
+                  <span className="text-zinc-500 font-bold uppercase tracking-wider text-[10px]">{t('requested_amount')}</span>
+                  <span className="text-brand-400 font-black text-sm">{amount.toLocaleString('en-US', {minimumFractionDigits:2})} USDT</span>
+                </div>
+                <div className="flex justify-between items-center overflow-hidden">
+                  <span className="text-zinc-500 font-bold uppercase tracking-wider text-[10px] flex-shrink-0">{t('dest_wallet')}</span>
+                  <span className="text-zinc-300 font-mono text-[10px] truncate ml-2 bg-surface-800 px-1.5 py-0.5 rounded border border-surface-700">{walletAddress}</span>
+                </div>
               </div>
-            </td>
-            <td class="px-2 py-2 text-right">
-              <span class="font-mono text-[8px] sm:text-[9px] font-bold text-brand-400">${l.vol} USDT</span>
-            </td>
-          </tr>
-        `;
-      });
-      document.getElementById('network-body').innerHTML = html;
-    }
+              <div className="flex gap-2">
+                <button onClick={onClose} disabled={isSigning} className="flex-1 py-2.5 rounded-lg font-bold text-zinc-400 bg-surface-800 hover:bg-surface-700 transition-colors disabled:opacity-50 text-xs">{t('cancel')}</button>
+                <button onClick={handleConfirm} disabled={isSigning} className="flex-[2] py-2.5 rounded-lg font-black text-surface-950 bg-gold-gradient hover:opacity-90 transition-opacity flex items-center justify-center gap-1.5 disabled:opacity-50 shadow-lg">
+                  {isSigning ? <Icon name="loader-2" size={14} className="animate-spin" /> : <Icon name="check" size={14} />}
+                  <span className="uppercase tracking-wider text-[10px]">{isSigning ? t('signing_btn') : t('sign_withdraw_btn')}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
 
-    // --- 6. CHART.JS SETUP (Senza React/Recharts) ---
-    function initChart() {
-      const ctx = document.getElementById('promoterChart').getContext('2d');
+    // --- DASHBOARDS ---
+
+    const UserDashboard = ({ t, lang, sc }) => {
+      const tgLinks = {
+        en: 'https://t.me/c/3966363262',
+        es: 'https://t.me/c/3929284405',
+        pt: 'https://t.me/c/3510579028',
+        it: 'https://t.me/c/3958807227'
+      };
+      const currentTgLink = tgLinks[lang] || tgLinks['en'];
+
+      return (
+        <div className="flex-1 flex flex-col py-4 fade-in">
+          <div className="w-full flex flex-col gap-4 max-w-5xl mx-auto">
+            
+            <div className="shrink-0 p-4 sm:p-5 glass-panel rounded-xl border-l-4 border-l-brand-500 flex flex-col md:flex-row md:items-center justify-between shadow-lg gap-4">
+              <div className="min-w-0">
+                <h2 className="text-lg sm:text-2xl font-black text-zinc-100 uppercase tracking-widest leading-none truncate">{t('welcome_title')}</h2>
+                <p className="text-success-400 font-mono text-[10px] sm:text-xs mt-1.5 font-bold flex items-center gap-1.5 truncate">
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-success-500 animate-pulse shrink-0"></span>
+                  {t('system_status_ok')}
+                </p>
+              </div>
+              
+              <div className="flex items-center gap-3 bg-surface-950 p-2 sm:p-3 rounded-lg border border-surface-800 shadow-inner">
+                <a href="whitepaper.html" target="_blank" className="flex items-center gap-1.5 px-4 py-2 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded-md text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-colors w-full md:w-auto justify-center">
+                  <Icon name="file-text" size={14} className="text-brand-500" /> {t('whitepaper')}
+                </a>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <a href="SummaryZeroToHeroAcademy.html" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-6 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-brand-500/20 hover:border-brand-500 h-[180px]">
+                <div className="w-14 h-14 rounded-full bg-surface-900 border border-brand-500/40 flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(212,175,55,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
+                  <Icon name="graduation-cap" size={24} className="text-brand-400" />
+                </div>
+                <h3 className="text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('academy_btn')}</h3>
+                <p className="text-[10px] text-zinc-500 mt-2 uppercase tracking-widest font-bold text-center relative z-10">{t('training_setup')}</p>
+              </a>
+              
+              <a href={currentTgLink} target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-6 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#2AABEE]/20 hover:border-[#2AABEE] h-[180px]">
+                <div className="w-14 h-14 rounded-full bg-surface-900 border border-[#2AABEE]/40 flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(42,171,238,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
+                  <Icon name="send" size={24} className="text-[#2AABEE]" />
+                </div>
+                <h3 className="text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('signals_btn')}</h3>
+                <p className="text-[10px] text-zinc-500 mt-2 uppercase tracking-widest font-bold text-center relative z-10">{t('signals_access')}</p>
+              </a>
+
+              <a href="brandshop.html" target="_blank" rel="noopener noreferrer" className="relative flex flex-col items-center justify-center p-6 rounded-xl glass-panel hover:bg-surface-800 transition-all shadow-md group border border-[#ec4899]/20 hover:border-[#ec4899] h-[180px]">
+                <div className="w-14 h-14 rounded-full bg-surface-900 border border-[#ec4899]/40 flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(236,72,153,0.15)] group-hover:scale-110 transition-transform duration-300 ease-out shrink-0 relative z-10">
+                  <Icon name="shopping-bag" size={24} className="text-[#ec4899]" />
+                </div>
+                <h3 className="text-sm font-black text-zinc-100 tracking-widest uppercase text-center relative z-10">{t('brand_shop')}</h3>
+                <p className="text-[10px] text-zinc-500 mt-2 uppercase tracking-widest font-bold text-center relative z-10">{t('merch_store')}</p>
+              </a>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const CompanyDashboard = ({ sc, t }) => {
+      const [isSimulating, setIsSimulating] = useState(false);
+      const [statusSort, setStatusSort] = useState('activeFirst'); 
+
+      const localizedChartData = useMemo(() => RAW_REVENUE_DATA.map(d => ({...d, name: t(d.rawKey) || d.rawKey})), [t]);
       
-      // Gradient fill
-      const gradient = ctx.createLinearGradient(0, 0, 0, 200);
-      gradient.addColorStop(0, 'rgba(16, 185, 129, 0.5)'); // success-500
-      gradient.addColorStop(1, 'rgba(16, 185, 129, 0)');
+      const sortedMembers = useMemo(() => {
+        let baseList = [...NETWORK_MEMBERS];
+        if (statusSort === 'none') return baseList;
+        return baseList.sort((a, b) => {
+          if (a.statusKey === b.statusKey) return 0;
+          if (statusSort === 'activeFirst') return a.statusKey === 'status_active' ? -1 : 1;
+          return a.statusKey === 'status_inactive' ? -1 : 1;
+        });
+      }, [statusSort]);
 
-      promoterChartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-          datasets: [{
-            label: 'Earnings',
-            data: [45, 120, 80, 210, 150, 320, 280],
-            borderColor: '#10b981', // success-500
-            backgroundColor: gradient,
-            borderWidth: 2,
-            pointBackgroundColor: '#10b981',
-            pointBorderColor: '#fff',
-            pointRadius: 4,
-            fill: true,
-            tension: 0.4 // curve
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
-          scales: {
-            x: {
-              grid: { display: false, drawBorder: false },
-              ticks: { color: '#71717a', font: { size: 10, weight: 'bold' } }
-            },
-            y: {
-              grid: { color: '#27272a', borderDash: [3, 3], drawBorder: false },
-              ticks: { color: '#71717a', font: { size: 10, weight: 'bold' }, maxTicksLimit: 5 }
-            }
-          }
+      const handleSortClick = () => {
+        if (statusSort === 'activeFirst') setStatusSort('inactiveFirst');
+        else if (statusSort === 'inactiveFirst') setStatusSort('none');
+        else setStatusSort('activeFirst');
+      };
+
+      return (
+        <div className="flex flex-col flex-1 fade-in pt-4 pb-12">
+          
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shrink-0 mb-4 bg-surface-900/50 p-4 rounded-xl border border-surface-800">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-brand-500/10 rounded-lg flex items-center justify-center text-brand-400 shrink-0 border border-brand-500/20"><Icon name="building" size={18} /></div>
+              <div className="flex flex-col">
+                <h2 className="text-lg font-black text-zinc-100 truncate uppercase tracking-widest">{t('treasury_center')}</h2>
+                <a href={`https://tonviewer.com/${sc.state.companyContractAddress}`} target="_blank" rel="noopener noreferrer" className="text-[10px] text-brand-400 font-mono flex items-center gap-1 hover:underline mt-0.5">
+                  <Icon name="code" size={10} /> {sc.state.companyContractAddress.substring(0,10)}...{sc.state.companyContractAddress.slice(-6)}
+                </a>
+              </div>
+            </div>
+            <div className="w-full sm:w-auto shrink-0 flex gap-2">
+              <a href="whitepaper.html" target="_blank" className="flex-1 sm:flex-none px-4 py-2.5 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded-lg text-xs font-black flex items-center justify-center gap-1.5 transition-colors uppercase tracking-wide shadow-sm border border-surface-700">
+                <Icon name="file-text" size={14} /> {t('whitepaper')}
+              </a>
+              <button onClick={async () => { setIsSimulating(true); await sc.simulateDeposit(t); setIsSimulating(false); }} disabled={isSimulating} className="flex-1 sm:flex-none px-4 py-2.5 bg-gold-gradient hover:opacity-90 text-surface-950 rounded-lg text-xs font-black flex items-center justify-center gap-1.5 disabled:opacity-50 transition-opacity uppercase tracking-wide shadow-sm">
+                {isSimulating ? <Icon name="loader-2" size={14} className="animate-spin" /> : <Icon name="plus" size={14} />} {t('simulate_deposit')}
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+            
+            <div className="lg:col-span-4 grid grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
+              <StatCard title={t('processed_volume')} value={formatCurrency(sc.state.totalProcessed, sc.state.isHidden)} subtext={t('real_usdt')} icon="bar-chart-2" colorClass="text-brand-400" />
+              <StatCard title={t('company_reserve')} value={formatCurrency(sc.state.contractBalance, sc.state.isHidden)} subtext={t('withdrawable_funds')} icon="wallet" colorClass="text-success-400" highlight={true} />
+              <StatCard title={t('active_nodes')} value={sc.state.activePromoters.toString()} subtext={t('registered_pools')} icon="users" colorClass="text-blue-400" />
+              
+              <Card padding="p-3" className="flex flex-col h-full min-h-[120px]">
+                <h3 className="text-[10px] font-bold text-zinc-100 mb-1 uppercase tracking-widest flex items-center gap-1.5 shrink-0"><Icon name="globe-2" size={12} className="text-brand-500" /> {t('geo_dist')}</h3>
+                <div className="flex-1 w-full relative flex items-center">
+                  <div className="w-1/2 h-full absolute left-0 min-h-[80px]">
+                    {PieChart && (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie data={GEO_DATA} cx="50%" cy="50%" innerRadius="60%" outerRadius="90%" paddingAngle={2} dataKey="value" stroke="none">
+                            {GEO_DATA.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+                          </Pie>
+                        </PieChart>
+                      </ResponsiveContainer>
+                    )}
+                  </div>
+                  <div className="w-1/2 ml-auto flex flex-col justify-center gap-1 pl-1">
+                    {GEO_DATA.map((item, idx) => (
+                      <div key={idx} className="flex items-center gap-1 text-[9px]">
+                        <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: item.color }}></div>
+                        <span className="text-zinc-300 font-bold truncate">{item.name}</span>
+                        <span className="text-zinc-500 ml-auto font-mono">{item.value}%</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </Card>
+            </div>
+
+            <div className="lg:col-span-2 flex flex-col gap-4">
+              <Card className="flex flex-col" padding="p-4">
+                <div className="flex justify-between items-center mb-4 shrink-0">
+                  <h3 className="text-xs font-bold text-zinc-100 flex items-center gap-2 uppercase tracking-widest"><Icon name="activity" size={14} className="text-brand-500"/> {t('cash_flow')}</h3>
+                </div>
+                <div className="flex-1 w-full relative min-h-[250px]">
+                  {AreaChart && (
+                    <ResponsiveContainer width="100%" height="100%" className="absolute inset-0">
+                      <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -25, bottom: 0}}>
+                        <defs><linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#d4af37" stopOpacity={0.4}/><stop offset="95%" stopColor="#d4af37" stopOpacity={0}/></linearGradient></defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+                        <XAxis dataKey="name" stroke="#71717a" tick={{fill: '#71717a', fontSize: 9, fontWeight: 700, textTransform:'uppercase'}} axisLine={false} tickLine={false} dy={10} />
+                        <YAxis stroke="#71717a" tick={{fill: '#71717a', fontSize: 9, fontWeight: 700}} axisLine={false} tickLine={false} dx={-10} width={40} />
+                        <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '8px', color: '#fff', fontSize:'10px' }} itemStyle={{ color: '#fcd34d', fontWeight: 'bold' }} />
+                        <Area type="monotone" dataKey="amount" stroke="#d4af37" strokeWidth={2} fillOpacity={1} fill="url(#colorAmount)" />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  )}
+                </div>
+              </Card>
+            </div>
+
+            <div className="lg:col-span-2 flex flex-col gap-4">
+              <Card padding="p-0" className="flex flex-col">
+                <div className="p-3 border-b border-surface-800 bg-surface-900/50 flex justify-between items-center shrink-0">
+                  <h3 className="text-zinc-100 font-bold uppercase tracking-widest text-[10px] flex items-center gap-1.5"><Icon name="users-2" size={14} className="text-brand-500" /> {t('network_dir')}</h3>
+                </div>
+                <div className="flex-1 w-full bg-surface-950/30">
+                  <table className="w-full text-left border-collapse">
+                    <thead className="bg-surface-900 shadow-md">
+                      <tr className="text-[9px] uppercase tracking-wider text-zinc-500 border-b border-surface-800">
+                        <th className="px-3 py-2 font-bold">{t('promoter')}</th>
+                        <th className="px-3 py-2 font-bold text-right">{t('volume')}</th>
+                        <th className="px-3 py-2 font-bold cursor-pointer hover:text-brand-400 transition-colors text-center" onClick={handleSortClick}>
+                          <div className="flex items-center justify-center gap-1">{t('status')} <Icon name={statusSort === 'none' ? 'chevrons-up-down' : statusSort === 'inactiveFirst' ? 'chevron-down' : 'chevron-up'} size={10} className="opacity-50" /></div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-surface-800/50">
+                      {sortedMembers.map(member => (
+                        <tr key={member.id} className="hover:bg-surface-900/50 transition-colors">
+                          <td className="px-3 py-3">
+                            <div className="flex items-center gap-1.5">
+                              {member.flag && <img src={`https://flagcdn.com/${member.flag}.svg`} alt="flag" className="flag-icon" />}
+                              <div className="flex flex-col min-w-0">
+                                <span className="text-zinc-100 font-bold text-[10px] truncate max-w-[120px]">{member.name}</span>
+                                <TgLink username={member.username} className="text-[8px] mt-0.5 truncate" />
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-3 py-3 font-mono text-success-400 font-bold text-[10px] text-right whitespace-nowrap">{formatCurrency(member.volume, false)}</td>
+                          <td className="px-3 py-3 text-center">
+                            <span className={`inline-flex items-center px-1 py-0.5 rounded text-[7px] font-black uppercase tracking-wider border ${member.statusKey === 'status_active' ? 'bg-success-500/10 text-success-400 border-success-500/20' : 'bg-surface-800 text-zinc-500 border-surface-700'}`}>
+                              {t(member.statusKey)}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            </div>
+            
+          </div>
+        </div>
+      );
+    };
+
+    const PromoterDashboard = ({ sc, t, lang }) => {
+      const [isClaiming, setIsClaiming] = useState(false);
+      const [copied, setCopied] = useState(false);
+      const [showSecureModal, setShowSecureModal] = useState(false);
+      const [showWalletModal, setShowWalletModal] = useState(false);
+      const [activeTab, setActiveTab] = useState('top10'); 
+      
+      const localizedChartData = useMemo(() => PROMOTER_CHART_DATA.map(d => ({...d, name: t(d.rawKey)||d.rawKey})), [t]);
+      const tgUser = { first_name: "Alex", last_name: "De Souza", username: "@alex_crypto_pro" };
+
+      const sortedNetworkData = useMemo(() => {
+        return [...PROMOTER_NETWORK_DATA].sort((a, b) => {
+          if (a.statusKey === b.statusKey) return 0;
+          return a.statusKey === 'status_active' ? -1 : 1;
+        });
+      }, []);
+
+      const pVol = sc.state.promoterVolume; 
+      const pTarget = sc.state.tenthPlaceVolume;
+      const isQualified = pVol >= pTarget;
+      const poolTotal = sc.state.weeklyPoolTotal; 
+      const displayAddress = sc.state.walletAddress ? sc.state.walletAddress.substring(0,8) : "ABCDEF";
+
+      const copyReferral = () => {
+        navigator.clipboard.writeText(`https://tonpull.app/ref/${displayAddress}`).then(() => {
+          setCopied(true); sc.addToast(t('copied'), '', "success");
+          setTimeout(() => setCopied(false), 2000);
+        }).catch(() => sc.addToast(t('copy_error'), "", "error"));
+      };
+
+      const copyFunnelLink = (path, nameKey) => {
+        const fullUrl = `https://tonpull.app/${path}?ref=${displayAddress}`;
+        navigator.clipboard.writeText(fullUrl).then(() => {
+          sc.addToast(t('copied'), t(nameKey), "success");
+        }).catch(() => sc.addToast(t('copy_error'), "", "error"));
+      };
+
+      const FUNNELS = [
+        { id: 1, title: t('funnel_1'), tag: t('promo_50_tag'), link: 'promo-50.html', colorClass: 'text-emerald-400', borderClass: 'border-emerald-500/20', bgClass: 'bg-emerald-500/10', icon: 'sparkles' },
+        { id: 2, title: t('funnel_2'), tag: t('live_event_tag'), link: 'promo-masterclass.html', colorClass: 'text-purple-400', borderClass: 'border-purple-500/20', bgClass: 'bg-purple-500/10', icon: 'graduation-cap' },
+        { id: 3, title: t('funnel_3'), tag: t('viral_task_tag'), link: 'taskfreeweek.html', colorClass: 'text-brand-400', borderClass: 'border-brand-500/30', bgClass: 'bg-brand-500/10', icon: 'infinity' }
+      ];
+
+      return (
+        <div className="flex flex-col flex-1 fade-in pt-4 pb-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            
+            {/* Left Col (3) */}
+            <div className="lg:col-span-3 flex flex-col gap-4">
+              <Card className="flex flex-col border-l-2 border-l-brand-500" padding="p-4">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="relative w-12 h-12 rounded-full bg-surface-950 flex items-center justify-center shrink-0 border-2 border-brand-500/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] overflow-hidden">
+                     <img src={`https://ui-avatars.com/api/?name=${tgUser.first_name}+${tgUser.last_name}&background=18181b&color=d4af37&size=128`} alt="Profile" className="absolute inset-0 w-full h-full object-cover z-10" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h2 className="text-base font-black text-zinc-100 truncate tracking-wide">{tgUser.first_name} {tgUser.last_name}</h2>
+                    <TgLink username={tgUser.username} className="text-[10px]" />
+                  </div>
+                </div>
+                
+                <div className="flex items-center bg-surface-950 rounded-xl border border-surface-700 p-1 shadow-inner mb-4">
+                  <div className="px-2 text-xs text-zinc-300 truncate flex-1 font-mono">tonpull.app/ref/{displayAddress}</div>
+                  <button onClick={copyReferral} className={`shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-[10px] font-black transition-all uppercase tracking-wide shadow-md ${copied ? 'bg-success-500 text-white shadow-success-500/20' : 'bg-surface-800 hover:bg-surface-700 text-zinc-100'}`}>
+                    <Icon name={copied ? 'check' : 'copy'} size={12} /> <span className="hidden sm:inline">{copied ? t('copied') : t('copy_link')}</span>
+                  </button>
+                </div>
+
+                <div className="flex flex-col gap-2 w-full mt-1 border-t border-surface-800/60 pt-3">
+                  <h4 className="text-[9px] font-bold uppercase tracking-widest text-zinc-400 mb-1 flex items-center gap-1.5">
+                    <Icon name="megaphone" size={12} className="text-brand-500" /> {t('marketing_funnels')}
+                  </h4>
+                  {FUNNELS.map(f => (
+                    <div key={f.id} className={`flex items-center justify-between p-2 rounded-lg border bg-surface-900/30 shadow-sm ${f.borderClass}`}>
+                      <div className="flex flex-col min-w-0 pr-2">
+                        <div className={`flex items-center gap-1 ${f.colorClass}`}>
+                          <Icon name={f.icon} size={10} className="shrink-0" />
+                          <span className="font-black text-[9px] uppercase tracking-wider truncate">{f.title}</span>
+                        </div>
+                        <span className="text-[8px] text-zinc-500 mt-0.5 font-bold uppercase tracking-wider">{f.tag}</span>
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <button onClick={() => copyFunnelLink(f.link, `funnel_${f.id}`)} className="p-1.5 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded text-[9px] transition-colors"><Icon name="copy" size={10} /></button>
+                        <a href={`${f.link}?ref=${displayAddress}`} target="_blank" rel="noopener noreferrer" className={`p-1.5 ${f.bgClass} ${f.colorClass} rounded transition-colors`}><Icon name="external-link" size={10} /></a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </div>
+
+            {/* Middle Col (5) */}
+            <div className="lg:col-span-5 flex flex-col gap-4">
+              <Card className="flex flex-col items-center justify-center text-center relative overflow-hidden bg-gradient-to-b from-surface-900 to-surface-950 border-t-2 border-t-success-500" padding="p-6">
+                <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-2 leading-tight">{t('vault_available')}</p>
+                <div className="text-3xl lg:text-4xl font-black text-zinc-100 mb-2 tracking-tight truncate w-full font-mono drop-shadow-md">
+                  {formatCurrency(sc.state.promoterAvailable, sc.state.isHidden)} {!sc.state.isHidden && <span className="text-sm lg:text-base text-success-400 ml-1 font-sans tracking-normal">USDT</span>}
+                </div>
+                <div className="mb-5">
+                  <button onClick={sc.toggleHidden} className="text-zinc-500 hover:text-zinc-300 transition-colors p-1.5 px-3 bg-surface-950 rounded-md border border-surface-800 flex items-center gap-1.5 text-[9px] font-bold uppercase mx-auto"><Icon name={sc.state.isHidden ? 'eye' : 'eye-off'} size={12} /> {sc.state.isHidden ? t('show_balances') : t('hide_balances')}</button>
+                </div>
+
+                <div className="w-full max-w-[280px] mx-auto mt-4">
+                  {!sc.state.tonWallet ? (
+                    <button onClick={() => setShowWalletModal(true)} className="w-full py-3 rounded-xl font-black text-[11px] uppercase tracking-widest flex items-center justify-center gap-2 transition-transform hover:-translate-y-0.5 bg-gold-gradient text-surface-950 hover:opacity-90 shadow-[0_10px_20px_rgba(212,175,55,0.2)]"><Icon name="wallet" size={14} /> {t('setup_wallet')}</button>
+                  ) : (
+                    <div className="flex flex-col gap-2">
+                      <button onClick={() => setShowWalletModal(true)} className="flex items-center justify-center gap-2 text-[10px] font-mono text-zinc-400 bg-surface-900 border border-surface-800 py-2 rounded-lg transition-colors group hover:border-brand-500/50">
+                        <span className="truncate max-w-[200px]">{sc.state.tonWallet}</span>
+                        <Icon name="pencil" size={10} className="group-hover:text-brand-400" />
+                      </button>
+                      <button onClick={() => { if(sc.state.promoterAvailable > 0) setShowSecureModal(true); }} disabled={isClaiming || sc.state.promoterAvailable <= 0} className={`w-full py-3 rounded-xl font-black text-[11px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${sc.state.promoterAvailable <= 0 ? 'bg-surface-950 border border-surface-800 text-zinc-600' : isClaiming ? 'bg-success-600 text-white cursor-wait' : 'bg-success-600 hover:bg-success-500 text-white shadow-[0_10px_20px_rgba(16,185,129,0.3)] hover:-translate-y-0.5'}`}>
+                        {sc.state.promoterAvailable <= 0 ? (<><Icon name="lock" size={14} /> {t('no_funds')}</>) : isClaiming ? (<><Icon name="loader-2" size={14} className="animate-spin" /> {t('signing')}</>) : (<><Icon name="fingerprint" size={16} /> {t('unlock_withdraw')}</>)}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </Card>
+
+              <div className="grid grid-cols-2 gap-4 shrink-0">
+                <StatCard title={t('lifetime_deposit')} value={formatCurrency(sc.state.promoterLifetime, sc.state.isHidden)} subtext="USDT" icon="coins" colorClass="text-brand-400" />
+                <StatCard title={t('daily_subs')} value="3,105" subtext={t('registered_subtext')} icon="infinity" colorClass="text-purple-400" highlight={true} />
+              </div>
+
+              <Card className="flex flex-col" padding="p-4">
+                <h3 className="text-xs font-bold text-zinc-100 mb-4 uppercase tracking-widest flex items-center gap-2 shrink-0"><Icon name="bar-chart-3" size={16} className="text-success-500" /> {t('earnings_chart')}</h3>
+                <div className="flex-1 w-full relative min-h-[250px]">
+                  {AreaChart && (
+                    <ResponsiveContainer width="100%" height="100%" className="absolute inset-0">
+                      <AreaChart data={localizedChartData} margin={{top: 5, right: 0, left: -20, bottom: 0}}>
+                        <defs><linearGradient id="colorPromoterAmount" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/><stop offset="95%" stopColor="#10b981" stopOpacity={0}/></linearGradient></defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+                        <XAxis dataKey="name" stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700, textTransform:'uppercase'}} axisLine={false} tickLine={false} dy={10} />
+                        <YAxis stroke="#71717a" tick={{fill: '#71717a', fontSize: 10, fontWeight: 700}} axisLine={false} tickLine={false} dx={-10} width={50} />
+                        <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '12px', color: '#fff' }} itemStyle={{ color: '#34d399', fontWeight: 'bold' }} />
+                        <Area type="monotone" dataKey="amount" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorPromoterAmount)" activeDot={{r: 5, fill: '#10b981', stroke: '#fff', strokeWidth: 2}} />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  )}
+                </div>
+              </Card>
+            </div>
+
+            {/* Right Col (4) */}
+            <div className="lg:col-span-4 flex flex-col gap-4">
+              <Card padding="p-0" className="flex flex-col">
+                <div className="flex border-b border-surface-800 bg-surface-900/50 shrink-0">
+                  <button onClick={() => setActiveTab('top10')} className={`flex-1 p-3 text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'top10' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="trophy" size={14} /> {t('top_10_short')}</button>
+                  <button onClick={() => setActiveTab('network')} className={`flex-1 p-3 text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'network' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="users" size={14} /> {t('my_network')}</button>
+                  <button onClick={() => setActiveTab('history')} className={`flex-1 p-3 text-[10px] font-bold uppercase tracking-widest border-b-2 transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'history' ? 'border-brand-500 text-brand-400 bg-brand-500/5' : 'border-transparent text-zinc-500 hover:text-zinc-300'}`}><Icon name="history" size={14} /> {t('audit_short')}</button>
+                </div>
+                
+                <div className="w-full bg-surface-950/30 flex flex-col">
+                  {activeTab === 'top10' && (
+                    <div className="flex flex-col fade-in">
+                      <div className={`p-4 border-b border-surface-800 shrink-0 ${isQualified ? 'bg-brand-500/5' : 'bg-surface-900/30'}`}>
+                        <div className="flex justify-between items-end mb-3">
+                          <div>
+                            <p className="text-[9px] text-zinc-500 uppercase font-bold tracking-widest mb-0.5">{t('global_pool')}</p>
+                            <p className="text-xl font-mono font-black text-brand-400 leading-none">{formatCurrency(poolTotal, sc.state.isHidden)} <span className="text-[10px] text-zinc-500 font-sans tracking-widest">USDT</span></p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-[8px] text-zinc-500 uppercase font-bold tracking-widest mb-1">{t('ends_sat')}</p>
+                            <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider border ${isQualified ? 'bg-brand-500/10 text-brand-400 border-brand-500/30 shadow-[0_0_10px_rgba(212,175,55,0.2)]' : 'bg-surface-800 text-zinc-500 border-surface-700'}`}>
+                              {isQualified ? t('pool_qualified') : t('pool_unqualified')}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="w-full">
+                          <div className="flex justify-between text-[8px] font-black uppercase tracking-wider mb-1.5">
+                            <span className="text-zinc-400">{t('target')}: {formatCurrency(pTarget, sc.state.isHidden)}</span>
+                            <span className={isQualified ? 'text-brand-400' : 'text-zinc-100'}>{formatCurrency(pVol, sc.state.isHidden)}</span>
+                          </div>
+                          <div className="h-2 w-full bg-surface-950 rounded-full overflow-hidden shadow-inner border border-surface-800/50">
+                            <div className={`h-full rounded-full transition-all duration-1000 ${isQualified ? 'bg-brand-500 shadow-[0_0_10px_rgba(212,175,55,0.5)]' : 'bg-zinc-600'}`} style={{width: `${Math.min((pVol/pTarget)*100, 100)}%`}}></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-2">
+                        <div className="flex items-center justify-between px-2 mb-2 mt-1">
+                          <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest truncate">{t('realtime_leaderboard')}</span>
+                          <span className="text-[7px] font-mono text-success-500 font-bold flex items-center gap-1 bg-success-500/10 px-1.5 py-0.5 rounded border border-success-500/20 shrink-0"><Icon name="bot" size={10}/> <span className="hidden sm:inline">{t('bot_managed')}</span></span>
+                        </div>
+                        <table className="w-full text-left border-separate border-spacing-y-1">
+                          <tbody>
+                            {TOP_10_LEADERS.map((leader) => (
+                              <tr key={leader.rank} className={`flex items-center p-2 rounded-lg ${leader.isMe ? 'bg-brand-500/10 border border-brand-500/30 shadow-[0_0_15px_rgba(212,175,55,0.1)]' : 'bg-surface-950 border border-surface-800'}`}>
+                                <td className={`w-8 text-center font-black text-xs ${leader.rank <= 3 ? 'text-brand-400' : 'text-zinc-500'}`}>{leader.rank}</td>
+                                <td className="flex-1 px-2 min-w-0">
+                                  <span className={`font-bold text-[10px] truncate block uppercase tracking-wider ${leader.isMe ? 'text-brand-400' : 'text-zinc-200'}`}>
+                                    {leader.name} {leader.isMe && <span className="text-[7px] ml-1 bg-brand-500 text-surface-950 px-1 py-0.5 rounded-sm">{t('you_tag')}</span>}
+                                  </span>
+                                </td>
+                                <td className="text-right font-mono text-[10px] font-bold text-success-400 shrink-0">
+                                  {formatCurrency(leader.vol, false)}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === 'network' && (
+                    <div className="p-1">
+                      <table className="w-full text-left border-collapse">
+                        <thead className="bg-surface-900 shadow-md">
+                          <tr className="text-[9px] uppercase tracking-wider text-zinc-500 border-b border-surface-800">
+                            <th className="px-3 py-2 font-bold truncate">{t('user_col')}</th>
+                            <th className="px-3 py-2 font-bold truncate">{t('action_col')}</th>
+                            <th className="px-3 py-2 font-bold text-right truncate">{t('vol_col')}</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-surface-800/50">
+                          {sortedNetworkData.map((lead, idx) => (
+                            <tr key={idx} className="hover:bg-surface-900/50 transition-colors">
+                              <td className="px-3 py-3">
+                                <div className="flex items-center gap-2">
+                                   <div className={`p-1.5 rounded-lg shrink-0 border hidden sm:block ${lead.typeKey === 'action_deposit' ? 'bg-success-500/10 text-success-400 border-success-500/30' : 'bg-brand-500/10 text-brand-400 border-brand-500/30'}`}><Icon name={lead.typeKey === 'action_deposit' ? 'coins' : 'user-plus'} size={12} /></div>
+                                   {lead.flag && <img src={`https://flagcdn.com/${lead.flag}.svg`} alt="flag" className="flag-icon" />}
+                                   <div className="min-w-0">
+                                     <TgLink username={lead.username} className="text-[10px] truncate block" />
+                                     <p className="text-[8px] text-zinc-500 uppercase tracking-wider font-bold mt-0.5 truncate">{t(lead.timeKey)}</p>
+                                   </div>
+                                </div>
+                              </td>
+                              <td className="px-3 py-3 text-xs text-zinc-400">
+                                <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider border ${lead.statusKey === 'status_active' ? 'bg-success-500/10 text-success-400 border-success-500/20' : 'bg-surface-800 text-zinc-500 border-surface-700'}`}>
+                                  {t(lead.statusKey)}
+                                </span>
+                              </td>
+                              <td className="px-3 py-3 text-right">
+                                <span className={`font-mono text-[9px] font-bold ${lead.total_vol > 0 ? 'text-brand-400' : 'text-zinc-500'} whitespace-nowrap`}>
+                                  {lead.total_vol > 0 ? `${lead.total_vol} USDT` : '-'}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
+                  {activeTab === 'history' && (
+                    <div className="p-3">
+                      {sc.state.claimHistory.length === 0 ? (
+                        <div className="h-full min-h-[200px] flex flex-col items-center justify-center text-zinc-600"><Icon name="history" size={20} className="mb-2 opacity-50" /><p className="text-[9px] font-bold uppercase tracking-widest">{t('no_tx')}</p></div>
+                      ) : (
+                        <div className="space-y-2">
+                          {sc.state.claimHistory.map((item, idx) => (
+                            <div key={idx} className="flex justify-between items-center bg-surface-950 p-2.5 rounded-lg border border-surface-800">
+                              <div className="min-w-0 pr-2">
+                                <p className="text-zinc-200 text-[10px] font-bold truncate">{item.date}</p>
+                                <p className="text-[8px] text-zinc-500 mt-0.5 font-mono uppercase tracking-widest flex items-center gap-1 truncate"><Icon name="check-circle-2" size={8} className="text-success-500 shrink-0"/> {item.tx}</p>
+                              </div>
+                              <span className="text-success-400 font-black text-[10px] font-mono bg-success-500/10 px-1.5 py-0.5 rounded border border-success-500/20 shrink-0">+{formatCurrency(item.amount, sc.state.isHidden)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </Card>
+            </div>
+          </div>
+          
+          <SecurityModal isOpen={showSecureModal} onClose={() => setShowSecureModal(false)} onConfirm={async () => { setShowSecureModal(false); setIsClaiming(true); await sc.processClaim(t); setIsClaiming(false); }} amount={sc.state.promoterAvailable} walletAddress={sc.state.tonWallet || sc.state.walletAddress} t={t} />
+          <TonWalletModal isOpen={showWalletModal} onClose={() => setShowWalletModal(false)} onSave={(val) => { sc.setTonWallet(val); sc.addToast(t('toast_success_title'), t('save_wallet'), 'success'); }} currentWallet={sc.state.tonWallet} t={t} />
+        </div>
+      );
+    };
+
+
+    // --- LOGIC HOOKS ---
+
+    const useSmartContract = () => {
+      const [walletConnected, setWalletConnected] = useState(false);
+      const [walletAddress, setWalletAddress] = useState(null);
+      const [tonWallet, setTonWalletState] = useState('');
+      const [isHidden, setIsHidden] = useState(false);
+      const [toasts, setToasts] = useState([]);
+      
+      const companyContractAddress = "EQC_TON_SMART_CONTRACT_ADDRESS_EXAMPLE_9876";
+      const [contractBalance, setContractBalance] = useState(3200.50);
+      const [totalProcessed, setTotalProcessed] = useState(12450.00);
+      const [activePromoters, setActivePromoters] = useState(142);
+      
+      const [promoterAvailable, setPromoterAvailable] = useState(450.00);
+      const [promoterLifetime, setPromoterLifetime] = useState(3250.00);
+      
+      const [promoterVolume, setPromoterVolume] = useState(14500); 
+      const [tenthPlaceVolume, setTenthPlaceVolume] = useState(15000); 
+      const [weeklyPoolTotal, setWeeklyPoolTotal] = useState(8542.00); 
+
+      const [claimHistory, setClaimHistory] = useState([ { date: '12 May 2026', amount: 120.00, tx: '0xTX...4f2' } ]);
+
+      const addToast = useCallback((title, message, type = 'info') => {
+        const id = Date.now() + Math.random(); setToasts(prev => [...prev, { id, title, message, type }]);
+        setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000); 
+      }, []);
+
+      const connect = (role) => {
+        setWalletConnected(true);
+        setWalletAddress(role === 'company' ? "0xCORP_ADMIN...77Xz" : "0xPARTNER...99Xz");
+        setIsHidden(false);
+      };
+
+      const disconnect = () => {
+        setWalletConnected(false);
+        setWalletAddress(null);
+        setIsHidden(false);
+      };
+
+      const simulateDeposit = (t) => {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            setTotalProcessed(p => p + 150);
+            setContractBalance(p => p + 45);
+            setPromoterVolume(p => p + 150);
+            setWeeklyPoolTotal(p => p + 15);
+            addToast(t ? t('toast_dep_title') : "Deposit Detected", t ? t('toast_dep_msg') : "Liquidity updated on-chain.", "info");
+            resolve();
+          }, 1000);
+        });
+      };
+
+      const processClaim = (t) => {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            const amount = promoterAvailable;
+            setPromoterAvailable(0);
+            setPromoterLifetime(p => p + amount);
+            setClaimHistory([{ date: new Date().toLocaleDateString('en-GB'), amount, tx: '0xTX...NEW' }, ...claimHistory]);
+            addToast(t ? t('toast_auth_title') : "Transfer Auth Success", t ? t('toast_auth_msg') : "Funds sent to your wallet.", "success");
+            resolve();
+          }, 1500);
+        });
+      };
+
+      return {
+        state: { walletConnected, walletAddress, tonWallet, isHidden, toasts, contractBalance, totalProcessed, activePromoters, promoterAvailable, promoterLifetime, promoterVolume, tenthPlaceVolume, weeklyPoolTotal, claimHistory, companyContractAddress },
+        connect, disconnect, addToast, simulateDeposit, processClaim, toggleHidden: () => setIsHidden(!isHidden), setTonWallet: setTonWalletState
+      };
+    };
+
+    // --- ACCESS GUARD COMPONENT ---
+    const AccessDeniedScreen = ({ t, onBypass }) => {
+      const [showModal, setShowModal] = useState(false);
+      const [pwd, setPwd] = useState('');
+      const [error, setError] = useState(false);
+
+      const handleUnlock = () => {
+        if (pwd === 'Hpupdsup!1974') {
+          setError(false);
+          setShowModal(false);
+          onBypass();
+        } else {
+          setError(true);
         }
+      };
+
+      return (
+        <div className="flex flex-col items-center justify-center min-h-screen bg-surface-950 px-4 text-center fade-in z-50 relative">
+          <div onClick={() => setShowModal(true)} className="absolute top-8 left-8 w-1.5 h-1.5 bg-zinc-800 rounded-full opacity-50 hover:opacity-100 transition-opacity cursor-pointer"></div>
+          
+          <div className="w-20 h-20 bg-brand-500/10 text-brand-400 rounded-full flex items-center justify-center border border-brand-500/30 mb-6 shadow-[0_0_30px_rgba(212,175,55,0.2)]">
+            <Icon name="lock" size={32} />
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-zinc-100 uppercase tracking-widest mb-3">{t('access_denied')}</h1>
+          <p className="text-sm text-zinc-400 max-w-md mb-8 leading-relaxed">{t('sub_expired')}</p>
+          
+          <a href="#" className="px-8 py-3.5 bg-gold-gradient text-surface-950 font-black rounded-xl uppercase tracking-widest shadow-[0_10px_30px_rgba(212,175,55,0.3)] transition-transform hover:-translate-y-1 inline-flex items-center gap-2 mb-6">
+            <Icon name="zap" size={16} /> {t('renew_btn')}
+          </a>
+          
+          <button onClick={() => setShowModal(true)} className="text-[10px] text-zinc-600 hover:text-brand-400 font-bold uppercase tracking-widest transition-colors cursor-pointer">
+            {t('demo_bypass')}
+          </button>
+
+          {showModal && (
+            <div className="fixed inset-0 z-[200] flex items-center justify-center bg-surface-950/90 backdrop-blur-md p-4 fade-in">
+              <div className="glass-panel border-brand-500/30 rounded-2xl w-full max-w-xs shadow-[0_0_50px_rgba(212,175,55,0.1)] p-6">
+                <h3 className="text-sm font-black text-zinc-100 mb-4 text-center uppercase tracking-wide">System Admin</h3>
+                <input type="password" value={pwd} onChange={e => setPwd(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleUnlock()} placeholder="Password..." className="w-full bg-surface-950 border border-surface-700 rounded-lg px-3 py-2.5 text-zinc-100 mb-3 font-mono focus:outline-none focus:border-brand-500 transition-colors shadow-inner text-xs text-center" />
+                {error && <p className="text-red-500 text-[10px] mb-3 text-center uppercase tracking-widest font-bold">Access Denied</p>}
+                <div className="flex gap-2 mt-1">
+                  <button onClick={() => {setShowModal(false); setPwd(''); setError(false);}} className="flex-1 py-2.5 rounded-lg font-bold text-zinc-400 bg-surface-800 hover:bg-surface-700 transition-colors text-xs uppercase tracking-wider">Cancel</button>
+                  <button onClick={handleUnlock} className="flex-1 py-2.5 rounded-lg font-black text-surface-950 bg-gold-gradient hover:opacity-90 transition-opacity shadow-lg uppercase tracking-wider text-xs">Unlock</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    // --- MAIN APP COMPONENT ---
+    const App = () => {
+      const [lang, setLang] = useState(() => {
+        const browserLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
+        return ['en', 'es', 'pt', 'it'].includes(browserLang) ? browserLang : 'en';
       });
-    }
+      const [view, setView] = useState('user');
+      const [isInitLoad, setIsInitLoad] = useState(true);
+      const [accessStatus, setAccessStatus] = useState('checking'); 
+      
+      const sc = useSmartContract(); 
+      const t = useCallback((key) => translations[lang]?.[key] || translations['en'][key] || key, [lang]);
 
-    // --- 7. UTILS ---
-    function showToast(title, message, type) {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      
-      const colors = type === 'success' ? 'text-success-400' : 'text-brand-400';
-      const icon = type === 'success' ? 'check-circle' : 'info';
-      
-      toast.className = `toast-enter pointer-events-auto flex items-start gap-3 bg-surface-900/95 backdrop-blur-md border border-surface-700 text-zinc-100 px-4 py-3 rounded-xl shadow-2xl`;
-      toast.innerHTML = `
-        <div class="mt-0.5 flex-shrink-0 ${colors}">
-          <i data-lucide="${icon}" class="w-5 h-5"></i>
+      useEffect(() => {
+        const verifyAccess = () => {
+          const isAdmin = localStorage.getItem('bx_admin') === 'true';
+          if (isAdmin) return 'granted';
+          
+          const expiryStr = localStorage.getItem('bx_access_expiry');
+          if (!expiryStr) return 'denied'; 
+          
+          const expiryTime = parseInt(expiryStr, 10);
+          const now = new Date().getTime();
+          if (now > expiryTime) return 'denied';
+          
+          return 'granted';
+        };
+
+        setTimeout(() => {
+          setAccessStatus(verifyAccess());
+          setIsInitLoad(false);
+        }, 800);
+      }, []);
+
+      const demoBypass = () => {
+        const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
+        localStorage.setItem('bx_access_expiry', Date.now() + thirtyDaysInMs);
+        setAccessStatus('granted');
+      };
+
+      const handleWalletToggle = () => {
+        if (sc.state.walletConnected) {
+          sc.disconnect();
+          sc.addToast(t('logout'), "", "info");
+        } else {
+          sc.connect(view);
+        }
+      };
+
+      if (isInitLoad) {
+        return (
+          <div className="initial-loader">
+            <div className="spinner-ring"></div>
+            <div className="text-[10px] text-zinc-500 mt-2 font-black tracking-widest uppercase">{t('init_env')}</div>
+          </div>
+        );
+      }
+
+      if (accessStatus === 'denied') {
+        return <AccessDeniedScreen t={t} onBypass={demoBypass} />;
+      }
+
+      return (
+        <div className="bg-grid-pattern min-h-screen flex flex-col relative w-full">
+          <ToastContainer toasts={sc.state.toasts} />
+          
+          <nav className="glass-panel border-b border-surface-800 z-50 shadow-sm sticky top-0 w-full shrink-0">
+            <div className="max-w-[1400px] mx-auto px-4 h-14 sm:h-16 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden shrink-0 border border-brand-500/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] p-0.5 bg-surface-950 cursor-pointer" onClick={() => setView('user')}>
+                   <img src="logo-tondo.jpeg" onError={(e) => e.target.src='https://ui-avatars.com/api/?name=ER&background=18181b&color=d4af37'} alt="Logo" className="w-full h-full object-cover rounded-full" />
+                </div>
+                <div className="flex flex-col justify-center min-w-0 hidden sm:flex cursor-pointer" onClick={() => setView('user')}>
+                  <h1 className="text-xs font-black tracking-widest text-zinc-100 leading-tight uppercase truncate">{t('app_title')}</h1>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+                <LanguageSelector lang={lang} setLang={setLang} />
+
+                {sc.state.walletConnected && (
+                  <div className="hidden md:flex items-center bg-surface-950/80 border border-surface-800 rounded-lg p-1 shadow-inner gap-1">
+                    <button onClick={() => setView('user')} className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${view === 'user' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}>{t('user_dash')}</button>
+                    <button onClick={() => setView('promoter')} className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${view === 'promoter' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}>{t('partner_dash')}</button>
+                    <button onClick={() => setView('company')} className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${view === 'company' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}>{t('company_dash')}</button>
+                    <div className="w-px h-4 bg-surface-700 mx-1"></div>
+                    <a href="whitepaper.html" target="_blank" className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all flex items-center gap-1.5 text-brand-500/70 hover:text-brand-400">
+                      <Icon name="file-text" size={12} /> {t('whitepaper')}
+                    </a>
+                  </div>
+                )}
+
+                <button onClick={handleWalletToggle} className={`flex items-center gap-1.5 px-4 py-2 rounded-lg font-black text-[10px] uppercase tracking-wider transition-all shadow-lg ${sc.state.walletConnected ? 'bg-surface-900 border border-surface-700 text-zinc-300 hover:bg-surface-800 hover:text-white' : 'bg-gold-gradient text-surface-950 hover:opacity-90 hover:-translate-y-0.5 shadow-[0_5px_20px_rgba(212,175,55,0.2)]'}`}>
+                  {sc.state.walletConnected ? (<><Icon name="log-out" size={12} className="text-zinc-500 shrink-0"/><span className="hidden sm:inline">{t('logout')}</span></>) : (<><Icon name="log-in" size={12} className="shrink-0"/> <span className="hidden sm:inline">{t('login')}</span></>)}
+                </button>
+              </div>
+            </div>
+          </nav>
+
+          <main className="max-w-[1400px] mx-auto px-2 sm:px-4 lg:px-6 flex-1 flex flex-col w-full relative z-10 md:pb-4 pb-24">
+            {!sc.state.walletConnected ? (
+              <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6 fade-in mt-20">
+                <div className="w-24 h-24 bg-surface-900 text-brand-400 rounded-3xl flex items-center justify-center border border-brand-500/50 shadow-[0_0_40px_rgba(212,175,55,0.2)] relative">
+                  <div className="absolute inset-0 bg-brand-500/10 rounded-3xl animate-pulse"></div>
+                  <Icon name="infinity" size={32} className="relative z-10" />
+                </div>
+                <div className="max-w-md px-4">
+                  <h2 className="text-2xl font-black text-zinc-100 uppercase tracking-wide">{t('elite_platform')}</h2>
+                </div>
+                <button onClick={handleWalletToggle} className="px-8 py-3 bg-gold-gradient text-surface-950 rounded-xl font-black text-xs uppercase tracking-widest shadow-[0_10px_30px_rgba(212,175,55,0.3)] transition-transform hover:-translate-y-1 flex items-center gap-2">
+                   {t('login')} <Icon name="arrow-right" size={14} />
+                </button>
+              </div>
+            ) : (
+              view === 'user' ? <UserDashboard t={t} lang={lang} sc={sc} /> :
+              view === 'company' ? <CompanyDashboard sc={sc} t={t} /> : 
+              <PromoterDashboard sc={sc} t={t} lang={lang} />
+            )}
+          </main>
+          
+          {/* Mobile Bottom Navigation */}
+          {sc.state.walletConnected && (
+            <div className="md:hidden fixed bottom-3 left-3 right-3 bg-surface-950/95 backdrop-blur-xl border border-surface-800 rounded-xl p-1.5 flex shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 gap-1">
+              <button onClick={() => setView('user')} className={`flex-1 py-3 rounded-lg text-[8px] font-bold uppercase tracking-wider transition-all flex flex-col items-center gap-1 ${view === 'user' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}><Icon name="user" size={14} /> {t('user_dash')}</button>
+              <button onClick={() => setView('promoter')} className={`flex-1 py-3 rounded-lg text-[8px] font-bold uppercase tracking-wider transition-all flex flex-col items-center gap-1 ${view === 'promoter' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}><Icon name="users" size={14} /> {t('partner_dash')}</button>
+              <button onClick={() => setView('company')} className={`flex-1 py-3 rounded-lg text-[8px] font-bold uppercase tracking-wider transition-all flex flex-col items-center gap-1 ${view === 'company' ? 'bg-surface-800 text-brand-400 shadow-sm' : 'text-zinc-500'}`}><Icon name="building" size={14} /> {t('company_dash')}</button>
+              <a href="whitepaper.html" target="_blank" className={`flex-1 py-3 rounded-lg text-[8px] font-bold uppercase tracking-wider transition-all flex flex-col items-center gap-1 text-zinc-500`}><Icon name="file-text" size={14} /> W. PAPER</a>
+            </div>
+          )}
         </div>
-        <div class="overflow-hidden min-w-0 flex-1">
-          <p class="text-xs font-bold truncate">${title}</p>
-          <p class="text-[10px] text-zinc-400 mt-0.5 leading-snug">${message}</p>
-        </div>
-      `;
-      
-      container.appendChild(toast);
-      lucide.createIcons({root: toast});
-      
-      setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateX(100%)';
-        toast.style.transition = 'all 0.3s ease';
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
-    }
+      );
+    };
 
-    // Boot app
-    window.onload = initApp;
-
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
   </script>
 </body>
 </html>
