@@ -144,7 +144,7 @@
         mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun", today: "Today",
         marketing_funnels: "Marketing Funnels (3)", funnel_1: "FUNNEL 1: 50% DISCOUNT", funnel_1_desc: "Offers 50% off list price + free signals + Academy Lesson 1.",
         funnel_2: "FUNNEL 2: MASTERCLASS", funnel_2_desc: "Free Live Masterclass invite + free signals + Academy Lesson 1.",
-        funnel_3: "FUNNEL 3: VIRAL LOOP", funnel_3_desc: "Offers 1 Free Premium Week by unlocking the friend invite task.",
+        funnel_3: "FUNNEL 3: VIRAL LOOP", funnel_3_desc: "Offers 1 Free Week to both users by inviting 1 friend.",
         elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "Live Event", viral_task_tag: "VIRAL TASK",
         welcome_title: "OPERATIONS HUB", system_status_ok: "SYSTEM STATUS: OPTIMAL", sign_tx: "Sign transaction in your wallet.", users_label: "Users", elite_platform: "Elite Platform", init_env: "Initializing Elite Environment...",
         realtime_leaderboard: "Live Leaderboard", bot_managed: "Auto-updated by Python Bot", training_setup: "Training & Setup", signals_access: "Premium Signals", merch_store: "Merch Store",
@@ -173,7 +173,7 @@
         mon: "Lun", tue: "Mar", wed: "Mer", thu: "Gio", fri: "Ven", sat: "Sab", sun: "Dom", today: "Oggi",
         marketing_funnels: "Funnels Marketing (3)", funnel_1: "FUNNEL 1: SCONTO 50%", funnel_1_desc: "Offre il 50% sul listino + segnali gratis + 1° lezione Academy.",
         funnel_2: "FUNNEL 2: MASTERCLASS", funnel_2_desc: "Invito Masterclass Live + segnali gratis + 1° lezione Academy.",
-        funnel_3: "FUNNEL 3: VIRAL LOOP", funnel_3_desc: "Offre 1 Settimana Premium gratis completando il task di invito.",
+        funnel_3: "FUNNEL 3: VIRAL LOOP", funnel_3_desc: "Offre 1 Settimana Gratis a entrambi invitando 1 solo amico.",
         elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "Evento Live", viral_task_tag: "TASK VIRALE",
         welcome_title: "HUB OPERATIVO", system_status_ok: "STATO SISTEMA: OTTIMALE", sign_tx: "Firma la transazione nel tuo wallet.", users_label: "Utenti", elite_platform: "Piattaforma Elite", init_env: "Inizializzazione Ambiente...",
         realtime_leaderboard: "Classifica in Tempo Reale", bot_managed: "Gestita da Bot Python", training_setup: "Formazione e Setup", signals_access: "Segnali Premium", merch_store: "Store Ufficiale",
@@ -202,7 +202,7 @@
         mon: "Lun", tue: "Mar", wed: "Mié", thu: "Jue", fri: "Vie", sat: "Sáb", sun: "Dom", today: "Hoy",
         marketing_funnels: "Embudos de Marketing (3)", funnel_1: "FUNNEL 1: DESCUENTO 50%", funnel_1_desc: "Ofrece 50% de descuento + señales gratis + Lección 1 Academy.",
         funnel_2: "FUNNEL 2: MASTERCLASS", funnel_2_desc: "Invitación a Masterclass en vivo + señales gratis + Lección 1 Academy.",
-        funnel_3: "FUNNEL 3: VIRAL LOOP", funnel_3_desc: "Ofrece 1 Semana Premium Gratis completando la tarea de invitación.",
+        funnel_3: "FUNNEL 3: VIRAL LOOP", funnel_3_desc: "Ofrece 1 Semana Gratis a ambos invitando a 1 amigo.",
         elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "En Vivo", viral_task_tag: "TAREA VIRAL",
         welcome_title: "CENTRO DE OPERACIONES", system_status_ok: "ESTADO SISTEMA: ÓPTIMO", sign_tx: "Firma la transacción en tu billetera.", users_label: "Usuarios", elite_platform: "Plataforma Élite", init_env: "Inicializando Entorno...",
         realtime_leaderboard: "Clasificación en Vivo", bot_managed: "Actualizado por Bot Python", training_setup: "Formación y Setup", signals_access: "Señales Premium", merch_store: "Tienda Oficial",
@@ -231,7 +231,7 @@
         mon: "Seg", tue: "Ter", wed: "Qua", thu: "Qui", fri: "Sex", sat: "Sáb", sun: "Dom", today: "Hoje",
         marketing_funnels: "Funis de Marketing (3)", funnel_1: "FUNIL 1: DESCONTO 50%", funnel_1_desc: "Oferece 50% de desconto + sinais grátis + Lição 1 Academy.",
         funnel_2: "FUNIL 2: MASTERCLASS", funnel_2_desc: "Convite Masterclass ao vivo + sinais grátis + Lição 1 Academy.",
-        funnel_3: "FUNIL 3: VIRAL LOOP", funnel_3_desc: "Oferece 1 Semana Premium Grátis desbloqueando a tarefa de convite.",
+        funnel_3: "FUNIL 3: VIRAL LOOP", funnel_3_desc: "Oferece 1 Semana Grátis a ambos convidando 1 amigo.",
         elite_status: "ELITE", promo_50_tag: "-50% VIP", live_event_tag: "Ao Vivo", viral_task_tag: "TAREFA VIRAL",
         welcome_title: "CENTRAL DE OPERAÇÕES", system_status_ok: "STATUS SISTEMA: IDEAL", sign_tx: "Assine a transação na sua carteira.", users_label: "Usuários", elite_platform: "Plataforma Elite", init_env: "Inicializando Ambiente...",
         realtime_leaderboard: "Classificação ao Vivo", bot_managed: "Atualizado por Bot Python", training_setup: "Treinamento e Setup", signals_access: "Sinais Premium", merch_store: "Loja Oficial",
@@ -447,12 +447,6 @@
                   {t('system_status_ok')}
                 </p>
               </div>
-              
-              <div className="flex items-center gap-3 bg-surface-950 p-2 sm:p-3 rounded-lg border border-surface-800 shadow-inner">
-                <a href="whitepaper.html" target="_blank" className="flex items-center gap-1.5 px-4 py-2 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded-md text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-colors w-full md:w-auto justify-center">
-                  <Icon name="file-text" size={14} className="text-brand-500" /> {t('whitepaper')}
-                </a>
-              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -521,9 +515,6 @@
               </div>
             </div>
             <div className="w-full sm:w-auto shrink-0 flex gap-2">
-              <a href="whitepaper.html" target="_blank" className="flex-1 sm:flex-none px-4 py-2.5 bg-surface-800 hover:bg-surface-700 text-zinc-300 rounded-lg text-xs font-black flex items-center justify-center gap-1.5 transition-colors uppercase tracking-wide shadow-sm border border-surface-700">
-                <Icon name="file-text" size={14} /> {t('whitepaper')}
-              </a>
               <button onClick={async () => { setIsSimulating(true); await sc.simulateDeposit(t); setIsSimulating(false); }} disabled={isSimulating} className="flex-1 sm:flex-none px-4 py-2.5 bg-gold-gradient hover:opacity-90 text-surface-950 rounded-lg text-xs font-black flex items-center justify-center gap-1.5 disabled:opacity-50 transition-opacity uppercase tracking-wide shadow-sm">
                 {isSimulating ? <Icon name="loader-2" size={14} className="animate-spin" /> : <Icon name="plus" size={14} />} {t('simulate_deposit')}
               </button>
