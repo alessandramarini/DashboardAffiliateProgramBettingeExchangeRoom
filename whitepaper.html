@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en" class="antialiased">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Whitepaper | Betting Exchange Room</title>
+  
+  <meta name="theme-color" content="#09090b">
+
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body, html {
+      margin: 0; padding: 0;
+      background-color: #09090b !important; color: #f4f4f5 !important;
+      font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
+      height: 100%;
+    }
+    
+    .bg-grid-pattern {
+      background-color: #09090b;
+      background-image: 
+        radial-gradient(rgba(163, 230, 53, 0.05) 1px, transparent 1px), /* Neon green hint */
+        radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 32px 32px, 64px 64px;
+      background-position: 0 0, 16px 16px;
+      position: relative;
+    }
+    .bg-grid-pattern::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 1000px; height: 600px;
+      background: radial-gradient(circle, rgba(163, 230, 53, 0.03) 0%, rgba(9, 9, 11, 0) 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .text-brand-gradient {
+      background: linear-gradient(135deg, #A3E635 0%, #65a30d 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .glass-panel {
+      background: rgba(24, 24, 27, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #A3E635; }
+
+    /* Tabs Logic */
+    .tab-content { display: none; }
+    .tab-content.active { display: flex; flex-direction: column; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: { 
+            brand: { 300: '#d9f99d', 400: '#bef264', 500: '#A3E635', 600: '#84cc16', 700: '#65a30d' }, /* Neon Green theme */
+            gold: { 400: '#fcd34d', 500: '#d4af37' },
+            surface: { 950: '#09090b', 900: '#18181b', 800: '#27272a', 700: '#3f3f46' },
+            zinc: { 300: '#d4d4d8', 400: '#a1a1aa', 500: '#71717a' }
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-surface-950 text-zinc-300 min-h-screen overflow-y-auto md:h-screen md:overflow-hidden flex flex-col md:flex-row bg-grid-pattern selection:bg-brand-500/30">
+
+<!-- SIDEBAR -->
+<nav class="w-full md:w-72 bg-surface-950/80 backdrop-blur-xl border-b md:border-b-0 md:border-r border-surface-800 flex flex-col shadow-xl z-20 h-auto md:h-full shrink-0 relative">
+  <div class="p-4 md:p-6 bg-surface-900/50 border-b border-surface-800 flex justify-between items-center md:block">
+    <div class="flex items-center gap-3 md:block">
+      <!-- Logo Return -->
+      <a href="index.html" class="w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden border border-brand-500/30 block shrink-0 hover:scale-105 transition-transform" title="Back to Home">
+        <img src="https://ui-avatars.com/api/?name=BE&background=111827&color=A3E635&rounded=true" alt="Logo" class="w-full h-full object-cover">
+      </a>
+      <div class="md:mt-4">
+        <h1 class="text-sm md:text-base font-black tracking-widest text-zinc-100 uppercase leading-tight">Betting Exchange <br/><span class="text-brand-500">Room</span></h1>
+        <p class="text-[10px] text-zinc-500 font-mono font-bold tracking-widest uppercase mt-1">Official Whitepaper v3.1</p>
+      </div>
+    </div>
+    
+    <!-- Language Selector -->
+    <div class="flex items-center gap-1.5 mt-0 md:mt-6 bg-surface-950 p-1 rounded-lg border border-surface-800 shadow-inner">
+      <button onclick="changeLanguage('en')" id="lang-en" class="p-1.5 rounded bg-surface-800 border border-surface-700 transition-all" title="English">
+        <img src="https://flagcdn.com/gb.svg" alt="EN" class="w-5 h-3.5 object-cover rounded-[1px] shadow-[0_0_2px_rgba(0,0,0,0.5)]">
+      </button>
+      <button onclick="changeLanguage('es')" id="lang-es" class="p-1.5 rounded opacity-50 hover:opacity-100 border border-transparent transition-all" title="Español">
+        <img src="https://flagcdn.com/es.svg" alt="ES" class="w-5 h-3.5 object-cover rounded-[1px] shadow-[0_0_2px_rgba(0,0,0,0.5)]">
+      </button>
+      <button onclick="changeLanguage('pt')" id="lang-pt" class="p-1.5 rounded opacity-50 hover:opacity-100 border border-transparent transition-all" title="Português">
+        <img src="https://flagcdn.com/pt.svg" alt="PT" class="w-5 h-3.5 object-cover rounded-[1px] shadow-[0_0_2px_rgba(0,0,0,0.5)]">
+      </button>
+      <button onclick="changeLanguage('it')" id="lang-it" class="p-1.5 rounded opacity-50 hover:opacity-100 border border-transparent transition-all" title="Italiano">
+        <img src="https://flagcdn.com/it.svg" alt="IT" class="w-5 h-3.5 object-cover rounded-[1px] shadow-[0_0_2px_rgba(0,0,0,0.5)]">
+      </button>
+    </div>
+  </div>
+  
+  <div class="flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto p-3 gap-2 flex-1 custom-scrollbar">
+    <button onclick="switchTab('abstract')" id="btn-abstract" class="tab-btn flex-1 md:flex-none text-left px-4 py-3 rounded-xl bg-surface-800 text-brand-400 text-xs md:text-sm font-bold uppercase tracking-wide transition-all shadow-sm border border-surface-700 flex items-center gap-2 whitespace-nowrap">
+      <i data-lucide="book-open" class="w-4 h-4"></i> <span data-i18n="nav_abstract">1. Abstract</span>
+    </button>
+    <button onclick="switchTab('engine')" id="btn-engine" class="tab-btn flex-1 md:flex-none text-left px-4 py-3 rounded-xl text-zinc-500 hover:text-zinc-300 text-xs md:text-sm font-bold uppercase tracking-wide transition-all border border-transparent flex items-center gap-2 whitespace-nowrap">
+      <i data-lucide="cpu" class="w-4 h-4"></i> <span data-i18n="nav_engine">2. Algo Engine</span>
+    </button>
+    <button onclick="switchTab('web3')" id="btn-web3" class="tab-btn flex-1 md:flex-none text-left px-4 py-3 rounded-xl text-zinc-500 hover:text-zinc-300 text-xs md:text-sm font-bold uppercase tracking-wide transition-all border border-transparent flex items-center gap-2 whitespace-nowrap">
+      <i data-lucide="network" class="w-4 h-4"></i> <span data-i18n="nav_web3">3. Web3 System</span>
+    </button>
+    <button onclick="switchTab('tokenomics')" id="btn-tokenomics" class="tab-btn flex-1 md:flex-none text-left px-4 py-3 rounded-xl text-zinc-500 hover:text-zinc-300 text-xs md:text-sm font-bold uppercase tracking-wide transition-all border border-transparent flex items-center gap-2 whitespace-nowrap">
+      <i data-lucide="pie-chart" class="w-4 h-4"></i> <span data-i18n="nav_tokenomics">4. Tokenomics</span>
+    </button>
+    <div class="hidden md:block flex-1"></div>
+    <a href="index.html" class="tab-btn hidden md:flex text-left px-4 py-3 rounded-xl text-zinc-400 hover:text-white text-xs font-mono font-bold tracking-widest transition-all border border-surface-700 bg-surface-900/50 items-center gap-2">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i> <span data-i18n="nav_back">Back to Site</span>
+    </a>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 relative z-10 custom-scrollbar flex flex-col justify-start min-h-0">
+
+  <!-- TAB: ABSTRACT -->
+  <div id="abstract" class="tab-content active max-w-4xl w-full mx-auto flex flex-col gap-6">
+    <header class="shrink-0 mb-4">
+      <h2 class="text-2xl md:text-3xl font-black text-zinc-100 mb-2 tracking-widest uppercase flex items-center gap-3">
+        <span class="text-brand-gradient" data-i18n="ab_title">The Paradigm Shift</span>
+      </h2>
+      <p class="text-xs md:text-sm text-brand-400 bg-brand-500/10 inline-block px-3 py-1.5 rounded-lg border border-brand-500/20 font-bold uppercase tracking-widest" data-i18n="ab_subtitle">Expected Value vs Gambling</p>
+    </header>
+    
+    <div class="glass-panel p-6 md:p-8 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.3)] flex flex-col gap-5 text-sm md:text-base leading-relaxed text-zinc-300 border-t-2 border-t-brand-500">
+      <p data-i18n="ab_p1">Traditional sports betting is mathematically designed to drain the user's bankroll over time. The bookmaker's margin (vigorish) guarantees a negative Expected Value (-EV) for the average punter, making long-term profitability statistically impossible without a quantitative edge.</p>
+      
+      <p data-i18n="ab_p2"><strong>Betting Exchange Room</strong> disrupts this model. By operating exclusively on betting exchanges, we eliminate the bookmaker's spread. We do not gamble; we execute algorithmic trades based on statistical anomalies and market inefficiencies.</p>
+
+      <div class="bg-surface-950 p-5 rounded-xl border border-surface-800 flex flex-col sm:flex-row gap-6 items-center mt-2">
+        <div class="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center shrink-0 border border-red-500/30">
+          <i data-lucide="trending-down" class="w-8 h-8 text-red-500"></i>
+        </div>
+        <div class="flex-1">
+          <h4 class="text-red-400 font-bold uppercase tracking-wider mb-1 text-xs" data-i18n="ab_box1_t">The Old Way: Gambling</h4>
+          <p class="text-xs text-zinc-400" data-i18n="ab_box1_d">Emotional decisions, chasing losses, ignoring probability, fighting against mathematical disadvantages.</p>
+        </div>
+      </div>
+
+      <div class="bg-surface-950 p-5 rounded-xl border border-brand-500/30 flex flex-col sm:flex-row gap-6 items-center shadow-[0_0_15px_rgba(163,230,53,0.1)]">
+        <div class="w-16 h-16 rounded-full bg-brand-500/10 flex items-center justify-center shrink-0 border border-brand-500/30">
+          <i data-lucide="trending-up" class="w-8 h-8 text-brand-500"></i>
+        </div>
+        <div class="flex-1">
+          <h4 class="text-brand-400 font-bold uppercase tracking-wider mb-1 text-xs" data-i18n="ab_box2_t">The New Way: Quantitative Trading</h4>
+          <p class="text-xs text-zinc-400" data-i18n="ab_box2_d">Strict bankroll management, compounding interest, finding +EV (Positive Expected Value) situations, emotionless execution.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: ALGO ENGINE -->
+  <div id="engine" class="tab-content max-w-4xl w-full mx-auto flex flex-col gap-6">
+    <header class="shrink-0 mb-4">
+      <h2 class="text-2xl md:text-3xl font-black text-zinc-100 mb-2 tracking-widest uppercase flex items-center gap-3">
+        <span class="text-brand-gradient" data-i18n="en_title">Algorithmic Engine</span>
+      </h2>
+      <p class="text-xs md:text-sm text-zinc-400 bg-surface-900/50 inline-block px-3 py-1.5 rounded-lg border border-surface-800" data-i18n="en_subtitle">Data-Driven Signal Generation</p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="glass-panel p-6 rounded-2xl border-t-2 border-t-blue-500 shadow-lg flex flex-col">
+        <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20 text-blue-500 mb-4">
+          <i data-lucide="brain-circuit" class="w-5 h-5"></i>
+        </div>
+        <h3 class="font-black text-zinc-100 mb-2 uppercase tracking-wide text-sm" data-i18n="en_card1_t">Data Aggregation</h3>
+        <p class="text-xs text-zinc-400 leading-relaxed" data-i18n="en_card1_d">Our systems ingest thousands of data points per minute: historical performance, line movements, volume spikes on exchanges, and API data feeds. The human element is removed to prevent cognitive bias.</p>
+      </div>
+
+      <div class="glass-panel p-6 rounded-2xl border-t-2 border-t-purple-500 shadow-lg flex flex-col">
+        <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center border border-purple-500/20 text-purple-500 mb-4">
+          <i data-lucide="shield-alert" class="w-5 h-5"></i>
+        </div>
+        <h3 class="font-black text-zinc-100 mb-2 uppercase tracking-wide text-sm" data-i18n="en_card2_t">Dynamic Stop Loss</h3>
+        <p class="text-xs text-zinc-400 leading-relaxed" data-i18n="en_card2_d">Capital preservation is rule #1. Every signal issued comes with a pre-calculated exit point. We mathematically cap downside risk while allowing probability variance to work in our favor over a large sample size.</p>
+      </div>
+    </div>
+
+    <div class="w-full">
+      <div class="bg-gradient-to-br from-surface-900 to-surface-950 p-6 rounded-2xl shadow-[0_0_30px_rgba(163,230,53,0.1)] border border-brand-500/20 relative overflow-hidden">
+        <div class="absolute top-0 right-0 p-8 opacity-5"><i data-lucide="bot" class="w-32 h-32 text-brand-500"></i></div>
+        <h3 class="text-base md:text-lg font-black mb-4 text-brand-400 uppercase tracking-widest flex items-center gap-2 relative z-10" data-i18n="en_exec_title">
+          <i data-lucide="terminal-square" class="w-5 h-5"></i> The Execution Protocol
+        </h3>
+        
+        <div class="space-y-3 relative z-10 font-mono text-xs md:text-sm">
+          <div class="flex items-center gap-3 p-3 bg-surface-950 rounded-lg border border-surface-800">
+            <span class="text-zinc-500 font-bold">01.</span> <span class="text-zinc-300" data-i18n="en_step1">Algorithm identifies a +EV anomaly in market liquidity.</span>
+          </div>
+          <div class="flex items-center gap-3 p-3 bg-surface-950 rounded-lg border border-surface-800">
+            <span class="text-zinc-500 font-bold">02.</span> <span class="text-zinc-300" data-i18n="en_step2">Signal is dispatched instantly to the Premium Telegram Room.</span>
+          </div>
+          <div class="flex items-center gap-3 p-3 bg-surface-950 rounded-lg border border-surface-800 border-l-2 border-l-brand-500">
+            <span class="text-brand-500 font-bold">03.</span> <span class="text-zinc-100 font-bold" data-i18n="en_step3">User copies trade, sets specified Stop Loss, and waits. Emotionless.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: WEB3 SYSTEM -->
+  <div id="web3" class="tab-content max-w-4xl w-full mx-auto flex flex-col gap-6">
+    <header class="shrink-0 mb-4">
+      <h2 class="text-2xl md:text-3xl font-black text-zinc-100 mb-2 tracking-widest uppercase flex items-center gap-3">
+        <span class="text-brand-gradient" data-i18n="w3_title">Zero-Trust Web3 Architecture</span>
+      </h2>
+      <p class="text-xs md:text-sm text-zinc-400 bg-surface-900/50 inline-block px-3 py-1.5 rounded-lg border border-surface-800" data-i18n="w3_subtitle">TON Blockchain Integration</p>
+    </header>
+
+    <div class="glass-panel p-6 rounded-2xl shadow-lg border border-surface-800 mb-2">
+       <h3 class="font-black text-zinc-100 mb-3 flex items-center gap-2 uppercase tracking-wide text-sm">
+         <i data-lucide="lock" class="w-4 h-4 text-brand-500"></i> <span data-i18n="w3_man_title">Architecture Mandate</span>
+       </h3>
+       <p class="text-sm text-zinc-400 leading-relaxed mb-4" data-i18n="w3_man_desc">Strict separation of concerns ensures absolute security. The Off-Chain Python Backend and Database act as the sole Source of Truth for user identity, subscription days, and referral trees. The On-Chain TON Smart Contract acts strictly as a "Dumb Vault" to process USDT payments transparently.</p>
+       
+       <div class="grid grid-cols-2 gap-4 font-mono text-[11px] md:text-xs">
+          <div class="bg-surface-950 p-4 rounded-xl border border-surface-800 shadow-inner">
+             <div class="text-blue-400 font-bold mb-2 uppercase tracking-widest">Off-Chain Backend</div>
+             <ul class="space-y-1 text-zinc-500">
+               <li>- Telegram ID (Primary Key)</li>
+               <li>- Signal Delivery Engine</li>
+               <li>- Affiliate Tree Logic</li>
+               <li>- Day Recalculation Math</li>
+             </ul>
+          </div>
+          <div class="bg-surface-950 p-4 rounded-xl border border-surface-800 shadow-inner">
+             <div class="text-brand-400 font-bold mb-2 uppercase tracking-widest">On-Chain Vault (TON)</div>
+             <ul class="space-y-1 text-zinc-500">
+               <li>- Global Borderless Payments</li>
+               <li>- Immutable Transaction Hashes</li>
+               <li>- Smart Contract Escrow</li>
+               <li>- ED25519 Signature Verification</li>
+             </ul>
+          </div>
+       </div>
+    </div>
+
+    <div class="w-full">
+      <h3 class="text-sm md:text-base font-black text-zinc-100 mb-3 uppercase tracking-widest flex items-center gap-2">
+        <i data-lucide="cpu" class="w-4 h-4 text-red-500"></i> <span data-i18n="w3_fraud_title">Anti-Fraud Math Engine</span>
+      </h3>
+      <div class="bg-surface-900/80 p-5 rounded-xl border border-red-500/20 text-xs md:text-sm text-zinc-300 leading-relaxed">
+        <p data-i18n="w3_fraud_desc">To prevent "Payload Spoofing" (e.g., a hacker modifying the web request to claim a 180-day Elite package but only transferring 47 USDT on-chain), the backend ignores frontend payload requests. Access days are assigned <strong>solely and strictly</strong> proportional to the verified USDT collateral received by the Smart Contract on the Blockchain.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: TOKENOMICS -->
+  <div id="tokenomics" class="tab-content max-w-4xl w-full mx-auto flex flex-col gap-6">
+    <header class="shrink-0 mb-4">
+      <h2 class="text-2xl md:text-3xl font-black text-zinc-100 mb-2 tracking-widest uppercase flex items-center gap-3">
+        <span class="text-brand-gradient" data-i18n="tk_title">Tokenomics & Growth</span>
+      </h2>
+      <p class="text-xs md:text-sm text-zinc-400 bg-surface-900/50 inline-block px-3 py-1.5 rounded-lg border border-surface-800" data-i18n="tk_subtitle">Pricing and Affiliate Engine</p>
+    </header>
+
+    <div class="w-full">
+      <h3 class="text-sm md:text-base font-black text-zinc-100 mb-3 uppercase tracking-widest flex items-center gap-2">
+        <i data-lucide="shopping-cart" class="w-4 h-4 text-brand-500"></i> <span data-i18n="tk_matrix_title">Universal Pricing Matrix</span>
+      </h3>
+      <div class="overflow-x-auto rounded-2xl border border-surface-800 shadow-lg glass-panel">
+        <table class="w-full text-left text-xs md:text-sm min-w-[500px] md:min-w-0">
+          <thead class="bg-surface-900 border-b border-surface-800 text-zinc-400 font-bold uppercase tracking-wider text-[10px] md:text-xs">
+            <tr>
+              <th class="p-4" data-i18n="tk_th1">Access Tier</th>
+              <th class="p-4" data-i18n="tk_th2">Public Web Price</th>
+              <th class="p-4 text-brand-400" data-i18n="tk_th3">Referral Link Price (-50%)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-surface-800/50 font-mono text-zinc-300 bg-surface-950/30">
+            <tr class="hover:bg-surface-900/50 transition-colors">
+              <td class="p-4 font-sans font-bold">Starter (30 days)</td>
+              <td class="p-4">94 USDT</td>
+              <td class="p-4 font-black text-brand-400 bg-brand-500/5">47 USDT</td>
+            </tr>
+            <tr class="hover:bg-surface-900/50 transition-colors">
+              <td class="p-4 font-sans font-bold text-gold-400">Pro (90 days)</td>
+              <td class="p-4">234 USDT</td>
+              <td class="p-4 font-black text-brand-400 bg-brand-500/5">117 USDT</td>
+            </tr>
+            <tr class="hover:bg-surface-900/50 transition-colors">
+              <td class="p-4 font-sans font-bold">Elite (180 days)</td>
+              <td class="p-4">394 USDT</td>
+              <td class="p-4 font-black text-brand-400 bg-brand-500/5">197 USDT</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="bg-gradient-to-br from-surface-900 to-surface-950 p-6 rounded-2xl shadow-[0_0_30px_rgba(212,175,55,0.05)] border border-surface-700 relative overflow-hidden mt-4">
+      <div class="absolute top-0 right-0 p-8 opacity-5"><i data-lucide="infinity" class="w-32 h-32 text-gold-500"></i></div>
+      <h3 class="text-base md:text-lg font-black mb-4 text-gold-400 uppercase tracking-widest flex items-center gap-2 relative z-10" data-i18n="tk_viral_title">
+        <i data-lucide="infinity" class="w-5 h-5"></i> The Infinity Viral Loop
+      </h3>
+      <p class="text-xs md:text-sm text-zinc-300 leading-relaxed relative z-10 font-medium bg-surface-950/50 p-4 rounded-xl border border-surface-800" data-i18n="tk_viral_desc">
+        Our core growth engine requires zero marketing spend. Users who register via a Referral Link are prompted to invite 2 friends to unlock a 7-Day Free Trial. Once completed, all 3 users receive the trial. Post-trial, FOMO and verified results drive high-conversion upgrades at the discounted Referral Price, perpetuating the loop.
+      </p>
+    </div>
+
+    <div class="glass-panel p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.3)]">
+      <h3 class="font-black text-zinc-100 mb-4 uppercase tracking-widest text-sm border-b border-surface-800 pb-2" data-i18n="tk_split_title">Revenue Split (Referred Sales)</h3>
+      <div class="space-y-2 font-mono text-xs md:text-sm text-zinc-400 mt-4">
+        <div class="flex justify-between items-center p-2 bg-surface-950 rounded border border-surface-800">
+          <span data-i18n="tk_lvl1">Level 1 (Direct Referrer)</span><span class="font-bold text-brand-400">50%</span>
+        </div>
+        <div class="flex justify-between items-center p-2 bg-surface-950 rounded border border-surface-800">
+          <span data-i18n="tk_lvl2">Level 2 (Mentor)</span><span class="font-bold text-brand-400">10%</span>
+        </div>
+        <div class="flex justify-between items-center p-2 bg-surface-950 rounded border border-surface-800">
+          <span data-i18n="tk_lvl3">Level 3 (Master)</span><span class="font-bold text-brand-400">5%</span>
+        </div>
+        <div class="flex justify-between items-center p-2 mt-4 text-zinc-500">
+          <span data-i18n="tk_pool">Top 10 Weekly Pool</span><span class="font-bold">10%</span>
+        </div>
+        <div class="flex justify-between items-center p-2 text-zinc-500">
+          <span data-i18n="tk_treasury">Treasury (Company)</span><span class="font-bold">25%</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+  // Initialize Lucide Icons
+  lucide.createIcons();
+
+  // Translations object tailored to the whitepaper content
+  const translations = {
+    en: {
+      nav_abstract: "1. Abstract", nav_engine: "2. Algo Engine", nav_web3: "3. Web3 System", nav_tokenomics: "4. Tokenomics", nav_back: "Back to Site",
+      ab_title: "The Paradigm Shift", ab_subtitle: "Expected Value vs Gambling",
+      ab_p1: "Traditional sports betting is mathematically designed to drain the user's bankroll over time. The bookmaker's margin (vigorish) guarantees a negative Expected Value (-EV) for the average punter, making long-term profitability statistically impossible without a quantitative edge.",
+      ab_p2: "<strong>Betting Exchange Room</strong> disrupts this model. By operating exclusively on betting exchanges, we eliminate the bookmaker's spread. We do not gamble; we execute algorithmic trades based on statistical anomalies and market inefficiencies.",
+      ab_box1_t: "The Old Way: Gambling", ab_box1_d: "Emotional decisions, chasing losses, ignoring probability, fighting against mathematical disadvantages.",
+      ab_box2_t: "The New Way: Quantitative Trading", ab_box2_d: "Strict bankroll management, compounding interest, finding +EV (Positive Expected Value) situations, emotionless execution.",
+      
+      en_title: "Algorithmic Engine", en_subtitle: "Data-Driven Signal Generation",
+      en_card1_t: "Data Aggregation", en_card1_d: "Our systems ingest thousands of data points per minute: historical performance, line movements, volume spikes on exchanges, and API data feeds. The human element is removed to prevent cognitive bias.",
+      en_card2_t: "Dynamic Stop Loss", en_card2_d: "Capital preservation is rule #1. Every signal issued comes with a pre-calculated exit point. We mathematically cap downside risk while allowing probability variance to work in our favor over a large sample size.",
+      en_exec_title: "The Execution Protocol",
+      en_step1: "Algorithm identifies a +EV anomaly in market liquidity.",
+      en_step2: "Signal is dispatched instantly to the Premium Telegram Room.",
+      en_step3: "User copies trade, sets specified Stop Loss, and waits. Emotionless.",
+
+      w3_title: "Zero-Trust Web3 Architecture", w3_subtitle: "TON Blockchain Integration",
+      w3_man_title: "Architecture Mandate", w3_man_desc: "Strict separation of concerns ensures absolute security. The Off-Chain Python Backend and Database act as the sole Source of Truth for user identity, subscription days, and referral trees. The On-Chain TON Smart Contract acts strictly as a \"Dumb Vault\" to process USDT payments transparently.",
+      w3_fraud_title: "Anti-Fraud Math Engine", w3_fraud_desc: "To prevent \"Payload Spoofing\" (e.g., a hacker modifying the web request to claim a 180-day Elite package but only transferring 47 USDT on-chain), the backend ignores frontend payload requests. Access days are assigned <strong>solely and strictly</strong> proportional to the verified USDT collateral received by the Smart Contract on the Blockchain.",
+
+      tk_title: "Tokenomics & Growth", tk_subtitle: "Pricing and Affiliate Engine",
+      tk_matrix_title: "Universal Pricing Matrix", tk_th1: "Access Tier", tk_th2: "Public Web Price", tk_th3: "Referral Link Price (-50%)",
+      tk_viral_title: "The Infinity Viral Loop", tk_viral_desc: "Our core growth engine requires zero marketing spend. Users who register via a Referral Link are prompted to invite 2 friends to unlock a 7-Day Free Trial. Once completed, all 3 users receive the trial. Post-trial, FOMO and verified results drive high-conversion upgrades at the discounted Referral Price, perpetuating the loop.",
+      tk_split_title: "Revenue Split (Referred Sales)", tk_lvl1: "Level 1 (Direct Referrer)", tk_lvl2: "Level 2 (Mentor)", tk_lvl3: "Level 3 (Master)", tk_pool: "Top 10 Weekly Pool", tk_treasury: "Treasury (Company)"
+    },
+    it: {
+      nav_abstract: "1. Riassunto", nav_engine: "2. Motore Algo", nav_web3: "3. Sistema Web3", nav_tokenomics: "4. Tokenomics", nav_back: "Torna al Sito",
+      ab_title: "Il Cambio di Paradigma", ab_subtitle: "Valore Atteso vs Gioco d'Azzardo",
+      ab_p1: "Le scommesse sportive tradizionali sono progettate matematicamente per prosciugare il bankroll dell'utente nel tempo. Il margine del bookmaker garantisce un Valore Atteso negativo (-EV), rendendo la redditività a lungo termine statisticamente impossibile senza un vantaggio quantitativo.",
+      ab_p2: "<strong>Betting Exchange Room</strong> stravolge questo modello. Operando esclusivamente sugli exchange, eliminiamo lo spread del bookmaker. Non scommettiamo; eseguiamo trade algoritmici basati su anomalie statistiche e inefficienze di mercato.",
+      ab_box1_t: "Il Vecchio Metodo: Scommettere", ab_box1_d: "Decisioni emotive, inseguimento delle perdite, ignorare le probabilità, combattere contro svantaggi matematici.",
+      ab_box2_t: "Il Nuovo Metodo: Trading Quantitativo", ab_box2_d: "Rigorosa gestione del bankroll, interesse composto, ricerca di situazioni a +EV (Valore Atteso Positivo), esecuzione priva di emozioni.",
+      
+      en_title: "Motore Algoritmico", en_subtitle: "Generazione di Segnali basata sui Dati",
+      en_card1_t: "Aggregazione Dati", en_card1_d: "I nostri sistemi elaborano migliaia di data point al minuto: storico, movimenti delle quote, picchi di volume sugli exchange e feed API. L'elemento umano viene rimosso per prevenire pregiudizi cognitivi.",
+      en_card2_t: "Stop Loss Dinamico", en_card2_d: "La conservazione del capitale è la regola n.1. Ogni segnale emesso è dotato di un punto di uscita precalcolato. Limitiamo matematicamente il rischio al ribasso, permettendo alla varianza probabilistica di lavorare a nostro favore su un ampio campione.",
+      en_exec_title: "Il Protocollo di Esecuzione",
+      en_step1: "L'algoritmo identifica un'anomalia +EV nella liquidità del mercato.",
+      en_step2: "Il segnale viene inviato istantaneamente alla Premium Room su Telegram.",
+      en_step3: "L'utente copia il trade, imposta lo Stop Loss indicato e attende. Senza emozioni.",
+
+      w3_title: "Architettura Web3 Zero-Trust", w3_subtitle: "Integrazione Blockchain TON",
+      w3_man_title: "Mandato dell'Architettura", w3_man_desc: "La rigida separazione dei ruoli garantisce sicurezza assoluta. Il Backend Python Off-Chain e il Database fungono da unica Fonte di Verità per identità, abbonamenti e reti di affiliazione. Lo Smart Contract TON On-Chain agisce rigorosamente come 'Dumb Vault' (Cassaforte Passiva) per elaborare i pagamenti USDT in modo trasparente.",
+      w3_fraud_title: "Motore Matematico Anti-Frode", w3_fraud_desc: "Per prevenire il 'Payload Spoofing' (es. un hacker che modifica la richiesta web per ottenere un pacchetto Elite di 180 giorni ma inviando solo 47 USDT), il backend ignora le richieste payload del frontend. I giorni di accesso sono assegnati <strong>esclusivamente e rigorosamente</strong> in proporzione al collaterale USDT verificato e ricevuto dallo Smart Contract sulla Blockchain.",
+
+      tk_title: "Tokenomics & Crescita", tk_subtitle: "Prezzi e Motore di Affiliazione",
+      tk_matrix_title: "Matrice Prezzi Universale", tk_th1: "Livello di Accesso", tk_th2: "Prezzo Web Pubblico", tk_th3: "Prezzo Link Referral (-50%)",
+      tk_viral_title: "The Infinity Viral Loop", tk_viral_desc: "Il nostro motore di crescita non richiede budget marketing. Agli utenti registrati tramite Referral Link viene chiesto di invitare 2 amici per sbloccare 7 Giorni di Prova Gratuita. Completato l'obiettivo, tutti e 3 ricevono la prova. Post-prova, la FOMO e i risultati verificati guidano upgrade ad alta conversione al Prezzo Scontato Referral, alimentando il ciclo.",
+      tk_split_title: "Ripartizione Ricavi (Vendite da Referral)", tk_lvl1: "Livello 1 (Referente Diretto)", tk_lvl2: "Livello 2 (Mentore)", tk_lvl3: "Livello 3 (Master)", tk_pool: "Pool Settimanale Top 10", tk_treasury: "Tesoreria (Azienda)"
+    },
+    es: {
+      nav_abstract: "1. Resumen", nav_engine: "2. Motor Algo", nav_web3: "3. Sistema Web3", nav_tokenomics: "4. Tokenomics", nav_back: "Volver al Sitio",
+      ab_title: "El Cambio de Paradigma", ab_subtitle: "Valor Esperado vs Apuestas",
+      ab_p1: "Las apuestas deportivas tradicionales están diseñadas matemáticamente para agotar el bankroll del usuario. El margen de la casa de apuestas garantiza un Valor Esperado negativo (-EV), haciendo que la rentabilidad a largo plazo sea imposible sin una ventaja cuantitativa.",
+      ab_p2: "<strong>Betting Exchange Room</strong> rompe este modelo. Operando exclusivamente en exchanges, eliminamos el spread del corredor. No apostamos; ejecutamos operaciones algorítmicas basadas en anomalías estadísticas.",
+      ab_box1_t: "El Viejo Método: Apostar", ab_box1_d: "Decisiones emocionales, perseguir pérdidas, ignorar probabilidades, luchar contra desventajas matemáticas.",
+      ab_box2_t: "El Nuevo Método: Trading Cuantitativo", ab_box2_d: "Estricta gestión del bankroll, interés compuesto, búsqueda de situaciones +EV, ejecución sin emociones.",
+      
+      en_title: "Motor Algorítmico", en_subtitle: "Generación de Señales por Datos",
+      en_card1_t: "Agregación de Datos", en_card1_d: "Nuestros sistemas ingieren miles de datos por minuto: historial, movimientos de líneas, picos de volumen. Se elimina el elemento humano para evitar sesgos cognitivos.",
+      en_card2_t: "Stop Loss Dinámico", en_card2_d: "La preservación del capital es la regla #1. Cada señal viene con un punto de salida precalculado. Limitamos matemáticamente el riesgo a la baja.",
+      en_exec_title: "El Protocolo de Ejecución",
+      en_step1: "El algoritmo identifica una anomalía +EV en el mercado.",
+      en_step2: "La señal se envía instantáneamente a la Sala Premium de Telegram.",
+      en_step3: "El usuario copia la operación, ajusta el Stop Loss y espera. Sin emociones.",
+
+      w3_title: "Arquitectura Web3 Zero-Trust", w3_subtitle: "Integración Blockchain TON",
+      w3_man_title: "Mandato de Arquitectura", w3_man_desc: "La estricta separación garantiza seguridad absoluta. El Backend y la Base de Datos actúan como la única Fuente de Verdad. El Smart Contract TON actúa solo como una 'Bóveda Pasiva' para procesar pagos en USDT.",
+      w3_fraud_title: "Motor Anti-Fraude", w3_fraud_desc: "Para evitar el 'Payload Spoofing', el backend ignora las solicitudes del frontend. Los días de acceso se asignan <strong>estrictamente</strong> en proporción al USDT real recibido en la Blockchain.",
+
+      tk_title: "Tokenomics y Crecimiento", tk_subtitle: "Precios y Afiliados",
+      tk_matrix_title: "Matriz de Precios Universales", tk_th1: "Nivel de Acceso", tk_th2: "Precio Web Público", tk_th3: "Precio Enlace de Referido (-50%)",
+      tk_viral_title: "The Infinity Viral Loop", tk_viral_desc: "El motor de crecimiento requiere cero gasto en marketing. Los usuarios invitan a 2 amigos para desbloquear 7 Días Gratis. Luego, el FOMO impulsa la actualización al Precio Promotor.",
+      tk_split_title: "Reparto de Ingresos", tk_lvl1: "Nivel 1 (Directo)", tk_lvl2: "Nivel 2 (Mentor)", tk_lvl3: "Nivel 3 (Maestro)", tk_pool: "Pool Semanal Top 10", tk_treasury: "Tesorería (Empresa)"
+    },
+    pt: {
+      nav_abstract: "1. Resumo", nav_engine: "2. Motor Algo", nav_web3: "3. Sistema Web3", nav_tokenomics: "4. Tokenomics", nav_back: "Voltar ao Site",
+      ab_title: "A Mudança de Paradigma", ab_subtitle: "Valor Esperado vs Apostas",
+      ab_p1: "As apostas desportivas tradicionais são matematicamente concebidas para esgotar a banca do utilizador ao longo do tempo. A margem da casa de apostas garante um Valor Esperado negativo (-EV), tornando a rentabilidade a longo prazo estatisticamente impossível sem uma vantagem quantitativa.",
+      ab_p2: "<strong>Betting Exchange Room</strong> quebra este modelo. Ao operar exclusivamente em exchanges de apostas, eliminamos o spread. Não jogamos; executamos negociações algorítmicas baseadas em anomalias estatísticas e ineficiências do mercado.",
+      ab_box1_t: "O Método Antigo: Jogar", ab_box1_d: "Decisões emocionais, perseguição de perdas, ignorar as probabilidades, lutar contra desvantagens matemáticas.",
+      ab_box2_t: "O Novo Método: Trading Quantitativo", ab_box2_d: "Gestão rigorosa da banca, juros compostos, procura de situações de +EV (Valor Esperado Positivo), execução sem emoções.",
+      
+      en_title: "Motor Algorítmico", en_subtitle: "Geração de Sinais Orientada a Dados",
+      en_card1_t: "Agregação de Dados", en_card1_d: "Os nossos sistemas processam milhares de pontos de dados por minuto: desempenho histórico, movimentos de linhas, picos de volume em bolsas e feeds de dados de API. O elemento humano é removido para evitar preconceitos cognitivos.",
+      en_card2_t: "Stop Loss Dinâmico", en_card2_d: "A preservação do capital é a regra #1. Cada sinal emitido vem com um ponto de saída pré-calculado. Limitamos matematicamente o risco descendente enquanto permitimos que a variância da probabilidade trabalhe a nosso favor.",
+      en_exec_title: "O Protocolo de Execução",
+      en_step1: "O algoritmo identifica uma anomalia +EV na liquidez do mercado.",
+      en_step2: "O sinal é enviado instantaneamente para a Sala Premium do Telegram.",
+      en_step3: "O utilizador copia a operação, define o Stop Loss especificado e aguarda. Sem emoções.",
+
+      w3_title: "Arquitetura Web3 Zero-Trust", w3_subtitle: "Integração Blockchain TON",
+      w3_man_title: "Mandato da Arquitetura", w3_man_desc: "A separação rigorosa de funções garante segurança absoluta. O Backend Python e o Banco de Dados Off-Chain atuam como a única Fonte de Verdade. O Smart Contract TON On-Chain atua estritamente como um 'Cofre Passivo' para processar pagamentos USDT.",
+      w3_fraud_title: "Motor Matemático Anti-Fraude", w3_fraud_desc: "Para evitar o 'Payload Spoofing' (ex: um hacker modificar a solicitação para reivindicar 180 dias mas pagar apenas 47 USDT), o backend ignora os pedidos do frontend. Os dias de acesso são atribuídos <strong>exclusiva e estritamente</strong> de forma proporcional ao USDT real recebido no Smart Contract.",
+
+      tk_title: "Tokenomics & Crescimento", tk_subtitle: "Preços e Motor de Afiliados",
+      tk_matrix_title: "Matriz de Preços Universal", tk_th1: "Nível de Acesso", tk_th2: "Preço Web Público", tk_th3: "Preço Link Referência (-50%)",
+      tk_viral_title: "O Loop Viral Infinito", tk_viral_desc: "O nosso principal motor de crescimento requer zero gastos com marketing. Os utilizadores convidam 2 amigos para desbloquear um Teste Grátis de 7 Dias. Após o teste, o FOMO impulsiona as atualizações para o Preço de Referência com desconto.",
+      tk_split_title: "Divisão de Receitas (Vendas por Referência)", tk_lvl1: "Nível 1 (Referenciador Direto)", tk_lvl2: "Nível 2 (Mentor)", tk_lvl3: "Nível 3 (Mestre)", tk_pool: "Pool Semanal Top 10", tk_treasury: "Tesouraria (Empresa)"
+    }
+  };
+
+  let currentLang = 'en';
+
+  function setLanguage(lang) {
+    if (!translations[lang]) lang = 'en';
+    currentLang = lang;
+    
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (translations[lang][key]) el.innerHTML = translations[lang][key];
+    });
+
+    // Update active state of language buttons
+    document.querySelectorAll('[id^="lang-"]').forEach(btn => {
+      btn.classList.add('opacity-50', 'border-transparent');
+      btn.classList.remove('opacity-100', 'bg-surface-800', 'border-surface-700');
+    });
+    
+    const activeBtn = document.getElementById('lang-' + lang);
+    if(activeBtn) {
+      activeBtn.classList.remove('opacity-50', 'border-transparent');
+      activeBtn.classList.add('opacity-100', 'bg-surface-800', 'border-surface-700');
+    }
+  }
+
+  function changeLanguage(lang) {
+    setLanguage(lang);
+    try { localStorage.setItem('bx_lang', lang); } catch(e) {}
+  }
+
+  function detectDeviceLanguage() {
+    try {
+      const savedLang = localStorage.getItem('bx_lang');
+      if (savedLang && translations[savedLang]) {
+        setLanguage(savedLang);
+        return;
+      }
+    } catch(e) {}
+
+    const browserLang = (navigator.language || navigator.userLanguage).toLowerCase().split('-')[0];
+    if (['en', 'es', 'pt', 'it'].includes(browserLang)) {
+      setLanguage(browserLang);
+    } else {
+      setLanguage('en');
+    }
+  }
+
+  function switchTab(tabId) {
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    // Show selected tab
+    document.getElementById(tabId).classList.add('active');
+    
+    // Reset all buttons
+    document.querySelectorAll('.tab-btn').forEach(el => {
+      // Don't reset the "Back to Site" button styling completely
+      if(el.id !== '') {
+          el.classList.remove('bg-surface-800', 'text-brand-400', 'border-surface-700');
+          el.classList.add('text-zinc-500', 'border-transparent');
+      }
+    });
+    
+    // Highlight active button
+    const activeBtn = document.getElementById('btn-' + tabId);
+    if(activeBtn) {
+      activeBtn.classList.remove('text-zinc-500', 'border-transparent');
+      activeBtn.classList.add('bg-surface-800', 'text-brand-400', 'border-surface-700');
+    }
+  }
+
+  // Initialize language on load
+  document.addEventListener('DOMContentLoaded', detectDeviceLanguage);
+</script>
+</body>
+</html>
