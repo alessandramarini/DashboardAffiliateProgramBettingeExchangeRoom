@@ -20,10 +20,11 @@
       height: 100%;
     }
     
+    /* Technical Grid Background */
     .bg-grid-pattern {
       background-color: #09090b;
       background-image: 
-        radial-gradient(rgba(163, 230, 53, 0.05) 1px, transparent 1px), /* Neon green hint */
+        radial-gradient(rgba(163, 230, 53, 0.05) 1px, transparent 1px),
         radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
       background-size: 32px 32px, 64px 64px;
       background-position: 0 0, 16px 16px;
@@ -34,17 +35,25 @@
       position: absolute;
       top: 0; left: 50%; transform: translateX(-50%);
       width: 100%; max-width: 1000px; height: 600px;
-      background: radial-gradient(circle, rgba(163, 230, 53, 0.03) 0%, rgba(9, 9, 11, 0) 70%);
+      background: radial-gradient(circle, rgba(163, 230, 53, 0.04) 0%, rgba(9, 9, 11, 0) 70%);
       pointer-events: none; z-index: 0;
     }
 
+    /* Gradients */
     .text-brand-gradient {
       background: linear-gradient(135deg, #A3E635 0%, #65a30d 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
+    .text-gold-gradient {
+      background: linear-gradient(135deg, #fef08a 0%, #d4af37 50%, #92400e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
+    /* Glassmorphism */
     .glass-panel {
       background: rgba(24, 24, 27, 0.6);
       backdrop-filter: blur(12px);
@@ -70,8 +79,9 @@
       theme: {
         extend: {
           colors: { 
-            brand: { 300: '#d9f99d', 400: '#bef264', 500: '#A3E635', 600: '#84cc16', 700: '#65a30d' }, /* Neon Green theme */
+            brand: { 300: '#d9f99d', 400: '#bef264', 500: '#A3E635', 600: '#84cc16', 700: '#65a30d' },
             gold: { 400: '#fcd34d', 500: '#d4af37' },
+            success: { 400: '#34d399', 500: '#10b981' },
             surface: { 950: '#09090b', 900: '#18181b', 800: '#27272a', 700: '#3f3f46' },
             zinc: { 300: '#d4d4d8', 400: '#a1a1aa', 500: '#71717a' }
           },
@@ -91,8 +101,8 @@
   <div class="p-4 md:p-6 bg-surface-900/50 border-b border-surface-800 flex justify-between items-center md:block">
     <div class="flex items-center gap-3 md:block">
       <!-- Logo Return -->
-      <a href="index.html" class="w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden border border-brand-500/30 block shrink-0 hover:scale-105 transition-transform" title="Back to Home">
-        <img src="https://ui-avatars.com/api/?name=BE&background=111827&color=A3E635&rounded=true" alt="Logo" class="w-full h-full object-cover">
+      <a href="index.html" class="w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden border border-brand-500/30 block shrink-0 hover:scale-105 transition-transform shadow-[0_0_15px_rgba(163,230,53,0.2)]" title="Back to Home">
+        <img src="logo-tondo.jpeg" onerror="this.src='https://ui-avatars.com/api/?name=BE&background=111827&color=A3E635&rounded=true'" alt="Logo" class="w-full h-full object-cover">
       </a>
       <div class="md:mt-4">
         <h1 class="text-sm md:text-base font-black tracking-widest text-zinc-100 uppercase leading-tight">Betting Exchange <br/><span class="text-brand-500">Room</span></h1>
@@ -130,6 +140,11 @@
     <button onclick="switchTab('tokenomics')" id="btn-tokenomics" class="tab-btn flex-1 md:flex-none text-left px-4 py-3 rounded-xl text-zinc-500 hover:text-zinc-300 text-xs md:text-sm font-bold uppercase tracking-wide transition-all border border-transparent flex items-center gap-2 whitespace-nowrap">
       <i data-lucide="pie-chart" class="w-4 h-4"></i> <span data-i18n="nav_tokenomics">4. Tokenomics</span>
     </button>
+    
+    <button onclick="switchTab('prompt')" id="btn-prompt" class="tab-btn flex-1 md:flex-none text-left px-4 py-3 rounded-xl text-brand-500/70 hover:text-brand-400 text-xs font-mono font-bold tracking-widest transition-all border border-brand-500/20 bg-brand-500/5 flex items-center gap-2 whitespace-nowrap">
+      <i data-lucide="terminal" class="w-4 h-4"></i> <span data-i18n="nav_prompt">Dev_Spec.md</span>
+    </button>
+
     <div class="hidden md:block flex-1"></div>
     <a href="index.html" class="tab-btn hidden md:flex text-left px-4 py-3 rounded-xl text-zinc-400 hover:text-white text-xs font-mono font-bold tracking-widest transition-all border border-surface-700 bg-surface-900/50 items-center gap-2">
       <i data-lucide="arrow-left" class="w-4 h-4"></i> <span data-i18n="nav_back">Back to Site</span>
@@ -254,9 +269,9 @@
              <div class="text-brand-400 font-bold mb-2 uppercase tracking-widest">On-Chain Vault (TON)</div>
              <ul class="space-y-1 text-zinc-500">
                <li>- Global Borderless Payments</li>
-               <li>- Immutable Transaction Hashes</li>
+               <li>- Immutable Tx Hashes</li>
                <li>- Smart Contract Escrow</li>
-               <li>- ED25519 Signature Verification</li>
+               <li>- ED25519 Signatures</li>
              </ul>
           </div>
        </div>
@@ -276,7 +291,7 @@
   <div id="tokenomics" class="tab-content max-w-4xl w-full mx-auto flex flex-col gap-6">
     <header class="shrink-0 mb-4">
       <h2 class="text-2xl md:text-3xl font-black text-zinc-100 mb-2 tracking-widest uppercase flex items-center gap-3">
-        <span class="text-brand-gradient" data-i18n="tk_title">Tokenomics & Growth</span>
+        <span class="text-gold-gradient" data-i18n="tk_title">Tokenomics & Growth</span>
       </h2>
       <p class="text-xs md:text-sm text-zinc-400 bg-surface-900/50 inline-block px-3 py-1.5 rounded-lg border border-surface-800" data-i18n="tk_subtitle">Pricing and Affiliate Engine</p>
     </header>
@@ -285,7 +300,7 @@
       <h3 class="text-sm md:text-base font-black text-zinc-100 mb-3 uppercase tracking-widest flex items-center gap-2">
         <i data-lucide="shopping-cart" class="w-4 h-4 text-brand-500"></i> <span data-i18n="tk_matrix_title">Universal Pricing Matrix</span>
       </h3>
-      <div class="overflow-x-auto rounded-2xl border border-surface-800 shadow-lg glass-panel">
+      <div class="overflow-x-auto rounded-2xl border border-surface-800 shadow-[0_8px_30px_rgb(0,0,0,0.3)] glass-panel">
         <table class="w-full text-left text-xs md:text-sm min-w-[500px] md:min-w-0">
           <thead class="bg-surface-900 border-b border-surface-800 text-zinc-400 font-bold uppercase tracking-wider text-[10px] md:text-xs">
             <tr>
@@ -298,17 +313,17 @@
             <tr class="hover:bg-surface-900/50 transition-colors">
               <td class="p-4 font-sans font-bold">Starter (30 days)</td>
               <td class="p-4">94 USDT</td>
-              <td class="p-4 font-black text-brand-400 bg-brand-500/5">47 USDT</td>
+              <td class="p-4 font-black text-success-400 bg-success-500/5">47 USDT</td>
             </tr>
             <tr class="hover:bg-surface-900/50 transition-colors">
               <td class="p-4 font-sans font-bold text-gold-400">Pro (90 days)</td>
               <td class="p-4">234 USDT</td>
-              <td class="p-4 font-black text-brand-400 bg-brand-500/5">117 USDT</td>
+              <td class="p-4 font-black text-success-400 bg-success-500/5">117 USDT</td>
             </tr>
             <tr class="hover:bg-surface-900/50 transition-colors">
-              <td class="p-4 font-sans font-bold">Elite (180 days)</td>
+              <td class="p-4 font-sans font-bold text-white">Elite (180 days)</td>
               <td class="p-4">394 USDT</td>
-              <td class="p-4 font-black text-brand-400 bg-brand-500/5">197 USDT</td>
+              <td class="p-4 font-black text-success-400 bg-success-500/5">197 USDT</td>
             </tr>
           </tbody>
         </table>
@@ -321,31 +336,86 @@
         <i data-lucide="infinity" class="w-5 h-5"></i> The Infinity Viral Loop
       </h3>
       <p class="text-xs md:text-sm text-zinc-300 leading-relaxed relative z-10 font-medium bg-surface-950/50 p-4 rounded-xl border border-surface-800" data-i18n="tk_viral_desc">
-        Our core growth engine requires zero marketing spend. Users who register via a Referral Link are prompted to invite 2 friends to unlock a 7-Day Free Trial. Once completed, all 3 users receive the trial. Post-trial, FOMO and verified results drive high-conversion upgrades at the discounted Referral Price, perpetuating the loop.
+        Our core growth engine requires zero marketing spend. Users who register via a Referral Link are prompted to invite 1 friend to unlock a 7-Day Free Trial. Once completed, both users receive the trial. Post-trial, FOMO and verified results drive high-conversion upgrades at the discounted Referral Price, perpetuating the loop.
       </p>
     </div>
 
-    <div class="glass-panel p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.3)]">
-      <h3 class="font-black text-zinc-100 mb-4 uppercase tracking-widest text-sm border-b border-surface-800 pb-2" data-i18n="tk_split_title">Revenue Split (Referred Sales)</h3>
+    <div class="glass-panel p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.3)] border-t-2 border-t-brand-500">
+      <h3 class="font-black text-brand-400 mb-4 uppercase tracking-widest text-sm border-b border-surface-800 pb-2" data-i18n="tk_split_title">Revenue Split (Referred Sales)</h3>
       <div class="space-y-2 font-mono text-xs md:text-sm text-zinc-400 mt-4">
-        <div class="flex justify-between items-center p-2 bg-surface-950 rounded border border-surface-800">
-          <span data-i18n="tk_lvl1">Level 1 (Direct Referrer)</span><span class="font-bold text-brand-400">50%</span>
+        <div class="flex justify-between items-center p-2 bg-surface-950 rounded border border-surface-800 hover:bg-surface-800 transition-colors">
+          <span data-i18n="tk_lvl1">Level 1 (Direct Referrer)</span><span class="font-bold text-success-400">50%</span>
         </div>
-        <div class="flex justify-between items-center p-2 bg-surface-950 rounded border border-surface-800">
-          <span data-i18n="tk_lvl2">Level 2 (Mentor)</span><span class="font-bold text-brand-400">10%</span>
+        <div class="flex justify-between items-center p-2 bg-surface-950 rounded border border-surface-800 hover:bg-surface-800 transition-colors">
+          <span data-i18n="tk_lvl2">Level 2 (Mentor)</span><span class="font-bold text-success-400">10%</span>
         </div>
-        <div class="flex justify-between items-center p-2 bg-surface-950 rounded border border-surface-800">
-          <span data-i18n="tk_lvl3">Level 3 (Master)</span><span class="font-bold text-brand-400">5%</span>
+        <div class="flex justify-between items-center p-2 bg-surface-950 rounded border border-surface-800 hover:bg-surface-800 transition-colors">
+          <span data-i18n="tk_lvl3">Level 3 (Master)</span><span class="font-bold text-success-400">5%</span>
         </div>
-        <div class="flex justify-between items-center p-2 mt-4 text-zinc-500">
-          <span data-i18n="tk_pool">Top 10 Weekly Pool</span><span class="font-bold">10%</span>
+        <div class="flex justify-between items-center p-2 border-t border-surface-800/50 mt-2">
+          <span data-i18n="tk_treasury">Treasury (Company)</span><span class="font-bold text-zinc-100">25%</span>
         </div>
-        <div class="flex justify-between items-center p-2 text-zinc-500">
-          <span data-i18n="tk_treasury">Treasury (Company)</span><span class="font-bold">25%</span>
+        <div class="flex justify-between items-center p-2 bg-brand-500/10 border border-brand-500/20 rounded-lg text-brand-400 font-bold mt-2">
+          <span data-i18n="tk_pool">Top 10 Weekly Pool</span><span>10%</span>
         </div>
       </div>
     </div>
+  </div>
 
+  <!-- TAB: PROMPT (DEV SPEC) -->
+  <div id="prompt" class="tab-content max-w-5xl w-full mx-auto flex flex-col gap-6 flex-1 h-[500px] md:h-full">
+    <header class="shrink-0 mb-4">
+      <h2 class="text-2xl md:text-3xl font-black text-zinc-100 mb-2 tracking-widest uppercase flex items-center gap-3">
+        <i data-lucide="bot" class="text-brand-500 w-8 h-8"></i> <span class="text-brand-gradient" data-i18n="prompt_title">AI Developer Prompt</span>
+      </h2>
+      <p class="text-xs md:text-sm text-zinc-400 bg-surface-900/50 inline-block px-3 py-1.5 rounded-lg border border-surface-800" data-i18n="prompt_subtitle">System prompt for TON Smart Contract generation (Zero-Trust Logic).</p>
+    </header>
+
+    <div class="flex-1 bg-surface-950 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.5)] border border-surface-800 flex flex-col overflow-hidden min-h-[350px] relative">
+      <!-- Glow effect -->
+      <div class="absolute inset-0 bg-brand-500/5 pointer-events-none"></div>
+      
+      <div class="bg-surface-900 px-4 py-3 flex justify-between items-center border-b border-surface-800 shrink-0 relative z-10">
+        <span class="text-[11px] font-mono text-brand-400 flex items-center gap-2 font-bold">
+          <div class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></div> System_Prompt.md
+        </span>
+        <button onclick="copyPrompt()" id="copy-btn" class="text-[10px] font-black uppercase tracking-wider bg-surface-800 hover:bg-surface-700 text-zinc-300 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 border border-surface-700 hover:border-brand-500/50">
+          <i data-lucide="copy" class="w-3 h-3"></i> <span data-i18n="btn_copy">Copy Prompt</span>
+        </button>
+      </div>
+      
+      <textarea id="prompt-text" class="w-full flex-1 bg-transparent text-success-400 font-mono text-xs md:text-sm p-4 md:p-6 focus:outline-none resize-none overflow-y-auto custom-scrollbar relative z-10 leading-relaxed" readonly>
+# SYSTEM ROLE
+Act as an elite Enterprise Smart Contract Developer specializing in the TON Blockchain and the Tact language. You are tasked with creating the "Dumb Vault" Smart Contract for the "Betting Exchange Room" Web3 architecture.
+
+# ARCHITECTURE MANDATE (ZERO-TRUST)
+1. Separation of Concerns: The Smart Contract ONLY handles the escrow and movement of USDT. It does NOT store user access days, referral trees, or platform logic.
+2. Source of Truth: The off-chain Python Backend & Database handle all identity and business logic.
+3. Pricing Parameters:
+   - Public: 94 USDT (30d), 234 USDT (90d), 394 USDT (180d)
+   - Promoter (-50%): 47 USDT, 117 USDT, 197 USDT.
+
+# SECURITY & FUNCTIONAL REQUIREMENTS
+
+## 1. Deposit & Verification Engine
+- Accept incoming Jetton (USDT) transfers.
+- STRICT Fake Token Shield: The contract MUST hardcode and verify the official TON USDT Master Address (EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs). Reject all other Jettons.
+- Payload Parsing: The transaction `memo` (forward payload) MUST contain the user's `Telegram_ID` as a unique identifier.
+- Note: The contract does not assign days. It only securely locks the USDT and emits an event/state change that our backend listener will pick up. The backend recalculates days based strictly on the USDT received (Anti-Spoofing).
+
+## 2. Withdrawal Mechanism
+- Implement a `claim()` function restricted by Cryptographic ED25519 signature verification.
+- The payload format to verify must be: `Hash(Amount + Destination_Wallet_Address + Nonce)`.
+- Replay Attack Prevention: Track the `Nonce` on-chain to ensure a signed withdrawal payload can only be used exactly once.
+
+## 3. Administrator & Failsafe Controls
+- Wallet Change Time-Lock: If the active Administrator Wallet is updated, trigger a 72-hour freeze on all withdrawals (Anti-Hijacking).
+- Admin Threshold: Any withdrawal requested via standard methods over 1,000 USDT must be flagged as `Pending_Manual_Review` and require a multi-sig or secondary admin approval.
+- Emergency `sweep()`: An override function to transfer all USDT and TON balances to a hardcoded Cold Storage Hardware Wallet in case of a critical breach.
+
+Write the complete, highly-commented Tact code for this contract following best practices for the TON ecosystem.
+      </textarea>
+    </div>
   </div>
 
 </main>
@@ -354,10 +424,10 @@
   // Initialize Lucide Icons
   lucide.createIcons();
 
-  // Translations object tailored to the whitepaper content
+  // Translations object integrating Whitepaper & Prompt text
   const translations = {
     en: {
-      nav_abstract: "1. Abstract", nav_engine: "2. Algo Engine", nav_web3: "3. Web3 System", nav_tokenomics: "4. Tokenomics", nav_back: "Back to Site",
+      nav_abstract: "1. Abstract", nav_engine: "2. Algo Engine", nav_web3: "3. Web3 System", nav_tokenomics: "4. Tokenomics", nav_prompt: "Dev_Spec.md", nav_back: "Back to Site",
       ab_title: "The Paradigm Shift", ab_subtitle: "Expected Value vs Gambling",
       ab_p1: "Traditional sports betting is mathematically designed to drain the user's bankroll over time. The bookmaker's margin (vigorish) guarantees a negative Expected Value (-EV) for the average punter, making long-term profitability statistically impossible without a quantitative edge.",
       ab_p2: "<strong>Betting Exchange Room</strong> disrupts this model. By operating exclusively on betting exchanges, we eliminate the bookmaker's spread. We do not gamble; we execute algorithmic trades based on statistical anomalies and market inefficiencies.",
@@ -378,11 +448,13 @@
 
       tk_title: "Tokenomics & Growth", tk_subtitle: "Pricing and Affiliate Engine",
       tk_matrix_title: "Universal Pricing Matrix", tk_th1: "Access Tier", tk_th2: "Public Web Price", tk_th3: "Referral Link Price (-50%)",
-      tk_viral_title: "The Infinity Viral Loop", tk_viral_desc: "Our core growth engine requires zero marketing spend. Users who register via a Referral Link are prompted to invite 2 friends to unlock a 7-Day Free Trial. Once completed, all 3 users receive the trial. Post-trial, FOMO and verified results drive high-conversion upgrades at the discounted Referral Price, perpetuating the loop.",
-      tk_split_title: "Revenue Split (Referred Sales)", tk_lvl1: "Level 1 (Direct Referrer)", tk_lvl2: "Level 2 (Mentor)", tk_lvl3: "Level 3 (Master)", tk_pool: "Top 10 Weekly Pool", tk_treasury: "Treasury (Company)"
+      tk_viral_title: "The Infinity Viral Loop", tk_viral_desc: "Our core growth engine requires zero marketing spend. Users who register via a Referral Link are prompted to invite 1 friend to unlock a 7-Day Free Trial. Once completed, both users receive the trial. Post-trial, FOMO and verified results drive high-conversion upgrades at the discounted Referral Price, perpetuating the loop.",
+      tk_split_title: "Revenue Split (Referred Sales)", tk_lvl1: "Level 1 (Direct Referrer)", tk_lvl2: "Level 2 (Mentor)", tk_lvl3: "Level 3 (Master)", tk_pool: "Top 10 Weekly Pool", tk_treasury: "Treasury (Company)",
+
+      prompt_title: "AI Developer Prompt", prompt_subtitle: "System prompt for TON Smart Contract generation (Zero-Trust Logic).", btn_copy: "Copy Prompt", copied: "Copied!"
     },
     it: {
-      nav_abstract: "1. Riassunto", nav_engine: "2. Motore Algo", nav_web3: "3. Sistema Web3", nav_tokenomics: "4. Tokenomics", nav_back: "Torna al Sito",
+      nav_abstract: "1. Riassunto", nav_engine: "2. Motore Algo", nav_web3: "3. Sistema Web3", nav_tokenomics: "4. Tokenomics", nav_prompt: "Dev_Spec.md", nav_back: "Torna al Sito",
       ab_title: "Il Cambio di Paradigma", ab_subtitle: "Valore Atteso vs Gioco d'Azzardo",
       ab_p1: "Le scommesse sportive tradizionali sono progettate matematicamente per prosciugare il bankroll dell'utente nel tempo. Il margine del bookmaker garantisce un Valore Atteso negativo (-EV), rendendo la redditività a lungo termine statisticamente impossibile senza un vantaggio quantitativo.",
       ab_p2: "<strong>Betting Exchange Room</strong> stravolge questo modello. Operando esclusivamente sugli exchange, eliminiamo lo spread del bookmaker. Non scommettiamo; eseguiamo trade algoritmici basati su anomalie statistiche e inefficienze di mercato.",
@@ -403,11 +475,13 @@
 
       tk_title: "Tokenomics & Crescita", tk_subtitle: "Prezzi e Motore di Affiliazione",
       tk_matrix_title: "Matrice Prezzi Universale", tk_th1: "Livello di Accesso", tk_th2: "Prezzo Web Pubblico", tk_th3: "Prezzo Link Referral (-50%)",
-      tk_viral_title: "The Infinity Viral Loop", tk_viral_desc: "Il nostro motore di crescita non richiede budget marketing. Agli utenti registrati tramite Referral Link viene chiesto di invitare 2 amici per sbloccare 7 Giorni di Prova Gratuita. Completato l'obiettivo, tutti e 3 ricevono la prova. Post-prova, la FOMO e i risultati verificati guidano upgrade ad alta conversione al Prezzo Scontato Referral, alimentando il ciclo.",
-      tk_split_title: "Ripartizione Ricavi (Vendite da Referral)", tk_lvl1: "Livello 1 (Referente Diretto)", tk_lvl2: "Livello 2 (Mentore)", tk_lvl3: "Livello 3 (Master)", tk_pool: "Pool Settimanale Top 10", tk_treasury: "Tesoreria (Azienda)"
+      tk_viral_title: "The Infinity Viral Loop", tk_viral_desc: "Il nostro motore di crescita non richiede budget marketing. Agli utenti registrati tramite Referral Link viene chiesto di invitare 1 amico per sbloccare 7 Giorni di Prova Gratuita. Completato l'obiettivo, entrambi ricevono la prova. Post-prova, la FOMO e i risultati verificati guidano upgrade ad alta conversione al Prezzo Scontato Referral, alimentando il ciclo.",
+      tk_split_title: "Ripartizione Ricavi (Vendite da Referral)", tk_lvl1: "Livello 1 (Referente Diretto)", tk_lvl2: "Livello 2 (Mentore)", tk_lvl3: "Livello 3 (Master)", tk_pool: "Pool Settimanale Top 10", tk_treasury: "Tesoreria (Azienda)",
+
+      prompt_title: "Prompt per Sviluppatore AI", prompt_subtitle: "Prompt di sistema per la generazione dello Smart Contract TON (Logica Zero-Trust).", btn_copy: "Copia Prompt", copied: "Copiato!"
     },
     es: {
-      nav_abstract: "1. Resumen", nav_engine: "2. Motor Algo", nav_web3: "3. Sistema Web3", nav_tokenomics: "4. Tokenomics", nav_back: "Volver al Sitio",
+      nav_abstract: "1. Resumen", nav_engine: "2. Motor Algo", nav_web3: "3. Sistema Web3", nav_tokenomics: "4. Tokenomics", nav_prompt: "Dev_Spec.md", nav_back: "Volver al Sitio",
       ab_title: "El Cambio de Paradigma", ab_subtitle: "Valor Esperado vs Apuestas",
       ab_p1: "Las apuestas deportivas tradicionales están diseñadas matemáticamente para agotar el bankroll del usuario. El margen de la casa de apuestas garantiza un Valor Esperado negativo (-EV), haciendo que la rentabilidad a largo plazo sea imposible sin una ventaja cuantitativa.",
       ab_p2: "<strong>Betting Exchange Room</strong> rompe este modelo. Operando exclusivamente en exchanges, eliminamos el spread del corredor. No apostamos; ejecutamos operaciones algorítmicas basadas en anomalías estadísticas.",
@@ -428,11 +502,13 @@
 
       tk_title: "Tokenomics y Crecimiento", tk_subtitle: "Precios y Afiliados",
       tk_matrix_title: "Matriz de Precios Universales", tk_th1: "Nivel de Acceso", tk_th2: "Precio Web Público", tk_th3: "Precio Enlace de Referido (-50%)",
-      tk_viral_title: "The Infinity Viral Loop", tk_viral_desc: "El motor de crecimiento requiere cero gasto en marketing. Los usuarios invitan a 2 amigos para desbloquear 7 Días Gratis. Luego, el FOMO impulsa la actualización al Precio Promotor.",
-      tk_split_title: "Reparto de Ingresos", tk_lvl1: "Nivel 1 (Directo)", tk_lvl2: "Nivel 2 (Mentor)", tk_lvl3: "Nivel 3 (Maestro)", tk_pool: "Pool Semanal Top 10", tk_treasury: "Tesorería (Empresa)"
+      tk_viral_title: "The Infinity Viral Loop", tk_viral_desc: "El motor de crecimiento requiere cero gasto en marketing. Los usuarios invitan a 1 amigo para desbloquear 7 Días Gratis para ambos. Luego, el FOMO impulsa la actualización al Precio Promotor.",
+      tk_split_title: "Reparto de Ingresos", tk_lvl1: "Nivel 1 (Directo)", tk_lvl2: "Nivel 2 (Mentor)", tk_lvl3: "Nivel 3 (Maestro)", tk_pool: "Pool Semanal Top 10", tk_treasury: "Tesorería (Empresa)",
+
+      prompt_title: "Prompt de Desarrollador IA", prompt_subtitle: "Prompt de sistema para crear el Smart Contract TON (Lógica Zero-Trust).", btn_copy: "Copiar Prompt", copied: "¡Copiado!"
     },
     pt: {
-      nav_abstract: "1. Resumo", nav_engine: "2. Motor Algo", nav_web3: "3. Sistema Web3", nav_tokenomics: "4. Tokenomics", nav_back: "Voltar ao Site",
+      nav_abstract: "1. Resumo", nav_engine: "2. Motor Algo", nav_web3: "3. Sistema Web3", nav_tokenomics: "4. Tokenomics", nav_prompt: "Dev_Spec.md", nav_back: "Voltar ao Site",
       ab_title: "A Mudança de Paradigma", ab_subtitle: "Valor Esperado vs Apostas",
       ab_p1: "As apostas desportivas tradicionais são matematicamente concebidas para esgotar a banca do utilizador ao longo do tempo. A margem da casa de apostas garante um Valor Esperado negativo (-EV), tornando a rentabilidade a longo prazo estatisticamente impossível sem uma vantagem quantitativa.",
       ab_p2: "<strong>Betting Exchange Room</strong> quebra este modelo. Ao operar exclusivamente em exchanges de apostas, eliminamos o spread. Não jogamos; executamos negociações algorítmicas baseadas em anomalias estatísticas e ineficiências do mercado.",
@@ -449,12 +525,14 @@
 
       w3_title: "Arquitetura Web3 Zero-Trust", w3_subtitle: "Integração Blockchain TON",
       w3_man_title: "Mandato da Arquitetura", w3_man_desc: "A separação rigorosa de funções garante segurança absoluta. O Backend Python e o Banco de Dados Off-Chain atuam como a única Fonte de Verdade. O Smart Contract TON On-Chain atua estritamente como um 'Cofre Passivo' para processar pagamentos USDT.",
-      w3_fraud_title: "Motor Matemático Anti-Fraude", w3_fraud_desc: "Para evitar o 'Payload Spoofing' (ex: um hacker modificar a solicitação para reivindicar 180 dias mas pagar apenas 47 USDT), o backend ignora os pedidos do frontend. Os dias de acesso são atribuídos <strong>exclusiva e estritamente</strong> de forma proporcional ao USDT real recebido no Smart Contract.",
+      w3_fraud_title: "Motor Matemático Anti-Fraude", w3_fraud_desc: "Para evitar o 'Payload Spoofing', o backend ignora os pedidos do frontend. Os dias de acesso são atribuídos <strong>exclusiva e estritamente</strong> de forma proporcional ao USDT real recebido no Smart Contract.",
 
       tk_title: "Tokenomics & Crescimento", tk_subtitle: "Preços e Motor de Afiliados",
       tk_matrix_title: "Matriz de Preços Universal", tk_th1: "Nível de Acesso", tk_th2: "Preço Web Público", tk_th3: "Preço Link Referência (-50%)",
-      tk_viral_title: "O Loop Viral Infinito", tk_viral_desc: "O nosso principal motor de crescimento requer zero gastos com marketing. Os utilizadores convidam 2 amigos para desbloquear um Teste Grátis de 7 Dias. Após o teste, o FOMO impulsiona as atualizações para o Preço de Referência com desconto.",
-      tk_split_title: "Divisão de Receitas (Vendas por Referência)", tk_lvl1: "Nível 1 (Referenciador Direto)", tk_lvl2: "Nível 2 (Mentor)", tk_lvl3: "Nível 3 (Mestre)", tk_pool: "Pool Semanal Top 10", tk_treasury: "Tesouraria (Empresa)"
+      tk_viral_title: "O Loop Viral Infinito", tk_viral_desc: "O nosso principal motor de crescimento requer zero gastos com marketing. Os utilizadores convidam 1 amigo para desbloquear um Teste Grátis de 7 Dias para ambos. Após o teste, o FOMO impulsiona as atualizações para o Preço de Referência com desconto.",
+      tk_split_title: "Divisão de Receitas", tk_lvl1: "Nível 1 (Direto)", tk_lvl2: "Nível 2 (Mentor)", tk_lvl3: "Nível 3 (Mestre)", tk_pool: "Pool Semanal Top 10", tk_treasury: "Tesouraria (Empresa)",
+
+      prompt_title: "Prompt para Desenvolvedor IA", prompt_subtitle: "Prompt de sistema para gerar o Smart Contract TON (Zero-Trust).", btn_copy: "Copiar Prompt", copied: "Copiado!"
     }
   };
 
@@ -512,19 +590,50 @@
     
     // Reset all buttons
     document.querySelectorAll('.tab-btn').forEach(el => {
-      // Don't reset the "Back to Site" button styling completely
+      // Logic for generic buttons vs the prompt button vs back button
       if(el.id !== '') {
-          el.classList.remove('bg-surface-800', 'text-brand-400', 'border-surface-700');
-          el.classList.add('text-zinc-500', 'border-transparent');
+         el.classList.remove('bg-surface-800', 'text-brand-400', 'border-surface-700');
+         
+         if(el.id === 'btn-prompt') {
+            el.classList.add('text-brand-500/70', 'border-brand-500/20', 'bg-brand-500/5');
+         } else {
+            el.classList.add('text-zinc-500', 'border-transparent');
+         }
       }
     });
     
     // Highlight active button
     const activeBtn = document.getElementById('btn-' + tabId);
     if(activeBtn) {
-      activeBtn.classList.remove('text-zinc-500', 'border-transparent');
-      activeBtn.classList.add('bg-surface-800', 'text-brand-400', 'border-surface-700');
+      if(tabId === 'prompt') {
+         activeBtn.classList.remove('text-brand-500/70', 'border-brand-500/20', 'bg-brand-500/5');
+         activeBtn.classList.add('bg-surface-800', 'text-brand-400', 'border-surface-700');
+      } else {
+         activeBtn.classList.remove('text-zinc-500', 'border-transparent');
+         activeBtn.classList.add('bg-surface-800', 'text-brand-400', 'border-surface-700');
+      }
     }
+  }
+
+  function copyPrompt() {
+    const text = document.getElementById('prompt-text').value;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copy-btn');
+      const originalHtml = btn.innerHTML;
+      
+      btn.innerHTML = `<i data-lucide="check" class="w-3 h-3"></i> <span>${translations[currentLang]['copied']}</span>`;
+      btn.classList.add('text-success-400', 'border-success-400/50');
+      btn.classList.remove('text-zinc-300', 'border-surface-700');
+      
+      lucide.createIcons();
+      
+      setTimeout(() => {
+        btn.innerHTML = `<i data-lucide="copy" class="w-3 h-3"></i> <span data-i18n="btn_copy">${translations[currentLang]['btn_copy']}</span>`;
+        btn.classList.remove('text-success-400', 'border-success-400/50');
+        btn.classList.add('text-zinc-300', 'border-surface-700');
+        lucide.createIcons();
+      }, 2000);
+    });
   }
 
   // Initialize language on load
